@@ -58,7 +58,8 @@ options: {
 
 ### Check if a Document File could be shown###
 ```js
-SitewaertsDocumentViewer.canViewDocument(url, contentType, options, onPossible, onMissingApp, onImpossible, onError);
+SitewaertsDocumentViewer.canViewDocument(
+    url, contentType, options, onPossible, onMissingApp, onImpossible, onError);
 ```
 
 #### onPossible ####
@@ -71,9 +72,10 @@ function(){
 
 #### onMissingApp ####
 ```js
-function(id, installer)
+function(appId, installer)
 {
-    if(confirm("Do you want to install the free PDF Viewer App " + appId + " for Android?"))
+    if(confirm("Do you want to install the free PDF Viewer App "
+            + appId + " for Android?"))
     {
         installer();
     }
@@ -99,7 +101,8 @@ function(error){
 
 ### Open a Document File ###
 ```js
-SitewaertsDocumentViewer.viewDocument(url, mimeType, options, onShow, onClose, onMissingApp, onError);
+SitewaertsDocumentViewer.viewDocument(
+    url, mimeType, options, onShow, onClose, onMissingApp, onError);
 ```
 
 #### onShow ####

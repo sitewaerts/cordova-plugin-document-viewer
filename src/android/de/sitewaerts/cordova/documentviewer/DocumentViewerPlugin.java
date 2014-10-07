@@ -231,6 +231,7 @@ public final class DocumentViewerPlugin
                 // @see http://stackoverflow.com/questions/2780102/open-another-application-from-your-own-intent
                 Uri path = Uri.fromFile(file);
                 Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.addCategory(Intent.CATEGORY_EMBED);
                 intent.setDataAndType(path, contentType);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.setComponent(new ComponentName(packageId, activity));
