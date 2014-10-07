@@ -187,7 +187,9 @@ THE SOFTWARE.
 ## Credits ##
 
 based on https://github.com/vfr/Reader
+
 based on https://github.com/mindstorm/CDVPDFViewer
+
 inspired by https://github.com/pebois/phonegap-plugin-PDFViewer
 
 ## Contact ##
