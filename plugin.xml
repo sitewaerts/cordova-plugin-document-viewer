@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+        id="de.sitewaerts.cordova.documentviewer"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        version="0.0.1">
+    <engines>
+        <engine name="cordova" version=">=3.5.0"/>
+    </engines>
+    <name>SitewaertsDocumentViewer</name>
+    <description>Document viewer phonegap plugin. Currently only support PDF
+        Documents.
+    </description>
+    <author>Felix Schauerte</author>
+    <email>schauerte@sitewaerts.de</email>
+    <license>MIT</license>
+
+    <js-module src="www/sitewaertsdocumentviewer.js"
+               name="SitewaertsDocumentViewer">
+        <clobbers target="SitewaertsDocumentViewer"/>
+    </js-module>
+
+    <platform name="android">
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="SitewaertsDocumentViewer">
+                <param name="android-package"
+                       value="de.sitewaerts.cordova.documentviewer.DocumentViewerPlugin"/>
+            </feature>
+        </config-file>
+
+        <config-file target="AndroidManifest.xml" parent="/*">
+            <uses-permission
+                    android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+        </config-file>
+
+        <source-file
+                src="src/android/de/sitewaerts/cordova/documentviewer/DocumentViewerPlugin.java"
+                target-dir="src/de/sitewaerts/cordova/documentviewer"/>
+
+    </platform>
+
+    <platform name="ios">
+        <config-file target="config.xml" parent="/*">
+            <feature name="SitewaertsDocumentViewer">
+                <param name="ios-package" value="SitewaertsDocumentViewer"/>
+            </feature>
+        </config-file>
+
+        <header-file src="src/ios/sitewaerts/SitewaertsDocumentViewer.h"/>
+        <source-file src="src/ios/sitewaerts/SitewaertsDocumentViewer.m"/>
+
+        <header-file src="src/ios/vfr/CGPDFDocument.h"/>
+        <source-file src="src/ios/vfr/CGPDFDocument.m"/>
+        <header-file src="src/ios/vfr/ReaderConstants.h"/>
+        <source-file src="src/ios/vfr/ReaderConstants.m"/>
+        <header-file src="src/ios/vfr/ReaderContentPage.h"/>
+        <source-file src="src/ios/vfr/ReaderContentPage.m"/>
+        <header-file src="src/ios/vfr/ReaderContentTile.h"/>
+        <source-file src="src/ios/vfr/ReaderContentTile.m"/>
+        <header-file src="src/ios/vfr/ReaderContentView.h"/>
+        <source-file src="src/ios/vfr/ReaderContentView.m"/>
+        <header-file src="src/ios/vfr/ReaderDocument.h"/>
+        <source-file src="src/ios/vfr/ReaderDocument.m"/>
+        <header-file src="src/ios/vfr/ReaderDocumentOutline.h"/>
+        <source-file src="src/ios/vfr/ReaderDocumentOutline.m"/>
+        <header-file src="src/ios/vfr/ReaderMainPagebar.h"/>
+        <source-file src="src/ios/vfr/ReaderMainPagebar.m"/>
+        <header-file src="src/ios/vfr/ReaderMainToolbar.h"/>
+        <source-file src="src/ios/vfr/ReaderMainToolbar.m"/>
+        <header-file src="src/ios/vfr/ReaderThumbCache.h"/>
+        <source-file src="src/ios/vfr/ReaderThumbCache.m"/>
+        <header-file src="src/ios/vfr/ReaderThumbFetch.h"/>
+        <source-file src="src/ios/vfr/ReaderThumbFetch.m"/>
+        <header-file src="src/ios/vfr/ReaderThumbQueue.h"/>
+        <source-file src="src/ios/vfr/ReaderThumbQueue.m"/>
+        <header-file src="src/ios/vfr/ReaderThumbRender.h"/>
+        <source-file src="src/ios/vfr/ReaderThumbRender.m"/>
+        <header-file src="src/ios/vfr/ReaderThumbRequest.h"/>
+        <source-file src="src/ios/vfr/ReaderThumbRequest.m"/>
+        <header-file src="src/ios/vfr/ReaderThumbsView.h"/>
+        <source-file src="src/ios/vfr/ReaderThumbsView.m"/>
+        <header-file src="src/ios/vfr/ReaderThumbView.h"/>
+        <source-file src="src/ios/vfr/ReaderThumbView.m"/>
+        <header-file src="src/ios/vfr/ReaderViewController.h"/>
+        <source-file src="src/ios/vfr/ReaderViewController.m"/>
+        <header-file src="src/ios/vfr/ThumbsMainToolbar.h"/>
+        <source-file src="src/ios/vfr/ThumbsMainToolbar.m"/>
+        <header-file src="src/ios/vfr/ThumbsViewController.h"/>
+        <source-file src="src/ios/vfr/ThumbsViewController.m"/>
+        <header-file src="src/ios/vfr/UIXToolbarView.h"/>
+        <source-file src="src/ios/vfr/UIXToolbarView.m"/>
+
+
+        <resource-file src="src/ios/Graphics/AppIcon-057.png"/>
+        <resource-file src="src/ios/Graphics/AppIcon-072.png"/>
+        <resource-file src="src/ios/Graphics/AppIcon-076.png"/>
+        <resource-file src="src/ios/Graphics/AppIcon-114.png"/>
+        <resource-file src="src/ios/Graphics/AppIcon-120.png"/>
+        <resource-file src="src/ios/Graphics/AppIcon-144.png"/>
+        <resource-file src="src/ios/Graphics/AppIcon-152.png"/>
+        <resource-file src="src/ios/Graphics/AppIcon-180.png"/>
+        <resource-file src="src/ios/Graphics/Default-568h@2x.png"/>
+        <resource-file src="src/ios/Graphics/Reader-Button-H.png"/>
+        <resource-file src="src/ios/Graphics/Reader-Button-H@2x.png"/>
+        <resource-file src="src/ios/Graphics/Reader-Button-N.png"/>
+        <resource-file src="src/ios/Graphics/Reader-Button-N@2x.png"/>
+        <resource-file src="src/ios/Graphics/Reader-Email.png"/>
+        <resource-file src="src/ios/Graphics/Reader-Email@2x.png"/>
+        <resource-file src="src/ios/Graphics/Reader-Export.png"/>
+        <resource-file src="src/ios/Graphics/Reader-Export@2x.png"/>
+        <resource-file src="src/ios/Graphics/Reader-Mark-N.png"/>
+        <resource-file src="src/ios/Graphics/Reader-Mark-N@2x.png"/>
+        <resource-file src="src/ios/Graphics/Reader-Mark-Y.png"/>
+        <resource-file src="src/ios/Graphics/Reader-Mark-Y@2x.png"/>
+        <resource-file src="src/ios/Graphics/Reader-Print.png"/>
+        <resource-file src="src/ios/Graphics/Reader-Print@2x.png"/>
+        <resource-file src="src/ios/Graphics/Reader-Thumbs.png"/>
+        <resource-file src="src/ios/Graphics/Reader-Thumbs@2x.png"/>
+
+
+        <framework src="UIKit.framework"/>
+        <framework src="Foundation.framework"/>
+        <framework src="CoreGraphics.framework"/>
+        <framework src="QuartzCore.framework"/>
+        <framework src="ImageIO.framework"/>
+        <framework src="MessageUI.framework"/>
+
+
+    </platform>
+
+</plugin>
