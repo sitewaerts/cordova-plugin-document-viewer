@@ -3,7 +3,7 @@ SitewaertsDocumentViewer
 
 A Document Viewer cordova/phonegap plugin for iOS and Android.
 
-**This project is currently under development an not yet ready to use.**
+**This project is currently under development and not yet ready to use.**
 
 ## Requirements ##
 
@@ -123,7 +123,8 @@ function(){
 ```js
 function(id, installer)
 {
-    if(confirm("Do you want to install the free PDF Viewer App " + appId + " for Android?"))
+    if(confirm("Do you want to install the free PDF Viewer App "
+            + appId + " for Android?"))
     {
         installer();
     }
