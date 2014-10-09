@@ -12,13 +12,17 @@ A Document Viewer cordova/phonegap plugin for iOS and Android.
 * Cordova/Phonegap >=3.5.0
 
 ## Installation ##
+
     cordova plugin add de.sitewaerts.cordova.documentviewer
 or    
+
     cordova plugin add [url-of-the-git-repo]
     
 You may replace cordova with phonegap regarding to your needs.
 
 ## Usage ##
+
+See https://github.com/sitewaerts/cordova-plugin-document-viewer-sample-app for a working example.
 
 ### Common Arguments ###
 
