@@ -15,6 +15,10 @@ Für Entwicklung, Test und Evaluation des Plugins steht eine gesonderte PhoneGap
 
 Umsetzung basierend auf VFRViewer. Änderung an VFRViewer möglichst gering halten, eher neue Klassen daneben stellen.
 
+Source Code des VFRViewer liegt redundant in diesem Projekt unter /tree/master/src/ios.
+
+Contributions machen wir über unseren Clone https://github.com/sitewaerts/Reader
+
 Generell Verhalten und Design wie in iBooks.
 
 **Können wir die original Buttons/Icons aus dem iOS verwenden? Ansonsten liefern wir fehlende Icons auf Anfrage.**
