@@ -9,9 +9,9 @@ Der sitewaerts PDF Viewer für Cordova und PhoneGap besteht aus zwei Bausteinen:
 Für Entwicklung, Test und Evaluation des Plugins steht eine gesonderte PhoneGap App zur Verfügung.
 
 
-
-# iOS #
 =====================
+# iOS #
+
 
 Umsetzung basierend auf VFRViewer. Änderung an VFRViewer möglichst gering halten, eher neue Klassen daneben stellen.
 
@@ -75,8 +75,8 @@ Labels für Button “Fertig” im Dokument-View und Button “Zurück” im Nav
 Text bei Anzeige der aktuellen Seitennummer „<x> of <n>“ wird ersetzte durch „<x> / <n>“.
 
 
-# Android #
 =====================
+# Android #
 
 Aus lizenzrechtlichen Gründen muss die Android Viewer Funktion in Form einer eigenständigen App im Google Play Appstore bereitgestellt werden. Ruft ein Benutzer den Player über den Button auf, prüft die App ob die eigenständige Viewer App auf dem Gerät installiert ist. Wenn die App nicht installiert ist, wird eine entsprechende Meldung inkl. eines Links zum Google Play Appstore angezeigt. Die Viewer App ist kostenlos und wird von sitewaerts bereitgestellt (Name z.B. „sitewaerts PDF“). Die Verwendung der Adobe Reader App ist aus vielfältigen technischen Gründen nicht möglich. Für den Benutzer verhält sich der Viewer nach der Installation nahezu wie eine vollständig integrierte Lösung. Zukünftig können die fehlenden Funktionen im Android-Viewer ergänzt werden.
 
