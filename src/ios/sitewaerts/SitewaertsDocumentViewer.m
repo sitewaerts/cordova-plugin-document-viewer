@@ -25,9 +25,9 @@
 //  SOFTWARE.
 //
 
-#import "SitewaertsDocumentViewerPlugin.h"
+#import "SitewaertsDocumentViewer.h"
 
-@implementation SitewaertsDocumentViewerPlugin
+@implementation SitewaertsDocumentViewer
 
 - (void)canViewDocument:(CDVInvokedUrlCommand*)command {
     CDVPluginResult* pluginResult = nil;
@@ -38,7 +38,7 @@
     // CONTENT TYPE
     NSString* contentType = [options objectForKey:@"contentType"];
     NSString* contentTypePDF = @"application/pdf";
-    if (url != nil && url.length > 0 contentType != nil && contentType.length > 0 ) {
+    if (url != nil && url.length > 0 && contentType != nil && contentType.length > 0 ) {
 
        if([contentType isEqualToString:contentTypePDF]){
         NSURL* absoluteURL = [[NSURL URLWithString:url relativeToURL:[self.webView.request URL]] absoluteURL];
@@ -85,6 +85,13 @@
                 readerViewController.modalPresentationStyle = UIModalPresentationFullScreen;
 
                 [self.viewController presentViewController:readerViewController animated:YES completion:nil];
+
+                // ThumbsViewController *thumbsViewController = [[ThumbsViewController alloc] initWithReaderDocument:document];
+                // thumbsViewController.delegate = self;
+                // thumbsViewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+                // thumbsViewController.modalPresentationStyle = UIModalPresentationFullScreen;
+
+                // [self.viewController presentViewController:thumbsViewController animated:YES completion:nil];
 
                 pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
             }

@@ -28,7 +28,7 @@
 #import <Cordova/CDV.h>
 #import "ReaderViewController.h"
 
-@interface SitewaertsDocumentViewerPlugin : CDVPlugin <ReaderViewControllerDelegate>
+@interface SitewaertsDocumentViewer : CDVPlugin <ReaderViewControllerDelegate>
 
 - (void)canViewDocument:(CDVInvokedUrlCommand*)command;
 
