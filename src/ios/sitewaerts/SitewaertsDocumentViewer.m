@@ -31,6 +31,14 @@
 
 - (void)canViewDocument:(CDVInvokedUrlCommand*)command {
     CDVPluginResult* pluginResult = nil;
+    // result object
+    NSMutableDictionary *jsonObj = [ [NSMutableDictionary alloc]
+                             initWithObjectsAndKeys :
+                             nil, @"status",
+                             nil, @"message",
+                             nil, @"missingAppId",
+                             nil
+                             ];
     NSMutableDictionary *options = [command.arguments objectAtIndex:0];
 
     // URL
@@ -46,18 +54,22 @@
             NSLog(@"[pdfviewer] path: %@", absoluteURL.path);
             ReaderDocument *document = [ReaderDocument withDocumentFilePath:absoluteURL.path password:nil];
             if (document != nil) {
-                pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+                [jsonObj setObject:[NSNumber numberWithInt:CDVCommandStatus_OK]  forKey:@"status"];
+                pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:jsonObj];
             }
         } else {
-            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_NO_RESULT];
+            [jsonObj setObject:[NSNumber numberWithInt:CDVCommandStatus_NO_RESULT]  forKey:@"status"];
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:jsonObj];
         }
        }
        else{
-          pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_NO_RESULT];
+          [jsonObj setObject:[NSNumber numberWithInt:CDVCommandStatus_NO_RESULT]  forKey:@"status"];
+           pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:jsonObj];
        }
 
     } else {
-        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_NO_RESULT];
+        [jsonObj setObject:[NSNumber numberWithInt:CDVCommandStatus_NO_RESULT]  forKey:@"status"];
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:jsonObj];
     }
 
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
@@ -85,13 +97,6 @@
                 readerViewController.modalPresentationStyle = UIModalPresentationFullScreen;
 
                 [self.viewController presentViewController:readerViewController animated:YES completion:nil];
-
-                // ThumbsViewController *thumbsViewController = [[ThumbsViewController alloc] initWithReaderDocument:document];
-                // thumbsViewController.delegate = self;
-                // thumbsViewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-                // thumbsViewController.modalPresentationStyle = UIModalPresentationFullScreen;
-
-                // [self.viewController presentViewController:thumbsViewController animated:YES completion:nil];
 
                 pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
             }
