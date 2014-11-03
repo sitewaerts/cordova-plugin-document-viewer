@@ -44,6 +44,12 @@
 @end
 
 @interface ReaderMainToolbar : UIXToolbarView
+{
+    UIButton *markButton;
+    
+    UIImage *markImageN;
+    UIImage *markImageY;
+}
 
 @property (nonatomic, weak, readwrite) id <ReaderMainToolbarDelegate> delegate;
 

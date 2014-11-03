@@ -26,6 +26,7 @@
 //
 
 #import "SitewaertsDocumentViewer.h"
+#import "SDVReaderViewController.h"
 
 @implementation SitewaertsDocumentViewer
 
@@ -91,7 +92,11 @@
             ReaderDocument *document = [ReaderDocument withDocumentFilePath:absoluteURL.path password:nil];
 
             if (document != nil) {
-                ReaderViewController *readerViewController = [[ReaderViewController alloc] initWithReaderDocument:document];
+                // get options from cordova
+                NSMutableDictionary *viewerOptions = [options objectForKey:@"options"];
+                NSLog(@"[pdfviewer] options: %@", viewerOptions);
+
+                SDVReaderViewController *readerViewController = [[SDVReaderViewController alloc] initWithReaderDocument:document options:viewerOptions];
                 readerViewController.delegate = self;
                 readerViewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
                 readerViewController.modalPresentationStyle = UIModalPresentationFullScreen;

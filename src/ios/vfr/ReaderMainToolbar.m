@@ -30,12 +30,6 @@
 #import <MessageUI/MessageUI.h>
 
 @implementation ReaderMainToolbar
-{
-	UIButton *markButton;
-
-	UIImage *markImageN;
-	UIImage *markImageY;
-}
 
 #pragma mark - Constants
 

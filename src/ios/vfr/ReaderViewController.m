@@ -39,33 +39,6 @@
 @end
 
 @implementation ReaderViewController
-{
-	ReaderDocument *document;
-
-	UIScrollView *theScrollView;
-
-	ReaderMainToolbar *mainToolbar;
-
-	ReaderMainPagebar *mainPagebar;
-
-	NSMutableDictionary *contentViews;
-
-	UIUserInterfaceIdiom userInterfaceIdiom;
-
-	NSInteger currentPage, minimumPage, maximumPage;
-
-	UIDocumentInteractionController *documentInteraction;
-
-	UIPrintInteractionController *printInteraction;
-
-	CGFloat scrollViewOutset;
-
-	CGSize lastAppearSize;
-
-	NSDate *lastHideTime;
-
-	BOOL ignoreDidScroll;
-}
 
 #pragma mark - Constants
 
