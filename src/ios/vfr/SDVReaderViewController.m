@@ -10,6 +10,7 @@
 #import "SDVReaderViewController.h"
 #import "ReaderViewController+SDVReaderViewControllerPassThrough.h"
 #import "SDVReaderMainToolbar.h"
+#import "SDVThumbsViewController.h"
 
 @implementation SDVReaderViewController
 
@@ -25,17 +26,19 @@
 
 #define TAP_AREA_SIZE 48.0f
 
-
+//TODO understand how delegation works and why this works if it is not synthesized although none of the delegation stuff of the superclass is in the public header
+//@synthesize delegate;
 @synthesize viewerOptions;
+@synthesize pagesPerScreen;
 
 - (instancetype)initWithReaderDocument:(ReaderDocument *)object options:(NSMutableDictionary *)options
 {
-    self = [self initWithReaderDocument:object];
+    self = [super initWithReaderDocument:object];
     self.viewerOptions = options;
     return self;
 }
 
-//override viewDidLoad
+//  override viewDidLoad
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -61,6 +64,9 @@
         }
     }
     
+    //initialise with single page per screen
+    [self setPagesPerScreen: 1];
+    
     CGRect scrollViewRect = CGRectInset(viewRect, -scrollViewOutset, 0.0f);
     theScrollView = [[UIScrollView alloc] initWithFrame:scrollViewRect]; // All
     theScrollView.autoresizesSubviews = NO; theScrollView.contentMode = UIViewContentModeRedraw;
@@ -72,15 +78,19 @@
     
     CGRect toolbarRect = viewRect; toolbarRect.size.height = TOOLBAR_HEIGHT;
 //    mainToolbar = [[ReaderMainToolbar alloc] initWithFrame:toolbarRect document:document]; // ReaderMainToolbar
-    mainToolbar = [[SDVReaderMainToolbar alloc] initWithFrame:toolbarRect document:document options:viewerOptions]; // customised ReaderMainToolbar
+    mainToolbar = [[SDVReaderMainToolbar alloc] initWithFrame:toolbarRect document:document options:self.viewerOptions]; // customised ReaderMainToolbar
     mainToolbar.delegate = self; // ReaderMainToolbarDelegate
     [self.view addSubview:mainToolbar];
     
-    CGRect pagebarRect = self.view.bounds; pagebarRect.size.height = PAGEBAR_HEIGHT;
-    pagebarRect.origin.y = (self.view.bounds.size.height - pagebarRect.size.height);
-    mainPagebar = [[ReaderMainPagebar alloc] initWithFrame:pagebarRect document:document]; // ReaderMainPagebar
-    mainPagebar.delegate = self; // ReaderMainPagebarDelegate
-    [self.view addSubview:mainPagebar];
+    //don't show thumbnails if all pages are in view
+    if ([document.pageCount intValue] > self.pagesPerScreen)
+    {
+        CGRect pagebarRect = self.view.bounds; pagebarRect.size.height = PAGEBAR_HEIGHT;
+        pagebarRect.origin.y = (self.view.bounds.size.height - pagebarRect.size.height);
+        mainPagebar = [[ReaderMainPagebar alloc] initWithFrame:pagebarRect document:document]; // ReaderMainPagebar
+        mainPagebar.delegate = self; // ReaderMainPagebarDelegate
+        [self.view addSubview:mainPagebar];
+    }
     
     if (fakeStatusBar != nil) [self.view addSubview:fakeStatusBar]; // Add status bar background view
     
@@ -101,6 +111,25 @@
     contentViews = [NSMutableDictionary new]; lastHideTime = [NSDate date];
     
     minimumPage = 1; maximumPage = [document.pageCount integerValue];
+}
+
+//  override thumbsButton/ThumbsViewController
+- (void)tappedInToolbar:(ReaderMainToolbar *)toolbar thumbsButton:(UIButton *)button
+{
+#if (READER_ENABLE_THUMBS == TRUE) // Option
+    
+    if (printInteraction != nil) [printInteraction dismissAnimated:NO];
+    
+    SDVThumbsViewController *thumbsViewController = [[SDVThumbsViewController alloc] initWithReaderDocument:document options:self.viewerOptions];
+    
+    thumbsViewController.title = self.title; thumbsViewController.delegate = self; // ThumbsViewControllerDelegate
+    
+    thumbsViewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+    thumbsViewController.modalPresentationStyle = UIModalPresentationFullScreen;
+    
+    [self presentViewController:thumbsViewController animated:NO completion:NULL];
+    
+#endif // end of READER_ENABLE_THUMBS Option
 }
 
 

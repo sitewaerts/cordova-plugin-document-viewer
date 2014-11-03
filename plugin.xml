@@ -90,10 +90,18 @@
         <source-file src="src/ios/vfr/SDVReaderMainToolbar.m"/>
         <header-file src="src/ios/vfr/SDVReaderViewController.h"/>
         <source-file src="src/ios/vfr/SDVReaderViewController.m"/>
+        <header-file src="src/ios/vfr/SDVThumbsMainToolbar.h"/>
+        <source-file src="src/ios/vfr/SDVThumbsMainToolbar.m"/>
+        <header-file src="src/ios/vfr/SDVThumbsViewController.h"/>
+        <source-file src="src/ios/vfr/SDVThumbsViewController.m"/>
         <header-file src="src/ios/vfr/ThumbsMainToolbar.h"/>
         <source-file src="src/ios/vfr/ThumbsMainToolbar.m"/>
+        <header-file src="src/ios/vfr/ThumbsMainToolbar+SDVThumbsMainToolbarPassThrough.h"/>
+        <source-file src="src/ios/vfr/ThumbsMainToolbar+SDVThumbsMainToolbarPassThrough.m"/>
         <header-file src="src/ios/vfr/ThumbsViewController.h"/>
         <source-file src="src/ios/vfr/ThumbsViewController.m"/>
+        <header-file src="src/ios/vfr/ThumbsViewController+SDVThumbsViewControllerPassThrough.h"/>
+        <source-file src="src/ios/vfr/ThumbsViewController+SDVThumbsViewControllerPassThrough.m"/>
         <header-file src="src/ios/vfr/UIXToolbarView.h"/>
         <source-file src="src/ios/vfr/UIXToolbarView.m"/>
 

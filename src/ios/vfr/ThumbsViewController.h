@@ -42,6 +42,22 @@
 @end
 
 @interface ThumbsViewController : UIViewController
+{
+    ReaderDocument *document;
+    
+    ThumbsMainToolbar *mainToolbar;
+    
+    ReaderThumbsView *theThumbsView;
+    
+    NSMutableArray *bookmarked;
+    
+    CGPoint thumbsOffset;
+    CGPoint markedOffset;
+    
+    BOOL updateBookmarked;
+    BOOL showBookmarked;
+}
+
 
 @property (nonatomic, weak, readwrite) id <ThumbsViewControllerDelegate> delegate;
 

@@ -142,21 +142,23 @@
 #endif // end of READER_STANDALONE Option
         
 #if (READER_ENABLE_THUMBS == TRUE) // Option
-        
-        UIButton *thumbsButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        thumbsButton.frame = CGRectMake(leftButtonX, BUTTON_Y, iconButtonWidth, BUTTON_HEIGHT);
-        [thumbsButton setImage:[UIImage imageNamed:@"Reader-Thumbs"] forState:UIControlStateNormal];
-        [thumbsButton addTarget:self action:@selector(thumbsButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
-        [thumbsButton setBackgroundImage:buttonH forState:UIControlStateHighlighted];
-        [thumbsButton setBackgroundImage:buttonN forState:UIControlStateNormal];
-        thumbsButton.autoresizingMask = UIViewAutoresizingNone;
-        //thumbsButton.backgroundColor = [UIColor grayColor];
-        thumbsButton.exclusiveTouch = YES;
-        
-        [self addSubview:thumbsButton]; //leftButtonX += (iconButtonWidth + buttonSpacing);
-        
-        titleX += (iconButtonWidth + buttonSpacing); titleWidth -= (iconButtonWidth + buttonSpacing);
-        
+        //don't show navigation view for single page documents
+        if ([document.pageCount intValue] > 1)
+        {
+            UIButton *thumbsButton = [UIButton buttonWithType:UIButtonTypeCustom];
+            thumbsButton.frame = CGRectMake(leftButtonX, BUTTON_Y, iconButtonWidth, BUTTON_HEIGHT);
+            [thumbsButton setImage:[UIImage imageNamed:@"Reader-Thumbs"] forState:UIControlStateNormal];
+            [thumbsButton addTarget:self action:@selector(thumbsButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
+            [thumbsButton setBackgroundImage:buttonH forState:UIControlStateHighlighted];
+            [thumbsButton setBackgroundImage:buttonN forState:UIControlStateNormal];
+            thumbsButton.autoresizingMask = UIViewAutoresizingNone;
+            //thumbsButton.backgroundColor = [UIColor grayColor];
+            thumbsButton.exclusiveTouch = YES;
+            
+            [self addSubview:thumbsButton]; //leftButtonX += (iconButtonWidth + buttonSpacing);
+            
+            titleX += (iconButtonWidth + buttonSpacing); titleWidth -= (iconButtonWidth + buttonSpacing);
+        }
 #endif // end of READER_ENABLE_THUMBS Option
         
         CGFloat rightButtonX = viewWidth; // Right-side buttons start X position

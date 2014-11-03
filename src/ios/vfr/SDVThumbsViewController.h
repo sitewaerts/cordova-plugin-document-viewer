@@ -1,5 +1,5 @@
 //
-//  SDVReaderViewController.h
+//  SDVThumbsViewController.h
 //
 //  implements Sitewaerts Document Viewer runtime options for VFR Reader
 //
@@ -7,14 +7,10 @@
 //
 //
 
-#import "ReaderConstants.h"
-#import "ReaderViewController.h"
+#import "ThumbsViewController.h"
 
-#import <UIKit/UIKit.h>
-
-@interface SDVReaderViewController : ReaderViewController
+@interface SDVThumbsViewController : ThumbsViewController
 @property NSMutableDictionary *viewerOptions;
-@property int pagesPerScreen;
 
 - (instancetype)initWithReaderDocument:(ReaderDocument *)object options:(NSMutableDictionary *)options;
 

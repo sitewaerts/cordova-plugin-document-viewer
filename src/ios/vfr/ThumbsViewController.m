@@ -36,21 +36,6 @@
 @end
 
 @implementation ThumbsViewController
-{
-	ReaderDocument *document;
-
-	ThumbsMainToolbar *mainToolbar;
-
-	ReaderThumbsView *theThumbsView;
-
-	NSMutableArray *bookmarked;
-
-	CGPoint thumbsOffset;
-	CGPoint markedOffset;
-
-	BOOL updateBookmarked;
-	BOOL showBookmarked;
-}
 
 #pragma mark - Constants
 
