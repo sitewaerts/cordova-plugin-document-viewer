@@ -66,6 +66,8 @@
         <source-file src="src/ios/vfr/ReaderMainPagebar.m"/>
         <header-file src="src/ios/vfr/ReaderMainToolbar.h"/>
         <source-file src="src/ios/vfr/ReaderMainToolbar.m"/>
+        <header-file src="src/ios/vfr/ReaderMainToolbar+SDVReaderMainToolbarPassThrough.h"/>
+        <source-file src="src/ios/vfr/ReaderMainToolbar+SDVReaderMainToolbarPassThrough.m"/>
         <header-file src="src/ios/vfr/ReaderThumbCache.h"/>
         <source-file src="src/ios/vfr/ReaderThumbCache.m"/>
         <header-file src="src/ios/vfr/ReaderThumbFetch.h"/>
@@ -82,6 +84,12 @@
         <source-file src="src/ios/vfr/ReaderThumbView.m"/>
         <header-file src="src/ios/vfr/ReaderViewController.h"/>
         <source-file src="src/ios/vfr/ReaderViewController.m"/>
+        <header-file src="src/ios/vfr/ReaderViewController+SDVReaderViewControllerPassThrough.h"/>
+        <source-file src="src/ios/vfr/ReaderViewController+SDVReaderViewControllerPassThrough.m"/>
+        <header-file src="src/ios/vfr/SDVReaderMainToolbar.h"/>
+        <source-file src="src/ios/vfr/SDVReaderMainToolbar.m"/>
+        <header-file src="src/ios/vfr/SDVReaderViewController.h"/>
+        <source-file src="src/ios/vfr/SDVReaderViewController.m"/>
         <header-file src="src/ios/vfr/ThumbsMainToolbar.h"/>
         <source-file src="src/ios/vfr/ThumbsMainToolbar.m"/>
         <header-file src="src/ios/vfr/ThumbsViewController.h"/>
