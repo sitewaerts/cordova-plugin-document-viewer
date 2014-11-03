@@ -1,5 +1,5 @@
 //
-//  ReaderMainToolbar+ReaderMainToolbarSDVOptions.m
+//  ReaderMainToolbar+SDVReaderMainToolbarPassThrough.h
 //
 //  modify ReaderMainToolbar to enable a subclass' super call to pass through
 //
