@@ -166,7 +166,7 @@
 #if (READER_BOOKMARKS == TRUE) // Option
         //get bookmarks enabled options
         BOOL toolbarOptionBookmarks = [[[options objectForKey: @"bookmarks"] objectForKey: @"enabled"] boolValue];
-        NSLog(@"[pdfviewer] toolbar-options email: %d", toolbarOptionBookmarks);
+        NSLog(@"[pdfviewer] toolbar-options bookmarks: %d", toolbarOptionBookmarks);
         if (toolbarOptionBookmarks) {
             
             rightButtonX -= (iconButtonWidth + buttonSpacing); // Position
