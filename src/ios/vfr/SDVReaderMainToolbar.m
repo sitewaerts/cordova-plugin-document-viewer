@@ -286,7 +286,7 @@
             titleLabel.minimumScaleFactor = 0.75f;
             //get title from options
             NSString *toolbarOptionTitle = [options objectForKey: @"title"];
-            NSLog(@"[pdfviewer] toolbar-options close label: %@", toolbarOptionTitle);
+            NSLog(@"[pdfviewer] toolbar-options title label: %@", toolbarOptionTitle);
             titleLabel.text = toolbarOptionTitle?:[document.fileName stringByDeletingPathExtension];
 #if (READER_FLAT_UI == FALSE) // Option
             titleLabel.shadowColor = [UIColor colorWithWhite:0.75f alpha:1.0f];
