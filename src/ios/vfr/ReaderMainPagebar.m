@@ -31,22 +31,6 @@
 #import <QuartzCore/QuartzCore.h>
 
 @implementation ReaderMainPagebar
-{
-	ReaderDocument *document;
-
-	ReaderTrackControl *trackControl;
-
-	NSMutableDictionary *miniThumbViews;
-
-	ReaderPagebarThumb *pageThumbView;
-
-	UILabel *pageNumberLabel;
-
-	UIView *pageNumberView;
-
-	NSTimer *enableTimer;
-	NSTimer *trackTimer;
-}
 
 #pragma mark - Constants
 

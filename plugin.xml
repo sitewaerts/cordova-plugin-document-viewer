@@ -86,6 +86,8 @@
         <source-file src="src/ios/vfr/ReaderViewController.m"/>
         <header-file src="src/ios/vfr/ReaderViewController+SDVReaderViewControllerPassThrough.h"/>
         <source-file src="src/ios/vfr/ReaderViewController+SDVReaderViewControllerPassThrough.m"/>
+        <header-file src="src/ios/vfr/SDVReaderMainPagebar.h"/>
+        <source-file src="src/ios/vfr/SDVReaderMainPagebar.m"/>
         <header-file src="src/ios/vfr/SDVReaderMainToolbar.h"/>
         <source-file src="src/ios/vfr/SDVReaderMainToolbar.m"/>
         <header-file src="src/ios/vfr/SDVReaderViewController.h"/>

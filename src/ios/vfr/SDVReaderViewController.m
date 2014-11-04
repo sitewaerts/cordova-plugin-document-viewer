@@ -11,6 +11,7 @@
 #import "ReaderViewController+SDVReaderViewControllerPassThrough.h"
 #import "SDVReaderMainToolbar.h"
 #import "SDVThumbsViewController.h"
+#import "SDVReaderMainPagebar.h"
 
 @implementation SDVReaderViewController
 
@@ -87,7 +88,7 @@
     {
         CGRect pagebarRect = self.view.bounds; pagebarRect.size.height = PAGEBAR_HEIGHT;
         pagebarRect.origin.y = (self.view.bounds.size.height - pagebarRect.size.height);
-        mainPagebar = [[ReaderMainPagebar alloc] initWithFrame:pagebarRect document:document]; // ReaderMainPagebar
+        mainPagebar = [[SDVReaderMainPagebar alloc] initWithFrame:pagebarRect document:document]; // ReaderMainPagebar
         mainPagebar.delegate = self; // ReaderMainPagebarDelegate
         [self.view addSubview:mainPagebar];
     }
