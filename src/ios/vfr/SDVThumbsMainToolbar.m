@@ -24,7 +24,7 @@
 #define BUTTON_FONT_SIZE 15.0f
 #define TEXT_BUTTON_PADDING 24.0f
 
-#define SHOW_CONTROL_WIDTH 78.0f
+#define SHOW_CONTROL_WIDTH 117.0f
 #define ICON_BUTTON_WIDTH 40.0f
 
 #define TITLE_FONT_SIZE 19.0f
@@ -82,12 +82,14 @@
         titleX += (doneButtonWidth + buttonSpacing); titleWidth -= (doneButtonWidth + buttonSpacing);
         
 #if (READER_BOOKMARKS == TRUE) // Option
-        //TODO: add document outline
         CGFloat showControlX = (viewWidth - (SHOW_CONTROL_WIDTH + buttonSpacing));
         
         UIImage *thumbsImage = [UIImage imageNamed:@"Reader-Thumbs"];
         UIImage *bookmarkImage = [UIImage imageNamed:@"Reader-Mark-Y"];
-        NSArray *buttonItems = [NSArray arrayWithObjects:thumbsImage, bookmarkImage, nil];
+        //Todo: icon
+        NSString *outlineButton = @"outline";
+        //Todo: hide bookmark button if option enabled = false
+        NSArray *buttonItems = [NSArray arrayWithObjects:thumbsImage, bookmarkImage, outlineButton, nil];
         
         BOOL useTint = [self respondsToSelector:@selector(tintColor)]; // iOS 7 and up
         

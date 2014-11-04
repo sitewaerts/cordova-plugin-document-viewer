@@ -3,6 +3,8 @@
 //
 //  implements Sitewaerts Document Viewer runtime options for VFR Reader
 //
+//  TableView code from http://www.makemegeek.com/uitableview-example-ios/, http://i5insights.com/?p=832
+//
 //  Created by Philipp Bohnenstengel on 03.11.14.
 //
 //
@@ -11,6 +13,12 @@
 #import "SDVThumbsMainToolbar.h"
 #import "ThumbsMainToolbar+SDVThumbsMainToolbarPassThrough.h"
 #import "ReaderDocument.h"
+#import "ReaderDocumentOutline.h"
+
+//protocols for table view
+@interface SDVThumbsViewController()<UITableViewDataSource,UITableViewDelegate>
+
+@end
 
 @implementation SDVThumbsViewController
 
@@ -26,11 +34,15 @@
 //TODO understand how delegation works and why this works if it is not synthesized although none of the delegation stuff of the superclass is in the public header
 //@synthesize delegate;
 @synthesize viewerOptions;
+@synthesize documentOutline;
 
 - (instancetype)initWithReaderDocument:(ReaderDocument *)object options:(NSMutableDictionary *)options
 {
     self = [super initWithReaderDocument:object];
     self.viewerOptions = options;
+    self.documentOutline = [SDVThumbsViewController flattenOutline:[ReaderDocumentOutline outlineFromFileURL:object.fileURL password: nil]];
+    NSLog(@"[pdfviewer] document-outline: %@", self.documentOutline);
+
     return self;
 }
 
@@ -86,11 +98,123 @@
     theThumbsView = [[ReaderThumbsView alloc] initWithFrame:scrollViewRect]; // ReaderThumbsView
     theThumbsView.contentInset = scrollViewInsets; theThumbsView.scrollIndicatorInsets = scrollViewInsets;
     theThumbsView.delegate = self; // ReaderThumbsViewDelegate
+    theThumbsView.hidden = NO;
+    
+    theOutlineView = [[UITableView alloc] initWithFrame:scrollViewRect]; //TableView for Document outline
+    theOutlineView.delegate = self;
+    theOutlineView.dataSource = self;
+    theOutlineView.hidden = YES;
     [self.view insertSubview:theThumbsView belowSubview:mainToolbar];
+    [self.view insertSubview:theOutlineView belowSubview:mainToolbar];
     
     BOOL large = ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad);
     CGFloat thumbSize = (large ? PAGE_THUMB_LARGE : PAGE_THUMB_SMALL); // Thumb dimensions
     [theThumbsView setThumbSize:CGSizeMake(thumbSize, thumbSize)]; // Set the thumb size
+}
+
+//  override segment control handler
+- (void)tappedInToolbar:(ThumbsMainToolbar *)toolbar showControl:(UISegmentedControl *)control
+{
+    switch (control.selectedSegmentIndex)
+    {
+        case 0: // Show all page thumbs
+        {
+            showBookmarked = NO; // Show all thumbs
+            
+            markedOffset = [theThumbsView insetContentOffset];
+            
+            [theThumbsView reloadThumbsContentOffset:thumbsOffset];
+
+            //switch view if necessary
+            theOutlineView.hidden = YES;
+            theThumbsView.hidden = NO;
+            
+            break; // We're done
+        }
+            
+        case 1: // Show bookmarked thumbs
+        {
+            showBookmarked = YES; // Only bookmarked
+            
+            thumbsOffset = [theThumbsView insetContentOffset];
+            
+            if (updateBookmarked == YES) // Update bookmarked list
+            {
+                [bookmarked removeAllObjects]; // Empty the list first
+                
+                [document.bookmarks enumerateIndexesUsingBlock: // Enumerate
+                 ^(NSUInteger page, BOOL *stop)
+                 {
+                     [bookmarked addObject:[NSNumber numberWithInteger:page]];
+                 }
+                 ];
+                
+                markedOffset = CGPointZero; updateBookmarked = NO; // Reset
+            }
+            
+            [theThumbsView reloadThumbsContentOffset:markedOffset];
+            
+            //switch view if necessary
+            theOutlineView.hidden = YES;
+            theThumbsView.hidden = NO;
+
+            break; // We're done
+        }
+        case 2: // Show document outline
+        {
+            //switch view if necessary
+            theOutlineView.hidden = NO;
+            theThumbsView.hidden = YES;
+            break;
+        }
+    }
+}
+
+//  UITableView protocol methods
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return [documentOutline count];
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    static NSString *documentOutlineItem = @"DocumentOutlineItem";
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:documentOutlineItem];
+    if (cell == nil) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:documentOutlineItem];
+    }
+    cell.textLabel.text = [[documentOutline objectAtIndex:indexPath.row] title];
+    return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    //go to associated page
+    //copied and modified from didSelectThumbWithIndex
+    [self.delegate thumbsViewController:self gotoPage:[[[documentOutline objectAtIndex:indexPath.row] target] integerValue]]; // Show the selected page
+    [self.delegate dismissThumbsViewController:self]; // Dismiss thumbs display
+}
+
+- (NSInteger)tableView:(UITableView *)tableView indentationLevelForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSInteger retValue=1;
+    DocumentOutlineEntry *entry=[documentOutline objectAtIndex:indexPath.row];//Store the indent value in a dictionary in your row or implement appropriate logic
+    retValue=[entry level];//return the indent
+    NSLog(@"[pdf-viewer] outline indentation: %ld", (long)retValue);
+    return retValue;
+}
+
+//  recursive flattening of document outline
++ (NSArray *) flattenOutline:(NSArray *)outline
+{
+    NSMutableArray *flatOutline = [NSMutableArray array];
+    for (DocumentOutlineEntry *entry in outline) {
+        [flatOutline addObject:entry];
+        if (entry.children) {
+            [flatOutline addObjectsFromArray:[SDVThumbsViewController flattenOutline:entry.children]];
+        }
+    }
+    return flatOutline;
 }
 
 @end

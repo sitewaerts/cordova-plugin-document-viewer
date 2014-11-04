@@ -10,7 +10,11 @@
 #import "ThumbsViewController.h"
 
 @interface SDVThumbsViewController : ThumbsViewController
+{
+    UITableView *theOutlineView;
+}
 @property NSMutableDictionary *viewerOptions;
+@property NSArray *documentOutline;
 
 - (instancetype)initWithReaderDocument:(ReaderDocument *)object options:(NSMutableDictionary *)options;
 
