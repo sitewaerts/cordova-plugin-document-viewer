@@ -28,6 +28,7 @@
 #define BUTTON_FONT_SIZE 15.0f
 #define TEXT_BUTTON_PADDING 24.0f
 
+#define SHOW_CONTROL_WIDTH 117.0f
 #define ICON_BUTTON_WIDTH 40.0f
 
 #define TITLE_FONT_SIZE 19.0f
@@ -270,6 +271,36 @@
             }
         }
         
+        //view modes
+        //Todo: icons
+        NSString *singlePageButton = @"single page";
+        NSString *doublePageButton = @"double page";
+        NSString *coverPageButton = @"cover page";
+        NSArray *buttonItems = [NSArray arrayWithObjects:singlePageButton, doublePageButton, coverPageButton, nil];
+        
+        BOOL useTint = [self respondsToSelector:@selector(tintColor)]; // iOS 7 and up
+
+        //don't show viewmode for single page documents
+        if ([document.pageCount intValue] > 1)
+        {
+        rightButtonX -= (SHOW_CONTROL_WIDTH + buttonSpacing); // Next position
+        
+        UISegmentedControl *showControl = [[UISegmentedControl alloc] initWithItems:buttonItems];
+        showControl.frame = CGRectMake(rightButtonX, BUTTON_Y, SHOW_CONTROL_WIDTH, BUTTON_HEIGHT);
+        showControl.tintColor = (useTint ? [UIColor blackColor] : [UIColor colorWithWhite:0.8f alpha:1.0f]);
+        showControl.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
+        showControl.segmentedControlStyle = UISegmentedControlStyleBar;
+        showControl.selectedSegmentIndex = 0; // Default segment index
+        //showControl.backgroundColor = [UIColor grayColor];
+        showControl.exclusiveTouch = YES;
+        
+        [showControl addTarget:self action:@selector(showControlTapped:) forControlEvents:UIControlEventValueChanged];
+        
+        [self addSubview:showControl];
+        //adjust available width for document title
+        titleWidth -= (SHOW_CONTROL_WIDTH + buttonSpacing);
+        }
+        
         if (largeDevice == YES) // Show document filename in toolbar
         {
             CGRect titleRect = CGRectMake(titleX, BUTTON_Y, titleWidth, TITLE_HEIGHT);
@@ -298,6 +329,13 @@
     }
     
     return self;
+}
+
+#pragma mark - UISegmentedControl action methods
+
+- (void)showControlTapped:(UISegmentedControl *)control
+{
+    [self.delegate tappedInToolbar:self showControl:control];
 }
 
 @end

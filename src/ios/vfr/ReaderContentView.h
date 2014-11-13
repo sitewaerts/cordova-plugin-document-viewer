@@ -40,6 +40,22 @@
 @end
 
 @interface ReaderContentView : UIScrollView
+{
+    UIView *theContainerView;
+    
+    UIUserInterfaceIdiom userInterfaceIdiom;
+    
+    ReaderContentPage *theContentPage;
+    
+    ReaderContentThumb *theThumbView;
+    
+    CGFloat realMaximumZoom;
+    CGFloat tempMaximumZoom;
+    
+    CGFloat bugFixWidthInset;
+    
+    BOOL zoomBounced;
+}
 
 @property (nonatomic, weak, readwrite) id <ReaderContentViewDelegate> message;
 

@@ -35,22 +35,6 @@
 @end
 
 @implementation ReaderContentView
-{
-	UIView *theContainerView;
-
-	UIUserInterfaceIdiom userInterfaceIdiom;
-
-	ReaderContentPage *theContentPage;
-
-	ReaderContentThumb *theThumbView;
-
-	CGFloat realMaximumZoom;
-	CGFloat tempMaximumZoom;
-
-	CGFloat bugFixWidthInset;
-
-	BOOL zoomBounced;
-}
 
 #pragma mark - Constants
 
@@ -179,9 +163,17 @@ static inline CGFloat zoomScaleThatFits(CGSize target, CGSize source, CGFloat bf
 	return self;
 }
 
+//XXX:  ignore exceptions, that occur because observer has to be removed in subclass and subclass dealloc automatically calls super dealloc with arc
 - (void)dealloc
 {
-	[self removeObserver:self forKeyPath:@"frame" context:ReaderContentViewContext];
+//	[self removeObserver:self forKeyPath:@"frame" context:ReaderContentViewContext];
+    @try
+    {
+        [self removeObserver:self forKeyPath:@"frame" context:ReaderContentViewContext];
+    }
+    @catch (NSException *e)
+    {
+    }
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context

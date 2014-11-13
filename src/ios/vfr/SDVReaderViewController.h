@@ -12,10 +12,26 @@
 
 #import <UIKit/UIKit.h>
 
+typedef enum
+{
+    SDVReaderContentViewModeSinglePage = 0,
+    SDVReaderContentViewModeDoublePage,
+    SDVReaderContentViewModeCoverDoublePage
+} SDVReaderContentViewMode;
+
 @interface SDVReaderViewController : ReaderViewController
 @property NSMutableDictionary *viewerOptions;
 @property int pagesPerScreen;
+@property SDVReaderContentViewMode viewMode;
 
 - (instancetype)initWithReaderDocument:(ReaderDocument *)object options:(NSMutableDictionary *)options;
+
+- (void)layoutContentViews:(UIScrollView *)scrollView;
+
+- (void)updateContentSize:(UIScrollView *)scrollView;
+
+- (void)decrementPageNumber;
+
+- (void)incrementPageNumber;
 
 @end
