@@ -196,7 +196,7 @@ var SitewaertsDocumentViewer = {
                         exec(
                                 function (result)
                                 {
-                                    var status = result.status;
+                                    var status = result ? result.status : null;
 
                                     if (status == 1)
                                     {
@@ -214,8 +214,6 @@ var SitewaertsDocumentViewer = {
                                                 "unknown state '" + status + "'";
                                         window.console.log(
                                                 errorPrefix + errorMsg);
-                                        if (onError)
-                                            onError(errorMsg);
                                     }
                                 },
                                 function (err)
