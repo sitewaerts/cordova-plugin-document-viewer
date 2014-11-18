@@ -158,7 +158,7 @@ Due to license restrictions in muPDF, the plugin dispatches to a seperate
 (free) viewer app based on muPDF. If the viewer app is not yet installed, the user may be 
 redirected to the google play app store.
  
-  https://play.google.com/store/apps/details?id=de.sitewaerts.android.documentviewer
+  https://play.google.com/store/apps/details?id=de.sitewaerts.cleverdox.viewer
 
   https://github.com/sitewaerts/android-document-viewer
  

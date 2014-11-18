@@ -55,7 +55,7 @@ function getOptions(provided)
     if (!options.android)
         options.android = {};
     if (!options.android.viewerAppPackage)
-        options.android.viewerAppPackage = 'de.sitewaerts.android.documentviewer';
+        options.android.viewerAppPackage = 'de.sitewaerts.cleverdox.viewer';
     if (!options.android.viewerAppActivity)
         options.android.viewerAppActivity = 'DocumentViewerActivity';
 
@@ -109,6 +109,14 @@ var CDV_HANDLE_ACTIONS = {
 var exec = require('cordova/exec');
 
 var SitewaertsDocumentViewer = {
+
+
+    getSupportInfo : function(onSuccess, onError){
+        onSuccess({
+            // TODO: delegate via exec
+            supported : ['application/pdf']
+        });
+    },
 
     canViewDocument: function (url, contentType, options, onPossible, onMissingApp, onImpossible, onError)
     {
