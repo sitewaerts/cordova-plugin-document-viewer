@@ -112,10 +112,16 @@ var SitewaertsDocumentViewer = {
 
 
     getSupportInfo : function(onSuccess, onError){
-        onSuccess({
-            // TODO: delegate via exec
-            supported : ['application/pdf']
-        });
+
+        // TODO: delegate via exec
+        if(navigator.userAgent.match(/Android.*AppleWebKit/i) !== null)
+        {
+            onSuccess({supported: []});
+        }
+        else
+        {
+            onSuccess({supported : ['application/pdf']});
+        }
     },
 
     canViewDocument: function (url, contentType, options, onPossible, onMissingApp, onImpossible, onError)
