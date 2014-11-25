@@ -86,8 +86,7 @@
         
         UIImage *thumbsImage = [UIImage imageNamed:@"Reader-Thumbs"];
         UIImage *bookmarkImage = [UIImage imageNamed:@"Reader-Mark-Y"];
-        //Todo: icon
-        NSString *outlineButton = @"outline";
+        UIImage *outlineButton = [UIImage imageNamed:@"SDVReader-Outline"];
         //Todo: hide bookmark button if option enabled = false
         NSArray *buttonItems = [NSArray arrayWithObjects:thumbsImage, bookmarkImage, outlineButton, nil];
         

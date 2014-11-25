@@ -135,6 +135,14 @@
         <resource-file src="src/ios/Graphics/Reader-Print@2x.png"/>
         <resource-file src="src/ios/Graphics/Reader-Thumbs.png"/>
         <resource-file src="src/ios/Graphics/Reader-Thumbs@2x.png"/>
+        <resource-file src="src/ios/Graphics/SDVReader-CoverPage.png"/>
+        <resource-file src="src/ios/Graphics/SDVReader-CoverPage@2x.png"/>
+        <resource-file src="src/ios/Graphics/SDVReader-DoublePage.png"/>
+        <resource-file src="src/ios/Graphics/SDVReader-DoublePage@2x.png"/>
+        <resource-file src="src/ios/Graphics/SDVReader-Outline.png"/>
+        <resource-file src="src/ios/Graphics/SDVReader-Outline@2x.png"/>
+        <resource-file src="src/ios/Graphics/SDVReader-SinglePage.png"/>
+        <resource-file src="src/ios/Graphics/SDVReader-SinglePage@2x.png"/>
 
 
         <framework src="UIKit.framework"/>

@@ -148,7 +148,7 @@
         {
             UIButton *thumbsButton = [UIButton buttonWithType:UIButtonTypeCustom];
             thumbsButton.frame = CGRectMake(leftButtonX, BUTTON_Y, iconButtonWidth, BUTTON_HEIGHT);
-            [thumbsButton setImage:[UIImage imageNamed:@"Reader-Thumbs"] forState:UIControlStateNormal];
+            [thumbsButton setImage:[UIImage imageNamed:@"SDVReader-Outline"] forState:UIControlStateNormal];
             [thumbsButton addTarget:self action:@selector(thumbsButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
             [thumbsButton setBackgroundImage:buttonH forState:UIControlStateHighlighted];
             [thumbsButton setBackgroundImage:buttonN forState:UIControlStateNormal];
@@ -272,10 +272,9 @@
         }
         
         //view modes
-        //Todo: icons
-        NSString *singlePageButton = @"single page";
-        NSString *doublePageButton = @"double page";
-        NSString *coverPageButton = @"cover page";
+        UIImage *singlePageButton = [UIImage imageNamed:@"SDVReader-SinglePage"];
+        UIImage *doublePageButton = [UIImage imageNamed:@"SDVReader-DoublePage"];
+        UIImage *coverPageButton = [UIImage imageNamed:@"SDVReader-CoverPage"];
         NSArray *buttonItems = [NSArray arrayWithObjects:singlePageButton, doublePageButton, coverPageButton, nil];
         
         BOOL useTint = [self respondsToSelector:@selector(tintColor)]; // iOS 7 and up
