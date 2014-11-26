@@ -51,6 +51,11 @@ static inline CGFloat zoomScaleThatFits(CGSize target, CGSize source, CGFloat bf
 
 - (id)initWithFrame:(CGRect)frame fileURL:(NSURL *)fileURL page:(NSUInteger)page password:(NSString *)phrase
 {
+    return [self initWithFrame:frame fileURL:fileURL page:page password:phrase mode:SDVReaderContentViewDoublePageModeDefault];
+}
+
+- (id)initWithFrame:(CGRect)frame fileURL:(NSURL *)fileURL page:(NSUInteger)page password:(NSString *)phrase mode:(SDVReaderContentViewDoublePageMode) mode
+{
     if ((self = [super initWithFrame:frame]))
     {
         self.scrollsToTop = NO;
@@ -81,7 +86,7 @@ static inline CGFloat zoomScaleThatFits(CGSize target, CGSize source, CGFloat bf
             theContainerView.userInteractionEnabled = NO;
             theContainerView.contentMode = UIViewContentModeRedraw;
             theContainerView.autoresizingMask = UIViewAutoresizingNone;
-            theContainerView.backgroundColor = [UIColor whiteColor];
+            theContainerView.backgroundColor = [UIColor grayColor];
             
 #if (READER_SHOW_SHADOWS == TRUE) // Option
             
@@ -103,8 +108,20 @@ static inline CGFloat zoomScaleThatFits(CGSize target, CGSize source, CGFloat bf
             [theContainerView addSubview:theThumbView1];
 #endif // end of READER_ENABLE_PREVIEW Option
             
-            [theContainerView addSubview:theContentPage];
-            [theContainerView addSubview:theContentPage1];// Add the content view to the container view
+            // show single pages at the right scale
+            switch (mode) {
+                case SDVReaderContentViewDoublePageModeRight:
+                    theContentPage.frame = theContentPage1.frame;
+                    [theContainerView addSubview:theContentPage];
+                    break;
+                case SDVReaderContentViewDoublePageModeLeft:
+                    [theContainerView addSubview:theContentPage];
+                    break;
+                default:
+                    [theContainerView addSubview:theContentPage];
+                    [theContainerView addSubview:theContentPage1];// Add the content view to the container view
+                    break;
+            }
             [theContainerView addSubview:centerBorder];
             
             [self addSubview:theContainerView]; // Add the container view to the scroll view

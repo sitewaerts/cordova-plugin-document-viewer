@@ -78,6 +78,16 @@
     CGRect toolbarRect = scrollViewRect; // Toolbar frame
     toolbarRect.size.height = TOOLBAR_HEIGHT; // Default toolbar height
 //    mainToolbar = [[ThumbsMainToolbar alloc] initWithFrame:toolbarRect title:toolbarTitle]; // ThumbsMainToolbar
+    
+    //check if document outline is available
+    if (documentOutline.count > 0) {
+        NSMutableDictionary *outlineOptions = [ [NSMutableDictionary alloc]
+                                               initWithObjectsAndKeys :
+                                               [NSNumber numberWithBool:YES], @"enabled",
+                                               nil
+                                               ];
+        [viewerOptions setObject:outlineOptions forKey:@"outline"];
+    }
     mainToolbar = [[SDVThumbsMainToolbar alloc] initWithFrame:toolbarRect title:toolbarTitle options: viewerOptions]; // ThumbsMainToolbar
     mainToolbar.delegate = self; // ThumbsMainToolbarDelegate
     [self.view addSubview:mainToolbar];
@@ -170,6 +180,8 @@
             break;
         }
     }
+    NSUserDefaults *settings = [NSUserDefaults standardUserDefaults];
+    [settings setInteger:control.selectedSegmentIndex forKey:@"NavigationViewLastSelectedMode"];
 }
 
 //  UITableView protocol methods

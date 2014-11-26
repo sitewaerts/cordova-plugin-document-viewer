@@ -228,7 +228,8 @@
             //single last page
             else
             {
-                contentView = [[ReaderContentView alloc] initWithFrame:viewRect fileURL:fileURL page:page password:phrase]; // ReaderContentView
+//                contentView = [[ReaderContentView alloc] initWithFrame:viewRect fileURL:fileURL page:page password:phrase]; // ReaderContentView
+                contentView = [[SDVReaderContentViewDoublePage alloc] initWithFrame:viewRect fileURL:fileURL page:page password:phrase mode:SDVReaderContentViewDoublePageModeLeft]; // ReaderContentView
             }
             break;
         }
@@ -240,10 +241,16 @@
                 [contentView removeFromSuperview];
             }
             //first page and single last page
-            if ((page == 1) || (page == maximumPage))
+            if (page == 1)
             {
-                contentView = [[ReaderContentView alloc] initWithFrame:viewRect fileURL:fileURL page:page password:phrase]; // ReaderContentView
-            } else
+//                contentView = [[ReaderContentView alloc] initWithFrame:viewRect fileURL:fileURL page:page password:phrase]; // ReaderContentView
+                contentView = [[SDVReaderContentViewDoublePage alloc] initWithFrame:viewRect fileURL:fileURL page:page password:phrase mode:SDVReaderContentViewDoublePageModeRight]; // ReaderContentView
+            }
+            else if (page == maximumPage)
+            {
+                contentView = [[SDVReaderContentViewDoublePage alloc] initWithFrame:viewRect fileURL:fileURL page:page password:phrase mode:SDVReaderContentViewDoublePageModeLeft]; // ReaderContentView
+            }
+            else
             {
                 contentView = [[SDVReaderContentViewDoublePage alloc] initWithFrame:viewRect fileURL:fileURL page:page password:phrase]; // ReaderContentView
             }
