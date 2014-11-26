@@ -104,6 +104,8 @@
     theOutlineView.delegate = self;
     theOutlineView.dataSource = self;
     theOutlineView.hidden = YES;
+    [theOutlineView setAutoresizingMask: UIViewAutoresizingFlexibleWidth];
+    
     [self.view insertSubview:theThumbsView belowSubview:mainToolbar];
     [self.view insertSubview:theOutlineView belowSubview:mainToolbar];
     

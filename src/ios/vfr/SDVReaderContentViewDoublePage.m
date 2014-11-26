@@ -64,13 +64,17 @@ static inline CGFloat zoomScaleThatFits(CGSize target, CGSize source, CGFloat bf
         self.autoresizesSubviews = NO;
         self.bouncesZoom = YES;
         self.delegate = self;
-        
         theContentPage = [[ReaderContentPage alloc] initWithURL:fileURL page:page password:phrase];
         theContentPage.frame=CGRectMake(theContentPage.frame.origin.x, theContentPage.frame.origin.y,theContentPage.frame.size.width/2, theContentPage.frame.size.height/2);
         if (theContentPage != nil) // Must have a valid and initialized content view
         {
             theContentPage1=[[ReaderContentPage alloc]initWithURL:fileURL page:page+1 password:phrase];
             theContentPage1.frame=CGRectMake(theContentPage.frame.size.width, theContentPage1.frame.origin.y, theContentPage.frame.size.width, theContentPage.frame.size.height);
+            
+            //border in the center
+            UIView *centerBorder = [[UIView alloc] initWithFrame:CGRectMake(theContentPage.frame.size.width - 1.0f, theContentPage1.frame.origin.y, 2.0f, theContentPage.frame.size.height)];
+            centerBorder.backgroundColor = [UIColor grayColor];
+            
             theContainerView = [[UIView alloc] initWithFrame:CGRectMake(theContentPage.frame.origin.x, theContentPage.frame.origin.y, theContentPage.frame.size.width*2, theContentPage.frame.size.height)];
             
             theContainerView.autoresizesSubviews = NO;
@@ -101,6 +105,7 @@ static inline CGFloat zoomScaleThatFits(CGSize target, CGSize source, CGFloat bf
             
             [theContainerView addSubview:theContentPage];
             [theContainerView addSubview:theContentPage1];// Add the content view to the container view
+            [theContainerView addSubview:centerBorder];
             
             [self addSubview:theContainerView]; // Add the container view to the scroll view
             
@@ -178,6 +183,20 @@ static inline CGFloat zoomScaleThatFits(CGSize target, CGSize source, CGFloat bf
                 }
             }
         }
+    }
+}
+
+//url detection etc
+- (id)processSingleTap:(UITapGestureRecognizer *)recognizer
+{
+    CGPoint point = [recognizer locationInView:recognizer.view]; // Point
+    if (CGRectContainsPoint(theContentPage.frame, point) == true)
+    {
+        return [theContentPage processSingleTap:recognizer];
+    }
+    else
+    {
+        return [theContentPage1 processSingleTap:recognizer];
     }
 }
 

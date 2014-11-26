@@ -216,7 +216,12 @@
     switch (self.viewMode) {
         case SDVReaderContentViewModeDoublePage:
         {
-            key = [NSString stringWithFormat:@"%d-L",page];// # key
+            key = [NSString stringWithFormat:@"%ld-L",(long)page];// # key
+            contentView = [contentViews objectForKey:key];
+            if (contentView) {
+                [contentView removeFromSuperview];
+            }
+            
             if (page < maximumPage) {
                 contentView = [[SDVReaderContentViewDoublePage alloc] initWithFrame:viewRect fileURL:fileURL page:page password:phrase]; // ReaderContentView
             }
@@ -229,7 +234,11 @@
         }
         case SDVReaderContentViewModeCoverDoublePage:
         {
-            key = [NSString stringWithFormat:@"%d-LC",page];// # key
+            key = [NSString stringWithFormat:@"%ld-LC",(long)page];// # key
+            contentView = [contentViews objectForKey:key];
+            if (contentView) {
+                [contentView removeFromSuperview];
+            }
             //first page and single last page
             if ((page == 1) || (page == maximumPage))
             {
@@ -242,16 +251,20 @@
         }
         default:
         {
-            key = [NSString stringWithFormat:@"%d",page];// # key
+            key = [NSString stringWithFormat:@"%ld",(long)page];// # key
+            contentView = [contentViews objectForKey:key];
+            if (contentView) {
+                [contentView removeFromSuperview];
+            }
             contentView = [[ReaderContentView alloc] initWithFrame:viewRect fileURL:fileURL page:page password:phrase]; // ReaderContentView
             break;
         }
     }
     
     contentView.message = self;
-    [contentViews setObject:contentView forKey:[NSNumber numberWithInt:page]];
+//    [contentViews setObject:contentView forKey:[NSNumber numberWithInt:page]];
 //    no idea why this doesn't work... occasionally empty pages on mode switch
-//    [contentViews setObject:contentView forKey:key];
+    [contentViews setObject:contentView forKey:key];
     [scrollView addSubview:contentView];
     
     [contentView showPageThumb:fileURL page:page password:phrase guid:guid]; // Request page preview thumb
@@ -862,68 +875,78 @@
 //    document.lastOpen = [NSDate date]; // Update document last opened date
 //}
 //
-//- (void)handleDoubleTap:(UITapGestureRecognizer *)recognizer
-//{
-//    if (recognizer.state == UIGestureRecognizerStateRecognized)
-//    {
-//        CGRect viewRect = recognizer.view.bounds; // View bounds
-//        
-//        CGPoint point = [recognizer locationInView:recognizer.view]; // Point
-//        
-//        CGRect zoomArea = CGRectInset(viewRect, TAP_AREA_SIZE, TAP_AREA_SIZE); // Area
-//        
-//        if (CGRectContainsPoint(zoomArea, point) == true) // Double tap is inside zoom area
-//        {
-//            //			NSNumber *key = [NSNumber numberWithInteger:currentPage]; // Page number key
-//            //
-//            //			ReaderContentView *targetView = [contentViews objectForKey:key]; // View
-//            NSInteger page = [document.pageNumber integerValue]; // Current page #
-//            ReaderContentView *targetView;
-//            UIInterfaceOrientation orientation= [[UIApplication sharedApplication] statusBarOrientation];
-//            if(UIInterfaceOrientationIsLandscape(orientation))
-//            {
-//                NSString *key = [NSString stringWithFormat:@"%d-L",page];
-//                targetView = [contentViews objectForKey:key];
-//                
-//            }
-//            else{
-//                NSNumber *key = [NSNumber numberWithInteger:page];
-//                targetView = [contentViews objectForKey:key];// Page number key
-//            }
-//            switch (recognizer.numberOfTouchesRequired) // Touches count
-//            {
-//                case 1: // One finger double tap: zoom++
-//                {
-//                    [targetView zoomIncrement:recognizer]; break;
-//                }
-//                    
+
+- (void)handleDoubleTap:(UITapGestureRecognizer *)recognizer
+{
+    if (recognizer.state == UIGestureRecognizerStateRecognized)
+    {
+        CGRect viewRect = recognizer.view.bounds; // View bounds
+        
+        CGPoint point = [recognizer locationInView:recognizer.view]; // Point
+        
+        CGRect zoomArea = CGRectInset(viewRect, TAP_AREA_SIZE, TAP_AREA_SIZE); // Area
+        
+        if (CGRectContainsPoint(zoomArea, point) == true) // Double tap is inside zoom area
+        {
+            NSString *key;
+            switch (viewMode) {
+                case SDVReaderContentViewModeDoublePage:
+                {
+                    key = [NSString stringWithFormat:@"%ld-L",(long)currentPage]; // Page number key
+                    break;
+                }
+                case SDVReaderContentViewModeCoverDoublePage:
+                {
+                    key = [NSString stringWithFormat:@"%ld-LC",(long)currentPage];; // Page number key
+                    break;
+                }
+                default:
+                    key = [NSString stringWithFormat:@"%ld",(long)currentPage];; // Page number key
+                    break;
+            }
+            
+            ReaderContentView *targetView = [contentViews objectForKey:key]; // View
+            
+            switch (recognizer.numberOfTouchesRequired) // Touches count
+            {
+                case 1: // One finger double tap: zoom++
+                {
+                    if (targetView.zoomScale <= targetView.minimumZoomScale)
+                    {
+                        [targetView zoomIncrement:recognizer];
+                    } else {
+                        [targetView zoomResetAnimated:YES];
+                    }
+                    break;
+                }
+//                deactivated two finger double tap because not desired behaviour
 //                case 2: // Two finger double tap: zoom--
 //                {
 //                    [targetView zoomDecrement:recognizer]; break;
 //                }
-//            }
-//            
-//            return;
-//        }
-//        
-//        CGRect nextPageRect = viewRect;
-//        nextPageRect.size.width = TAP_AREA_SIZE;
-//        nextPageRect.origin.x = (viewRect.size.width - TAP_AREA_SIZE);
-//        
-//        if (CGRectContainsPoint(nextPageRect, point) == true) // page++
-//        {
-//            [self incrementPageNumber]; return;
-//        }
-//        
-//        CGRect prevPageRect = viewRect;
-//        prevPageRect.size.width = TAP_AREA_SIZE;
-//        
-//        if (CGRectContainsPoint(prevPageRect, point) == true) // page--
-//        {
-//            [self decrementPageNumber]; return;
-//        }
-//    }
-//}
+            }
+            
+            return;
+        }
+        
+        CGRect nextPageRect = viewRect;
+        nextPageRect.size.width = TAP_AREA_SIZE;
+        nextPageRect.origin.x = (viewRect.size.width - TAP_AREA_SIZE);
+        
+        if (CGRectContainsPoint(nextPageRect, point) == true) // page++
+        {
+            [self incrementPageNumber]; return;
+        }
+        
+        CGRect prevPageRect = viewRect;
+        prevPageRect.size.width = TAP_AREA_SIZE;
+        
+        if (CGRectContainsPoint(prevPageRect, point) == true) // page--
+        {
+            [self decrementPageNumber]; return;
+        }
+    }
+}
 
 // individual content size calculation for double page modes
 - (void)updateContentSize:(UIScrollView *)scrollView
@@ -1063,7 +1086,22 @@
         
         if (CGRectContainsPoint(areaRect, point) == true) // Single tap is inside area
         {
-            NSNumber *key = [NSNumber numberWithInteger:currentPage]; // Page number key
+            NSString *key;
+            switch (viewMode) {
+                case SDVReaderContentViewModeDoublePage:
+                {
+                    key = [NSString stringWithFormat:@"%ld-L",(long)currentPage]; // Page number key
+                    break;
+                }
+                case SDVReaderContentViewModeCoverDoublePage:
+                {
+                    key = [NSString stringWithFormat:@"%ld-LC",(long)currentPage];; // Page number key
+                    break;
+                }
+                default:
+                    key = [NSString stringWithFormat:@"%ld",(long)currentPage];; // Page number key
+                    break;
+            }
             
             ReaderContentView *targetView = [contentViews objectForKey:key]; // View
             
