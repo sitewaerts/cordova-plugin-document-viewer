@@ -443,7 +443,7 @@
                 for (NSInteger number = minValue; number <= maxValue; number=number+2)
                 {
                     viewRect.origin.x = (viewRect.size.width * (number - 1)) / 2;
-                    NSString *key = [NSString stringWithFormat:@"%d-L",number]; // # key
+                    NSString *key = [NSString stringWithFormat:@"%ld-L",(long)number]; // # key
                     ReaderContentView *contentView = [contentViews objectForKey:key];
                     
                     if (contentView == nil) // Create a brand new document content view
@@ -509,7 +509,7 @@
                 
                 if ([newPageSet containsIndex:page] == YES) // Preview visible page first
                 {
-                    NSString *key =  [NSString stringWithFormat:@"%d-L",page]; // # key
+                    NSString *key =  [NSString stringWithFormat:@"%ld-L",(long)page]; // # key
                     
                     ReaderContentView *targetView = [contentViews objectForKey:key];
                     
@@ -521,7 +521,7 @@
                 [newPageSet enumerateIndexesWithOptions:NSEnumerationReverse usingBlock: // Show previews
                  ^(NSUInteger number, BOOL *stop)
                  {
-                     NSString *key =  [NSString stringWithFormat:@"%d-L",page];// # key
+                     NSString *key =  [NSString stringWithFormat:@"%ld-L",(long)page];// # key
                      
                      ReaderContentView *targetView = [contentViews objectForKey:key];
                      
@@ -606,7 +606,7 @@
                 } else {
                     viewRect.origin.x = (viewRect.size.width * number) / 2;
                 }
-                NSString *key = [NSString stringWithFormat:@"%d-LC",number]; // # key
+                NSString *key = [NSString stringWithFormat:@"%ld-LC",(long)number]; // # key
                 ReaderContentView *contentView = [contentViews objectForKey:key];
                 
                 if (contentView == nil) // Create a brand new document content view
@@ -672,7 +672,7 @@
             
             if ([newPageSet containsIndex:page] == YES) // Preview visible page first
             {
-                NSString *key =  [NSString stringWithFormat:@"%d-LC",page]; // # key
+                NSString *key =  [NSString stringWithFormat:@"%ld-LC",(long)page]; // # key
                 
                 ReaderContentView *targetView = [contentViews objectForKey:key];
                 
@@ -684,7 +684,7 @@
             [newPageSet enumerateIndexesWithOptions:NSEnumerationReverse usingBlock: // Show previews
              ^(NSUInteger number, BOOL *stop)
              {
-                 NSString *key =  [NSString stringWithFormat:@"%d-LC",page];// # key
+                 NSString *key =  [NSString stringWithFormat:@"%ld-LC",(long)page];// # key
                  
                  ReaderContentView *targetView = [contentViews objectForKey:key];
                  
@@ -714,7 +714,7 @@
                 
                 CGPoint contentOffset = CGPointMake((theScrollView.bounds.size.width * (page - 1)), 0.0f);
             
-                NSString *key = [NSString stringWithFormat:@"%d",page]; // # key
+                NSString *key = [NSString stringWithFormat:@"%ld",(long)page]; // # key
                 ReaderContentView *contentView = [contentViews objectForKey:key];
             
                 if (contentView == nil) // Create a brand new document content view
@@ -1071,9 +1071,6 @@
 //reinitialize everything on rotation
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
 {
-    for(UIView *subview in [theScrollView subviews]) {
-        [subview removeFromSuperview];
-    }
     [self updateContentSize:theScrollView];
     [self layoutContentViews:theScrollView];
     [self showDocumentPage:currentPage];
