@@ -231,4 +231,10 @@
     return flatOutline;
 }
 
+// show status bar
+- (BOOL)prefersStatusBarHidden
+{
+    return NO;
+}
+
 @end
