@@ -96,6 +96,8 @@ var JS_HANDLE = "SitewaertsDocumentViewer";
 var CDV_HANDLE = "SitewaertsDocumentViewer";
 
 var CDV_HANDLE_ACTIONS = {
+               
+    GET_SUPPORT_INFO: "getSupportInfo",
 
     CAN_VIEW: "canViewDocument",
 
@@ -111,18 +113,51 @@ var exec = require('cordova/exec');
 var SitewaertsDocumentViewer = {
 
 
-    getSupportInfo : function(onSuccess, onError){
+    getSupportInfo : function(onSuccess, onError)
+    {
+        try {
+            exec(
+                function (result)
+                {
+                    if (onSuccess)
+                    {
+                        onSuccess(result);
+                    }
+                },
+                function (err)
+                {
+                    window.console.log(errorPrefix + JSON.stringify(err));
+                    if (onError)
+                    {
+                        onError(err);
+                    }
+                },
+                CDV_HANDLE,
+                CDV_HANDLE_ACTIONS.GET_SUPPORT_INFO,
+                []
+            );
+                
+        }
+        catch (e)
+        {
+            window.console.log(errorPrefix + JSON.stringify(e));
+            if (onError)
+            {
+               onError(e);
+            }
+        }
 
-        // TODO: delegate via exec
-        if(navigator.userAgent.match(/Android.*AppleWebKit/i) !== null)
-        {
-            onSuccess({supported: []});
-        }
-        else
-        {
-            onSuccess({supported : ['application/pdf']});
-        }
+//        // TODO: delegate via exec
+//        if(navigator.userAgent.match(/Android.*AppleWebKit/i) !== null)
+//        {
+//            onSuccess({supported: []});
+//        }
+//        else
+//        {
+//            onSuccess({supported : ['application/pdf']});
+//        }
     },
+
 
     canViewDocument: function (url, contentType, options, onPossible, onMissingApp, onImpossible, onError)
     {

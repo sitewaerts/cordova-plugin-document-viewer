@@ -30,6 +30,18 @@
 
 @implementation SitewaertsDocumentViewer
 
+- (void)getSupportInfo:(CDVInvokedUrlCommand*)command
+{
+    NSMutableArray *array = [NSMutableArray arrayWithObjects:@"application/pdf", nil];
+    NSMutableDictionary *jsonObj = [ [NSMutableDictionary alloc]
+                                    initWithObjectsAndKeys :
+                                    array, @"supported",
+                                    nil
+                                    ];
+    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:jsonObj];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
 - (void)canViewDocument:(CDVInvokedUrlCommand*)command {
     CDVPluginResult* pluginResult = nil;
     // result object
