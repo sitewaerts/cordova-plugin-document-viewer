@@ -327,11 +327,11 @@
          ];
     }
     
-    for (NSNumber *key in [contentViews allKeys]) // Enumerate content views
+    for (NSString *key in [contentViews allKeys]) // Enumerate content views
     {
-        NSInteger page = [key integerValue]; // Page number value
+        NSInteger page = [[key substringToIndex:1] integerValue]; // Page number value
         
-        if ([pageSet containsIndex:page] == NO) // Remove content view
+        if (([pageSet containsIndex:page] == NO) && (page != currentPage)) // Remove content view
         {
             ReaderContentView *contentView = [contentViews objectForKey:key];
             
@@ -536,7 +536,7 @@
                 [mainToolbar setBookmarkState:[document.bookmarks containsIndex:page]];
             
                 currentPage = page;
-                NSLog(@"current page is %d",currentPage);
+                NSLog(@"current page is %ld",(long)currentPage);
 //            }
             break;
         }
@@ -699,7 +699,7 @@
             [mainToolbar setBookmarkState:[document.bookmarks containsIndex:page]];
             
             currentPage = page;
-            NSLog(@"current page is %d",currentPage);
+            NSLog(@"current page is %ld",(long)currentPage);
 //            }
             break;
         }
@@ -721,7 +721,9 @@
                     [self addContentView:theScrollView page:page];
             
                 if (CGPointEqualToPoint(theScrollView.contentOffset, contentOffset) == true)
+                {
                     [self layoutContentViews:theScrollView];
+                }
                 else
                     [theScrollView setContentOffset:contentOffset];
                 
