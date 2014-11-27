@@ -44,6 +44,8 @@ public final class DocumentViewerPlugin
     public static final class Actions
     {
 
+        public static final String GET_SUPPORT_INFO = "getSupportInfo";
+
         public static final String CAN_VIEW = "canViewDocument";
 
         public static final String VIEW_DOCUMENT = "viewDocument";
@@ -74,6 +76,8 @@ public final class DocumentViewerPlugin
 
     public static final class Result
     {
+        public static final String SUPPORTED = "supported";
+
         public static final String STATUS = "status";
 
         public static final String MESSAGE = "message";
@@ -169,6 +173,14 @@ public final class DocumentViewerPlugin
                 );
             }
 
+            callbackContext.success(successObj);
+        }
+        else if (action.equals(Actions.GET_SUPPORT_INFO))
+        {
+            JSONObject successObj = new JSONObject();
+            successObj.put(Result.STATUS, PluginResult.Status.OK.ordinal());
+            //currently the Android plugin does not support anything
+            successObj.put(Result.SUPPORTED, new JSONArray());
             callbackContext.success(successObj);
         }
         else
