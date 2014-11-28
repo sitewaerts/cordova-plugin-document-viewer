@@ -115,6 +115,9 @@ var SitewaertsDocumentViewer = {
 
     getSupportInfo : function(onSuccess, onError)
     {
+        // TODO: fix this
+        onSuccess({supported : ['application/pdf']});
+            return;
         var errorPrefix = "Error in " + JS_HANDLE + ".getSupportInfo(): ";
         try {
             exec(
