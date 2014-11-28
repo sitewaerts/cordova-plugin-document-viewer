@@ -446,18 +446,27 @@
                     NSString *key = [NSString stringWithFormat:@"%ld-L",(long)number]; // # key
                     ReaderContentView *contentView = [contentViews objectForKey:key];
                     
-                    if (contentView == nil) // Create a brand new document content view
+//                    if (contentView == nil) // Create a brand new document content view
+//                    {
+//                        [self addContentView:theScrollView page:page];
+//                        
+//                        [newPageSet addIndex:number];
+//                    }
+//                    else // Reposition the existing content view
+//                    {
+//                        contentView.frame = viewRect; [contentView zoomResetAnimated:NO];
+//                        
+//                        [unusedViews removeObjectForKey:key];
+//                    }
+                    //delete old version
+                    if (contentView != nil)
                     {
-                        [self addContentView:theScrollView page:page];
-                        
+                        [contentView removeFromSuperview];
+                        [contentViews removeObjectForKey:key];
                         [newPageSet addIndex:number];
                     }
-                    else // Reposition the existing content view
-                    {
-                        contentView.frame = viewRect; [contentView zoomResetAnimated:NO];
-                        
-                        [unusedViews removeObjectForKey:key];
-                    }
+                    [self addContentView:theScrollView page:page];
+
                     
                     
                     viewRect.origin.x += viewRect.size.width;
@@ -609,18 +618,26 @@
                 NSString *key = [NSString stringWithFormat:@"%ld-LC",(long)number]; // # key
                 ReaderContentView *contentView = [contentViews objectForKey:key];
                 
-                if (contentView == nil) // Create a brand new document content view
+//                if (contentView == nil) // Create a brand new document content view
+//                {
+//                    [self addContentView:theScrollView page:page];
+//                    
+//                    [newPageSet addIndex:number];
+//                }
+//                else // Reposition the existing content view
+//                {
+//                    contentView.frame = viewRect; [contentView zoomResetAnimated:NO];
+//                    
+//                    [unusedViews removeObjectForKey:key];
+//                }
+                //delete old version
+                if (contentView != nil)
                 {
-                    [self addContentView:theScrollView page:page];
-                    
+                    [contentView removeFromSuperview];
+                    [contentViews removeObjectForKey:key];
                     [newPageSet addIndex:number];
                 }
-                else // Reposition the existing content view
-                {
-                    contentView.frame = viewRect; [contentView zoomResetAnimated:NO];
-                    
-                    [unusedViews removeObjectForKey:key];
-                }
+                [self addContentView:theScrollView page:page];
                 
                 
                 viewRect.origin.x += viewRect.size.width;
@@ -717,8 +734,15 @@
                 NSString *key = [NSString stringWithFormat:@"%ld",(long)page]; // # key
                 ReaderContentView *contentView = [contentViews objectForKey:key];
             
-                if (contentView == nil) // Create a brand new document content view
-                    [self addContentView:theScrollView page:page];
+//                if (contentView == nil) // Create a brand new document content view
+//                    [self addContentView:theScrollView page:page];
+                //delete old version
+                if (contentView != nil)
+                {
+                    [contentView removeFromSuperview];
+                    [contentViews removeObjectForKey:key];
+                }
+                [self addContentView:theScrollView page:page];
             
                 if (CGPointEqualToPoint(theScrollView.contentOffset, contentOffset) == true)
                 {
@@ -1073,6 +1097,12 @@
 //reinitialize everything on rotation
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
 {
+    //double pages behave strangely...
+    if (viewMode != SDVReaderContentViewModeSinglePage) {
+        for(UIView *subview in [theScrollView subviews]) {
+            [subview removeFromSuperview];
+        }
+    }
     [self updateContentSize:theScrollView];
     [self layoutContentViews:theScrollView];
     [self showDocumentPage:currentPage];
