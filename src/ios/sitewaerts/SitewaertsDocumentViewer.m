@@ -29,6 +29,9 @@
 #import "SDVReaderViewController.h"
 
 @implementation SitewaertsDocumentViewer
+{
+    NSString *tmpCommandCallbackID;
+}
 
 - (void)getSupportInfo:(CDVInvokedUrlCommand*)command
 {
@@ -114,8 +117,20 @@
                 readerViewController.modalPresentationStyle = UIModalPresentationFullScreen;
 
                 [self.viewController presentViewController:readerViewController animated:YES completion:nil];
-
-                pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+                
+                // result object
+                NSMutableDictionary *jsonObj = [ [NSMutableDictionary alloc]
+                                                initWithObjectsAndKeys :
+                                                nil, @"status",
+                                                nil, @"message",
+                                                nil, @"missingAppId",
+                                                nil
+                                                ];
+                [jsonObj setObject:[NSNumber numberWithInt:CDVCommandStatus_OK]  forKey:@"status"];
+                pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:jsonObj];
+                [pluginResult setKeepCallbackAsBool:YES];
+                //remember command for close event
+                tmpCommandCallbackID = command.callbackId;
             }
         } else {
             pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageToErrorObject:2];
@@ -123,12 +138,24 @@
     } else {
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageToErrorObject:1];
     }
-
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
 - (void)dismissReaderViewController:(ReaderViewController *)viewController {
     [self.viewController dismissViewControllerAnimated:YES completion:nil];
+    //send "no result" result to trigger onClose
+    // result object
+    NSMutableDictionary *jsonObj = [ [NSMutableDictionary alloc]
+                                    initWithObjectsAndKeys :
+                                    nil, @"status",
+                                    nil, @"message",
+                                    nil, @"missingAppId",
+                                    nil
+                                    ];
+    [jsonObj setObject:[NSNumber numberWithInt:CDVCommandStatus_NO_RESULT]  forKey:@"status"];
+    //result status has to be OK, otherwise the cordova success callback will not be called
+    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:jsonObj];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:tmpCommandCallbackID];
 }
 
 @end
