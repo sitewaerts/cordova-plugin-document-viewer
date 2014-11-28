@@ -115,6 +115,7 @@ var SitewaertsDocumentViewer = {
 
     getSupportInfo : function(onSuccess, onError)
     {
+        var errorPrefix = "Error in " + JS_HANDLE + ".getSupportInfo(): ";
         try {
             exec(
                 function (result)
