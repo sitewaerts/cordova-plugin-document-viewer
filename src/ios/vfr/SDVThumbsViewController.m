@@ -105,15 +105,29 @@
         scrollViewInsets.top = TOOLBAR_HEIGHT;
     }
     
+    //get last selected mode (key value coding quick and dirty)
+    NSInteger lastSelected = [[mainToolbar valueForKey:@"lastSelected"] integerValue];
+    
     theThumbsView = [[ReaderThumbsView alloc] initWithFrame:scrollViewRect]; // ReaderThumbsView
     theThumbsView.contentInset = scrollViewInsets; theThumbsView.scrollIndicatorInsets = scrollViewInsets;
     theThumbsView.delegate = self; // ReaderThumbsViewDelegate
-    theThumbsView.hidden = NO;
+    if ((lastSelected == 0) || (lastSelected == 1)) {
+        theThumbsView.hidden = NO;
+    } else
+    {
+        theThumbsView.hidden = YES;
+    }
     
     theOutlineView = [[UITableView alloc] initWithFrame:scrollViewRect]; //TableView for Document outline
     theOutlineView.delegate = self;
     theOutlineView.dataSource = self;
-    theOutlineView.hidden = YES;
+    if (lastSelected == 2) {
+        theOutlineView.hidden = NO;
+    }
+    else
+    {
+        theOutlineView.hidden = YES;
+    }
     [theOutlineView setAutoresizingMask: UIViewAutoresizingFlexibleWidth];
     
     [self.view insertSubview:theThumbsView belowSubview:mainToolbar];

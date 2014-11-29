@@ -134,8 +134,7 @@
         
         [showControl addTarget:self action:@selector(showControlTapped:) forControlEvents:UIControlEventValueChanged];
         //set remembered segment
-//        deactivated because event not triggered/view not changed...
-//        showControl.selectedSegmentIndex = lastSelected;
+        showControl.selectedSegmentIndex = lastSelected;
         
         [self addSubview:showControl];
         

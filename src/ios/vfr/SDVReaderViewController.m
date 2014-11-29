@@ -220,6 +220,7 @@
             contentView = [contentViews objectForKey:key];
             if (contentView) {
                 [contentView removeFromSuperview];
+                [contentViews removeObjectForKey:key];
             }
             
             if (page < maximumPage) {
@@ -239,6 +240,7 @@
             contentView = [contentViews objectForKey:key];
             if (contentView) {
                 [contentView removeFromSuperview];
+                [contentViews removeObjectForKey:key];
             }
             //first page and single last page
             if (page == 1)
@@ -262,6 +264,7 @@
             contentView = [contentViews objectForKey:key];
             if (contentView) {
                 [contentView removeFromSuperview];
+                [contentViews removeObjectForKey:key];
             }
             contentView = [[ReaderContentView alloc] initWithFrame:viewRect fileURL:fileURL page:page password:phrase]; // ReaderContentView
             break;
@@ -269,8 +272,7 @@
     }
     
     contentView.message = self;
-//    [contentViews setObject:contentView forKey:[NSNumber numberWithInt:page]];
-//    no idea why this doesn't work... occasionally empty pages on mode switch
+
     [contentViews setObject:contentView forKey:key];
     [scrollView addSubview:contentView];
     
