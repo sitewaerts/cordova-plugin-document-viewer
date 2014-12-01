@@ -9,7 +9,7 @@ A Document Viewer cordova/phonegap plugin for iOS and Android.
 
 * iOS 6+
 * Android 4.1+
-* Cordova/Phonegap >=3.5.0
+* Cordova/Phonegap >=3.6.0
 
 ## Installation ##
 
