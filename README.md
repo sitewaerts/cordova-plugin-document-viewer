@@ -24,7 +24,7 @@ Online files reachable via http(s) are not supported. Download them to a temp
 folder before starting the viewer. You may use the onClose callback
 to cleanup the temp dir when the viewer is closed.
 
-Viewer features like "Save as" or Send EMail" are configurable at runtime.
+Viewer features like "Save as" or "Send via EMail" are configurable at runtime.
 
 Labels for buttons (i18n) are configurable at runtime.
 
@@ -196,6 +196,8 @@ redirected to the google play app store.
 
 
 ## Missing Features / Known Bugs ##
+
+ Enhance iOS Performance in Double Page Mode.
 
  Add transparent support for online files.
 
