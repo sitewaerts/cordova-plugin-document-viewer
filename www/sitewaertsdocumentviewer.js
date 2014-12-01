@@ -149,7 +149,6 @@ var SitewaertsDocumentViewer = {
                 CDV_HANDLE_ACTIONS.GET_SUPPORT_INFO,
                 []
             );
-                
         }
         catch (e)
         {
