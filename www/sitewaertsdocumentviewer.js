@@ -133,7 +133,8 @@ var SitewaertsDocumentViewer = {
                 {
                     if (onSuccess)
                     {
-                        setTimeout(function(){onSuccess(result);}, 100);
+                        window.console.log("support info is " + JSON.stringify(result));
+                        onSuccess(result);
                     }
                 },
                 function (err)
@@ -141,7 +142,7 @@ var SitewaertsDocumentViewer = {
                     window.console.log(errorPrefix + JSON.stringify(err));
                     if (onError)
                     {
-                        setTimeout(function(){onError(err);}, 100);
+                        onError(err);
                     }
                 },
                 CDV_HANDLE,
