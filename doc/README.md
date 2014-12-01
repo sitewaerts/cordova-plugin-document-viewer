@@ -87,5 +87,19 @@ Aus lizenzrechtlichen Gründen muss die Android Viewer Funktion in Form einer ei
 Im Plugin ist also nur der JavaSript und Java Code zum Laden bzw. Aufruf der externen App über ein spezielles Intent enthalten.
 
 
+Wichtig: PDF Files müssen für die Viewer App zugänglich gemacht werden.
+Daher muss das Plugin Dateien die in geschützten Verzecihnissen liegen
+erst in einen Shared temp Folder kopieren.
+Wichtig: Nachher auch sofort wieder löschen!
+
+ Am besten wäre es, zu prüfen, ob die Viewer App auf die Datei zugreifen darf.
+ Wenn nicht, daa ein Temp-File anlegen. Damit sparen wir uns unnötige Kopiervorgänge.
+ Falls erfordelrich kann das ganze auch ims Javscript Teil umgesetzt werden.
+ Allerdings soll der nach Möglichkeit keinen OS-Spezifischen Code enthalten.
+
+
+
+
+
 
 
