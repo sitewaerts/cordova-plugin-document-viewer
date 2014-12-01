@@ -331,7 +331,7 @@
     
     for (NSString *key in [contentViews allKeys]) // Enumerate content views
     {
-        NSInteger page = [[key substringToIndex:1] integerValue]; // Page number value
+        NSInteger page = [key integerValue]; // Page number value
         
         if (([pageSet containsIndex:page] == NO) && (page != currentPage)) // Remove content view
         {
