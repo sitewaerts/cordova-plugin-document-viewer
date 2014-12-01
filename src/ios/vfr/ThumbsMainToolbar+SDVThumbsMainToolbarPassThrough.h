@@ -11,6 +11,6 @@
 
 @interface ThumbsMainToolbar (SDVThumbsMainToolbarPassThrough)
 
-- (instancetype)initWithFrame:(CGRect)frame title:(NSString *)title;
+// - (instancetype)initWithFrame:(CGRect)frame title:(NSString *)title;
 
 @end

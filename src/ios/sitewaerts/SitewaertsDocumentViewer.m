@@ -110,8 +110,8 @@
                 // get options from cordova
                 NSMutableDictionary *viewerOptions = [options objectForKey:@"options"];
                 NSLog(@"[pdfviewer] options: %@", viewerOptions);
-                SDVReaderViewController *readerViewController = [[SDVReaderViewController alloc] initWithReaderDocument:document options:viewerOptions];
-//                ReaderViewController *readerViewController = [[ReaderViewController alloc] initWithReaderDocument:document];
+                // SDVReaderViewController *readerViewController = [[SDVReaderViewController alloc] initWithReaderDocument:document options:viewerOptions];
+               ReaderViewController *readerViewController = [[ReaderViewController alloc] initWithReaderDocument:document];
                 readerViewController.delegate = self;
                 readerViewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
                 readerViewController.modalPresentationStyle = UIModalPresentationFullScreen;

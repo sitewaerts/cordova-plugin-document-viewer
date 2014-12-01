@@ -11,6 +11,6 @@
 
 @interface ReaderMainToolbar (SDVReaderMainToolbarPassThrough)
 
-- (instancetype)initWithFrame:(CGRect)frame document:(ReaderDocument *)document;
+// - (instancetype)initWithFrame:(CGRect)frame document:(ReaderDocument *)document;
 
 @end

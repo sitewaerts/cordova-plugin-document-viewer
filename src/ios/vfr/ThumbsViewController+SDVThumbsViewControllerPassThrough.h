@@ -11,6 +11,6 @@
 
 @interface ThumbsViewController (SDVThumbsViewControllerPassThrough)
 
-- (void)viewDidLoad;
+// - (void)viewDidLoad;
 
 @end
