@@ -115,17 +115,17 @@ var SitewaertsDocumentViewer = {
 
     getSupportInfo : function(onSuccess, onError)
     {
-        // TODO: fix this
-        if(navigator.userAgent.match(/Android.*AppleWebKit/i) !== null)
-        {
-            onSuccess({supported: []});
-        }
-        else
-        {
-            onSuccess({supported : ['application/pdf']});
-        }
-        return;
-
+//        // TODO: fix this
+//        if(navigator.userAgent.match(/Android.*AppleWebKit/i) !== null)
+//        {
+//            onSuccess({supported: []});
+//        }
+//        else
+//        {
+//            onSuccess({supported : ['application/pdf']});
+//        }
+//        return;
+//
         var errorPrefix = "Error in " + JS_HANDLE + ".getSupportInfo(): ";
         try {
             exec(
@@ -159,15 +159,6 @@ var SitewaertsDocumentViewer = {
             }
         }
 
-//        // TODO: delegate via exec
-//        if(navigator.userAgent.match(/Android.*AppleWebKit/i) !== null)
-//        {
-//            onSuccess({supported: []});
-//        }
-//        else
-//        {
-//            onSuccess({supported : ['application/pdf']});
-//        }
     },
 
 
