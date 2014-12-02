@@ -35,12 +35,6 @@
 @end
 
 @implementation ReaderContentView
-{
-    ReaderContentPage *theContentPage1;
-    ReaderContentThumb *theThumbView1;
-
-    BOOL hasLandscapeDoublePage;
-}
 
 #pragma mark - Constants
 
@@ -61,7 +55,6 @@ static void *ReaderContentViewContext = &ReaderContentViewContext;
 static inline CGFloat zoomScaleThatFits(CGSize target, CGSize source, CGFloat bfwi)
 {
 	CGFloat w_scale = (target.width / (source.width + bfwi));
-    
 
 	CGFloat h_scale = (target.height / source.height);
 
@@ -72,16 +65,7 @@ static inline CGFloat zoomScaleThatFits(CGSize target, CGSize source, CGFloat bf
 
 - (void)updateMinimumMaximumZoom
 {
-    UIInterfaceOrientation orientation= [[UIApplication sharedApplication] statusBarOrientation];
-    CGSize pageBounds;
-    
-    if(UIInterfaceOrientationIsLandscape(orientation) && hasLandscapeDoublePage){
-        pageBounds = CGSizeMake(theContentPage.bounds.size.width + theContentPage1.bounds.size.width, theContentPage.bounds.size.height);
-    } else {
-        pageBounds = theContentPage.bounds.size;
-    }
-    
-	CGFloat zoomScale = zoomScaleThatFits(self.bounds.size, pageBounds, bugFixWidthInset);
+	CGFloat zoomScale = zoomScaleThatFits(self.bounds.size, theContentPage.bounds.size, bugFixWidthInset);
 
 	self.minimumZoomScale = zoomScale; self.maximumZoomScale = (zoomScale * ZOOM_MAXIMUM); // Limits
 
@@ -103,7 +87,7 @@ static inline CGFloat zoomScaleThatFits(CGSize target, CGSize source, CGFloat bf
 	if (UIEdgeInsetsEqualToEdgeInsets(self.contentInset, insets) == false) self.contentInset = insets;
 }
 
-- (instancetype)initWithFrame:(CGRect)frame fileURL:(NSURL *)fileURL page:(NSUInteger)page password:(NSString *)phrase doublePage:(BOOL)doublePage
+- (instancetype)initWithFrame:(CGRect)frame fileURL:(NSURL *)fileURL page:(NSUInteger)page password:(NSString *)phrase
 {
 	if ((self = [super initWithFrame:frame]))
 	{
@@ -134,25 +118,10 @@ static inline CGFloat zoomScaleThatFits(CGSize target, CGSize source, CGFloat bf
 
 		theContentPage = [[ReaderContentPage alloc] initWithURL:fileURL page:page password:phrase];
 
-        theContentPage1 = nil;
-        theThumbView1 = nil;
-        
-        hasLandscapeDoublePage = doublePage;
-        
 		if (theContentPage != nil) // Must have a valid and initialized content page
 		{
-            CGRect containerFrame = theContentPage.bounds;
-            
-            if(doublePage){
-                theContentPage.frame=CGRectMake(theContentPage.frame.origin.x, theContentPage.frame.origin.y,theContentPage.frame.size.width/2, theContentPage.frame.size.height/2);
-                //if double page 2
-                theContentPage1 = [[ReaderContentPage alloc] initWithURL:fileURL page:page+1 password:phrase];
-                theContentPage1.frame =CGRectMake(theContentPage.frame.size.width, theContentPage.frame.origin.y,theContentPage.frame.size.width, theContentPage.frame.size.height);
-                
-                containerFrame = CGRectMake(theContentPage.frame.origin.x, theContentPage.frame.origin.y, theContentPage.frame.size.width*2, theContentPage.frame.size.height);
-            }
-            theContainerView = [[UIView alloc] initWithFrame:containerFrame];
-            
+			theContainerView = [[UIView alloc] initWithFrame:theContentPage.bounds];
+
 			theContainerView.autoresizesSubviews = NO;
 			theContainerView.userInteractionEnabled = NO;
 			theContainerView.contentMode = UIViewContentModeRedraw;
@@ -166,27 +135,19 @@ static inline CGFloat zoomScaleThatFits(CGSize target, CGSize source, CGFloat bf
 			theContainerView.layer.shadowPath = [UIBezierPath bezierPathWithRect:theContainerView.bounds].CGPath;
 
 #endif // end of READER_SHOW_SHADOWS Option
-            
-			self.contentSize = theContentPage.bounds.size;
-            
-            [self centerScrollViewContent];
+
+			self.contentSize = theContentPage.bounds.size; [self centerScrollViewContent];
 
 #if (READER_ENABLE_PREVIEW == TRUE) // Option
 
 			theThumbView = [[ReaderContentThumb alloc] initWithFrame:theContentPage.bounds]; // Page thumb view
-            
-            [theContainerView addSubview:theThumbView]; // Add the page thumb view to the container view
 
-            if (theContentPage1) {
-                theThumbView1 = [[ReaderContentThumb alloc] initWithFrame:theContentPage1.frame];
-                [theContainerView addSubview:theThumbView1]; // Add the page thumb view to the container view
-                
-            }
+			[theContainerView addSubview:theThumbView]; // Add the page thumb view to the container view
+
 #endif // end of READER_ENABLE_PREVIEW Option
-            [theContainerView addSubview:theContentPage]; // Add the content page to the container view
-            if (theContentPage1) {
-                [theContainerView addSubview:theContentPage1];
-            }
+
+			[theContainerView addSubview:theContentPage]; // Add the content page to the container view
+
 			[self addSubview:theContainerView]; // Add the container view to the scroll view
 
 			[self updateMinimumMaximumZoom]; // Update the minimum and maximum zoom scales
@@ -202,14 +163,17 @@ static inline CGFloat zoomScaleThatFits(CGSize target, CGSize source, CGFloat bf
 	return self;
 }
 
-- (instancetype)initWithFrame:(CGRect)frame fileURL:(NSURL *)fileURL page:(NSUInteger)page password:(NSString *)phrase
-{
-    return [self initWithFrame:frame fileURL:fileURL page:page password:phrase doublePage:false];
-}
-
+//XXX:  ignore exceptions, that occur because observer has to be removed in subclass and subclass dealloc automatically calls super dealloc with arc
 - (void)dealloc
 {
-	[self removeObserver:self forKeyPath:@"frame" context:ReaderContentViewContext];
+//	[self removeObserver:self forKeyPath:@"frame" context:ReaderContentViewContext];
+    @try
+    {
+        [self removeObserver:self forKeyPath:@"frame" context:ReaderContentViewContext];
+    }
+    @catch (NSException *e)
+    {
+    }
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
@@ -257,15 +221,6 @@ static inline CGFloat zoomScaleThatFits(CGSize target, CGSize source, CGFloat bf
 	UIImage *image = [[ReaderThumbCache sharedInstance] thumbRequest:request priority:YES]; // Request the page thumb
 
 	if ([image isKindOfClass:[UIImage class]]) [theThumbView showImage:image]; // Show image from cache
-    
-    if (theThumbView1) {
-        ReaderThumbRequest *request1 = [ReaderThumbRequest newForView:theThumbView1 fileURL:fileURL password:phrase guid:guid page:page+1 size:size];
-        
-        UIImage *image1 = [[ReaderThumbCache sharedInstance] thumbRequest:request1 priority:YES]; // Request the page thumb
-        
-        if ([image1 isKindOfClass:[UIImage class]]) [theThumbView1 showImage:image1]; // Show image from cache
-
-    }
 
 #endif // end of READER_ENABLE_PREVIEW Option
 }

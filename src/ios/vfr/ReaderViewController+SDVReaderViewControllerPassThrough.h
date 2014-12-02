@@ -11,6 +11,6 @@
 
 @interface ReaderViewController (SDVReaderViewContollerPassThrough)
 
-// - (void)viewDidLoad;
+- (void)viewDidLoad;
 
 @end

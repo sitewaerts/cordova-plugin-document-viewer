@@ -14,9 +14,9 @@
 //  override ReaderMainToolbar init method to simply pass the call to super
 //  because all the UI Elements are being initialised in a subclass now
 //  yes I know it is bad practice to override methods in a category but this is the only way
-// - (instancetype)initWithFrame:(CGRect)frame title:(NSString *)title
-// {
-//     return [super initWithFrame:frame];
-// }
+- (instancetype)initWithFrame:(CGRect)frame title:(NSString *)title
+{
+    return [super initWithFrame:frame];
+}
 
 @end

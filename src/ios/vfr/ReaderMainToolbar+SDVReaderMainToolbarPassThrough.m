@@ -14,11 +14,11 @@
 //  override ReaderMainToolbar init method to simply pass the call to super
 //  because all the UI Elements are being initialised in a subclass now
 //  yes I know it is bad practice to override methods in a category but this is the only way
-// - (instancetype)initWithFrame:(CGRect)frame document:(ReaderDocument *)document
-// {
-//     assert(document != nil); // Must have a valid ReaderDocument
+- (instancetype)initWithFrame:(CGRect)frame document:(ReaderDocument *)document
+{
+    assert(document != nil); // Must have a valid ReaderDocument
     
-//     return [super initWithFrame:frame];
-// }
+    return [super initWithFrame:frame];
+}
 
 @end
