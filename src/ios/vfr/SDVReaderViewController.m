@@ -1211,16 +1211,16 @@
         {
             NSString *key;
             switch (viewMode) {
-//                case SDVReaderContentViewModeDoublePage:
-//                {
-//                    key = [NSString stringWithFormat:@"%ld-L",(long)currentPage]; // Page number key
-//                    break;
-//                }
-//                case SDVReaderContentViewModeCoverDoublePage:
-//                {
-//                    key = [NSString stringWithFormat:@"%ld-LC",(long)currentPage];; // Page number key
-//                    break;
-//                }
+                case SDVReaderContentViewModeDoublePage:
+                {
+                    key = [NSString stringWithFormat:@"%ld",(long)((currentPage+1)/2)]; // Page number key
+                    break;
+                }
+                case SDVReaderContentViewModeCoverDoublePage:
+                {
+                    key = [NSString stringWithFormat:@"%ld",(long)(currentPage/2)+1]; // Page number key
+                    break;
+                }
                 default:
                     key = [NSString stringWithFormat:@"%ld",(long)currentPage];; // Page number key
                     break;
@@ -1316,18 +1316,18 @@
         {
             NSString *key;
             switch (viewMode) {
-//                case SDVReaderContentViewModeDoublePage:
-//                {
-//                    key = [NSString stringWithFormat:@"%ld-L",(long)currentPage]; // Page number key
-//                    break;
-//                }
-//                case SDVReaderContentViewModeCoverDoublePage:
-//                {
-//                    key = [NSString stringWithFormat:@"%ld-LC",(long)currentPage];; // Page number key
-//                    break;
-//                }
+                case SDVReaderContentViewModeDoublePage:
+                {
+                    key = [NSString stringWithFormat:@"%ld",(long)((currentPage+1)/2)]; // Page number key
+                    break;
+                }
+                case SDVReaderContentViewModeCoverDoublePage:
+                {
+                    key = [NSString stringWithFormat:@"%ld",(long)(currentPage/2)+1]; // Page number key
+                    break;
+                }
                 default:
-                    key = [NSString stringWithFormat:@"%ld",(long)currentPage];; // Page number key
+                    key = [NSString stringWithFormat:@"%ld",(long)currentPage]; // Page number key
                     break;
             }
             
