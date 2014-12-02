@@ -68,6 +68,7 @@
 - (void)zoomIncrement:(UITapGestureRecognizer *)recognizer;
 - (void)zoomDecrement:(UITapGestureRecognizer *)recognizer;
 - (void)zoomResetAnimated:(BOOL)animated;
+- (void)centerScrollViewContent;
 
 @end
 
