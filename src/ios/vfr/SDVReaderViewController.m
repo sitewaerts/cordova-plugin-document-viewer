@@ -373,7 +373,8 @@
         } else if (page > 1) {
             page = (page - 1) * 2;
         }
-        
+        //overflow check (for single last pages in double page mode)
+        page = (page<[document.pageCount integerValue]?page:[document.pageCount integerValue]);
     }
     
     
