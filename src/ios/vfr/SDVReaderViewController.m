@@ -1122,49 +1122,79 @@
 
 #pragma mark - UIGestureRecognizer action methods
 
+- (void)decrementPageNumber
+{
+    switch (self.viewMode) {
+        case SDVReaderContentViewModeDoublePage:
+        {
+            if ((maximumPage > minimumPage) && (currentPage != minimumPage) && ((currentPage-1) != minimumPage))
+            {
+                CGPoint contentOffset = theScrollView.contentOffset; // Offset
+                
+                contentOffset.x -= theScrollView.bounds.size.width; // View X--
+                
+                [theScrollView setContentOffset:contentOffset animated:YES];
+            }
+            break;
+        }
+        default:
+        {
+            if ((maximumPage > minimumPage) && (currentPage != minimumPage))
+            {
+                CGPoint contentOffset = theScrollView.contentOffset; // Offset
+        
+                contentOffset.x -= theScrollView.bounds.size.width; // View X--
+        
+                [theScrollView setContentOffset:contentOffset animated:YES];
+            }
+            break;
+        }
+    }
+}
+
 //individual maximum page checks for double page modes
-//- (void)incrementPageNumber
-//{
-//    switch (self.viewMode) {
-//        case SDVReaderContentViewModeDoublePage:
-//        {
-//            if ((maximumPage > minimumPage) && (currentPage < maximumPage) && (currentPage != maximumPage) && (currentPage != maximumPage-1))
-//            {
-//                CGPoint contentOffset = theScrollView.contentOffset; // Offset
-//                
-//                contentOffset.x += theScrollView.bounds.size.width; // View X++
-//                
-//                [theScrollView setContentOffset:contentOffset animated:YES];
-//            }
-//            break;
-//        }
-//        case SDVReaderContentViewModeCoverDoublePage:
-//        {
-//            if ((maximumPage > minimumPage) && (currentPage < maximumPage) && (currentPage != maximumPage) && (currentPage != maximumPage-1))
-//            {
-//                CGPoint contentOffset = theScrollView.contentOffset; // Offset
-//                
-//                contentOffset.x += theScrollView.bounds.size.width; // View X++
-//                
-//                [theScrollView setContentOffset:contentOffset animated:YES];
-//            }
-//            break;
-//        }
-//            
-//        default:
-//        {
-//            if ((maximumPage > minimumPage) && (currentPage != maximumPage))
-//            {
-//                CGPoint contentOffset = theScrollView.contentOffset; // Offset
-//                
-//                contentOffset.x += theScrollView.bounds.size.width; // View X++
-//                
-//                [theScrollView setContentOffset:contentOffset animated:YES];
-//            }
-//            break;
-//        }
-//    }
-//}
+- (void)incrementPageNumber
+{
+    switch (self.viewMode) {
+        case SDVReaderContentViewModeDoublePage:
+        {
+            if ((maximumPage > minimumPage) && (currentPage/2 < maximumPage))
+            {
+                CGPoint contentOffset = theScrollView.contentOffset; // Offset
+                
+                contentOffset.x += theScrollView.bounds.size.width; // View X++
+                
+                [theScrollView setContentOffset:contentOffset animated:YES];
+            }
+            break;
+        }
+        case SDVReaderContentViewModeCoverDoublePage:
+        {
+            if ((maximumPage > minimumPage) && ((currentPage/2)+1 < maximumPage))
+            {
+                CGPoint contentOffset = theScrollView.contentOffset; // Offset
+                
+                contentOffset.x += theScrollView.bounds.size.width; // View X++
+                
+                [theScrollView setContentOffset:contentOffset animated:YES];
+            }
+            break;
+        }
+            
+        default:
+        {
+            if ((maximumPage > minimumPage) && (currentPage != maximumPage))
+            {
+                CGPoint contentOffset = theScrollView.contentOffset; // Offset
+                
+                contentOffset.x += theScrollView.bounds.size.width; // View X++
+                
+                [theScrollView setContentOffset:contentOffset animated:YES];
+            }
+            break;
+        }
+    }
+}
 
 // dont show page bar for short documents
 - (void)handleSingleTap:(UITapGestureRecognizer *)recognizer
