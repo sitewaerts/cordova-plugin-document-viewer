@@ -27,11 +27,11 @@ static void *SDVReaderContentViewDoublePageContext = &SDVReaderContentViewDouble
 #define PAGE_THUMB_LARGE 240
 #define PAGE_THUMB_SMALL 144
 
-#if (READER_SHOW_SHADOWS == TRUE) // Option
-#define CONTENT_INSET 4.0f
-#else
-#define CONTENT_INSET 2.0f
-#endif // end of READER_SHOW_SHADOWS Option
+//#if (READER_SHOW_SHADOWS == TRUE) // Option
+//#define CONTENT_INSET 4.0f
+//#else
+//#define CONTENT_INSET 2.0f
+//#endif // end of READER_SHOW_SHADOWS Option
 
 #pragma mark - ReaderContentView functions
 
@@ -93,11 +93,12 @@ static inline CGFloat zoomScaleThatFits(CGSize target, CGSize source, CGFloat bf
         self.showsVerticalScrollIndicator = NO;
         self.showsHorizontalScrollIndicator = NO;
         self.contentMode = UIViewContentModeRedraw;
-        self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        self.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
         self.backgroundColor = [UIColor clearColor];
-        self.userInteractionEnabled = YES;
+//        self.userInteractionEnabled = YES;
         self.autoresizesSubviews = NO;
-        self.bouncesZoom = YES;
+//        self.bouncesZoom = YES;
+		self.clipsToBounds = NO;
         self.delegate = self;
         
         userInterfaceIdiom = [UIDevice currentDevice].userInterfaceIdiom; // User interface idiom
@@ -115,6 +116,10 @@ static inline CGFloat zoomScaleThatFits(CGSize target, CGSize source, CGFloat bf
 #endif // End of only under 32-bit iOS code
         
         theContentPage = [[ReaderContentPage alloc] initWithURL:fileURL page:page password:phrase];
+        
+        theContentPage1 = nil;
+        theThumbView1 = nil;
+        
         if (theContentPage != nil) // Must have a valid and initialized content view
         {
             CGRect containerFrame = theContentPage.bounds;
@@ -148,8 +153,8 @@ static inline CGFloat zoomScaleThatFits(CGSize target, CGSize source, CGFloat bf
 #endif // end of READER_SHOW_SHADOWS Option
             
             self.contentSize = theContentPage.bounds.size; // Content size same as view size
-            self.contentOffset = CGPointMake((0.0f - CONTENT_INSET), (0.0f - CONTENT_INSET)); // Offset
-            self.contentInset = UIEdgeInsetsMake(CONTENT_INSET, CONTENT_INSET, CONTENT_INSET, CONTENT_INSET);
+//            self.contentOffset = CGPointMake((0.0f - CONTENT_INSET), (0.0f - CONTENT_INSET)); // Offset
+//            self.contentInset = UIEdgeInsetsMake(CONTENT_INSET, CONTENT_INSET, CONTENT_INSET, CONTENT_INSET);
             
             [self centerScrollViewContent];
             
@@ -186,7 +191,6 @@ static inline CGFloat zoomScaleThatFits(CGSize target, CGSize source, CGFloat bf
             self.zoomScale = self.minimumZoomScale; // Set zoom to fit page content
         }
         
-//        NSLog(@"double page add observer");
         [self addObserver:self forKeyPath:@"frame" options:0 context:SDVReaderContentViewDoublePageContext];
         
         self.tag = page; // Tag the view with the page number
@@ -200,12 +204,11 @@ static inline CGFloat zoomScaleThatFits(CGSize target, CGSize source, CGFloat bf
 {
     @try
     {
-//        NSLog(@"double page remove observer");
         [self removeObserver:self forKeyPath:@"frame" context:SDVReaderContentViewDoublePageContext];
     }
     @catch (NSException *e)
     {
-//        NSLog(@"Four! I mean: Five! I mean: Fire!: %@", e);
+        NSLog(@"ignored SDVReaderContentView dealloc exception");
     }
 }
 
