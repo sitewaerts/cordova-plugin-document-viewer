@@ -234,11 +234,11 @@
             break;
         }
     }
-    contentView = [contentViews objectForKey:key];
-    if (contentView) {
-        [contentView removeFromSuperview];
-        [contentViews removeObjectForKey:key];
-    }
+//    contentView = [contentViews objectForKey:key];
+//    if (contentView) {
+//        [contentView removeFromSuperview];
+//        [contentViews removeObjectForKey:key];
+//    }
     
     if (renderDoublePage) {
         if (singleFirstPage) {
@@ -952,7 +952,7 @@
         
         renderPage = (int) ceil(nextRenderPage);
     }
-	   
+
     if (page != currentPage || forceRedraw) // Only if on different page or if force redraw
     {
         if ((renderPage < minimumPage) || (renderPage > maximumPage)) return;
