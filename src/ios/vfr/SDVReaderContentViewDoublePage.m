@@ -8,7 +8,9 @@
 //
 //
 
+#import "ReaderConstants.h"
 #import "ReaderContentPage.h"
+#import "ReaderThumbCache.h"
 #import "SDVReaderContentViewDoublePage.h"
 
 @implementation SDVReaderContentViewDoublePage
@@ -145,11 +147,24 @@ static inline CGFloat zoomScaleThatFits(CGSize target, CGSize source, CGFloat bf
             theContainerView.backgroundColor = [UIColor grayColor];
             
 #if (READER_SHOW_SHADOWS == TRUE) // Option
-            
-            theContainerView.layer.shadowOffset = CGSizeMake(0.0f, 0.0f);
-            theContainerView.layer.shadowRadius = 4.0f; theContainerView.layer.shadowOpacity = 1.0f;
-            theContainerView.layer.shadowPath = [UIBezierPath bezierPathWithRect:theContainerView.bounds].CGPath;
-            
+
+			theContainerView.layer.shadowOffset = CGSizeMake(0.0f, 0.0f);
+			theContainerView.layer.shadowRadius = 4.0f; theContainerView.layer.shadowOpacity = 1.0f;
+            CGRect shadowFrame;
+            switch (mode) {
+                case SDVReaderContentViewDoublePageModeRight:
+                    shadowFrame = CGRectMake(theContentPage1.frame.origin.x, theContentPage1.frame.origin.y, theContentPage1.frame.size.width, theContentPage1.frame.size.height);
+                    theContainerView.layer.shadowPath = [UIBezierPath bezierPathWithRect:shadowFrame].CGPath;
+                    break;
+                case SDVReaderContentViewDoublePageModeLeft:
+                    shadowFrame = CGRectMake(theContentPage.frame.origin.x, theContentPage.frame.origin.y, theContentPage.frame.size.width, theContentPage.frame.size.height);
+                    theContainerView.layer.shadowPath = [UIBezierPath bezierPathWithRect:shadowFrame].CGPath;
+                    break;
+                default:
+                    theContainerView.layer.shadowPath = [UIBezierPath bezierPathWithRect:theContainerView.bounds].CGPath;
+                    break;
+            }
+
 #endif // end of READER_SHOW_SHADOWS Option
             
             self.contentSize = theContentPage.bounds.size; // Content size same as view size
@@ -160,29 +175,42 @@ static inline CGFloat zoomScaleThatFits(CGSize target, CGSize source, CGFloat bf
             
 #if (READER_ENABLE_PREVIEW == TRUE) // Option
             
-            theThumbView = [[ReaderContentThumb alloc] initWithFrame:theContentPage.bounds]; // Page thumb view
+            theThumbView = [[ReaderContentThumb alloc] initWithFrame:theContentPage.frame]; // Page thumb view
+            if (mode == SDVReaderContentViewDoublePageModeRight) {
+                theThumbView.frame = theContentPage1.frame;
+            }
             [theContainerView addSubview:theThumbView]; // Add the thumb view to the container view
             if (theContentPage1) {
-                theThumbView1=[[ReaderContentThumb alloc] initWithFrame:theContentPage1.bounds];
+                theThumbView1=[[ReaderContentThumb alloc] initWithFrame:theContentPage1.frame];
                 [theContainerView addSubview:theThumbView1];
             }
 #endif // end of READER_ENABLE_PREVIEW Option
             
             // show single pages at the right scale
-            switch (mode) {
+            switch (mode)
+            {
                 case SDVReaderContentViewDoublePageModeRight:
+                {
                     theContentPage.frame = theContentPage1.frame;
                     [theContainerView addSubview:theContentPage];
                     break;
+                }
                 case SDVReaderContentViewDoublePageModeLeft:
+                {
                     [theContainerView addSubview:theContentPage];
                     break;
-                default:
+                }
+                case SDVReaderContentViewDoublePageModeDefault:
+                {
                     [theContainerView addSubview:theContentPage];
                     [theContainerView addSubview:theContentPage1];// Add the content view to the container view
+                    //border in the center
+                    UIView *centerBorder = [[UIView alloc] initWithFrame:CGRectMake(theContentPage.frame.size.width - 1.0f, theContentPage1.frame.origin.y, 2.0f, theContentPage.frame.size.height)];
+                    centerBorder.backgroundColor = [UIColor grayColor];
+                    [theContainerView addSubview:centerBorder];
                     break;
+				}
             }
-            [theContainerView addSubview:centerBorder];
             
             [self addSubview:theContainerView]; // Add the container view to the scroll view
             
