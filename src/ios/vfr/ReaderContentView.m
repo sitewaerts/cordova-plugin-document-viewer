@@ -166,13 +166,13 @@ static inline CGFloat zoomScaleThatFits(CGSize target, CGSize source, CGFloat bf
 //XXX:  ignore exceptions, that occur because observer has to be removed in subclass and subclass dealloc automatically calls super dealloc with arc
 - (void)dealloc
 {
-//	[self removeObserver:self forKeyPath:@"frame" context:ReaderContentViewContext];
     @try
     {
         [self removeObserver:self forKeyPath:@"frame" context:ReaderContentViewContext];
     }
     @catch (NSException *e)
     {
+        NSLog(@"ignored ReaderContentView dealloc exception");
     }
 }
 

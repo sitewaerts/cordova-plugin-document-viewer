@@ -73,4 +73,6 @@
 
 - (instancetype)initWithReaderDocument:(ReaderDocument *)object;
 
+- (void)updateContentViews:(UIScrollView *)scrollView;
+
 @end
