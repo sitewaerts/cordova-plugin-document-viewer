@@ -205,7 +205,7 @@ public final class DocumentViewerPlugin
 
 
     /**
-     * Called when the barcode scanner intent completes
+     * Called when a previously started Activity ends
      *
      * @param requestCode The request code originally supplied to startActivityForResult(),
      *                    allowing you to identify who this result came from.
