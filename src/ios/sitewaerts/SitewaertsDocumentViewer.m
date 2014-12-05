@@ -28,10 +28,16 @@
 #import "SitewaertsDocumentViewer.h"
 #import "SDVReaderViewController.h"
 
+@interface SitewaertsDocumentViewer () <ReaderViewControllerDelegate>
+
+@end
+
 @implementation SitewaertsDocumentViewer
 {
     NSString *tmpCommandCallbackID;
 }
+
+#pragma mark - SitewaertsDocumentViewer methods
 
 - (void)getSupportInfo:(CDVInvokedUrlCommand*)command
 {
@@ -111,7 +117,6 @@
                 NSMutableDictionary *viewerOptions = [options objectForKey:@"options"];
                 NSLog(@"[pdfviewer] options: %@", viewerOptions);
                 SDVReaderViewController *readerViewController = [[SDVReaderViewController alloc] initWithReaderDocument:document options:viewerOptions];
-//                ReaderViewController *readerViewController = [[ReaderViewController alloc] initWithReaderDocument:document];
                 readerViewController.delegate = self;
                 readerViewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
                 readerViewController.modalPresentationStyle = UIModalPresentationFullScreen;
@@ -128,8 +133,9 @@
                                                 ];
                 [jsonObj setObject:[NSNumber numberWithInt:CDVCommandStatus_OK]  forKey:@"status"];
                 pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:jsonObj];
+                //  keep callback so another result can be sent for document close
                 [pluginResult setKeepCallbackAsBool:YES];
-                //remember command for close event
+                //  remember command for close event
                 tmpCommandCallbackID = command.callbackId;
             }
         } else {
@@ -140,6 +146,8 @@
     }
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
+
+#pragma mark - ReaderViewControllerDelegate methods
 
 - (void)dismissReaderViewController:(ReaderViewController *)viewController {
     [self.viewController dismissViewControllerAnimated:YES completion:nil];
