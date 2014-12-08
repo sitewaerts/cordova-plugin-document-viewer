@@ -101,9 +101,16 @@ public final class DocumentViewerPlugin
     public boolean execute(String action, JSONArray argsArray, CallbackContext callbackContext)
             throws JSONException
     {
-        JSONObject args = argsArray.getJSONObject(0);
-
-        JSONObject options = args.getJSONObject(Args.OPTIONS);
+        JSONObject args;
+        JSONObject options;
+        if (argsArray.length() > 0) {
+        	args = argsArray.getJSONObject(0); 
+            options = args.getJSONObject(Args.OPTIONS);
+        } else {
+        	//no arguments passed, initialize with empty JSON Objects
+        	args = new JSONObject();
+        	options = new JSONObject();
+        }
 
         if (action.equals(Actions.VIEW_DOCUMENT))
         {
@@ -178,9 +185,10 @@ public final class DocumentViewerPlugin
         else if (action.equals(Actions.GET_SUPPORT_INFO))
         {
             JSONObject successObj = new JSONObject();
-            successObj.put(Result.STATUS, PluginResult.Status.OK.ordinal());
-            //currently the Android plugin does not support anything
-            successObj.put(Result.SUPPORTED, new JSONArray());
+            JSONArray supported = new JSONArray();
+//            TODO uncomment this when viewer app is completed
+//            supported.put(PDF);
+            successObj.put(Result.SUPPORTED, supported);
             callbackContext.success(successObj);
         }
         else
