@@ -254,7 +254,8 @@ public final class DocumentViewerPlugin
                 intent.addCategory(Intent.CATEGORY_EMBED);
                 intent.setDataAndType(path, contentType);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intent.setComponent(new ComponentName(packageId, activity));
+                //activity needs fully qualified name here
+                intent.setComponent(new ComponentName(packageId, packageId+"."+activity));
 
                 this.callbackContext = callbackContext;
                 this.cordova.startActivityForResult(this, intent, REQUEST_CODE);
@@ -262,7 +263,10 @@ public final class DocumentViewerPlugin
                 // send shown event
                 JSONObject successObj = new JSONObject();
                 successObj.put(Result.STATUS, PluginResult.Status.OK.ordinal());
-                callbackContext.success(successObj);
+                PluginResult result = new PluginResult(PluginResult.Status.OK, successObj);
+                // need to keep callback for close event
+                result.setKeepCallback(true);
+                callbackContext.sendPluginResult(result);
             }
             catch (android.content.ActivityNotFoundException e)
             {
