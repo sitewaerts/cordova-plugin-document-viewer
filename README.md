@@ -89,10 +89,7 @@ More informations can be found [here][PGB_plugin].
 
 See https://github.com/sitewaerts/cordova-plugin-document-viewer-sample-app for a working example.
 
-The plugin creates the object ```cordova.plugins.SitewaertsDocumentViewer``` with following methods:
-
-1. [SitewaertsDocumentViewer.canViewDocument][canViewDocument]
-2. [SitewaertsDocumentViewer.viewDocument][viewDocument]
+The plugin creates the object ```cordova.plugins.SitewaertsDocumentViewer```.
 
 ### Plugin initialization
 The plugin and its methods are not available before the *deviceready* event has been fired.
@@ -270,3 +267,8 @@ based on https://github.com/mindstorm/CDVPDFViewer
 
 inspired by https://github.com/pebois/phonegap-plugin-PDFViewer
 
+
+[cordova]: https://cordova.apache.org
+[CLI]: http://cordova.apache.org/docs/en/edge/guide_cli_index.md.html#The%20Command-line%20Interface
+[PGB]: http://docs.build.phonegap.com/en_US/index.html
+[PGB_plugin]: https://build.phonegap.com/plugins/705
