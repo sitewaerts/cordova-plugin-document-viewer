@@ -27,6 +27,8 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Bundle;
+
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CordovaResourceApi;
@@ -64,12 +66,24 @@ public final class DocumentViewerPlugin
     }
 
     public static final String ANDROID_OPTIONS = "android";
-
+    public static final String DOCUMENTVIEW_OPTIONS = "documentView";
+    public static final String NAVIGATIONVIEW_OPTIONS = "navigationView";
+    public static final String EMAIL_OPTIONS = "email";
+    public static final String PRINT_OPTIONS = "print";
+    public static final String OPENWITH_OPTIONS = "openWith";
+    public static final String BOOKMARKS_OPTIONS = "bookmarks";
+    public static final String SEARCH_OPTIONS = "search";
+    public static final String TITLE_OPTIONS = "title";
+    
     public static final class Options
     {
         public static final String VIEWER_APP_PACKAGE_ID = "viewerAppPackage";
 
         public static final String VIEWER_APP_ACTIVITY = "viewerAppActivity";
+        
+        public static final String CLOSE_LABEL = "closeLabel";
+        
+        public static final String ENABLED = "enabled";
     }
 
     public static final String PDF = "application/pdf";
@@ -125,8 +139,19 @@ public final class DocumentViewerPlugin
             String activity = androidOptions.getString(
                     Options.VIEWER_APP_ACTIVITY
             );
-
-            this._open(url, contentType, packageId, activity, callbackContext);
+            //put cordova arguments into Android Bundle in order to pass them to the external Activity
+            Bundle viewerOptions = new Bundle();
+            //exce
+            viewerOptions.putString(DOCUMENTVIEW_OPTIONS+"."+Options.CLOSE_LABEL, options.getJSONObject(DOCUMENTVIEW_OPTIONS).getString(Options.CLOSE_LABEL));
+            viewerOptions.putString(NAVIGATIONVIEW_OPTIONS+"."+Options.CLOSE_LABEL, options.getJSONObject(NAVIGATIONVIEW_OPTIONS).getString(Options.CLOSE_LABEL));
+            viewerOptions.putBoolean(EMAIL_OPTIONS+"."+Options.ENABLED, options.getJSONObject(EMAIL_OPTIONS).getBoolean(Options.ENABLED));
+            viewerOptions.putBoolean(PRINT_OPTIONS+"."+Options.ENABLED, options.getJSONObject(PRINT_OPTIONS).getBoolean(Options.ENABLED));
+            viewerOptions.putBoolean(OPENWITH_OPTIONS+"."+Options.ENABLED, options.getJSONObject(OPENWITH_OPTIONS).getBoolean(Options.ENABLED));
+            viewerOptions.putBoolean(BOOKMARKS_OPTIONS+"."+Options.ENABLED, options.getJSONObject(BOOKMARKS_OPTIONS).getBoolean(Options.ENABLED));
+            viewerOptions.putBoolean(SEARCH_OPTIONS+"."+Options.ENABLED, options.getJSONObject(SEARCH_OPTIONS).getBoolean(Options.ENABLED));
+            viewerOptions.putString(TITLE_OPTIONS, options.getString(TITLE_OPTIONS));
+            
+            this._open(url, contentType, packageId, activity, callbackContext, viewerOptions);
         }
         else if (action.equals(Actions.INSTALL_VIEWER_APP))
         {
@@ -203,14 +228,6 @@ public final class DocumentViewerPlugin
         return true;
     }
 
-    private void _open(String fileArg, String contentType, String packageId, String activity, CallbackContext callbackContext)
-            throws JSONException
-    {
-        _open(getFile(fileArg), contentType, packageId, activity,
-                callbackContext
-        );
-    }
-
 
     /**
      * Called when a previously started Activity ends
@@ -240,8 +257,17 @@ public final class DocumentViewerPlugin
             this.callbackContext = null;
         }
     }
+    
+    private void _open(String fileArg, String contentType, String packageId, String activity, CallbackContext callbackContext, Bundle viewerOptions)
+            throws JSONException
+    {
+        _open(getFile(fileArg), contentType, packageId, activity,
+                callbackContext, viewerOptions
+        );
+    }
 
-    private void _open(File file, String contentType, String packageId, String activity, CallbackContext callbackContext)
+
+    private void _open(File file, String contentType, String packageId, String activity, CallbackContext callbackContext, Bundle viewerOptions)
             throws JSONException
     {
         if (file.exists())
@@ -254,6 +280,7 @@ public final class DocumentViewerPlugin
                 intent.addCategory(Intent.CATEGORY_EMBED);
                 intent.setDataAndType(path, contentType);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.putExtra(this.getClass().getName(), viewerOptions);
                 //activity needs fully qualified name here
                 intent.setComponent(new ComponentName(packageId, packageId+"."+activity));
 
