@@ -5,6 +5,25 @@
 //  Copyright 2014 sitewaerts GmbH. All rights reserved.
 //  MIT Licensed
 
+/*  configuration   */
+
+var JS_HANDLE = "SitewaertsDocumentViewer";
+var CDV_HANDLE = "SitewaertsDocumentViewer";
+
+var CDV_HANDLE_ACTIONS = {
+               
+    GET_SUPPORT_INFO: "getSupportInfo",
+
+    CAN_VIEW: "canViewDocument",
+
+    VIEW_DOCUMENT: "viewDocument",
+
+    INSTALL_VIEWER_APP: "install"
+};
+
+var exec = require('cordova/exec');
+
+/*  private functions (not accessible via plugin API) */
 
 function getOptions(provided)
 {
@@ -92,26 +111,9 @@ function installApp(options, onSuccess, onError)
     }
 }
 
-var JS_HANDLE = "SitewaertsDocumentViewer";
-var CDV_HANDLE = "SitewaertsDocumentViewer";
-
-var CDV_HANDLE_ACTIONS = {
-               
-    GET_SUPPORT_INFO: "getSupportInfo",
-
-    CAN_VIEW: "canViewDocument",
-
-    VIEW_DOCUMENT: "viewDocument",
-
-    INSTALL_VIEWER_APP: "install"
-
-};
-
-
-var exec = require('cordova/exec');
+/*  public API of the plugin    */
 
 var SitewaertsDocumentViewer = {
-
 
     getSupportInfo : function(onSuccess, onError)
     {

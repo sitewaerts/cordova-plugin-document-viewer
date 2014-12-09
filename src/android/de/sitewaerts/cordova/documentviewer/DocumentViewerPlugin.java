@@ -101,9 +101,16 @@ public final class DocumentViewerPlugin
     public boolean execute(String action, JSONArray argsArray, CallbackContext callbackContext)
             throws JSONException
     {
-        JSONObject args = argsArray.getJSONObject(0);
-
-        JSONObject options = args.getJSONObject(Args.OPTIONS);
+        JSONObject args;
+        JSONObject options;
+        if (argsArray.length() > 0) {
+        	args = argsArray.getJSONObject(0); 
+            options = args.getJSONObject(Args.OPTIONS);
+        } else {
+        	//no arguments passed, initialize with empty JSON Objects
+        	args = new JSONObject();
+        	options = new JSONObject();
+        }
 
         if (action.equals(Actions.VIEW_DOCUMENT))
         {
@@ -178,9 +185,10 @@ public final class DocumentViewerPlugin
         else if (action.equals(Actions.GET_SUPPORT_INFO))
         {
             JSONObject successObj = new JSONObject();
-            successObj.put(Result.STATUS, PluginResult.Status.OK.ordinal());
-            //currently the Android plugin does not support anything
-            successObj.put(Result.SUPPORTED, new JSONArray());
+            JSONArray supported = new JSONArray();
+//            TODO uncomment this when viewer app is completed
+//            supported.put(PDF);
+            successObj.put(Result.SUPPORTED, supported);
             callbackContext.success(successObj);
         }
         else
@@ -205,7 +213,7 @@ public final class DocumentViewerPlugin
 
 
     /**
-     * Called when the barcode scanner intent completes
+     * Called when a previously started Activity ends
      *
      * @param requestCode The request code originally supplied to startActivityForResult(),
      *                    allowing you to identify who this result came from.
@@ -246,7 +254,8 @@ public final class DocumentViewerPlugin
                 intent.addCategory(Intent.CATEGORY_EMBED);
                 intent.setDataAndType(path, contentType);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intent.setComponent(new ComponentName(packageId, activity));
+                //activity needs fully qualified name here
+                intent.setComponent(new ComponentName(packageId, packageId+"."+activity));
 
                 this.callbackContext = callbackContext;
                 this.cordova.startActivityForResult(this, intent, REQUEST_CODE);
@@ -254,7 +263,10 @@ public final class DocumentViewerPlugin
                 // send shown event
                 JSONObject successObj = new JSONObject();
                 successObj.put(Result.STATUS, PluginResult.Status.OK.ordinal());
-                callbackContext.success(successObj);
+                PluginResult result = new PluginResult(PluginResult.Status.OK, successObj);
+                // need to keep callback for close event
+                result.setKeepCallback(true);
+                callbackContext.sendPluginResult(result);
             }
             catch (android.content.ActivityNotFoundException e)
             {
