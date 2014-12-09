@@ -37,7 +37,7 @@ The purpose of the plugin is to create an platform independent javascript interf
 1. [Supported Platforms](#supported-platforms)
 2. [Installation](#installation)
 3. [Using the plugin](#using-the-plugin)
-4. [Known issues](#knownissues)
+4. [Known issues](#known-issues)
 
 ## Supported Platforms ##
 
