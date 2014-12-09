@@ -1,10 +1,12 @@
+
+<p align="right">
+    <a href="https://github.com/sitewaerts/cordova-plugin-document-viewer-sample-app">EXAMPLE :point_right:</a>
+</p>
+
 Cordova Document Viewer Plugin
 ============================
 
-A Document Viewer cordova/phonegap plugin for iOS and Android.
-
 **This project is currently in beta stage and may not yet be used in productive environments.**
-
 
 A common requirement when developing a cordova based app is to embed a
 performant and secure inline viewer for pdf files which doesn't allow the user
@@ -21,15 +23,23 @@ available via the cordova file plugin
 (e.g. cordova.file.applicationDirectory, cordova.file.dataDirectory).
 
 Online files reachable via http(s) are not supported. Download them to a temp
-folder before starting the viewer. You may use the onClose callback
+folder before starting the viewer. You may use the ```onClose``` callback
 to cleanup the temp dir when the viewer is closed.
 
 Viewer features like "Save as" or "Send via EMail" are configurable at runtime.
 
 Labels for buttons (i18n) are configurable at runtime.
 
+### Plugin's Purpose
+The purpose of the plugin is to create an platform independent javascript interface for [Cordova][cordova] based mobile applications to view different document types by using native viewer components.
 
-## Requirements ##
+## Overview
+1. [Supported Platforms](#supported-platforms)
+2. [Installation](#installation)
+3. [Using the plugin](#using-the-plugin)
+4. [Known issues](#knownissues)
+
+## Supported Platforms ##
 
 * iOS 6+
 * Android 4.1+
@@ -37,16 +47,61 @@ Labels for buttons (i18n) are configurable at runtime.
 
 ## Installation ##
 
-    cordova plugin add de.sitewaerts.cordova.documentviewer
-or    
+The plugin can either be installed from git repository, from local file system through the [Command-line Interface][CLI]. Or cloud based through [PhoneGap Build][PGB].
 
-    cordova plugin add [url-of-the-git-repo]
-    
+### Local development environment
+From master:
+```bash
+# ~~ from master branch ~~
+cordova plugin add https://github.com/sitewaerts/cordova-plugin-document-viewer.git
+```
+from a local folder:
+```bash
+# ~~ local folder ~~
+cordova plugin add de.sitewaerts.cordova.documentviewer --searchpath path/to/plugin
+```
+or to use the last stable version:
+```bash
+# ~~ stable version ~~
+cordova plugin add de.sitewaerts.cordova.documentviewer
+```
+or to use a specific version:
+```bash
+# ~~ stable version ~~
+cordova plugin add de.sitewaerts.cordova.documentviewer@[VERSION]
+```
+
 You may replace cordova with phonegap regarding to your needs.
 
-## Usage ##
+### PhoneGap Build
+Add the following xml to your config.xml to always use the latest version of this plugin:
+```xml
+<gap:plugin name="e.sitewaerts.cordova.documentviewer" />
+```
+or a specific version:
+```xml
+<gap:plugin name="e.sitewaerts.cordova.documentviewer" version="[VERSION]"/>
+```
+More informations can be found [here][PGB_plugin].
+
+
+## Using the plugin ##
 
 See https://github.com/sitewaerts/cordova-plugin-document-viewer-sample-app for a working example.
+
+The plugin creates the object ```cordova.plugins.SitewaertsDocumentViewer``` with following methods:
+
+1. [SitewaertsDocumentViewer.canViewDocument][canViewDocument]
+2. [SitewaertsDocumentViewer.viewDocument][viewDocument]
+
+### Plugin initialization
+The plugin and its methods are not available before the *deviceready* event has been fired.
+
+```javascript
+document.addEventListener('deviceready', function () {
+    // cordova.plugins.SitewaertsDocumentViewer is now available
+}, false);
+```
 
 ### Common Arguments ###
 
@@ -54,7 +109,7 @@ See https://github.com/sitewaerts/cordova-plugin-document-viewer-sample-app for 
 String pointing to a device local file (e.g. 'file:///...')
 
 #### mimeType ####
-Mime type of file. Currently only 'application/pdf' is supported.
+String representing the mime type of the file. Currently only 'application/pdf' is supported.
 
 #### options ####
 ```js
@@ -182,7 +237,7 @@ The plugin uses the awesome VFRReader (https://github.com/vfr/Reader) to embed p
 
 **This feature is currently under development and not yet ready to use.**
 
-Due to license restrictions in muPDF, the plugin dispatches to a seperate 
+Due to license restrictions in muPDF, the plugin dispatches to a separate
 (free) viewer app based on muPDF. If the viewer app is not yet installed, the user may be 
 redirected to the google play app store.
  
@@ -195,33 +250,16 @@ redirected to the google play app store.
 ![screenshot](doc/android/screenshot01.png) &nbsp;&nbsp; ![screenshot](doc/android/screenshot02.png)
 
 
-## Missing Features / Known Bugs ##
-
- Enhance iOS Performance in Double Page Mode.
-
- Add transparent support for online files.
-
- The external Viewer App (Android) cannot access files stored in app private
- directories. Due to this fact, the plugin copies a file to a shared temp folder
- before starting the viewer. When the viewer is closed, the temp file is
- immediately deleted. While the viewer is running, a sophisticated user may
- 'steel' the file from the shared temp directory. We are still searching for a
- better solution, any good idea is welcome.
-
- Add support for pdf forms.
-
- Add fulltext search features.
-
- Add user bookmark support.
-
- Add support for additional mime types like dwg, docx etc.
-
- Optimize user experience for small screens. Currently the viewer components
- are tested and optimized on tablets only.
-
- Let developers provide graphics for buttons at runtime.
-
-
+## Known issues ##
+- Enhance iOS Performance in Double Page Mode.
+- Add transparent support for online files.
+- The external Viewer App (Android) cannot access files stored in app private directories. Due to this fact, the plugin copies a file to a shared temp folder before starting the viewer. When the viewer is closed, the temp file is immediately deleted. While the viewer is running, a sophisticated user may 'steel' the file from the shared temp directory. We are still searching for a better solution, any good idea is welcome.
+- Add support for pdf forms.
+- Add fulltext search features.
+- Add user bookmark support.
+- Add support for additional mime types like dwg, docx etc.
+- Optimize user experience for small screens. Currently the viewer components are tested and optimized on tablets only.
+- Let developers provide graphics for buttons at runtime.
 
 
 ## Credits ##
