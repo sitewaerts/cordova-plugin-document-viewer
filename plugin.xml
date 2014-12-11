@@ -2,13 +2,13 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
         id="de.sitewaerts.cordova.documentviewer"
         xmlns:android="http://schemas.android.com/apk/res/android"
-        version="0.0.1">
+        version="0.1.0">
     <engines>
         <engine name="cordova" version=">=3.6.0"/>
     </engines>
     <name>SitewaertsDocumentViewer</name>
-    <description>Document viewer phonegap plugin. Currently only support PDF
-        Documents.
+    <description>Document viewer phonegap plugin. Currently only supports PDF
+        Documents on iOS.
     </description>
     <author>Felix Schauerte</author>
     <email>schauerte@sitewaerts.de</email>
@@ -16,6 +16,7 @@
 
     <js-module src="www/sitewaertsdocumentviewer.js"
                name="SitewaertsDocumentViewer">
+        <clobbers target="cordova.plugins.SitewaertsDocumentViewer"/>
         <clobbers target="SitewaertsDocumentViewer"/>
     </js-module>
 

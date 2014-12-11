@@ -6,7 +6,7 @@
 Cordova Document Viewer Plugin
 ============================
 
-**This project is currently in beta stage and may not yet be used in productive environments.**
+**This project is currently in beta stage and may only be carefully used in productive environments.**
 
 A common requirement when developing a cordova based app is to embed a
 performant and secure inline viewer for pdf files which doesn't allow the user
