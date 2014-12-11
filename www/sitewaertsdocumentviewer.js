@@ -117,17 +117,13 @@ var SitewaertsDocumentViewer = {
 
     getSupportInfo : function(onSuccess, onError)
     {
-//        // TODO: fix this
-//        if(navigator.userAgent.match(/Android.*AppleWebKit/i) !== null)
-//        {
-//            onSuccess({supported: []});
-//        }
-//        else
-//        {
-//            onSuccess({supported : ['application/pdf']});
-//        }
-//        return;
-//
+        // android not yet supported in this release
+        if(navigator.userAgent.match(/Android.*AppleWebKit/i) !== null)
+        {
+            onSuccess({supported: []});
+            return;
+        }
+
         var errorPrefix = "Error in " + JS_HANDLE + ".getSupportInfo(): ";
         try {
             exec(
@@ -166,6 +162,14 @@ var SitewaertsDocumentViewer = {
 
     canViewDocument: function (url, contentType, options, onPossible, onMissingApp, onImpossible, onError)
     {
+        // android not yet supported in this release
+        if(navigator.userAgent.match(/Android.*AppleWebKit/i) !== null)
+        {
+            if(onImpossible)
+                onImpossible();
+            return;
+        }
+
         var errorPrefix = "Error in " + JS_HANDLE + ".canViewDocument(): ";
         try
         {
@@ -224,6 +228,16 @@ var SitewaertsDocumentViewer = {
 
     viewDocument: function (url, contentType, options, onShow, onClose, onMissingApp, onError)
     {
+        // android not yet supported in this release
+        if(navigator.userAgent.match(/Android.*AppleWebKit/i) !== null)
+        {
+            var errorMsg = "No viewer for " + contentType;
+            window.console.log(errorPrefix + errorMsg);
+            if (onError)
+                onError(errorMsg);
+            return;
+        }
+
         var me = this;
         var errorPrefix = "Error in " + JS_HANDLE + ".viewDocument(): ";
         try
