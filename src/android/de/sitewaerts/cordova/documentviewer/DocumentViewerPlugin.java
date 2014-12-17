@@ -28,6 +28,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+//import android.support.v4.content.FileProvider;
+import android.util.Log;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
@@ -38,10 +40,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 public final class DocumentViewerPlugin
         extends CordovaPlugin
 {
+	
+	private static final String TAG = "DocumentViewerPlugin";
 
     public static final class Actions
     {
@@ -103,6 +112,8 @@ public final class DocumentViewerPlugin
             System.identityHashCode(DocumentViewerPlugin.class);
 
     private CallbackContext callbackContext;
+    
+    private File tmpFile;
 
     /**
      * Executes the request and returns a boolean.
@@ -241,6 +252,13 @@ public final class DocumentViewerPlugin
     {
         if (requestCode == REQUEST_CODE && this.callbackContext != null)
         {
+        	//remove tmp file
+        	if (tmpFile != null) {
+        		if(!tmpFile.delete()) {
+                    Log.w(TAG, "Failed to delete file: " + tmpFile.getName());
+        		}
+        		tmpFile = null;
+        	}
             try
             {
                 // send closed event
@@ -274,12 +292,52 @@ public final class DocumentViewerPlugin
         {
             try
             {
+            	Intent intent = new Intent(Intent.ACTION_VIEW);
+            	Uri path;
+            	// detect private files, copy to accessible tmp dir if necessary
+            	// XXX does this condition cover all cases?
+            	if (file.getAbsolutePath().contains(cordova.getActivity().getFilesDir().getAbsolutePath())) {
+//            		XXX this is the "official" way to share private files with other apps: with a content:// URI. Unfortunately, MuPDF does not swallow the genereated URI. :(
+//            		path = FileProvider.getUriForFile(cordova.getActivity(), "de.sitewaerts.cordova.fileprovider", file);
+//            		cordova.getActivity().grantUriPermission(packageId, path, Intent.FLAG_GRANT_READ_URI_PERMISSION|Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+//            		intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION|Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            		InputStream in = null;
+                    OutputStream out = null;
+                    File outFile = new File(cordova.getActivity().getExternalFilesDir(null) + "/tmp", file.getName());
+                    //create tmp folder if not present
+                    outFile.getParentFile().mkdirs();
+                    try {
+                      in = new FileInputStream(file);
+                      out = new FileOutputStream(outFile);
+                      copyFile(in, out);
+                      tmpFile = outFile;
+                    } catch(IOException e) {
+                        Log.e(TAG, "Failed to copy file: " + file.getName(), e);
+                    }     
+                    finally {
+                        if (in != null) {
+                            try {
+                                in.close();
+                            } catch (IOException e) {
+                                // NOOP
+                            }
+                        }
+                        if (out != null) {
+                            try {
+                                out.close();
+                            } catch (IOException e) {
+                                // NOOP
+                            }
+                        }
+                    } 
+                    path = Uri.fromFile(outFile);            		
+            	} else {
+                    path = Uri.fromFile(file);            		
+            	}
                 // @see http://stackoverflow.com/questions/2780102/open-another-application-from-your-own-intent
-                Uri path = Uri.fromFile(file);
-                Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.addCategory(Intent.CATEGORY_EMBED);
                 intent.setDataAndType(path, contentType);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.putExtra(this.getClass().getName(), viewerOptions);
                 //activity needs fully qualified name here
                 intent.setComponent(new ComponentName(packageId, packageId+"."+activity));
@@ -312,6 +370,14 @@ public final class DocumentViewerPlugin
             errorObj.put(Result.STATUS, PluginResult.Status.ERROR.ordinal());
             errorObj.put(Result.MESSAGE, "File not found");
             callbackContext.error(errorObj);
+        }
+    }
+    
+    private void copyFile(InputStream in, OutputStream out) throws IOException {
+        byte[] buffer = new byte[1024];
+        int read;
+        while((read = in.read(buffer)) != -1){
+          out.write(buffer, 0, read);
         }
     }
 
