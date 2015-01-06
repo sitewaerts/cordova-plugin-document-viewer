@@ -31,10 +31,7 @@ import android.os.Bundle;
 //import android.support.v4.content.FileProvider;
 import android.util.Log;
 
-import org.apache.cordova.CallbackContext;
-import org.apache.cordova.CordovaPlugin;
-import org.apache.cordova.CordovaResourceApi;
-import org.apache.cordova.PluginResult;
+import org.apache.cordova.*;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -49,8 +46,8 @@ import java.io.OutputStream;
 public final class DocumentViewerPlugin
         extends CordovaPlugin
 {
-	
-	private static final String TAG = "DocumentViewerPlugin";
+
+    private static final String TAG = "DocumentViewerPlugin";
 
     public static final class Actions
     {
@@ -83,15 +80,15 @@ public final class DocumentViewerPlugin
     public static final String BOOKMARKS_OPTIONS = "bookmarks";
     public static final String SEARCH_OPTIONS = "search";
     public static final String TITLE_OPTIONS = "title";
-    
+
     public static final class Options
     {
         public static final String VIEWER_APP_PACKAGE_ID = "viewerAppPackage";
 
         public static final String VIEWER_APP_ACTIVITY = "viewerAppActivity";
-        
+
         public static final String CLOSE_LABEL = "closeLabel";
-        
+
         public static final String ENABLED = "enabled";
     }
 
@@ -112,8 +109,25 @@ public final class DocumentViewerPlugin
             System.identityHashCode(DocumentViewerPlugin.class);
 
     private CallbackContext callbackContext;
-    
-    private File tmpFile;
+
+
+    public void initialize(CordovaInterface cordova, CordovaWebView webView)
+    {
+        super.initialize(cordova, webView);
+        clearTempFiles();
+    }
+
+    public void onDestroy()
+    {
+        clearTempFiles();
+        super.onDestroy();
+    }
+
+    public void onReset()
+    {
+        clearTempFiles();
+        super.onReset();
+    }
 
     /**
      * Executes the request and returns a boolean.
@@ -128,13 +142,16 @@ public final class DocumentViewerPlugin
     {
         JSONObject args;
         JSONObject options;
-        if (argsArray.length() > 0) {
-        	args = argsArray.getJSONObject(0); 
+        if (argsArray.length() > 0)
+        {
+            args = argsArray.getJSONObject(0);
             options = args.getJSONObject(Args.OPTIONS);
-        } else {
-        	//no arguments passed, initialize with empty JSON Objects
-        	args = new JSONObject();
-        	options = new JSONObject();
+        }
+        else
+        {
+            //no arguments passed, initialize with empty JSON Objects
+            args = new JSONObject();
+            options = new JSONObject();
         }
 
         if (action.equals(Actions.VIEW_DOCUMENT))
@@ -153,16 +170,43 @@ public final class DocumentViewerPlugin
             //put cordova arguments into Android Bundle in order to pass them to the external Activity
             Bundle viewerOptions = new Bundle();
             //exce
-            viewerOptions.putString(DOCUMENTVIEW_OPTIONS+"."+Options.CLOSE_LABEL, options.getJSONObject(DOCUMENTVIEW_OPTIONS).getString(Options.CLOSE_LABEL));
-            viewerOptions.putString(NAVIGATIONVIEW_OPTIONS+"."+Options.CLOSE_LABEL, options.getJSONObject(NAVIGATIONVIEW_OPTIONS).getString(Options.CLOSE_LABEL));
-            viewerOptions.putBoolean(EMAIL_OPTIONS+"."+Options.ENABLED, options.getJSONObject(EMAIL_OPTIONS).getBoolean(Options.ENABLED));
-            viewerOptions.putBoolean(PRINT_OPTIONS+"."+Options.ENABLED, options.getJSONObject(PRINT_OPTIONS).getBoolean(Options.ENABLED));
-            viewerOptions.putBoolean(OPENWITH_OPTIONS+"."+Options.ENABLED, options.getJSONObject(OPENWITH_OPTIONS).getBoolean(Options.ENABLED));
-            viewerOptions.putBoolean(BOOKMARKS_OPTIONS+"."+Options.ENABLED, options.getJSONObject(BOOKMARKS_OPTIONS).getBoolean(Options.ENABLED));
-            viewerOptions.putBoolean(SEARCH_OPTIONS+"."+Options.ENABLED, options.getJSONObject(SEARCH_OPTIONS).getBoolean(Options.ENABLED));
-            viewerOptions.putString(TITLE_OPTIONS, options.getString(TITLE_OPTIONS));
-            
-            this._open(url, contentType, packageId, activity, callbackContext, viewerOptions);
+            viewerOptions
+                    .putString(DOCUMENTVIEW_OPTIONS + "." + Options.CLOSE_LABEL,
+                            options.getJSONObject(DOCUMENTVIEW_OPTIONS)
+                                    .getString(Options.CLOSE_LABEL)
+                    );
+            viewerOptions.putString(
+                    NAVIGATIONVIEW_OPTIONS + "." + Options.CLOSE_LABEL,
+                    options.getJSONObject(NAVIGATIONVIEW_OPTIONS)
+                            .getString(Options.CLOSE_LABEL)
+            );
+            viewerOptions.putBoolean(EMAIL_OPTIONS + "." + Options.ENABLED,
+                    options.getJSONObject(EMAIL_OPTIONS)
+                            .getBoolean(Options.ENABLED)
+            );
+            viewerOptions.putBoolean(PRINT_OPTIONS + "." + Options.ENABLED,
+                    options.getJSONObject(PRINT_OPTIONS)
+                            .getBoolean(Options.ENABLED)
+            );
+            viewerOptions.putBoolean(OPENWITH_OPTIONS + "." + Options.ENABLED,
+                    options.getJSONObject(OPENWITH_OPTIONS)
+                            .getBoolean(Options.ENABLED)
+            );
+            viewerOptions.putBoolean(BOOKMARKS_OPTIONS + "." + Options.ENABLED,
+                    options.getJSONObject(BOOKMARKS_OPTIONS)
+                            .getBoolean(Options.ENABLED)
+            );
+            viewerOptions.putBoolean(SEARCH_OPTIONS + "." + Options.ENABLED,
+                    options.getJSONObject(SEARCH_OPTIONS)
+                            .getBoolean(Options.ENABLED)
+            );
+            viewerOptions
+                    .putString(TITLE_OPTIONS, options.getString(TITLE_OPTIONS));
+
+            this._open(url, contentType, packageId, activity,
+                    callbackContext,
+                    viewerOptions
+            );
         }
         else if (action.equals(Actions.INSTALL_VIEWER_APP))
         {
@@ -187,8 +231,7 @@ public final class DocumentViewerPlugin
             JSONObject successObj = null;
             if (PDF.equals(contentType))
             {
-                File f = getFile(url);
-                if (f.exists())
+                if (canGetFile(url))
                 {
                     if (!this._appIsInstalled(packageId))
                     {
@@ -206,6 +249,10 @@ public final class DocumentViewerPlugin
                         );
                     }
                 }
+                else
+                {
+                    Log.d(TAG, "File " + url + " not available");
+                }
             }
 
             if (successObj == null)
@@ -222,8 +269,7 @@ public final class DocumentViewerPlugin
         {
             JSONObject successObj = new JSONObject();
             JSONArray supported = new JSONArray();
-//            TODO uncomment this when viewer app is completed
-//            supported.put(PDF);
+            supported.put(PDF);
             successObj.put(Result.SUPPORTED, supported);
             callbackContext.success(successObj);
         }
@@ -252,13 +298,8 @@ public final class DocumentViewerPlugin
     {
         if (requestCode == REQUEST_CODE && this.callbackContext != null)
         {
-        	//remove tmp file
-        	if (tmpFile != null) {
-        		if(!tmpFile.delete()) {
-                    Log.w(TAG, "Failed to delete file: " + tmpFile.getName());
-        		}
-        		tmpFile = null;
-        	}
+            //remove tmp file
+            clearTempFiles();
             try
             {
                 // send closed event
@@ -275,72 +316,30 @@ public final class DocumentViewerPlugin
             this.callbackContext = null;
         }
     }
-    
-    private void _open(String fileArg, String contentType, String packageId, String activity, CallbackContext callbackContext, Bundle viewerOptions)
+
+    private void _open(String url, String contentType, String packageId, String activity, CallbackContext callbackContext, Bundle viewerOptions)
             throws JSONException
     {
-        _open(getFile(fileArg), contentType, packageId, activity,
-                callbackContext, viewerOptions
-        );
-    }
+        clearTempFiles();
 
+        File file = getAccessibleFile(url);
 
-    private void _open(File file, String contentType, String packageId, String activity, CallbackContext callbackContext, Bundle viewerOptions)
-            throws JSONException
-    {
-        if (file.exists())
+        if (file!=null && file.exists() && file.isFile())
         {
             try
             {
-            	Intent intent = new Intent(Intent.ACTION_VIEW);
-            	Uri path;
-            	// detect private files, copy to accessible tmp dir if necessary
-            	// XXX does this condition cover all cases?
-            	if (file.getAbsolutePath().contains(cordova.getActivity().getFilesDir().getAbsolutePath())) {
-//            		XXX this is the "official" way to share private files with other apps: with a content:// URI. Unfortunately, MuPDF does not swallow the genereated URI. :(
-//            		path = FileProvider.getUriForFile(cordova.getActivity(), "de.sitewaerts.cordova.fileprovider", file);
-//            		cordova.getActivity().grantUriPermission(packageId, path, Intent.FLAG_GRANT_READ_URI_PERMISSION|Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-//            		intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION|Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-            		InputStream in = null;
-                    OutputStream out = null;
-                    File outFile = new File(cordova.getActivity().getExternalFilesDir(null) + "/tmp", file.getName());
-                    //create tmp folder if not present
-                    outFile.getParentFile().mkdirs();
-                    try {
-                      in = new FileInputStream(file);
-                      out = new FileOutputStream(outFile);
-                      copyFile(in, out);
-                      tmpFile = outFile;
-                    } catch(IOException e) {
-                        Log.e(TAG, "Failed to copy file: " + file.getName(), e);
-                    }     
-                    finally {
-                        if (in != null) {
-                            try {
-                                in.close();
-                            } catch (IOException e) {
-                                // NOOP
-                            }
-                        }
-                        if (out != null) {
-                            try {
-                                out.close();
-                            } catch (IOException e) {
-                                // NOOP
-                            }
-                        }
-                    } 
-                    path = Uri.fromFile(outFile);            		
-            	} else {
-                    path = Uri.fromFile(file);            		
-            	}
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                Uri path = Uri.fromFile(file);
+
                 // @see http://stackoverflow.com/questions/2780102/open-another-application-from-your-own-intent
                 intent.addCategory(Intent.CATEGORY_EMBED);
                 intent.setDataAndType(path, contentType);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.putExtra(this.getClass().getName(), viewerOptions);
                 //activity needs fully qualified name here
-                intent.setComponent(new ComponentName(packageId, packageId+"."+activity));
+                intent.setComponent(
+                        new ComponentName(packageId, packageId + "." + activity)
+                );
 
                 this.callbackContext = callbackContext;
                 this.cordova.startActivityForResult(this, intent, REQUEST_CODE);
@@ -348,7 +347,9 @@ public final class DocumentViewerPlugin
                 // send shown event
                 JSONObject successObj = new JSONObject();
                 successObj.put(Result.STATUS, PluginResult.Status.OK.ordinal());
-                PluginResult result = new PluginResult(PluginResult.Status.OK, successObj);
+                PluginResult result = new PluginResult(PluginResult.Status.OK,
+                        successObj
+                );
                 // need to keep callback for close event
                 result.setKeepCallback(true);
                 callbackContext.sendPluginResult(result);
@@ -372,30 +373,209 @@ public final class DocumentViewerPlugin
             callbackContext.error(errorObj);
         }
     }
-    
-    private void copyFile(InputStream in, OutputStream out) throws IOException {
-        byte[] buffer = new byte[1024];
-        int read;
-        while((read = in.read(buffer)) != -1){
-          out.write(buffer, 0, read);
+
+    private void copyFile(File src, File target)
+            throws IOException
+    {
+        Log.d(TAG, "Creating temp file for " + src.getAbsolutePath() + " at "
+                + target.getAbsolutePath()
+        );
+        copyFile(new FileInputStream(src), target);
+    }
+
+    private void copyFile(InputStream in, File target)
+            throws IOException
+    {
+        OutputStream out = null;
+        //create tmp folder if not present
+        if (!target.getParentFile().exists() && !target.getParentFile()
+                .mkdirs())
+            throw new IOException("Cannot create path " + target.getParentFile()
+                    .getAbsolutePath()
+            );
+        try
+        {
+            out = new FileOutputStream(target);
+            byte[] buffer = new byte[1024];
+            int read;
+            while ((read = in.read(buffer)) != -1)
+                out.write(buffer, 0, read);
+        }
+        catch (IOException e)
+        {
+            Log.e(TAG, "Failed to copy stream to "
+                    + target.getAbsolutePath(), e
+            );
+        }
+        finally
+        {
+            if (in != null)
+            {
+                try
+                {
+                    in.close();
+                }
+                catch (IOException e)
+                {
+                    // NOOP
+                }
+            }
+            if (out != null)
+            {
+                try
+                {
+                    out.close();
+                }
+                catch (IOException e)
+                {
+                    // NOOP
+                }
+            }
+        }
+
+    }
+
+    private int tempCounter = 0;
+
+    private File getSharedTempFile(String name)
+    {
+        return new File(getSharedTempDir(), (tempCounter++) + "." + name);
+    }
+
+    private File getSharedTempDir()
+    {
+        return new File(
+                new File(cordova.getActivity().getExternalFilesDir(null), "tmp"
+                ), TAG
+        );
+    }
+
+    private void clearTempFiles()
+    {
+        File dir = getSharedTempDir();
+        if (!dir.exists())
+            return;
+
+        Log.d(TAG, "clearing temp files below " + dir.getAbsolutePath());
+        deleteRecursive(dir, false);
+    }
+
+    private void deleteRecursive(File f, boolean self)
+    {
+        if (!f.exists())
+            return;
+
+        if(f.isDirectory())
+        {
+            File[] files = f.listFiles();
+            for (File file : files)
+                deleteRecursive(file, true);
+        }
+
+        if (self && !f.delete())
+            Log.e(TAG, "Failed to delete file " + f.getAbsoluteFile());
+
+    }
+
+    private static final String ASSETS = "file:///android_asset/";
+
+    private boolean canGetFile(String fileArg)
+            throws JSONException
+    {
+        return fileArg.startsWith(ASSETS) || getFile(fileArg).exists();
+    }
+
+    private File getAccessibleFile(String fileArg)
+            throws JSONException
+    {
+        if (fileArg.startsWith(ASSETS))
+        {
+            String filePath = fileArg.substring(ASSETS.length());
+            String fileName = filePath.substring(
+                    filePath.lastIndexOf(File.pathSeparator) + 1);
+
+            Log.d(TAG, "Handling assets file: fileArg: " + fileArg + ", filePath: " + filePath + ", fileName: " + fileName);
+
+            try
+            {
+                File tmpFile = getSharedTempFile(fileName);
+                InputStream in;
+                try
+                {
+                    in = this.cordova.getActivity().getAssets().open(filePath);
+                    if (in == null)
+                        return null;
+                }
+                catch (IOException e)
+                {
+                    // not found
+                    return null;
+                }
+                copyFile(in, tmpFile);
+                tmpFile.deleteOnExit();
+                return tmpFile;
+            }
+            catch (IOException e)
+            {
+                Log.e(TAG, "Failed to copy file: " + filePath, e);
+                JSONException je = new JSONException(e.getMessage());
+                je.initCause(e);
+                throw je;
+            }
+        }
+        else
+        {
+            File file = getFile(fileArg);
+            if (!file.exists() || !file.isFile())
+                return null;
+
+            // detect private files, copy to accessible tmp dir if necessary
+            // XXX does this condition cover all cases?
+            if (file.getAbsolutePath().contains(
+                    cordova.getActivity().getFilesDir().getAbsolutePath()
+            ))
+            {
+//            		XXX this is the "official" way to share private files with other apps: with a content:// URI. Unfortunately, MuPDF does not swallow the generated URI. :(
+//            		path = FileProvider.getUriForFile(cordova.getActivity(), "de.sitewaerts.cordova.fileprovider", file);
+//            		cordova.getActivity().grantUriPermission(packageId, path, Intent.FLAG_GRANT_READ_URI_PERMISSION|Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+//            		intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION|Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+
+                try
+                {
+                    File tmpFile = getSharedTempFile(file.getName());
+                    copyFile(file, tmpFile);
+                    tmpFile.deleteOnExit();
+                    return tmpFile;
+                }
+                catch (IOException e)
+                {
+                    Log.e(TAG, "Failed to copy file: " + file.getName(), e);
+                    JSONException je = new JSONException(e.getMessage());
+                    je.initCause(e);
+                    throw je;
+                }
+            }
+
+            return file;
         }
     }
+
 
     private File getFile(String fileArg)
             throws JSONException
     {
-        String fileName;
+        String filePath;
         try
         {
             CordovaResourceApi resourceApi = webView.getResourceApi();
             Uri fileUri = resourceApi.remapUri(Uri.parse(fileArg));
-            fileName = this.stripFileProtocol(fileUri.toString());
+            filePath = this.stripFileProtocol(fileUri.toString());
         }
         catch (Exception e)
         {
-            fileName = fileArg;
+            filePath = fileArg;
         }
-        return new File(fileName);
+        return new File(filePath);
     }
 
     private void _install(String packageId, CallbackContext callbackContext)
