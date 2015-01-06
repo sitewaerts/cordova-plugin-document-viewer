@@ -11,7 +11,7 @@ var JS_HANDLE = "SitewaertsDocumentViewer";
 var CDV_HANDLE = "SitewaertsDocumentViewer";
 
 var CDV_HANDLE_ACTIONS = {
-               
+
     GET_SUPPORT_INFO: "getSupportInfo",
 
     CAN_VIEW: "canViewDocument",
@@ -78,7 +78,6 @@ function getOptions(provided)
     if (!options.android.viewerAppActivity)
         options.android.viewerAppActivity = 'DocumentViewerActivity';
 
-
     return options;
 }
 
@@ -115,41 +114,32 @@ function installApp(options, onSuccess, onError)
 
 var SitewaertsDocumentViewer = {
 
-    getSupportInfo : function(onSuccess, onError)
+    getSupportInfo: function (onSuccess, onError)
     {
-//        // TODO: fix this
-//        if(navigator.userAgent.match(/Android.*AppleWebKit/i) !== null)
-//        {
-//            onSuccess({supported: []});
-//        }
-//        else
-//        {
-//            onSuccess({supported : ['application/pdf']});
-//        }
-//        return;
-//
         var errorPrefix = "Error in " + JS_HANDLE + ".getSupportInfo(): ";
-        try {
+        try
+        {
             exec(
-                function (result)
-                {
-                    if (onSuccess)
+                    function (result)
                     {
-                        window.console.log("support info is " + JSON.stringify(result));
-                        onSuccess(result);
-                    }
-                },
-                function (err)
-                {
-                    window.console.log(errorPrefix + JSON.stringify(err));
-                    if (onError)
+                        if (onSuccess)
+                        {
+                            window.console.log("support info is "
+                                    + JSON.stringify(result));
+                            onSuccess(result);
+                        }
+                    },
+                    function (err)
                     {
-                        onError(err);
-                    }
-                },
-                CDV_HANDLE,
-                CDV_HANDLE_ACTIONS.GET_SUPPORT_INFO,
-                []
+                        window.console.log(errorPrefix + JSON.stringify(err));
+                        if (onError)
+                        {
+                            onError(err);
+                        }
+                    },
+                    CDV_HANDLE,
+                    CDV_HANDLE_ACTIONS.GET_SUPPORT_INFO,
+                    []
             );
         }
         catch (e)
@@ -157,7 +147,7 @@ var SitewaertsDocumentViewer = {
             window.console.log(errorPrefix + JSON.stringify(e));
             if (onError)
             {
-               onError(e);
+                onError(e);
             }
         }
 
@@ -257,7 +247,8 @@ var SitewaertsDocumentViewer = {
                                     else
                                     {
                                         var errorMsg =
-                                                "unknown state '" + status + "'";
+                                                "unknown state '" + status
+                                                        + "'";
                                         window.console.log(
                                                 errorPrefix + errorMsg);
                                     }
