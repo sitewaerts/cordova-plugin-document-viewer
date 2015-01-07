@@ -1,8 +1,3 @@
-
-<p align="right">
-    <a href="https://github.com/sitewaerts/cordova-plugin-document-viewer-sample-app">EXAMPLE :point_right:</a>
-</p>
-
 Cordova Document Viewer Plugin
 ============================
 
@@ -31,7 +26,9 @@ Viewer features like "Save as" or "Send via EMail" are configurable at runtime.
 Labels for buttons (i18n) are configurable at runtime.
 
 ### Plugin's Purpose
-The purpose of the plugin is to create an platform independent javascript interface for [Cordova][cordova] based mobile applications to view different document types by using native viewer components.
+The purpose of the plugin is to create an platform independent javascript
+interface for [Cordova][cordova] based mobile applications to view different
+document types by using native viewer components.
 
 ## Overview
 1. [Supported Platforms](#supported-platforms)
@@ -47,7 +44,9 @@ The purpose of the plugin is to create an platform independent javascript interf
 
 ## Installation ##
 
-The plugin can either be installed from git repository, from local file system through the [Command-line Interface][CLI]. Or cloud based through [PhoneGap Build][PGB].
+The plugin can either be installed from git repository, from local file system
+through the [Command-line Interface][CLI],
+or cloud based through [PhoneGap Build][PGB].
 
 ### Local development environment
 From master:
@@ -76,13 +75,13 @@ You may replace cordova with phonegap regarding to your needs.
 ### PhoneGap Build
 Add the following xml to your config.xml to always use the latest version of this plugin:
 ```xml
-<gap:plugin name="e.sitewaerts.cordova.documentviewer" />
+<gap:plugin name="de.sitewaerts.cordova.documentviewer" source="plugins.cordova.io" />
 ```
 or a specific version:
 ```xml
-<gap:plugin name="e.sitewaerts.cordova.documentviewer" version="[VERSION]"/>
+<gap:plugin name="e.sitewaerts.cordova.documentviewer" source="plugins.cordova.io" version="[VERSION]"/>
 ```
-More informations can be found [here][PGB_plugin].
+For available versions and additional information visit the [cordova plugin registry][CDV_plugin].
 
 
 ## Using the plugin ##
@@ -248,7 +247,6 @@ redirected to the google play app store.
 
 
 ## Known issues ##
-- Enhance iOS Performance in Double Page Mode.
 - Add transparent support for online files.
 - The external Viewer App (Android) cannot access files stored in app private directories. Due to this fact, the plugin copies a file to a shared temp folder before starting the viewer. When the viewer is closed, the temp file is immediately deleted. While the viewer is running, a sophisticated user may 'steel' the file from the shared temp directory. We are still searching for a better solution, any good idea is welcome.
 - Add support for pdf forms.
@@ -271,4 +269,4 @@ inspired by https://github.com/pebois/phonegap-plugin-PDFViewer
 [cordova]: https://cordova.apache.org
 [CLI]: http://cordova.apache.org/docs/en/edge/guide_cli_index.md.html#The%20Command-line%20Interface
 [PGB]: http://docs.build.phonegap.com/en_US/index.html
-[PGB_plugin]: https://build.phonegap.com/plugins/705
+[CDV_plugin]: http://plugins.cordova.io/#/package/de.sitewaerts.cordova.documentviewer
