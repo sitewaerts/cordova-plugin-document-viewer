@@ -583,10 +583,17 @@ public final class DocumentViewerPlugin
     {
         if (!this._appIsInstalled(packageId))
         {
-            Intent intent = new Intent(Intent.ACTION_INSTALL_PACKAGE);
-            intent.setData(Uri.parse("package:" + packageId));
-            cordova.getActivity().startActivity(intent);
-            callbackContext.success();
+//          Intent intent = new Intent(Intent.ACTION_INSTALL_PACKAGE);
+//          intent.setData(Uri.parse("package:" + packageId));
+//          cordova.getActivity().startActivity(intent);
+//          callbackContext.success();
+            //http://stackoverflow.com/a/11753070/3070886
+            try {
+                cordova.getActivity().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + packageId)));
+            } catch (android.content.ActivityNotFoundException anfe) {
+                cordova.getActivity().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + packageId)));
+            }
+            //TODO startActivityForResult verwenden, callback success in onActivityResult, anderen requestcode als bei open verwenden, damit man die unterscheiden kann
         }
         else
         {
