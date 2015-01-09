@@ -231,8 +231,6 @@ The plugin uses the awesome VFRReader (https://github.com/vfr/Reader) to embed p
 
 ## Android ##
 
-**This feature is currently under development and not yet ready to use.**
-
 Due to license restrictions in muPDF, the plugin dispatches to a separate
 (free) viewer app based on muPDF. If the viewer app is not yet installed, the user may be 
 redirected to the google play app store.
