@@ -105,8 +105,9 @@ public final class DocumentViewerPlugin
         public static final String MISSING_APP_ID = "missingAppId";
     }
 
-    private static final int REQUEST_CODE =
-            System.identityHashCode(DocumentViewerPlugin.class);
+    private static final int REQUEST_CODE_OPEN = 1000;
+
+    private static final int REQUEST_CODE_INSTALL = 1001;
 
     private CallbackContext callbackContext;
 
@@ -169,7 +170,7 @@ public final class DocumentViewerPlugin
             );
             //put cordova arguments into Android Bundle in order to pass them to the external Activity
             Bundle viewerOptions = new Bundle();
-            //exce
+            //exec
             viewerOptions
                     .putString(DOCUMENTVIEW_OPTIONS + "." + Options.CLOSE_LABEL,
                             options.getJSONObject(DOCUMENTVIEW_OPTIONS)
@@ -296,7 +297,10 @@ public final class DocumentViewerPlugin
      */
     public void onActivityResult(int requestCode, int resultCode, Intent intent)
     {
-        if (requestCode == REQUEST_CODE && this.callbackContext != null)
+        if(this.callbackContext == null)
+            return;
+
+        if (requestCode == REQUEST_CODE_OPEN)
         {
             //remove tmp file
             clearTempFiles();
@@ -313,6 +317,12 @@ public final class DocumentViewerPlugin
             {
                 e.printStackTrace();
             }
+            this.callbackContext = null;
+        }
+        else if (requestCode == REQUEST_CODE_INSTALL)
+        {
+            // send success event
+            this.callbackContext.success();
             this.callbackContext = null;
         }
     }
@@ -342,7 +352,9 @@ public final class DocumentViewerPlugin
                 );
 
                 this.callbackContext = callbackContext;
-                this.cordova.startActivityForResult(this, intent, REQUEST_CODE);
+                this.cordova.startActivityForResult(this, intent,
+                        REQUEST_CODE_OPEN
+                );
 
                 // send shown event
                 JSONObject successObj = new JSONObject();
@@ -377,9 +389,8 @@ public final class DocumentViewerPlugin
     private void copyFile(File src, File target)
             throws IOException
     {
-        Log.d(TAG, "Creating temp file for " + src.getAbsolutePath() + " at "
-                + target.getAbsolutePath()
-        );
+//        Log.d(TAG, "Creating temp file for " + src.getAbsolutePath()
+//                + " at " + target.getAbsolutePath());
         copyFile(new FileInputStream(src), target);
     }
 
@@ -456,7 +467,7 @@ public final class DocumentViewerPlugin
         if (!dir.exists())
             return;
 
-        Log.d(TAG, "clearing temp files below " + dir.getAbsolutePath());
+        //Log.d(TAG, "clearing temp files below " + dir.getAbsolutePath());
         deleteRecursive(dir, false);
     }
 
@@ -494,7 +505,7 @@ public final class DocumentViewerPlugin
             String fileName = filePath.substring(
                     filePath.lastIndexOf(File.pathSeparator) + 1);
 
-            Log.d(TAG, "Handling assets file: fileArg: " + fileArg + ", filePath: " + filePath + ", fileName: " + fileName);
+            //Log.d(TAG, "Handling assets file: fileArg: " + fileArg + ", filePath: " + filePath + ", fileName: " + fileName);
 
             try
             {
@@ -583,17 +594,21 @@ public final class DocumentViewerPlugin
     {
         if (!this._appIsInstalled(packageId))
         {
-//          Intent intent = new Intent(Intent.ACTION_INSTALL_PACKAGE);
-//          intent.setData(Uri.parse("package:" + packageId));
-//          cordova.getActivity().startActivity(intent);
-//          callbackContext.success();
-            //http://stackoverflow.com/a/11753070/3070886
+            this.callbackContext = callbackContext;
+
             try {
-                cordova.getActivity().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + packageId)));
-            } catch (android.content.ActivityNotFoundException anfe) {
-                cordova.getActivity().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + packageId)));
+                Intent intent = new Intent(Intent.ACTION_VIEW,
+                        Uri.parse("market://details?id=" + packageId));
+                this.cordova.startActivityForResult(this, intent,
+                        REQUEST_CODE_INSTALL
+                );
+            } catch (android.content.ActivityNotFoundException e) {
+                Intent intent = new Intent(Intent.ACTION_VIEW,
+                        Uri.parse("https://play.google.com/store/apps/details?id=" + packageId));
+                this.cordova.startActivityForResult(this, intent,
+                        REQUEST_CODE_INSTALL
+                );
             }
-            //TODO startActivityForResult verwenden, callback success in onActivityResult, anderen requestcode als bei open verwenden, damit man die unterscheiden kann
         }
         else
         {
@@ -623,9 +638,7 @@ public final class DocumentViewerPlugin
     private String stripFileProtocol(String uriString)
     {
         if (uriString.startsWith("file://"))
-        {
             uriString = uriString.substring(7);
-        }
         return uriString;
     }
 
