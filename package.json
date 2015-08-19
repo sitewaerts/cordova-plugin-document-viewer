@@ -1,0 +1,18 @@
+{
+    "version": "0.3.0",
+    "name": "de.sitewaerts.cordova.documentviewer",
+    "cordova_name": "SitewaertsDocumentViewer",
+    "description": "Document viewer phonegap plugin.\r\n        Currently supports PDF Documents on iOS, Android and Windows 8.1.\r\n    ",
+    "license": "MIT",
+    "platforms": [
+        "android",
+        "ios",
+        "windows"
+    ],
+    "engines": [
+        {
+            "name": "cordova",
+            "version": ">=3.7.0"
+        }
+    ]
+}

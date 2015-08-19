@@ -131,7 +131,7 @@ var SitewaertsDocumentViewer = {
                     },
                     function (err)
                     {
-                        window.console.log(errorPrefix + JSON.stringify(err));
+                        window.console.log(errorPrefix,  err);
                         if (onError)
                         {
                             onError(err);
@@ -193,7 +193,7 @@ var SitewaertsDocumentViewer = {
                     },
                     function (err)
                     {
-                        window.console.log(errorPrefix + JSON.stringify(err));
+                        window.console.log(errorPrefix, err);
                         if (onError)
                             onError(err);
                     },
@@ -206,7 +206,7 @@ var SitewaertsDocumentViewer = {
         }
         catch (e)
         {
-            window.console.log(errorPrefix + JSON.stringify(e));
+            window.console.log(errorPrefix, e);
             if (onError)
                 onError(e);
         }
@@ -255,8 +255,7 @@ var SitewaertsDocumentViewer = {
                                 },
                                 function (err)
                                 {
-                                    window.console.log(
-                                            errorPrefix + JSON.stringify(err));
+                                    window.console.log(errorPrefix, err);
                                     if (onError)
                                         onError(err);
                                 },
@@ -291,7 +290,7 @@ var SitewaertsDocumentViewer = {
         }
         catch (e)
         {
-            window.console.log(errorPrefix + JSON.stringify(e));
+            window.console.log(errorPrefix, e);
             if (onError)
                 onError(e);
         }

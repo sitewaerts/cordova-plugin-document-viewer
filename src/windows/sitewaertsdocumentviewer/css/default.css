@@ -1,0 +1,21 @@
+﻿html, body{
+    padding:0;
+    margin:0;
+}
+
+.win-navbarcommand-label
+{
+    font-family: sans-serif;
+}
+
+
+#semanticZoomDiv{
+    width: 100%;
+    height: 100%;
+}
+
+.win-navbarcommand-button
+{
+    background-color: transparent;
+}
+

@@ -1,0 +1,88 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Document Viewer</title>
+
+    <!-- common WinJS references -->
+    <link href="js/winjs/css/ui-dark.css" rel="stylesheet" />
+    <script src="js/winjs/js/base.js"></script>
+    <script src="js/winjs/js/ui.js"></script>
+
+    <!-- viewer references -->
+    <link href="css/default.css" rel="stylesheet" />
+    <script src="js/pdfLibrary.js"></script>
+    <script src="js/pdfDataSource.js"></script>
+    <script src="js/default.js"></script>
+</head>
+<body>
+    <!-- Simple template for the ListView instantiation  -->
+    <div id="pdfViewTemplate" data-win-control="WinJS.Binding.Template">
+        <div class="pdf_page" data-win-control="WinJS.UI.ViewBox"
+             data-win-bind="style.width: maxWidthPx; style.height: maxHeightPx">
+            <img src="images/placeholder.jpg" data-win-bind="src: imageSrc blobUriFromStream; width: width; height: height">
+        </div>
+    </div>
+
+    <!-- Simple template for the ListView instantiation  -->
+    <div id="pdfSZViewTemplate" data-win-control="WinJS.Binding.Template"
+         style="display: none">
+        <div class="pdf_thumb" data-win-bind="style.width: maxWidthPx; style.height: maxHeightPx">
+            <img src="images/placeholder.jpg" data-win-bind="src: imageSrc blobUriFromStream; width: width; height: height">
+        </div>
+    </div>
+
+    <div id="semanticZoomDiv" data-win-control="WinJS.UI.SemanticZoom"
+         data-win-options="{zoomedInItem: window.zoomedInItem, zoomedOutItem: window.zoomedOutItem }">
+        <!-- zoomed-in view -->
+        <div id="zoomedInListView"
+             class="zoomed_in"
+             data-win-control="WinJS.UI.ListView"
+             data-win-options="{
+                                itemTemplate: pdfViewTemplate,
+                                selectionMode: 'none',
+                                tapBehavior: 'invokeOnly',
+                                swipeBehavior: 'none' ,
+                                layout: {type: WinJS.UI.GridLayout, maxRows: 1},
+                              }">
+        </div>
+
+        <!--- zoomed-out view -->
+        <div id="zoomedOutListView"
+             class="zoomed_out"
+             data-win-control="WinJS.UI.ListView"
+             data-win-options="{
+                                itemTemplate: pdfSZViewTemplate,
+                                selectionMode: 'none',
+                                tapBehavior: 'invokeOnly',
+                                swipeBehavior: 'none',
+                                layout: {type: WinJS.UI.GridLayout}
+                              }">
+        </div>
+    </div>
+
+    <div id="mainNavBar" data-win-control="WinJS.UI.NavBar" data-win-options="{maxRows: 1}">
+            <div data-win-control="WinJS.UI.NavBarCommand"
+                 id="close"
+                 data-win-bind="winControl.label: options.title"
+                 data-win-options="{icon: WinJS.UI.AppBarIcon.back}"></div>
+    </div>
+
+    <!-- Adding command bar option to open and load a PDF file -->
+    <!--
+    <div id="appBar" data-win-control="WinJS.UI.AppBar">
+        <button data-win-control="WinJS.UI.AppBarCommand"
+                data-win-options="{
+                                    id:'open',
+                                    label:'open',
+                                    icon:'openlocal',
+                                    section:'global',
+                                    extraClass:'singleSelect',
+                                    tooltip:'Open PDF'
+                                   }">
+        </button>
+    </div>
+    -->
+
+</body>
+</html>

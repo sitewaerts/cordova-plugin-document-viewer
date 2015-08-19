@@ -38,9 +38,14 @@ document types by using native viewer components.
 
 ## Supported Platforms ##
 
-* iOS 6+
-* Android 4.1+
-* Cordova/Phonegap >=3.6.0
+* Cordova/Phonegap >=3.7.0
+  * iOS 7+
+  * Android 4.1+
+
+* Cordova/Phonegap >=3.8.1
+  * iOS 7+
+  * Android 4.1+
+  * Windows 8.1
 
 ## Installation ##
 
@@ -244,6 +249,14 @@ redirected to the google play app store.
 ![screenshot](doc/android/screenshot01.png) &nbsp;&nbsp; ![screenshot](doc/android/screenshot02.png)
 
 
+## Windows ##
+
+The plugin uses [PDF.JS][PDFJS] to display PDF files.
+
+### Screenshots ###
+
+TODO
+
 ## Known issues ##
 - Add transparent support for online files.
 - The external Viewer App (Android) cannot access files stored in app private directories. Due to this fact, the plugin copies a file to a shared temp folder before starting the viewer. When the viewer is closed, the temp file is immediately deleted. While the viewer is running, a sophisticated user may 'steel' the file from the shared temp directory. We are still searching for a better solution, any good idea is welcome.
@@ -261,6 +274,8 @@ based on https://github.com/vfr/Reader
 
 based on https://github.com/mindstorm/CDVPDFViewer
 
+based on https://mozilla.github.io/pdf.js/
+
 inspired by https://github.com/pebois/phonegap-plugin-PDFViewer
 
 
@@ -268,3 +283,4 @@ inspired by https://github.com/pebois/phonegap-plugin-PDFViewer
 [CLI]: http://cordova.apache.org/docs/en/edge/guide_cli_index.md.html#The%20Command-line%20Interface
 [PGB]: http://docs.build.phonegap.com/en_US/index.html
 [CDV_plugin]: http://plugins.cordova.io/#/package/de.sitewaerts.cordova.documentviewer
+[PDFJS]: https://mozilla.github.io/pdf.js/

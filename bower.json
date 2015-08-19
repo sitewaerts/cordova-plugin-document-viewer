@@ -1,0 +1,8 @@
+{
+  "name": "cordova-plugin-document-viewer",
+  "version": "0.3.0",
+  "dependencies": {
+    "winjs": "latest"
+  },
+  "private": true
+}

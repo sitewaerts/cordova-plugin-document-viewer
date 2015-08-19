@@ -2,13 +2,14 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
         id="de.sitewaerts.cordova.documentviewer"
         xmlns:android="http://schemas.android.com/apk/res/android"
-        version="0.2.0">
+        version="0.3.0">
     <engines>
-        <engine name="cordova" version=">=3.6.0"/>
+        <engine name="cordova" version=">=3.7.0"/>
+        <engine name="cordova-windows" version=">=4.0.0"/>
     </engines>
     <name>SitewaertsDocumentViewer</name>
     <description>Document viewer phonegap plugin.
-        Currently supports PDF Documents on iOS and Android.
+        Currently supports PDF Documents on iOS, Android and Windows 8.1.
     </description>
     <author>Felix Schauerte</author>
     <email>schauerte@sitewaerts.de</email>
@@ -187,5 +188,22 @@ not sure if this is correct, it creates a second application tag in the manifest
 
 
     </platform>
+
+    <!--<platform name="windows">-->
+        <!--<js-module src="src/windows/sitewaertsdocumentviewerProxy_pdfjs.js"-->
+                   <!--name="SitewaertsDocumentViewerProxy">-->
+            <!--<merges target=""/>-->
+        <!--</js-module>-->
+        <!--<asset src="src/pdfjs" target="pdfjs" />-->
+    <!--</platform>-->
+
+    <platform name="windows">
+        <js-module src="src/windows/sitewaertsdocumentviewerProxy_native.js"
+                   name="SitewaertsDocumentViewerProxy">
+            <merges target=""/>
+        </js-module>
+        <asset src="src/windows/sitewaertsdocumentviewer" target="sitewaertsdocumentviewer" />
+    </platform>
+
 
 </plugin>
