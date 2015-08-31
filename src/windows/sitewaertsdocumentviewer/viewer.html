@@ -16,16 +16,17 @@
     <script src="js/default.js"></script>
 </head>
 <body>
-    <!-- Simple template for the ListView instantiation  -->
-    <div id="pdfViewTemplate" data-win-control="WinJS.Binding.Template">
+    <!-- Simple template for the ListView instantiation  fullscreen -->
+    <div id="fullScreenViewTemplate" data-win-control="WinJS.Binding.Template"
+         style="display: none">
         <div class="pdf_page" data-win-control="WinJS.UI.ViewBox"
              data-win-bind="style.width: maxWidthPx; style.height: maxHeightPx">
             <img src="images/placeholder.jpg" data-win-bind="src: imageSrc blobUriFromStream; width: width; height: height">
         </div>
     </div>
 
-    <!-- Simple template for the ListView instantiation  -->
-    <div id="pdfSZViewTemplate" data-win-control="WinJS.Binding.Template"
+    <!-- Simple template for the ListView instantiation  thumbnails -->
+    <div id="thumbnailViewTemplate" data-win-control="WinJS.Binding.Template"
          style="display: none">
         <div class="pdf_thumb" data-win-bind="style.width: maxWidthPx; style.height: maxHeightPx">
             <img src="images/placeholder.jpg" data-win-bind="src: imageSrc blobUriFromStream; width: width; height: height">
@@ -33,38 +34,48 @@
     </div>
 
     <div id="semanticZoomDiv" data-win-control="WinJS.UI.SemanticZoom"
-         data-win-options="{zoomedInItem: window.zoomedInItem, zoomedOutItem: window.zoomedOutItem }">
-        <!-- zoomed-in view -->
+         data-win-options="{zoomedInItem: PDFViewer.zoomedInItem, zoomedOutItem: PDFViewer.zoomedOutItem }">
+        <!-- zoomed-in view / fullscreen -->
         <div id="zoomedInListView"
              class="zoomed_in"
              data-win-control="WinJS.UI.ListView"
              data-win-options="{
-                                itemTemplate: pdfViewTemplate,
+                                itemTemplate: select('#fullScreenViewTemplate'),
                                 selectionMode: 'none',
                                 tapBehavior: 'invokeOnly',
                                 swipeBehavior: 'none' ,
-                                layout: {type: WinJS.UI.GridLayout, maxRows: 1},
-                              }">
+                                layout: {
+                                    type: WinJS.UI.CellSpanningLayout,
+                                    groupInfo: PDFViewer.fullScreenView.groupInfo,
+                                    itemInfo: PDFViewer.fullScreenView.itemInfo
+                                }
+                              }"
+                data-win-bind="winControl.itemDataSource: PDFViewer.fullScreenView.dataSource">
         </div>
 
-        <!--- zoomed-out view -->
+        <!--- zoomed-out view / thumbnails -->
         <div id="zoomedOutListView"
              class="zoomed_out"
              data-win-control="WinJS.UI.ListView"
              data-win-options="{
-                                itemTemplate: pdfSZViewTemplate,
+                                itemTemplate: select('#thumbnailViewTemplate'),
                                 selectionMode: 'none',
                                 tapBehavior: 'invokeOnly',
                                 swipeBehavior: 'none',
-                                layout: {type: WinJS.UI.GridLayout}
-                              }">
+                                layout: {
+                                    type: WinJS.UI.CellSpanningLayout,
+                                    groupInfo: PDFViewer.thumbnailView.groupInfo,
+                                    itemInfo: PDFViewer.thumbnailView.itemInfo
+                                }
+                              }"
+             data-win-bind="winControl.itemDataSource: PDFViewer.thumbnailView.dataSource">
         </div>
     </div>
 
     <div id="mainNavBar" data-win-control="WinJS.UI.NavBar" data-win-options="{maxRows: 1}">
             <div data-win-control="WinJS.UI.NavBarCommand"
                  id="close"
-                 data-win-bind="winControl.label: options.title"
+                 data-win-bind="winControl.label: PDFViewer.title"
                  data-win-options="{icon: WinJS.UI.AppBarIcon.back}"></div>
     </div>
 

@@ -37,13 +37,14 @@ pdfLibrary = {
             // the view is thumbnail view and if the image is not yet generated then only generate the image
             var promise;
 
-            if (inMemoryFlag || this._dataArray[count].imageSrc === "") {
-                promise = pdfLibrary.loadPage(count, pdfDocument, pdfPageRenderingOptions, inMemoryFlag, tempFolder).then(function (pageData) {
+            var dataItem = this._dataArray[count];
+            if (inMemoryFlag || dataItem.imageSrc === "") {
+                promise = pdfLibrary.loadPage(count, pdfDocument, dataItem.pdfOptions, inMemoryFlag, tempFolder).then(function (pageData) {
                     return pageData;
                 });
             } else {
                 // Else pass the already generated image data
-                promise = WinJS.Promise.wrap(this._dataArray[count]);
+                promise = WinJS.Promise.wrap(dataItem);
             }
 
             promiseArray.push(promise);
@@ -87,7 +88,7 @@ pdfLibrary = {
         }
         return promise.then(function (imageStream) {
             var pdfPage = pdfDocument.getPage(pageIndex);
-            return pdfPage.renderToStreamAsync(imageStream, pdfPageRenderingOptions[pdfPage.index]).then(function () {
+            return pdfPage.renderToStreamAsync(imageStream, pdfPageRenderingOptions).then(function () {
                 return imageStream.flushAsync();
             })
             .then(function closeStream() {

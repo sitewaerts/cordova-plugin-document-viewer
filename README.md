@@ -42,7 +42,7 @@ document types by using native viewer components.
   * iOS 7+
   * Android 4.1+
 
-* Cordova/Phonegap >=3.8.1
+* Cordova/Phonegap >=4.0.0
   * iOS 7+
   * Android 4.1+
   * Windows 8.1
@@ -251,7 +251,7 @@ redirected to the google play app store.
 
 ## Windows ##
 
-The plugin uses [PDF.JS][PDFJS] to display PDF files.
+The plugin uses [Windows.Data.Pdf.PdfDocument][Windows.Data.Pdf.PdfDocument] to display PDF files.
 
 ### Screenshots ###
 
@@ -278,9 +278,12 @@ based on https://mozilla.github.io/pdf.js/
 
 inspired by https://github.com/pebois/phonegap-plugin-PDFViewer
 
+inspired by https://msdn.microsoft.com/en-us/library/windows/apps/dn263105.aspx
+
 
 [cordova]: https://cordova.apache.org
 [CLI]: http://cordova.apache.org/docs/en/edge/guide_cli_index.md.html#The%20Command-line%20Interface
 [PGB]: http://docs.build.phonegap.com/en_US/index.html
 [CDV_plugin]: http://plugins.cordova.io/#/package/de.sitewaerts.cordova.documentviewer
 [PDFJS]: https://mozilla.github.io/pdf.js/
+[Windows.Data.Pdf.PdfDocument]: https://msdn.microsoft.com/en-us/library/windows/apps/windows.data.pdf.pdfdocument

@@ -1,39 +1,32 @@
-﻿//// Copyright (c) Microsoft Corporation. All rights reserved
-
-(function ()
+﻿(function ()
 {
 
     WinJS.Namespace.define("PDF", {
-        dataAdapter: WinJS.Class.define(function (element, pdfDocument, options)
+        dataAdapter: WinJS.Class.define(function (pdfDocument, options)
                 {
-                    if ((pdfDocument === null) || (element === null))
+                    if ((pdfDocument === null))
                     {
                         throw "Invalid data";
                     }
 
-                    this._pdfPageRenderingOptions = [];
-
-                    this._element = element;
                     this._pdfDocument = pdfDocument;
                     this._options = options; // TODO: extend default with given options
 
                     // Initialize this data source
                     this._initialize();
                 },
-// Private members
                 {
                     _dataArray: null,               // This object stores the URL's for the pages rendered using PDF API's
                     _pdfDocument: null,             // Object returned by loadPDF
                     _pageCount: 0,                  // Number of pages in a given PDF file
                     _options: {
-                        inMemoryFlag: false,
+                        inMemoryFlag: true,
                         tempFolder: null,
                         pagesToLoad: 5,
-                        isIgnoringHighContrast: false,                          // High contrast will be honored by PDF API
-                        maxWidthFactor: 1,
-                        maxHeightFactor: 1
+                        isIgnoringHighContrast: false                          // High contrast will be honored by PDF API
                     },
                     _viewInfo: null,
+                    _groupInfo: null,
 
                     // Private member functions
                     _initialize: function ()
@@ -53,6 +46,10 @@
 
                         this._refresh = function ()
                         {
+                            if (!that._isViewInfoChanged())
+                                return null;
+                            that._calcDataItems();
+
                             if (that._refresher)
                                 return that._refresher();
                             return null;
@@ -66,35 +63,34 @@
                         window.addEventListener("resize", onSizeChange, false);
 
                         // Initialize data source with placeholder objects
-                        this._initializeDataArray();
 
-                        this._calcAllPDFOptions();
+                        this._dataArray = [];
+                        for (var count = 0, len = this._pageCount; count < len;
+                             count++)
+                        {
+                            this._dataArray.push({ pageIndex: count, imageSrc: "", width: 0, height: 0, itemInfo: { width: 0, height: 0}, pdfOptions: null});
+                        }
+
+                        this._calcDataItems();
 
                     },
 
                     _calcPDFOptions: function (viewInfo, pdfPage)
                     {
-                        var viewWidth = viewInfo.viewWidth;
-                        var viewHeight = viewInfo.viewHeight;
-
                         var index = pdfPage.index;
 
-                        var devicePixelRatio = window.devicePixelRatio;
+                        //var devicePixelRatio = window.devicePixelRatio;
 
-                        if (!this._pdfPageRenderingOptions[index])
-                        {
-                            this._pdfPageRenderingOptions[index]
-                                    = new Windows.Data.Pdf.PdfPageRenderOptions();
-                        }
+                        var data = this._dataArray[index];
+                        var pdfOptions = data.pdfOptions;
+                        if (!pdfOptions)
+                            data.pdfOptions = pdfOptions = new Windows.Data.Pdf.PdfPageRenderOptions();
 
-                        var pdfOptions = this._pdfPageRenderingOptions[index];
+                        pdfOptions.isIgnoringHighContrast =
+                                this._options.isIgnoringHighContrast;
 
-                        pdfOptions.isIgnoringHighContrast = this._options.isIgnoringHighContrast;
-
-                        var containerWidth = Math.floor(viewWidth
-                                * this._options.maxWidthFactor);
-                        var containerHeight = Math.floor(viewHeight
-                                * this._options.maxHeightFactor);
+                        var containerWidth = viewInfo.containerWidth;
+                        var containerHeight = viewInfo.containerHeight;
 
                         var pageDimRelation = pdfPage.size.width
                                 / pdfPage.size.height;
@@ -109,24 +105,24 @@
                                     / pageDimRelation));
                         }
 
-                        var data = this._dataArray[index];
+
                         data.width = pageWidth;
                         data.height = pageHeight;
-                        data.widthPx = pageWidth + "px";
-                        data.heightPx = pageHeight + "px";
-                        data.maxWidthPx = containerWidth + "px";
-                        data.maxHeightPx = containerHeight + "px";
 
-                        var destinationWidth = Math.floor(pageWidth
-                                * devicePixelRatio);
+                        //data.container = viewInfo.container; // shared instance over all pages
+
+                        // destination width is in dp aka dip
+                        // https://msdn.microsoft.com/de-de/library/windows/apps/windows.data.pdf.pdfpagerenderoptions.destinationheight.aspx
+                        //http://stackoverflow.com/questions/2025282/difference-between-px-dp-dip-and-sp-in-android
+
+                        var destinationWidth = Math.floor(pageWidth);
                         if (pdfOptions.destinationWidth != destinationWidth)
                         {
                             pdfOptions.destinationWidth = destinationWidth;
                             data.imageSrc = ""; // reset
                         }
 
-                        var destinationHeight = Math.floor(pageHeight
-                                * devicePixelRatio);
+                        var destinationHeight = Math.floor(pageHeight);
                         if (pdfOptions.destinationHeight != destinationHeight)
                         {
                             pdfOptions.destinationHeight = destinationHeight;
@@ -134,17 +130,32 @@
                         }
                     },
 
-                    _getViewInfo: function ()
+                    _buildViewInfo: function ()
                     {
+                        var viewWidth = window.outerWidth;
+                        var viewHeight = window.outerHeight;
+                        var margin = this._options.containerMargin;
+                        var rows = this._options.rows;
+
+                        var rawViewHeight = viewHeight;
+                        if (rows > 1)
+                            rawViewHeight = viewHeight
+                                    - (2 * margin) // top and bottom
+                                    - ((rows - 1) * (2 * margin)); // margins between rows
+
+                        var containerHeight = Math.floor(rawViewHeight / rows);
+
                         return {
-                            viewWidth: window.outerWidth,
-                            viewHeight: window.outerHeight
+                            viewWidth: viewWidth,
+                            viewHeight: viewHeight,
+                            containerWidth: viewWidth,
+                            containerHeight: containerHeight
                         };
                     },
 
                     _updateViewInfo: function ()
                     {
-                        var newViewInfo = this._getViewInfo();
+                        var newViewInfo = this._buildViewInfo();
 
                         if (!this._viewInfo)
                         {
@@ -154,62 +165,66 @@
                         {
                             this._viewInfo.viewWidth = newViewInfo.viewWidth;
                             this._viewInfo.viewHeight = newViewInfo.viewHeight;
+                            this._viewInfo.containerWidth = newViewInfo.containerWidth;
+                            this._viewInfo.containerHeight = newViewInfo.containerHeight;
                         }
+
+                        this._groupInfo = {
+                            enableCellSpanning: true,
+                            cellWidth: this._viewInfo.containerWidth,
+                            cellHeight: this._viewInfo.containerHeight
+                        };
+
                         return this._viewInfo;
                     },
 
-                    _clearViewInfo: function ()
-                    {
-                        this._viewInfo = null;
-                    },
 
                     _isViewInfoChanged: function ()
                     {
                         if (!this._viewInfo)
                             return true;
 
-                        var newViewInfo = this._getViewInfo();
+                        var nvi = this._buildViewInfo();
+                        var ovi = this._viewInfo;
 
-                        return (newViewInfo.viewWidth
-                                != this._viewInfo.viewHeight
-                                || newViewInfo.viewHeight
-                                != this._viewInfo.viewHeight);
+                        return (
+                                nvi.containerWidth
+                                        != ovi.containerWidth
+                                        || nvi.containerHeight
+                                        != ovi.containerHeight
+                                );
                     },
 
-                    _clearAllPDFOptions: function ()
-                    {
-                        this._pdfPageRenderingOptions = [];
-                    },
-
-                    _calcAllPDFOptions: function ()
+                    _calcDataItems: function ()
                     {
                         var that = this;
+
+                        var pageCount = that._pageCount;
 
                         var viewInfo = this._updateViewInfo();
-                        for (var count = 0, pageCount = that._pageCount;
-                             count < pageCount; count++)
+                        var cellWidth = this._groupInfo.cellWidth;
+                        var cellHeight = this._groupInfo.cellHeight;
+
+                        var index;
+                        for (index = 0; index < pageCount; index++)
                         {
                             that._calcPDFOptions(viewInfo,
-                                    that._pdfDocument.getPage(count));
+                                    that._pdfDocument.getPage(index));
+                            cellWidth = Math.min(
+                                    cellWidth, this._dataArray[index].width);
                         }
-                    },
 
-                    _refreshAllPDFOptions: function ()
-                    {
-                        if (!this._isViewInfoChanged())
-                            return;
-                        this._calcAllPDFOptions();
-                    },
+                        this._groupInfo.cellWidth = cellWidth;
 
-                    // This method initializes the _dataArray
-                    _initializeDataArray: function ()
-                    {
-                        var that = this;
-                        that._dataArray = [];
-                        for (var count = 0, len = that._pageCount; count < len;
-                             count++)
+                        for (index = 0; index < pageCount; index++)
                         {
-                            that._dataArray.push({ pageIndex: count, imageSrc: "", width: 0, height: 0, widthPx: '0px', heightPx: '0px', maxWidthPx: '0px', maxHeightPx: '0px' });
+                            var data = this._dataArray[index];
+                            data.itemInfo.width = (Math.floor(data.width
+                                    / cellWidth)) * cellWidth;
+                            if (data.width % cellWidth != 0)
+                                data.itemInfo.width = data.itemInfo.width
+                                        + cellWidth;
+                            data.itemInfo.height = cellHeight;
                         }
                     },
 
@@ -221,14 +236,12 @@
                     {
                         var that = this;
 
-                        that._refreshAllPDFOptions();
-
                         startIndex = Math.max(0, startIndex);
                         endIndex = Math.min(that._pageCount, endIndex);
 
                         var promise = that.loadPages(startIndex, endIndex,
                                         this._pdfDocument,
-                                        this._pdfPageRenderingOptions,
+                                        this._dataArray,
                                         this._options.inMemoryFlag,
                                         this._options.tempFolder).then(function (pageDataArray)
                                 {
@@ -267,8 +280,23 @@
 
                         this._dataArray = null;
 
-                        this._clearViewInfo();
-                        this._clearAllPDFOptions();
+                        this._viewInfo = null;
+                        this._groupInfo = null;
+                    },
+
+                    getGroupInfo: function ()
+                    {
+                        return this._groupInfo;
+                    },
+
+                    getItemInfo: function (index)
+                    {
+                        if (!this._dataArray)
+                            return null;
+                        var data = this._dataArray[index];
+                        if (!data)
+                            return null;
+                        return data.itemInfo;
                     },
 
                     // Called to get a count of the items
@@ -318,17 +346,26 @@
                                             key: i.toString(),
                                             data: {
                                                 imageSrc: dataItem.imageSrc,
+
                                                 width: dataItem.width,
                                                 height: dataItem.height,
-                                                widthPx: dataItem.widthPx,
-                                                heightPx: dataItem.heightPx,
-                                                maxWidthPx : dataItem.maxWidthPx,
-                                                maxHeightPx : dataItem.maxHeightPx
+
+                                                widthPx: dataItem.width + "px",
+                                                heightPx: dataItem.height
+                                                        + "px",
+
+                                                cellWidth: dataItem.itemInfo.width,
+                                                cellHeight: dataItem.itemInfo.height,
+
+                                                cellWidthPx: dataItem.itemInfo.width
+                                                        + "px",
+                                                cellHeightPx: dataItem.itemInfo.height
+                                                        + "px"
                                             }
                                         });
 
-                                        // If this is zoomed in view, remove the reference to the stream so that it will get collected
-                                        // by GC. This is not applicable for thumb nail view as we are cacheing the entries for thumbnail view
+                                        // If this is fullScreen view, remove the reference to the stream so that it will get collected
+                                        // by GC. This is not applicable for thumb nail view as we are caching the entries for thumbnail view
                                         // on disc
                                         if (that._inMemoryFlag)
                                         {
@@ -353,27 +390,43 @@
 
     });
     WinJS.Namespace.define("PDF.dataAdapter", {
-        dataSource: WinJS.Class.derive(WinJS.UI.VirtualizedDataSource,
-                function (element, pdfDocument, options)
+        dataSource: WinJS.Class.derive(
+                WinJS.UI.VirtualizedDataSource,
+                function (winControl, pdfDocument, options)
                 {
                     var that = this;
-                    this._dataAdapter = new PDF.dataAdapter(element,
-                            pdfDocument, options);
-                    this._baseDataSourceConstructor(this._dataAdapter,
+                    that._dataAdapter = new PDF.dataAdapter(pdfDocument,
+                            options);
+                    this._baseDataSourceConstructor(that._dataAdapter,
                             { cacheSize: 10 });
-                    this._dataAdapter.setRefresher(function ()
+                    that._dataAdapter.setRefresher(function ()
                     {
                         return that.invalidateAll().done(function ()
                         {
-                            element.winControl.recalculateItemPosition();
+                            // see https://msdn.microsoft.com/en-us/library/windows/apps/jj657974.aspx
+                            winControl.recalculateItemPosition();
                         });
                     });
-                }, {
+                },
+                {
+
+//                    itemFromDescription: function (description) {
+//                        return WinJS.Promise.wrap({ index: 0 });
+//                    },
                     unload: function ()
                     {
                         this._dataAdapter.unload();
+                    },
+                    getGroupInfo: function ()
+                    {
+                        return this._dataAdapter.getGroupInfo()
+                    },
+                    getItemInfo: function (index)
+                    {
+                        return this._dataAdapter.getItemInfo(index)
                     }
-                })
+                }
+        )
     });
 
     // Event mixin to access PDF library functions in Virtualized Data Source Class

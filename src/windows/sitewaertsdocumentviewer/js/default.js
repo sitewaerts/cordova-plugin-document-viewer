@@ -1,6 +1,4 @@
-﻿//// Copyright (c) Microsoft Corporation. All rights reserved
-
-(function ()
+﻿(function ()
 {
     "use strict";
 
@@ -15,34 +13,88 @@
 
     });
 
-    WinJS.Namespace.define("PdfShowcase", {
-        loadedFile: null,
-        zoomedInViewSource: null,
-        zoomedOutViewSource: null,
-        errorMessage: null,
-        options: {}
+    var View = WinJS.Class.define(
+            function (name)
+            {
+                this.name = name;
+
+
+                var that = this;
+
+
+                this.groupInfo = function ()
+                {
+                    if (!that.dataSource)
+                        return null;
+                    return that.dataSource.getGroupInfo();
+                };
+
+                this.itemInfo = function (index)
+                {
+                    if (!that.dataSource)
+                        return null;
+                    return that.dataSource.getItemInfo(index);
+                };
+
+
+                WinJS.Utilities.markSupportedForProcessing(this.groupInfo);
+                WinJS.Utilities.markSupportedForProcessing(this.itemInfo);
+            },
+            {
+                dataSource: null
+            });
+
+
+    // The following code provides mapping of items between zoomedIn and zoomedOut view
+    var zoomMapping = WinJS.UI.eventHandler(function (item)
+    {
+        var clone = Object.create(item);
+        clone.groupIndexHint = clone.firstItemIndexHint = item.index;
+        return clone;
     });
 
 
-    var viewer;
+    WinJS.Namespace.define("PDFViewer", {
+        loadedFile: null,
+        errorMessage: null,
+        title: null,
+        options: {},
+        zoomedInItem: zoomMapping,
+        zoomedOutItem: zoomMapping,
+        fullScreenView: WinJS.Binding.as(new View("fullScreen")),
+        thumbnailView: WinJS.Binding.as(new View("thumbnail"))
+    });
+
+    var viewer = WinJS.Binding.as(PDFViewer);
+
+    // publish these objects to the page for data-win-bind
+    var pageModel = WinJS.Binding.as(
+            {PDFViewer: viewer}
+    );
+
+    WinJS.Application.onerror = function (eventInfo)
+    {
+        window.console.error('WinJS.Application.onerror :', eventInfo);
+
+        var detail = eventInfo.detail;
+        var dialog = new Windows.UI.Popups.MessageDialog(
+                detail.stack, detail.message);
+        dialog.showAsync().done();
+
+        // By returning true, we signal that the exception was handled,
+        // preventing the application from being terminated
+        return true;
+    };
 
 
     function setup()
     {
 
-        // The following code provides mapping of items between zoomedIn and zoomedOut view
-        window.zoomedInItem = window.zoomedOutItem = WinJS.UI.eventHandler(function (item)
+        function init()
         {
-            var clone = Object.create(item);
-            clone.groupIndexHint = clone.firstItemIndexHint = item.index;
-            return clone;
-        });
+            viewer.options = getPDFViewerOptions();
+            viewer.title = viewer.options ? viewer.options.title : null;
 
-        WinJS.UI.processAll().done(function ()
-        {
-            PdfShowcase.options = getPDFViewerOptions();
-
-            viewer = WinJS.Binding.as(PdfShowcase);
 
             initializeNavBar();
 
@@ -55,7 +107,17 @@
             dataTransferManager.addEventListener("datarequested",
                     eventHandlerShareItem);
 
+        }
+
+        WinJS.UI.processAll().done(function ()
+        {
+            _processBinding(init);
         });
+    }
+
+    function _processBinding(done)
+    {
+        WinJS.Binding.processAll(null, pageModel).done(done);
     }
 
 
@@ -124,14 +186,9 @@
         // Loading PDf file from the assets
         pdfLibrary.loadPDF(file).done(function (pdfDocument)
         {
-
             if (pdfDocument !== null)
             {
-                // Initialize ZoomedInView control of Semantic Zoom
-                initializeZoomedInView(pdfDocument);
-
-                // Initialize ZoomedOutView control of Semantic Zoom
-                initializeZoomedOutView(pdfDocument);
+                initializeViews(pdfDocument);
             }
         }, function error()
         {
@@ -140,96 +197,97 @@
 
     }
 
-    function initializeZoomedInView(pdfDocument)
+    function initializeViews(pdfDocument)
     {
+        //initialize views for semantic zoom
 
-        // Virtualized Data Source takes following arguments
-        //  zoomedInListView:           element for zoomed out view
-        //  pdfDocument:                PDF document returned by loadPDF
-        //  pdfPageRenderingOptions:    null, will be initialized by Virtualized Data Source Constructor
-        //  pageToLoad:                 number of pages to load on each request to Virtualized Data source itemFromIndex method
-        //  inMemoryFlag:               false, all images are kept in memory
-        //  temporary folder:           null, not required as inMemoryFlag is set to false
+        initializeFullScreenView(pdfDocument);
+        initializeThumbnailsView(pdfDocument);
+    }
 
-        if (viewer.zoomedInViewSource !== null)
-        {
-
-            // Unloading currently loaded PDF file
-            viewer.zoomedInViewSource.unload();
-        }
-
-        var zoomedInListView = document.getElementById("zoomedInListView");
-
-        // Initializing control
-        zoomedInListView.winControl.itemDataSource = null;
-        zoomedInListView.winControl.layout = new WinJS.UI.GridLayout();
-
-        var options = {
-            inMemoryFlag: true,
-            tempFolder: null,
-            pagesToLoad: 5,
-            isIgnoringHighContrast: false,
-            maxWidthFactor: 1,
-            maxHeightFactor: 1,
-            pdfViewTemplate: 'pdfSZViewTemplate'
-        };
-
-
-        var zoomedInViewSource = new PDF.dataAdapter.dataSource(
-                zoomedInListView, pdfDocument, options);
-
-        //  Setting data source for element
-        zoomedInListView.winControl.itemDataSource = zoomedInViewSource;
-
-        viewer.zoomedInViewSource = zoomedInViewSource;
+    function initializeFullScreenView(pdfDocument)
+    {
+        // fullscreen view
+        initializeView(
+                viewer.fullScreenView,
+                "zoomedInListView",
+                pdfDocument,
+                {
+                    rows: 1,
+                    inMemory: true,
+                    pagesToLoad: 5
+                }
+        );
 
     }
 
-    function initializeZoomedOutView(pdfDocument)
+    function initializeThumbnailsView(pdfDocument)
+    {
+        // thumbnail view
+        initializeView(
+                viewer.thumbnailView,
+                "zoomedOutListView",
+                pdfDocument,
+                {
+                    rows: 4,
+                    inMemory: false,
+                    pagesToLoad: 5
+                }
+        );
+    }
+
+    function initializeView(view, viewNodeId, pdfDocument, options)
     {
 
-        if (viewer.zoomedOutViewSource !== null)
+        if (view.dataSource !== null)
         {
-
             // Unloading currently loaded PDF file
-            viewer.zoomedOutViewSource.unload();
+            view.dataSource.unload();
+            view.dataSource = null;
         }
 
-        WinJS.Application.local.folder.createFolderAsync("temp",
-                        Windows.Storage.CreationCollisionOption.replaceExisting).done(function (tempFolder)
-                {
-                    // Virtualized Data Source takes following arguments
-                    //  zoomedOutListView:          element for zoomed out view
-                    //  pdfDocument:                PDF document returned by loadPDF
-                    //  pdfPageRenderingOptions:    page rendering option with height set to 300px for Zoomed Out view
-                    //  pageToLoad:                 number of pages to load on each request to Virtualized Data source itemFromIndex method
-                    //  inMemoryFlag:               true,all the thumbnails generated will be placed on disk
-                    //  temporary folder:           path on disk where these images will be kept
+        if (options.inMemory == true)
+        {
+            init(null);
+        }
+        else
+        {
+            WinJS.Application.temp.folder.createFolderAsync(
+                            "pdfViewer",
+                            Windows.Storage.CreationCollisionOption.replaceExisting
+                    ).done(function (tempFolder)
+                    {
+                        init(tempFolder);
+                    });
+        }
 
-                    var zoomedOutListView = document.getElementById("zoomedOutListView");
+        function init(tempFolder)
+        {
+            var viewNode = document.getElementById(viewNodeId);
+            var winControl = viewNode.winControl;
+            // Initializing control
+            //winControl.itemDataSource = null;
+            //viewNode.winControl.layout = new WinJS.UI.GridLayout();
 
-                    // Initializing control
-                    zoomedOutListView.winControl.itemDataSource = null;
-                    zoomedOutListView.winControl.layout = new WinJS.UI.GridLayout();
+            var _options = {
+                inMemoryFlag: tempFolder == null,
+                tempFolder: tempFolder,
+                pagesToLoad: options.pagesToLoad,
+                isIgnoringHighContrast: false,
+                rows: options.rows,
+                containerMargin: 5 // 5px is windows default
+            };
 
-                    var options = {
-                        inMemoryFlag: false,
-                        tempFolder: tempFolder,
-                        pagesToLoad: 5,
-                        isIgnoringHighContrast: false,
-                        maxWidthFactor: 0.25,
-                        maxHeightFactor: 0.2,
-                        pdfViewTemplate: 'pdfViewTemplate'
-                    };
+            view.dataSource = new PDF.dataAdapter.dataSource(
+                    winControl, pdfDocument, _options);
 
-                    var zoomedOutViewSource = new PDF.dataAdapter.dataSource(
-                            zoomedOutListView, pdfDocument, options);
+            //WinJS.UI.processAll();
 
-                    // Setting data source for element
-                    zoomedOutListView.winControl.itemDataSource = zoomedOutViewSource;
+            //_processBinding();
 
-                    viewer.zoomedOutViewSource = zoomedOutViewSource;
-                });
+            // Setting data source for element
+            //winControl.itemDataSource = view.dataSource;
+        }
     }
 
     function eventHandlerShareItem(e)
@@ -259,8 +317,6 @@
             return;
 
         close.addEventListener("click", closeClick, false);
-
-        WinJS.Binding.processAll(mainNavBar, PdfShowcase);
     }
 
     function closeClick()
@@ -333,7 +389,7 @@
         }
     });
 
-    window.bgUrlBlobUriFromStream = WinJS.Binding.initializer(function (source, sourceProp, dest, destProp)
+    window.cssUrlBlobUriFromStream = WinJS.Binding.initializer(function (source, sourceProp, dest, destProp)
     {
         if (source[sourceProp] !== null)
         {
