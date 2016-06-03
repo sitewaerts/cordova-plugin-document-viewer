@@ -9,6 +9,16 @@
         "ios",
         "windows"
     ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sitewaerts/cordova-plugin-document-viewer.git"
+  },
+  "author": "Felix Schauerte",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sitewaerts/cordova-plugin-document-viewer/issues"
+  },
+  "homepage": "https://github.com/sitewaerts/cordova-plugin-document-viewer#readme"
     "keywords": [
         "ecosystem:cordova",
         "cordova-android",

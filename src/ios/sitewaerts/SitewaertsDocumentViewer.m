@@ -69,9 +69,13 @@
     NSString* contentType = [options objectForKey:@"contentType"];
     NSString* contentTypePDF = @"application/pdf";
     if (url != nil && url.length > 0 && contentType != nil && contentType.length > 0 ) {
-
+#ifdef __CORDOVA_4_0_0
+	NSURL* baseUrl = [self.webViewEngine URL];
+#else
+	NSURL* baseUrl = [self.webView.request URL];
+#endif
        if([contentType isEqualToString:contentTypePDF]){
-        NSURL* absoluteURL = [[NSURL URLWithString:url relativeToURL:[self.webView.request URL]] absoluteURL];
+        NSURL* absoluteURL = [[NSURL URLWithString:url relativeToURL:baseUrl] absoluteURL];
         if ([[NSFileManager defaultManager] fileExistsAtPath:absoluteURL.path]) {
             NSLog(@"[pdfviewer] path: %@", absoluteURL.path);
             ReaderDocument *document = [ReaderDocument withDocumentFilePath:absoluteURL.path password:nil];
@@ -104,8 +108,12 @@
     // URL
     NSString* url = [options objectForKey:@"url"];
     if (url != nil && url.length > 0) {
-
-        NSURL* absoluteURL = [[NSURL URLWithString:url relativeToURL:[self.webView.request URL]] absoluteURL];
+#ifdef __CORDOVA_4_0_0
+	NSURL* baseUrl = [self.webViewEngine URL];
+#else
+	NSURL* baseUrl = [self.webView.request URL];
+#endif
+        NSURL* absoluteURL = [[NSURL URLWithString:url relativeToURL:baseUrl] absoluteURL];
 
         if ([[NSFileManager defaultManager] fileExistsAtPath:absoluteURL.path]) {
             NSLog(@"[pdfviewer] path: %@", absoluteURL.path);
