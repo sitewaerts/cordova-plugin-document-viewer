@@ -1,0 +1,35 @@
+{
+  "name": "de.sitewaerts.cordova.documentviewer",
+  "version": "0.2.1",
+  "description": "Document viewer phonegap plugin.",
+  "cordova": {
+    "id": "de.sitewaerts.cordova.documentviewer",
+    "platforms": [
+      "ios",
+      "android"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/emilhuseynli/cordova-plugin-document-viewer.git"
+  },
+  "keywords": [
+    "PDF",
+	"cordova",
+    "ecosystem:cordova",
+    "cordova-ios",
+    "cordova-android"
+  ],
+  "engines": [
+    {
+      "name": "cordova",
+      "version": ">=3.6.0"
+    }
+  ],
+  "author": "Felix Schauerte",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sitewaerts/cordova-plugin-document-viewer/issues"
+  },
+  "homepage": "https://github.com/sitewaerts/cordova-plugin-document-viewer#readme"
+}
