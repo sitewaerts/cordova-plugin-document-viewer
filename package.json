@@ -9,6 +9,12 @@
         "ios",
         "windows"
     ],
+    "keywords": [
+        "ecosystem:cordova",
+        "cordova-android",
+        "cordova-ios",
+        "cordova-windows"
+    ],
     "engines": [
         {
             "name": "cordova",

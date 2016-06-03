@@ -201,8 +201,20 @@
 
                         var pageCount = that._pageCount;
 
+                        var rows = this._options.rows;
+
                         var viewInfo = this._updateViewInfo();
-                        var cellWidth = this._groupInfo.cellWidth;
+
+                        var cellWidth;
+                        if(rows == 1)
+                        {
+                            cellWidth = this._options.containerMargin;
+                        }
+                        else
+                        {
+                            cellWidth = 0;
+                        }
+
                         var cellHeight = this._groupInfo.cellHeight;
 
                         var index;
@@ -210,8 +222,14 @@
                         {
                             that._calcPDFOptions(viewInfo,
                                     that._pdfDocument.getPage(index));
-                            cellWidth = Math.min(
-                                    cellWidth, this._dataArray[index].width);
+                            if(rows == 1)
+                            {
+                            }
+                            else
+                            {
+                                cellWidth = Math.max(
+                                        cellWidth, this._dataArray[index].width);
+                            }
                         }
 
                         this._groupInfo.cellWidth = cellWidth;
@@ -219,11 +237,19 @@
                         for (index = 0; index < pageCount; index++)
                         {
                             var data = this._dataArray[index];
-                            data.itemInfo.width = (Math.floor(data.width
-                                    / cellWidth)) * cellWidth;
-                            if (data.width % cellWidth != 0)
-                                data.itemInfo.width = data.itemInfo.width
-                                        + cellWidth;
+                            if(rows == 1)
+                            {
+                                data.itemInfo.width = (Math.floor(data.width
+                                        / cellWidth)) * cellWidth;
+                                if (data.width % cellWidth != 0)
+                                    data.itemInfo.width = data.itemInfo.width
+                                            + cellWidth;
+                            }
+                            else
+                            {
+                                data.itemInfo.width = cellWidth;
+                            }
+
                             data.itemInfo.height = cellHeight;
                         }
                     },

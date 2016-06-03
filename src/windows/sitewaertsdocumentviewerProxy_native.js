@@ -7,6 +7,9 @@ var Args = {
 };
 
 
+//launching file in external app:
+// see https://msdn.microsoft.com/en-us/library/windows/apps/hh452687.aspx
+
 cordova.commandProxy.add("SitewaertsDocumentViewer", {
     getSupportInfo: function (successCallback, errorCallback)
     {
