@@ -42,10 +42,11 @@ document types by using native viewer components.
   * iOS 7+
   * Android 4.1+
 
-* Cordova/Phonegap >=4.0.0
+* Cordova/Phonegap >=4.4.0
   * iOS 7+
   * Android 4.1+
   * Windows 8.1
+  * Windows 10
 
 ## Installation ##
 
@@ -84,7 +85,7 @@ Add the following xml to your config.xml to always use the latest version of thi
 ```
 or a specific version:
 ```xml
-<gap:plugin name="e.sitewaerts.cordova.documentviewer" source="plugins.cordova.io" version="[VERSION]"/>
+<gap:plugin name="de.sitewaerts.cordova.documentviewer" source="plugins.cordova.io" version="[VERSION]"/>
 ```
 For available versions and additional information visit the [cordova plugin registry][CDV_plugin].
 

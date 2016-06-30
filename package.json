@@ -1,34 +1,39 @@
 {
-    "version": "0.3.0",
-    "name": "de.sitewaerts.cordova.documentviewer",
-    "cordova_name": "SitewaertsDocumentViewer",
-    "description": "Document viewer phonegap plugin.\r\n        Currently supports PDF Documents on iOS, Android and Windows 8.1.\r\n    ",
-    "license": "MIT",
-    "platforms": [
+
+  "name": "de.sitewaerts.cordova.documentviewer",
+  "version": "0.4.0",
+  "description": "Document viewer phonegap plugin.\r\n        Currently supports PDF Documents on iOS, Android and Windows 8.1 + 10.\r\n    ",
+  "license": "MIT",
+  "author": "Felix Schauerte",
+  "bugs": {
+    "url": "https://github.com/sitewaerts/cordova-plugin-document-viewer/issues"
+  },
+  "cordova": {
+      "id": "de.sitewaerts.cordova.documentviewer",
+      "platforms": [
         "android",
         "ios",
         "windows"
-    ],
+      ]
+    },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sitewaerts/cordova-plugin-document-viewer.git"
   },
-  "author": "Felix Schauerte",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/sitewaerts/cordova-plugin-document-viewer/issues"
-  },
-  "homepage": "https://github.com/sitewaerts/cordova-plugin-document-viewer#readme"
-    "keywords": [
-        "ecosystem:cordova",
-        "cordova-android",
-        "cordova-ios",
-        "cordova-windows"
-    ],
-    "engines": [
-        {
-            "name": "cordova",
-            "version": ">=3.7.0"
-        }
-    ]
+  "homepage": "https://github.com/sitewaerts/cordova-plugin-document-viewer#readme",
+  "keywords": [
+    "ecosystem:cordova",
+    "cordova",
+    "cordova-android",
+    "cordova-ios",
+    "cordova-windows"
+  ],
+  "engines": {
+      "cordovaDependencies": {
+          "0.4.0":{
+            "cordova": ">=3.7.0",
+            "cordova-windows": ">=4.4.0"
+          }
+      }
+  }
 }

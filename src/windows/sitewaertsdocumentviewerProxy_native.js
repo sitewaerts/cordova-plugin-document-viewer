@@ -101,10 +101,18 @@ cordova.commandProxy.add("SitewaertsDocumentViewer", {
         /**
          * @void
          */
-        function doClose()
+        function _cleanup()
         {
             iframe.src = "";
             viewer.style.display = 'none';
+        }
+
+        /**
+         * @void
+         */
+        function doClose()
+        {
+            _cleanup();
             successCallback({status: 0}); // closed
         }
 
@@ -122,15 +130,24 @@ cordova.commandProxy.add("SitewaertsDocumentViewer", {
 
         iframe.onload = function ()
         {
+            try
+            {
+                // avoid reloading on close
+                iframe.onload = null;
 
-            // avoid reloading on close
-            iframe.onload = null;
+                var w = iframe.window || iframe.contentWindow;
+                w.showPDF(url, options, doCloseAsync);
+                //frames[iframeId].window.showPDF(url, options, doCloseAsync);
 
-            frames[iframeId].window.showPDF(url, options, doCloseAsync);
+                viewer.style.display = 'block';
 
-            viewer.style.display = 'block';
-
-            successCallback({status: 1}); // shown
+                successCallback({status: 1}); // shown
+            }
+            catch(e)
+            {
+                _cleanup();
+                errorCallback({status: 0, message: "cannot init frame", error : e});
+            }
         };
 
     },

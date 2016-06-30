@@ -115,19 +115,23 @@
                         // https://msdn.microsoft.com/de-de/library/windows/apps/windows.data.pdf.pdfpagerenderoptions.destinationheight.aspx
                         //http://stackoverflow.com/questions/2025282/difference-between-px-dp-dip-and-sp-in-android
 
-                        var destinationWidth = Math.floor(pageWidth);
+                        // the use of dip should automatically apply the devicePixelRatio factor (but it actually doesn't
+                        var destinationWidth = Math.floor(pageWidth * (1.3 * window.devicePixelRatio));
+                        //var destinationWidth = Math.floor(pageWidth);
                         if (pdfOptions.destinationWidth != destinationWidth)
                         {
                             pdfOptions.destinationWidth = destinationWidth;
                             data.imageSrc = ""; // reset
                         }
 
-                        var destinationHeight = Math.floor(pageHeight);
-                        if (pdfOptions.destinationHeight != destinationHeight)
-                        {
-                            pdfOptions.destinationHeight = destinationHeight;
-                            data.imageSrc = ""; // reset
-                        }
+                        // var destinationHeight = Math.floor(pageHeight);
+                        // if (pdfOptions.destinationHeight != destinationHeight)
+                        // {
+                        //     pdfOptions.destinationHeight = destinationHeight;
+                        //     data.imageSrc = ""; // reset
+                        // }
+
+                        pdfOptions.destinationHeight = null; // keep page ratio
                     },
 
                     _buildViewInfo: function ()

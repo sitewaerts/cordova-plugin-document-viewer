@@ -1,7 +1,6 @@
 {
   "name": "winjs",
   "description": "WinJS is a set of JavaScript toolkits that allow developers to build applications using HTML/JS/CSS technology.",
-  "version": "4.1.0",
   "license": "MIT",
   "homepage": "http://try.buildwinjs.com/",
   "authors": [{

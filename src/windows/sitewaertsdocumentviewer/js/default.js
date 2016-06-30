@@ -167,6 +167,9 @@
         // remove double slashes
         fileUri = fileUri.replace(/([^\/:])\/\/([^\/])/g, '$1/$2');
 
+        // ms-appx-web --> ms-appx
+        fileUri = fileUri.replace(/^ms-appx-web:\/\//, 'ms-appx://');
+
         var uri = new Windows.Foundation.Uri(fileUri);
         Windows.Storage.StorageFile.getFileFromApplicationUriAsync(uri).done(
                 function (file)
@@ -188,7 +191,13 @@
         {
             if (pdfDocument !== null)
             {
-                initializeViews(pdfDocument);
+                // clear/create temp folder
+                WinJS.Application.temp.folder.createFolderAsync(
+                            "pdfViewer",
+                            Windows.Storage.CreationCollisionOption.replaceExisting
+                    ).done(function (tempFolder) {
+                        initializeViews(pdfDocument);
+                    });
             }
         }, function error()
         {
@@ -214,8 +223,8 @@
                 pdfDocument,
                 {
                     rows: 1,
-                    inMemory: true,
-                    pagesToLoad: 5
+                    inMemory: false,
+                    pagesToLoad: 2
                 }
         );
 
@@ -254,7 +263,7 @@
         {
             WinJS.Application.temp.folder.createFolderAsync(
                             "pdfViewer",
-                            Windows.Storage.CreationCollisionOption.replaceExisting
+                            Windows.Storage.CreationCollisionOption.openIfExists
                     ).done(function (tempFolder)
                     {
                         init(tempFolder);

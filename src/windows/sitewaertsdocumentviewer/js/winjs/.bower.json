@@ -1,7 +1,6 @@
 {
   "name": "winjs",
   "description": "WinJS is a set of JavaScript toolkits that allow developers to build applications using HTML/JS/CSS technology.",
-  "version": "4.1.0",
   "license": "MIT",
   "homepage": "http://try.buildwinjs.com/",
   "authors": [
@@ -16,13 +15,14 @@
     "fonts/Symbols.ttf"
   ],
   "dependencies": {},
-  "_release": "4.1.0",
+  "version": "4.4.0",
+  "_release": "4.4.0",
   "_resolution": {
     "type": "version",
-    "tag": "v4.1.0",
-    "commit": "f01874b54f97c0f57109c5bee156fb3cf46cb0a4"
+    "tag": "v4.4.0",
+    "commit": "d1fe4cbe67afb332bc0cc62495f620edce7dad1e"
   },
-  "_source": "git://github.com/winjs/winjs-bower.git",
+  "_source": "https://github.com/winjs/winjs-bower.git",
   "_target": "*",
   "_originalSource": "winjs"
 }

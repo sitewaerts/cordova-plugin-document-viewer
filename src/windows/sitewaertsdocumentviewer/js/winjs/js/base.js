@@ -12,15 +12,15 @@
             // amd
             define([], factory);
         } else {
-            globalObject.msWriteProfilerMark && msWriteProfilerMark('WinJS.4.1 4.1.0.winjs.2015.7.10 base.js,StartTM');
-            if (typeof module !== 'undefined') {
+            globalObject.msWriteProfilerMark && msWriteProfilerMark('WinJS.4.4 4.4.0.winjs.2015.10.2 base.js,StartTM');
+            if (typeof exports === 'object' && typeof exports.nodeName !== 'string') {
                 // CommonJS
                 factory();
             } else {
                 // No module system
                 factory(globalObject.WinJS);
             }
-            globalObject.msWriteProfilerMark && msWriteProfilerMark('WinJS.4.1 4.1.0.winjs.2015.7.10 base.js,StopTM');
+            globalObject.msWriteProfilerMark && msWriteProfilerMark('WinJS.4.4 4.4.0.winjs.2015.10.2 base.js,StopTM');
         }
     }(function (WinJS) {
 
@@ -572,6 +572,7 @@ define('WinJS/Core/_WinRT',[
         "Windows.UI.ApplicationSettings.SettingsCommand",
         "Windows.UI.ApplicationSettings.SettingsPane",
         "Windows.UI.Core.AnimationMetrics",
+        "Windows.UI.Core.SystemNavigationManager",
         "Windows.UI.Input.EdgeGesture",
         "Windows.UI.Input.EdgeGestureKind",
         "Windows.UI.Input.PointerPoint",
@@ -587,17 +588,29 @@ define('WinJS/Core/_WinRT',[
         "Windows.UI.WebUI.WebUIApplication",
     ];
 
+    // If getForCurrentView fails, it is an indication that we are running in a WebView without
+    // a CoreWindow where some WinRT APIs are not available. In this case, we just treat it as
+    // if no WinRT APIs are available.
+    var isCoreWindowAvailable = false;
+    try {
+        _Global.Windows.UI.ViewManagement.InputPane.getForCurrentView();
+        isCoreWindowAvailable = true;
+    } catch (e) { }
+
     APIs.forEach(function (api) {
         var parts = api.split(".");
         var leaf = {};
         leaf[parts[parts.length - 1]] = {
             get: function () {
-                return parts.reduce(function (current, part) { return current ? current[part] : null; }, _Global);
+                if (isCoreWindowAvailable) {
+                    return parts.reduce(function (current, part) { return current ? current[part] : null; }, _Global);
+                } else {
+                    return null;
+                }
             }
         };
         _Base.Namespace.defineWithParent(exports, parts.slice(0, -1).join("."), leaf);
     });
-
 });
 
 // Copyright (c) Microsoft Corporation.  All Rights Reserved. Licensed under the MIT License. See License.txt in the project root for license information.
@@ -790,6 +803,8 @@ define('WinJS/Core/_Events',[
 define('require-json',{load: function(id){throw new Error("Dynamic load not allowed: " + id);}});
 
 define('require-json!strings/en-us/Microsoft.WinJS.resjson',{
+    "tv/scrollViewerPageDown": "Page Down",
+    "tv/scrollViewerPageUp": "Page Up",
     "ui/appBarAriaLabel": "App Bar",
     "ui/appBarCommandAriaLabel": "App Bar Item",
     "ui/appBarOverflowButtonAriaLabel": "View more",
@@ -5183,7 +5198,7 @@ define('WinJS/Core/_BaseUtils',[
         _traceAsyncCallbackStarting: _Trace._traceAsyncCallbackStarting,
         _traceAsyncCallbackCompleted: _Trace._traceAsyncCallbackCompleted,
 
-        _version: "4.1.0"
+        _version: "4.4.0"
     });
 
     _Base.Namespace._moduleDefine(exports, "WinJS", {
@@ -5295,16 +5310,16 @@ define('WinJS/Utilities/_Control',[
     }
 
     function setOptions(control, options) {
-        /// <signature helpKeyword="WinJS.UI.DOMEventMixin.setOptions">
-        /// <summary locid="WinJS.UI.DOMEventMixin.setOptions">
+        /// <signature helpKeyword="WinJS.UI.setOptions">
+        /// <summary locid="WinJS.UI.setOptions">
         /// Adds the set of declaratively specified options (properties and events) to the specified control.
         /// If name of the options property begins with "on", the property value is a function and the control
         /// supports addEventListener. The setOptions method calls the addEventListener method on the control.
         /// </summary>
-        /// <param name="control" type="Object" domElement="false" locid="WinJS.UI.DOMEventMixin.setOptions_p:control">
+        /// <param name="control" type="Object" domElement="false" locid="WinJS.UI.setOptions_p:control">
         /// The control on which the properties and events are to be applied.
         /// </param>
-        /// <param name="options" type="Object" domElement="false" locid="WinJS.UI.DOMEventMixin.setOptions_p:options">
+        /// <param name="options" type="Object" domElement="false" locid="WinJS.UI.setOptions_p:options">
         /// The set of options that are specified declaratively.
         /// </param>
         /// </signature>
@@ -5430,6 +5445,26 @@ define('WinJS/Utilities/_ElementUtilities',[
     }
 
     var _zoomToDuration = 167;
+
+    // Firefox's implementation of getComputedStyle returns null when called within
+    // an iframe that is display:none. This is a bug: https://bugzilla.mozilla.org/show_bug.cgi?id=548397
+    // _getComputedStyle is a helper which is guaranteed to return an object whose keys
+    // map to strings.
+    var defaultComputedStyle = null;
+    function getDefaultComputedStyle() {
+        if (!defaultComputedStyle) {
+            defaultComputedStyle = {};
+            Object.keys(_Global.CSS2Properties.prototype).forEach(function (cssProperty) {
+                defaultComputedStyle[cssProperty] = "";
+            });
+        }
+        return defaultComputedStyle;
+    }
+    function _getComputedStyle(element, pseudoElement) {
+        // jscs:disable disallowDirectGetComputedStyle
+        return _Global.getComputedStyle(element, pseudoElement) || getDefaultComputedStyle();
+        // jscs:enable disallowDirectGetComputedStyle
+    }
 
     function removeEmpties(arr) {
         var len = arr.length;
@@ -5687,17 +5722,17 @@ define('WinJS/Utilities/_ElementUtilities',[
     }
 
     function getDimension(element, property) {
-        return convertToPixels(element, _Global.getComputedStyle(element, null)[property]);
+        return convertToPixels(element, _getComputedStyle(element, null)[property]);
     }
 
     function _convertToPrecisePixels(value) {
         return parseFloat(value) || 0;
     }
     function _getPreciseDimension(element, property) {
-        return _convertToPrecisePixels(_Global.getComputedStyle(element, null)[property]);
+        return _convertToPrecisePixels(_getComputedStyle(element, null)[property]);
     }
     function _getPreciseMargins(element) {
-        var style = _Global.getComputedStyle(element);
+        var style = _getComputedStyle(element);
         return {
             top: _convertToPrecisePixels(style.marginTop),
             right: _convertToPrecisePixels(style.marginRight),
@@ -6042,7 +6077,7 @@ define('WinJS/Utilities/_ElementUtilities',[
         focusin: {
             register: registerBubbleListener,
             unregister: removeListenerFromEventMap
-        }
+        },
     };
     if (!_Global.PointerEvent) {
         var pointerEventEntry = {
@@ -6184,7 +6219,7 @@ define('WinJS/Utilities/_ElementUtilities',[
             _resizeEvent: { get: function () { return 'WinJSElementResize'; } }
         }
     );
-
+   
     // - object: The object on which GenericListener will listen for events.
     // - objectName: A string representing the name of *object*. This will be
     //   incorporated into the names of the events and classNames created by
@@ -6310,7 +6345,7 @@ define('WinJS/Utilities/_ElementUtilities',[
     }
 
     function getAdjustedScrollPosition(element) {
-        var computedStyle = _Global.getComputedStyle(element),
+        var computedStyle = _getComputedStyle(element),
             scrollLeft = element.scrollLeft;
         if (computedStyle.direction === "rtl") {
             if (!determinedRTLEnvironment) {
@@ -6330,7 +6365,7 @@ define('WinJS/Utilities/_ElementUtilities',[
 
     function setAdjustedScrollPosition(element, scrollLeft, scrollTop) {
         if (scrollLeft !== undefined) {
-            var computedStyle = _Global.getComputedStyle(element);
+            var computedStyle = _getComputedStyle(element);
             if (computedStyle.direction === "rtl") {
                 if (!determinedRTLEnvironment) {
                     determineRTLEnvironment();
@@ -6525,7 +6560,9 @@ define('WinJS/Utilities/_ElementUtilities',[
             if (mapping) {
                 switch (initType.toLowerCase()) {
                     case "pointer":
-                        arguments[2] = mapping.mspointer;
+                        if (!_Global.PointerEvent) {
+                            arguments[2] = mapping.mspointer;
+                        }
                         break;
 
                     default:
@@ -6562,6 +6599,8 @@ define('WinJS/Utilities/_ElementUtilities',[
 
         _MSPointerEvent: _MSPointerEvent,
 
+        _getComputedStyle: _getComputedStyle,
+
         _zoomToDuration: _zoomToDuration,
 
         _zoomTo: function _zoomTo(element, args) {
@@ -6575,7 +6614,7 @@ define('WinJS/Utilities/_ElementUtilities',[
                     var initialPos = getAdjustedScrollPosition(element);
                     var effectiveScrollLeft = (typeof element._zoomToDestX === "number" ? element._zoomToDestX : initialPos.scrollLeft);
                     var effectiveScrollTop = (typeof element._zoomToDestY === "number" ? element._zoomToDestY : initialPos.scrollTop);
-                    var cs = _Global.getComputedStyle(element);
+                    var cs = _getComputedStyle(element);
                     var scrollLimitX = element.scrollWidth - parseInt(cs.width, 10) - parseInt(cs.paddingLeft, 10) - parseInt(cs.paddingRight, 10);
                     var scrollLimitY = element.scrollHeight - parseInt(cs.height, 10) - parseInt(cs.paddingTop, 10) - parseInt(cs.paddingBottom, 10);
 
@@ -7794,7 +7833,7 @@ define('WinJS/Utilities/_ElementUtilities',[
                     element !== _Global.document.body &&
                     element !== _Global.document.documentElement) {
                 top -= element.scrollTop;
-                var dir = _Global.document.defaultView.getComputedStyle(element, null).direction;
+                var dir = _getComputedStyle(element, null).direction;
                 left -= dir !== "rtl" ? element.scrollLeft : -getAdjustedScrollPosition(element).scrollLeft;
 
                 if (element === offsetParent) {
@@ -7923,12 +7962,12 @@ define('WinJS/Utilities/_ElementUtilities',[
             callback();
             exports._trySetActiveOnAnyElement(focusedElement);
         },
-        
+
         // Tries to give focus to an element (even if its tabIndex is -1) via setActive.
         _trySetActiveOnAnyElement: function Utilities_trySetActiveOnAnyElement(element, scroller) {
             return exports._tryFocusOnAnyElement(element, true, scroller);
         },
-        
+
         // Tries to give focus to an element (even if its tabIndex is -1).
         _tryFocusOnAnyElement: function Utilities_tryFocusOnAnyElement(element, useSetActive, scroller) {
             var previousActiveElement = _Global.document.activeElement;
@@ -7936,22 +7975,22 @@ define('WinJS/Utilities/_ElementUtilities',[
             if (element === previousActiveElement) {
                 return true;
             }
-            
+
             if (useSetActive) {
                 exports._setActive(element, scroller);
             } else {
                 element.focus();
             }
-            
+
             return previousActiveElement !== _Global.document.activeElement;
         },
-        
+
         // Tries to give focus to an element which is a tabstop (i.e. tabIndex >= 0)
         // via setActive.
         _trySetActive: function Utilities_trySetActive(elem, scroller) {
             return this._tryFocus(elem, true, scroller);
         },
-        
+
         // Tries to give focus to an element which is a tabstop (i.e. tabIndex >= 0).
         _tryFocus: function Utilities_tryFocus(elem, useSetActive, scroller) {
             var previousActiveElement = _Global.document.activeElement;
@@ -11354,7 +11393,7 @@ define('WinJS/Utilities/_TabContainer',[
     // When it runs into a tab contained area, it rejects anything except the childFocus element so that any potentially tabbable things that the TabContainer
     // doesn't want tabbed to get ignored.
     function tabbableElementsNodeFilter(node) {
-        var nodeStyle = _Global.getComputedStyle(node);
+        var nodeStyle = _ElementUtilities._getComputedStyle(node);
         if (nodeStyle.display === "none" || nodeStyle.visibility === "hidden") {
             return _Global.NodeFilter.FILTER_REJECT;
         }
@@ -11877,7 +11916,7 @@ define('WinJS/Utilities/_KeyboardBehavior',[
                         var newIndex = this.currentIndex;
                         var maxIndex = this._element.children.length - 1;
 
-                        var rtl = _Global.getComputedStyle(this._element).direction === "rtl";
+                        var rtl = _ElementUtilities._getComputedStyle(this._element).direction === "rtl";
                         var leftStr = rtl ? Key.rightArrow : Key.leftArrow;
                         var rightStr = rtl ? Key.leftArrow : Key.rightArrow;
 
@@ -12674,6 +12713,9 @@ define('WinJS/XYFocus',["require", "exports", "./Core/_Global", "./Core/_Base", 
     };
     var ClassNames = {
         focusable: "win-focusable",
+        suspended: "win-xyfocus-suspended",
+        toggleMode: "win-xyfocus-togglemode",
+        toggleModeActive: "win-xyfocus-togglemode-active",
         xboxPlatform: "win-xbox",
     };
     var CrossDomainMessageConstants = {
@@ -12716,6 +12758,7 @@ define('WinJS/XYFocus',["require", "exports", "./Core/_Global", "./Core/_Base", 
         up: [],
         down: [],
         accept: [],
+        cancel: [],
     };
     /**
      * Gets or sets the focus root when invoking XYFocus APIs.
@@ -12735,14 +12778,21 @@ define('WinJS/XYFocus',["require", "exports", "./Core/_Global", "./Core/_Base", 
                 return result;
             }
         }
+        return null;
     }
     exports.moveFocus = moveFocus;
     // Privates
     var _lastTarget;
     var _cachedLastTargetRect;
     var _historyRect;
-    var _afEnabledFrames = [];
-    function _xyFocus(direction, keyCode, referenceRect) {
+    /**
+     * Executes XYFocus algorithm with the given parameters. Returns true if focus was moved, false otherwise.
+     * @param direction The direction to move focus.
+     * @param keyCode The key code of the pressed key.
+     * @param (optional) A rectangle to use as the source coordinates for finding the next focusable element.
+     * @param (optional) Indicates whether this focus request is allowed to propagate to its parent if we are in iframe.
+    **/
+    function _xyFocus(direction, keyCode, referenceRect, dontExit) {
         // If focus has moved since the last XYFocus movement, scrolling occured, or an explicit
         // reference rectangle was given to us, then we invalidate the history rectangle.
         if (referenceRect || _Global.document.activeElement !== _lastTarget) {
@@ -12771,9 +12821,12 @@ define('WinJS/XYFocus',["require", "exports", "./Core/_Global", "./Core/_Base", 
             updateHistoryRect(direction, result);
             _lastTarget = result.target;
             _cachedLastTargetRect = result.targetRect;
+            if (_ElementUtilities.hasClass(result.target, ClassNames.toggleMode)) {
+                _ElementUtilities.removeClass(result.target, ClassNames.toggleModeActive);
+            }
             if (result.target.tagName === "IFRAME") {
-                var index = _afEnabledFrames.lastIndexOf(result.target.contentWindow);
-                if (index >= 0) {
+                var targetIframe = result.target;
+                if (IFrameHelper.isXYFocusEnabled(targetIframe)) {
                     // If we successfully moved focus and the new focused item is an IFRAME, then we need to notify it
                     // Note on coordinates: When signaling enter, DO transform the coordinates into the child frame's coordinate system.
                     var refRect = _toIRect({
@@ -12788,16 +12841,17 @@ define('WinJS/XYFocus',["require", "exports", "./Core/_Global", "./Core/_Base", 
                         direction: direction,
                         referenceRect: refRect
                     };
-                    result.target.contentWindow.postMessage(message, "*");
+                    // postMessage API is safe even in cross-domain scenarios.
+                    targetIframe.contentWindow.postMessage(message, "*");
                 }
             }
             eventSrc.dispatchEvent(EventNames.focusChanged, { previousFocusElement: activeElement, keyCode: keyCode });
             return true;
         }
         else {
-            // No focus target was found; if we are inside an IFRAME, notify the parent that focus is exiting this IFRAME
+            // No focus target was found; if we are inside an IFRAME and focus is allowed to propagate out, notify the parent that focus is exiting this IFRAME
             // Note on coordinates: When signaling exit, do NOT transform the coordinates into the parent's coordinate system.
-            if (top !== window) {
+            if (!dontExit && top !== window) {
                 var refRect = referenceRect;
                 if (!refRect) {
                     refRect = _Global.document.activeElement ? _toIRect(_Global.document.activeElement.getBoundingClientRect()) : _defaultRect();
@@ -12808,6 +12862,7 @@ define('WinJS/XYFocus',["require", "exports", "./Core/_Global", "./Core/_Base", 
                     direction: direction,
                     referenceRect: refRect
                 };
+                // postMessage API is safe even in cross-domain scenarios.
                 _Global.parent.postMessage(message, "*");
                 return true;
             }
@@ -12893,7 +12948,7 @@ define('WinJS/XYFocus',["require", "exports", "./Core/_Global", "./Core/_Base", 
         var allElements = options.focusRoot.querySelectorAll("*");
         for (var i = 0, length = allElements.length; i < length; i++) {
             var potentialElement = allElements[i];
-            if (refObj.element === potentialElement || !isFocusable(potentialElement)) {
+            if (refObj.element === potentialElement || !_isFocusable(potentialElement) || _isInInactiveToggleModeContainer(potentialElement)) {
                 continue;
             }
             var potentialRect = _toIRect(potentialElement.getBoundingClientRect());
@@ -12918,7 +12973,7 @@ define('WinJS/XYFocus',["require", "exports", "./Core/_Global", "./Core/_Base", 
             }
             var pixelOverlap = Math.min(maxReferenceCoord, maxPotentialCoord) - Math.max(minReferenceCoord, minPotentialCoord);
             var shortEdge = Math.min(maxPotentialCoord - minPotentialCoord, maxReferenceCoord - minReferenceCoord);
-            return pixelOverlap / shortEdge;
+            return shortEdge === 0 ? 0 : (pixelOverlap / shortEdge);
         }
         function calculateScore(direction, maxDistance, historyRect, referenceRect, potentialRect) {
             var score = 0;
@@ -13027,28 +13082,6 @@ define('WinJS/XYFocus',["require", "exports", "./Core/_Global", "./Core/_Base", 
                 rect: refRect
             };
         }
-        function isFocusable(element) {
-            var elementTagName = element.tagName;
-            if (!element.hasAttribute("tabindex") && FocusableTagNames.indexOf(elementTagName) === -1 && !_ElementUtilities.hasClass(element, ClassNames.focusable)) {
-                // If the current potential element is not one of the tags we consider to be focusable, then exit
-                return false;
-            }
-            if (elementTagName === "IFRAME" && _afEnabledFrames.indexOf(element.contentWindow) === -1) {
-                // Skip IFRAMEs without compatible XYFocus implementation
-                return false;
-            }
-            if (elementTagName === "DIV" && element["winControl"] && element["winControl"].disabled) {
-                // Skip disabled WinJS controls
-                return false;
-            }
-            var style = getComputedStyle(element);
-            if (element.getAttribute("tabIndex") === "-1" || style.display === "none" || style.visibility === "hidden" || element.disabled) {
-                // Skip elements that are hidden
-                // Note: We don't check for opacity === 0, because the browser cannot tell us this value accurately.
-                return false;
-            }
-            return true;
-        }
     }
     function _defaultRect() {
         // We set the top, left, bottom and right properties of the referenceBoundingRectangle to '-1'
@@ -13082,33 +13115,246 @@ define('WinJS/XYFocus',["require", "exports", "./Core/_Global", "./Core/_Base", 
         }
         return _Global.document.activeElement === element;
     }
-    function _getIFrameFromWindow(win) {
-        var iframes = _Global.document.querySelectorAll("IFRAME");
-        var found = Array.prototype.filter.call(iframes, function (x) { return x.contentWindow === win; });
-        return found.length ? found[0] : null;
+    function _isFocusable(element) {
+        var elementTagName = element.tagName;
+        if (!element.hasAttribute("tabindex") && FocusableTagNames.indexOf(elementTagName) === -1 && !_ElementUtilities.hasClass(element, ClassNames.focusable)) {
+            // If the current potential element is not one of the tags we consider to be focusable, then exit
+            return false;
+        }
+        if (elementTagName === "IFRAME" && !IFrameHelper.isXYFocusEnabled(element)) {
+            // Skip IFRAMEs without compatible XYFocus implementation
+            return false;
+        }
+        if (elementTagName === "DIV" && element["winControl"] && element["winControl"].disabled) {
+            // Skip disabled WinJS controls
+            return false;
+        }
+        var style = _ElementUtilities._getComputedStyle(element);
+        if (element.getAttribute("tabIndex") === "-1" || style.display === "none" || style.visibility === "hidden" || element.disabled) {
+            // Skip elements that are hidden
+            // Note: We don't check for opacity === 0, because the browser cannot tell us this value accurately.
+            return false;
+        }
+        return true;
+    }
+    function _findParentToggleModeContainer(element) {
+        var toggleModeRoot = element.parentElement;
+        while (toggleModeRoot && !_isToggleMode(toggleModeRoot)) {
+            toggleModeRoot = toggleModeRoot.parentElement;
+        }
+        return toggleModeRoot;
+    }
+    function _isInInactiveToggleModeContainer(element) {
+        var container = _findParentToggleModeContainer(element);
+        return container && !_ElementUtilities.hasClass(container, ClassNames.toggleModeActive);
+    }
+    function _isToggleMode(element) {
+        if (_ElementUtilities.hasClass(element, ClassNames.toggleMode)) {
+            return true;
+        }
+        if (element.tagName === "INPUT") {
+            var inputType = element.type.toLowerCase();
+            if (inputType === "date" || inputType === "datetime" || inputType === "datetime-local" || inputType === "email" || inputType === "month" || inputType === "number" || inputType === "password" || inputType === "range" || inputType === "search" || inputType === "tel" || inputType === "text" || inputType === "time" || inputType === "url" || inputType === "week") {
+                return true;
+            }
+        }
+        else if (element.tagName === "TEXTAREA") {
+            return true;
+        }
+        return false;
+    }
+    function _getStateHandler(element) {
+        var suspended = false;
+        var toggleMode = false;
+        var toggleModeActive = false;
+        if (element) {
+            suspended = _ElementUtilities._matchesSelector(element, "." + ClassNames.suspended + ", ." + ClassNames.suspended + " *");
+            toggleMode = _isToggleMode(element);
+            toggleModeActive = _ElementUtilities.hasClass(element, ClassNames.toggleModeActive);
+        }
+        var stateHandler = KeyHandlerStates.RestState;
+        if (suspended) {
+            stateHandler = KeyHandlerStates.SuspendedState;
+        }
+        else {
+            if (toggleMode) {
+                if (toggleModeActive) {
+                    stateHandler = KeyHandlerStates.ToggleModeActiveState;
+                }
+                else {
+                    stateHandler = KeyHandlerStates.ToggleModeRestState;
+                }
+            }
+        }
+        return stateHandler;
     }
     function _handleKeyEvent(e) {
         if (e.defaultPrevented) {
             return;
         }
-        var keys = Object.keys(exports.keyCodeMap);
-        for (var i = 0; i < keys.length; i++) {
-            // Note: key is 'left', 'right', 'up', 'down', or 'accept'
-            var key = keys[i];
-            var keyMappings = exports.keyCodeMap[key];
-            if (keyMappings.indexOf(e.keyCode) >= 0) {
-                if (keyMappings === exports.keyCodeMap.accept) {
-                    _Global.document.activeElement && _Global.document.activeElement["click"] && _Global.document.activeElement["click"]();
-                }
-                else {
-                    if (_xyFocus(key, e.keyCode)) {
-                        e.preventDefault();
-                    }
-                }
-                return;
+        var stateHandler = _getStateHandler(document.activeElement);
+        var direction = "";
+        if (exports.keyCodeMap.up.indexOf(e.keyCode) !== -1) {
+            direction = "up";
+        }
+        else if (exports.keyCodeMap.down.indexOf(e.keyCode) !== -1) {
+            direction = "down";
+        }
+        else if (exports.keyCodeMap.left.indexOf(e.keyCode) !== -1) {
+            direction = "left";
+        }
+        else if (exports.keyCodeMap.right.indexOf(e.keyCode) !== -1) {
+            direction = "right";
+        }
+        if (direction) {
+            var shouldPreventDefault = stateHandler.xyFocus(direction, e.keyCode);
+            if (shouldPreventDefault) {
+                e.preventDefault();
             }
         }
     }
+    function _handleCaptureKeyEvent(e) {
+        if (e.defaultPrevented) {
+            return;
+        }
+        var activeElement = document.activeElement;
+        var shouldPreventDefault = false;
+        var stateHandler = _getStateHandler(document.activeElement);
+        if (exports.keyCodeMap.accept.indexOf(e.keyCode) !== -1) {
+            shouldPreventDefault = stateHandler.accept(activeElement);
+        }
+        else if (exports.keyCodeMap.cancel.indexOf(e.keyCode) !== -1) {
+            shouldPreventDefault = stateHandler.cancel(activeElement);
+        }
+        if (shouldPreventDefault) {
+            e.preventDefault();
+        }
+    }
+    var KeyHandlerStates;
+    (function (KeyHandlerStates) {
+        // Element is not suspended and does not use toggle mode.
+        var RestState = (function () {
+            function RestState() {
+            }
+            RestState.accept = _clickElement;
+            RestState.cancel = _nop;
+            RestState.xyFocus = _xyFocus; // Prevent default when XYFocus moves focus
+            return RestState;
+        })();
+        KeyHandlerStates.RestState = RestState;
+        // Element has opted out of XYFocus.
+        var SuspendedState = (function () {
+            function SuspendedState() {
+            }
+            SuspendedState.accept = _nop;
+            SuspendedState.cancel = _nop;
+            SuspendedState.xyFocus = _nop;
+            return SuspendedState;
+        })();
+        KeyHandlerStates.SuspendedState = SuspendedState;
+        // Element uses toggle mode but is not toggled nor opted out of XYFocus.
+        var ToggleModeRestState = (function () {
+            function ToggleModeRestState() {
+            }
+            ToggleModeRestState.accept = function (element) {
+                _ElementUtilities.addClass(element, ClassNames.toggleModeActive);
+                return true;
+            };
+            ToggleModeRestState.cancel = _nop;
+            ToggleModeRestState.xyFocus = _xyFocus; // Prevent default when XYFocus moves focus
+            return ToggleModeRestState;
+        })();
+        KeyHandlerStates.ToggleModeRestState = ToggleModeRestState;
+        // Element uses toggle mode and is toggled and did not opt out of XYFocus.
+        var ToggleModeActiveState = (function () {
+            function ToggleModeActiveState() {
+            }
+            ToggleModeActiveState.cancel = function (element) {
+                element && _ElementUtilities.removeClass(element, ClassNames.toggleModeActive);
+                return true;
+            };
+            ToggleModeActiveState.accept = _clickElement;
+            ToggleModeActiveState.xyFocus = _nop;
+            return ToggleModeActiveState;
+        })();
+        KeyHandlerStates.ToggleModeActiveState = ToggleModeActiveState;
+        function _clickElement(element) {
+            element && element.click && element.click();
+            return false;
+        }
+        function _nop() {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i - 0] = arguments[_i];
+            }
+            return false;
+        }
+    })(KeyHandlerStates || (KeyHandlerStates = {}));
+    var IFrameHelper;
+    (function (IFrameHelper) {
+        // XYFocus caches registered iframes and iterates over the cache for its focus navigation implementation.
+        // However, since there is no reliable way for an iframe to unregister with its parent as it can be
+        // spontaneously taken out of the DOM, the cache can go stale. This helper module makes sure that on
+        // every query to the iframe cache, stale iframes are removed.
+        // Furthermore, merely accessing an iframe that has been garbage collected by the platform will cause an
+        // exception so each iteration during a query must be in a try/catch block.
+        var iframes = [];
+        function count() {
+            // Iterating over it causes stale iframes to be cleared from the cache.
+            _safeForEach(function () { return false; });
+            return iframes.length;
+        }
+        IFrameHelper.count = count;
+        function getIFrameFromWindow(win) {
+            var iframes = _Global.document.querySelectorAll("IFRAME");
+            var found = Array.prototype.filter.call(iframes, function (x) { return x.contentWindow === win; });
+            return found.length ? found[0] : null;
+        }
+        IFrameHelper.getIFrameFromWindow = getIFrameFromWindow;
+        function isXYFocusEnabled(iframe) {
+            var found = false;
+            _safeForEach(function (ifr) {
+                if (ifr === iframe) {
+                    found = true;
+                }
+            });
+            return found;
+        }
+        IFrameHelper.isXYFocusEnabled = isXYFocusEnabled;
+        function registerIFrame(iframe) {
+            iframes.push(iframe);
+        }
+        IFrameHelper.registerIFrame = registerIFrame;
+        function unregisterIFrame(iframe) {
+            var index = -1;
+            _safeForEach(function (ifr, i) {
+                if (ifr === iframe) {
+                    index = i;
+                }
+            });
+            if (index !== -1) {
+                iframes.splice(index, 1);
+            }
+        }
+        IFrameHelper.unregisterIFrame = unregisterIFrame;
+        function _safeForEach(callback) {
+            for (var i = iframes.length - 1; i >= 0; i--) {
+                try {
+                    var iframe = iframes[i];
+                    if (!iframe.contentWindow) {
+                        iframes.splice(i, 1);
+                    }
+                    else {
+                        callback(iframe, i);
+                    }
+                }
+                catch (e) {
+                    // Iframe has been GC'd
+                    iframes.splice(i, 1);
+                }
+            }
+        }
+    })(IFrameHelper || (IFrameHelper = {}));
     if (_Global.document) {
         // Note: This module is not supported in WebWorker
         // Default mappings
@@ -13117,35 +13363,69 @@ define('WinJS/XYFocus',["require", "exports", "./Core/_Global", "./Core/_Base", 
         exports.keyCodeMap.up.push(Keys.GamepadLeftThumbstickUp, Keys.GamepadDPadUp, Keys.NavigationUp);
         exports.keyCodeMap.down.push(Keys.GamepadLeftThumbstickDown, Keys.GamepadDPadDown, Keys.NavigationDown);
         exports.keyCodeMap.accept.push(Keys.GamepadA, Keys.NavigationAccept);
+        exports.keyCodeMap.cancel.push(Keys.GamepadB, Keys.NavigationCancel);
         _Global.addEventListener("message", function (e) {
+            // Note: e.source is the Window object of an iframe which could be hosting content
+            // from a different domain. No properties on e.source should be accessed or we may
+            // run into a cross-domain access violation exception.
+            var sourceWindow = null;
+            try {
+                // Since messages are async, by the time we get this message, the iframe could've
+                // been removed from the DOM and e.source is null or throws an exception on access.
+                sourceWindow = e.source;
+                if (!sourceWindow) {
+                    return;
+                }
+            }
+            catch (e) {
+                return;
+            }
             if (!e.data || !e.data[CrossDomainMessageConstants.messageDataProperty]) {
                 return;
             }
             var data = e.data[CrossDomainMessageConstants.messageDataProperty];
             switch (data.type) {
                 case CrossDomainMessageConstants.register:
-                    _afEnabledFrames.push(e.source);
+                    var iframe = IFrameHelper.getIFrameFromWindow(sourceWindow);
+                    iframe && IFrameHelper.registerIFrame(iframe);
                     break;
                 case CrossDomainMessageConstants.unregister:
-                    var index = _afEnabledFrames.indexOf(e.source);
-                    if (index >= 0) {
-                        _afEnabledFrames.splice(index, 1);
-                    }
+                    var iframe = IFrameHelper.getIFrameFromWindow(sourceWindow);
+                    iframe && IFrameHelper.unregisterIFrame(iframe);
                     break;
                 case CrossDomainMessageConstants.dFocusEnter:
                     // The coordinates stored in data.refRect are already in this frame's coordinate system.
-                    _xyFocus(data.direction, -1, data.referenceRect);
+                    // First try to focus anything within this iframe without leaving the current frame.
+                    var focused = _xyFocus(data.direction, -1, data.referenceRect, true);
+                    if (!focused) {
+                        // No focusable element was found, we'll focus document.body if it is focusable.
+                        if (_isFocusable(_Global.document.body)) {
+                            _Global.document.body.focus();
+                        }
+                        else {
+                            // Nothing within this iframe is focusable, we call _xyFocus again without a refRect
+                            // and allow the request to propagate to the parent.
+                            _xyFocus(data.direction, -1);
+                        }
+                    }
                     break;
                 case CrossDomainMessageConstants.dFocusExit:
-                    var iframe = _getIFrameFromWindow(e.source);
+                    var iframe = IFrameHelper.getIFrameFromWindow(sourceWindow);
                     if (_Global.document.activeElement !== iframe) {
                         break;
                     }
                     // The coordinates stored in data.refRect are in the IFRAME's coordinate system,
                     // so we must first transform them into this frame's coordinate system.
                     var refRect = data.referenceRect;
-                    refRect.left += iframe.offsetLeft;
-                    refRect.top += iframe.offsetTop;
+                    var iframeRect = iframe.getBoundingClientRect();
+                    refRect.left += iframeRect.left;
+                    refRect.top += iframeRect.top;
+                    if (typeof refRect.right === "number") {
+                        refRect.right += iframeRect.left;
+                    }
+                    if (typeof refRect.bottom === "number") {
+                        refRect.bottom += iframeRect.top;
+                    }
                     _xyFocus(data.direction, -1, refRect);
                     break;
             }
@@ -13154,6 +13434,10 @@ define('WinJS/XYFocus',["require", "exports", "./Core/_Global", "./Core/_Base", 
             if (_ElementUtilities.hasWinRT && _Global["Windows"] && _Global["Windows"]["Xbox"]) {
                 _ElementUtilities.addClass(_Global.document.body, ClassNames.xboxPlatform);
             }
+            // Subscribe on capture phase to prevent this key event from interacting with
+            // the element/control if XYFocus handled it for accept/cancel keys.
+            _Global.document.addEventListener("keydown", _handleCaptureKeyEvent, true);
+            // Subscribe on bubble phase to allow developers to override XYFocus behaviors for directional keys.
             _Global.document.addEventListener("keydown", _handleKeyEvent);
             // If we are running within an iframe, we send a registration message to the parent window
             if (_Global.top !== _Global.window) {
@@ -13180,7 +13464,8 @@ define('WinJS/XYFocus',["require", "exports", "./Core/_Global", "./Core/_Base", 
             moveFocus: moveFocus,
             onfocuschanged: _Events._createEventProperty(EventNames.focusChanged),
             onfocuschanging: _Events._createEventProperty(EventNames.focusChanging),
-            _xyFocus: _xyFocus
+            _xyFocus: _xyFocus,
+            _iframeHelper: IFrameHelper
         };
         toPublish = _BaseUtils._merge(toPublish, _Events.eventMixin);
         toPublish["_listeners"] = {};
@@ -14263,6 +14548,9 @@ define('WinJS/Application',[
     var running = false;
     var registered = false;
 
+    var Symbol = _Global.Symbol;
+    var isModern = !!Symbol && typeof Symbol.iterator === "symbol"; // jshint ignore:line
+
     var ListenerType = _Base.Class.mix(_Base.Class.define(null, { /* empty */ }, { supportedForProcessing: false }), _Events.eventMixin);
     var listeners = new ListenerType();
     var createEvent = _Events._createEventProperty;
@@ -14887,6 +15175,13 @@ define('WinJS/Application',[
         dispatchEvent({ type: edgyCanceledET, kind: eventObject.kind });
     }
 
+    function getNavManager() {
+        // Use environment inference to avoid a critical error
+        // in `getForCurrentView` when running in Windows 8 compat mode.
+        var manager = _WinRT.Windows.UI.Core.SystemNavigationManager;
+        return (isModern && manager) ? manager.getForCurrentView() : null;
+    }
+
     function register() {
         if (!registered) {
             registered = true;
@@ -14907,8 +15202,14 @@ define('WinJS/Application',[
                     settingsPane.addEventListener("commandsrequested", commandsRequested);
                 }
 
-                // Code in WinJS.Application for phone. This integrates WinJS.Application into the hardware back button.
-                if (_WinRT.Windows.Phone.UI.Input.HardwareButtons) {
+                // This integrates WinJS.Application into the hardware or OS-provided back button.
+                var navManager = getNavManager();
+                if (navManager) {
+                    // On Win10 this accomodates hardware buttons (phone),
+                    // the taskbar's tablet mode button, and the optional window frame back button.
+                    navManager.addEventListener("backrequested", hardwareButtonBackPressed);
+                } else if (_WinRT.Windows.Phone.UI.Input.HardwareButtons) {
+                    // For WP 8.1
                     _WinRT.Windows.Phone.UI.Input.HardwareButtons.addEventListener("backpressed", hardwareButtonBackPressed);
                 }
 
@@ -14943,8 +15244,10 @@ define('WinJS/Application',[
                     settingsPane.removeEventListener("commandsrequested", commandsRequested);
                 }
 
-                // Code in WinJS.Application for phone. This integrates WinJS.Application into the hardware back button.
-                if (_WinRT.Windows.Phone.UI.Input.HardwareButtons) {
+                var navManager = getNavManager();
+                if (navManager) {
+                    navManager.removeEventListener("backrequested", hardwareButtonBackPressed);
+                } else if (_WinRT.Windows.Phone.UI.Input.HardwareButtons) {
                     _WinRT.Windows.Phone.UI.Input.HardwareButtons.removeEventListener("backpressed", hardwareButtonBackPressed);
                 }
 
@@ -15104,7 +15407,7 @@ define('WinJS/Application',[
         /// </field>
         onerror: createEvent(errorET),
         /// <field type="Function" locid="WinJS.Application.onbackclick" helpKeyword="WinJS.Application.onbackclick">
-        /// Raised when the users clicks the backbutton on a Windows Phone.
+        /// Raised when the users clicks the hardware back button.
         /// </field>
         onbackclick: createEvent(backClickET)
 
@@ -15183,7 +15486,7 @@ define('WinJS/Animations/_TransitionAnimation',[
     }
 
     function resolveStyles(elem) {
-        _Global.getComputedStyle(elem, null).opacity;
+        _ElementUtilities._getComputedStyle(elem, null).opacity;
     }
 
     function copyWithEvaluation(iElem, elem) {
@@ -15708,10 +16011,11 @@ define('WinJS/Animations',[
     './Core/_Base',
     './Core/_BaseUtils',
     './Core/_WriteProfilerMark',
+    './Utilities/_ElementUtilities',
     './Animations/_Constants',
     './Animations/_TransitionAnimation',
     './Promise'
-], function animationsInit(exports, _Global, _Base, _BaseUtils, _WriteProfilerMark, _Constants, _TransitionAnimation, Promise) {
+], function animationsInit(exports, _Global, _Base, _BaseUtils, _WriteProfilerMark, _ElementUtilities, _Constants, _TransitionAnimation, Promise) {
     "use strict";
 
     var transformNames = _BaseUtils._browserStyleEquivalents["transform"];
@@ -15775,7 +16079,7 @@ define('WinJS/Animations',[
     function keyframeCallback(keyframe) {
         var keyframeRtl = keyframe + "-rtl";
         return function (i, elem) {
-            return _Global.getComputedStyle(elem).direction === "ltr" ? keyframe : keyframeRtl;
+            return _ElementUtilities._getComputedStyle(elem).direction === "ltr" ? keyframe : keyframeRtl;
         };
     }
 
@@ -15796,7 +16100,7 @@ define('WinJS/Animations',[
                 top: elemArray[i].offsetTop,
                 left: elemArray[i].offsetLeft
             };
-            var matrix = _Global.getComputedStyle(elemArray[i], null)[transformNames.scriptName].split(",");
+            var matrix = _ElementUtilities._getComputedStyle(elemArray[i], null)[transformNames.scriptName].split(",");
             if (matrix.length === 6) {
                 offset.left += parseFloat(matrix[4]);
                 offset.top += parseFloat(matrix[5]);
@@ -15898,7 +16202,7 @@ define('WinJS/Animations',[
         elemArray = makeArray(elemArray);
         origins = makeArray(origins);
         for (var i = 0, len = elemArray.length; i < len; i++) {
-            var rtl = _Global.getComputedStyle(elemArray[i]).direction === "rtl";
+            var rtl = _ElementUtilities._getComputedStyle(elemArray[i]).direction === "rtl";
             elemArray[i].style[_BaseUtils._browserStyleEquivalents["transform-origin"].scriptName] = origins[Math.min(origins.length - 1, i)][rtl ? "rtl" : "ltr"];
         }
         function onComplete() {
@@ -15920,7 +16224,7 @@ define('WinJS/Animations',[
         return function (i, elem) {
             var offset = offsetArray.getOffset(i);
             var left = offset.left;
-            if (offset.rtlflip && _Global.getComputedStyle(elem).direction === "rtl") {
+            if (offset.rtlflip && _ElementUtilities._getComputedStyle(elem).direction === "rtl") {
                 left = left.toString();
                 if (left.charAt(0) === "-") {
                     left = left.substring(1);
@@ -16427,8 +16731,8 @@ define('WinJS/Animations',[
         element.style[transformNames.scriptName] = translate + "(" + -start + "px)";
 
         // Resolve styles
-        _Global.getComputedStyle(elementClipper).opacity;
-        _Global.getComputedStyle(element).opacity;
+        _ElementUtilities._getComputedStyle(elementClipper).opacity;
+        _ElementUtilities._getComputedStyle(element).opacity;
 
         // Merge the transitions, but don't animate yet
         var clipperTransition = _BaseUtils._merge(transition, { to: translate + "(" + end + "px)" });
@@ -18418,7 +18722,7 @@ define('WinJS/Animations',[
             // and the actionArea that would appear were we to start these animations at separate times
             if (menuPositionedAbove) {
                 actionArea.style[transformNames.scriptName] = "translateY(" + deltaHeight + "px)";
-                _Global.getComputedStyle(actionArea).opacity;
+                _ElementUtilities._getComputedStyle(actionArea).opacity;
                 var transition = _BaseUtils._merge(transitionToUse, { to: "translateY(0px)" });
                 actionAreaAnimations.push({ element: actionArea, transition: transition });
             } else {
@@ -18442,8 +18746,8 @@ define('WinJS/Animations',[
             overflowArea.style[transformNames.scriptName] = "translateY(" + (menuPositionedAbove ? overflowAreaHeight : -overflowAreaHeight) + "px)";
 
             // Resolve styles on the overflowArea and overflowAreaClipper to prepare them for animation
-            _Global.getComputedStyle(overflowAreaClipper).opacity;
-            _Global.getComputedStyle(overflowArea).opacity;
+            _ElementUtilities._getComputedStyle(overflowAreaClipper).opacity;
+            _ElementUtilities._getComputedStyle(overflowArea).opacity;
 
             var animationPromises = [];
             for (var i = 0, len = actionAreaAnimations.length; i < len; i++) {
@@ -18473,7 +18777,7 @@ define('WinJS/Animations',[
             var transitionToUse = getResizeDefaultTransitions().defaultResizeShrinkTransition;
             if (menuPositionedAbove) {
                 actionArea.style[transformNames.scriptName] = "translateY(0px)";
-                _Global.getComputedStyle(actionArea).opacity;
+                _ElementUtilities._getComputedStyle(actionArea).opacity;
                 var transition = _BaseUtils._merge(transitionToUse, { to: "translateY(" + -deltaHeight + "px)" });
                 actionAreaAnimations.push({ element: actionArea, transition: transition });
             } else {
@@ -18490,8 +18794,8 @@ define('WinJS/Animations',[
             overflowArea.style[transformNames.scriptName] = "translateY(0px)";
 
             // Resolve styles on the overflowArea and overflowAreaClipper to prepare them for animation
-            _Global.getComputedStyle(overflowAreaClipper).opacity;
-            _Global.getComputedStyle(overflowArea).opacity;
+            _ElementUtilities._getComputedStyle(overflowAreaClipper).opacity;
+            _ElementUtilities._getComputedStyle(overflowArea).opacity;
 
             // Now that everything's set up, we can kick off all the animations in unision
             var animationPromises = [];
@@ -19507,7 +19811,7 @@ define('WinJS/Binding/_Data',[
     _Base.Namespace._moduleDefine(exports, "WinJS.Binding", {
         // must use long form because mixin has "get" and "set" as members, so the define
         // method thinks it's a property
-        mixin: { value: dynamicObservableMixin, enumerable: false, writable: true, configurable: true },
+        mixin: { value: dynamicObservableMixin, enumerable: true, writable: true, configurable: true },
         dynamicObservableMixin: { value: dynamicObservableMixin, enumerable: true, writable: true, configurable: true },
         observableMixin: { value: observableMixin, enumerable: true, writable: true, configurable: true },
         expandProperties: expandProperties,
@@ -22522,8 +22826,8 @@ define('WinJS/BindingTemplate',[
         /// <htmlSnippet supportsContent="true"><![CDATA[<div data-win-control="WinJS.Binding.Template"><div>Place content here</div></div>]]></htmlSnippet>
         /// <icon src="base_winjs.ui.template.12x12.png" width="12" height="12" />
         /// <icon src="base_winjs.ui.template.16x16.png" width="16" height="16" />
-        /// <resource type="javascript" src="//WinJS.4.1/js/WinJS.js" shared="true" />
-        /// <resource type="css" src="//WinJS.4.1/css/ui-dark.css" shared="true" />
+        /// <resource type="javascript" src="//WinJS.4.4/js/WinJS.js" shared="true" />
+        /// <resource type="css" src="//WinJS.4.4/css/ui-dark.css" shared="true" />
         Template: _Base.Namespace._lazy(function () {
             function interpretedRender(template, dataContext, container) {
                 _WriteProfilerMark("WinJS.Binding:templateRender" + template._profilerMarkIdentifier + ",StartTM");
@@ -26471,8 +26775,8 @@ define('WinJS/Controls/HtmlControl',[
         /// <icon src="base_winjs.ui.htmlcontrol.12x12.png" width="12" height="12" />
         /// <icon src="base_winjs.ui.htmlcontrol.16x16.png" width="16" height="16" />
         /// <htmlSnippet><![CDATA[<div data-win-control="WinJS.UI.HtmlControl" data-win-options="{ uri: 'somePage.html' }"></div>]]></htmlSnippet>
-        /// <resource type="javascript" src="//WinJS.4.1/js/WinJS.js" shared="true" />
-        /// <resource type="css" src="//WinJS.4.1/css/ui-dark.css" shared="true" />
+        /// <resource type="javascript" src="//WinJS.4.4/js/WinJS.js" shared="true" />
+        /// <resource type="css" src="//WinJS.4.4/css/ui-dark.css" shared="true" />
         HtmlControl: _Base.Class.define(function HtmlControl_ctor(element, options, complete) {
             /// <signature helpKeyword="WinJS.UI.HtmlControl.HtmlControl">
             /// <summary locid="WinJS.UI.HtmlControl.constructor">
