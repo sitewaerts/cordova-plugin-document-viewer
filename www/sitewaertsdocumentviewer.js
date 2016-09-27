@@ -278,7 +278,7 @@ var SitewaertsDocumentViewer = {
                     },
                     function ()
                     {
-                        var errorMsg = "No viewer for " + contentType;
+                        var errorMsg = "invalid file url '" + url + "' or no viewer for mime type '" + contentType + "'";
                         window.console.log(errorPrefix + errorMsg);
                         if (onError)
                             onError(errorMsg);
