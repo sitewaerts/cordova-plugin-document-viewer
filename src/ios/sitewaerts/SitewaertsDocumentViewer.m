@@ -129,7 +129,7 @@
                 readerViewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
                 readerViewController.modalPresentationStyle = UIModalPresentationFullScreen;
                 NSInteger pageNumber = [[viewerOptions objectForKey:@"page"] integerValue];
-                if (pageNumber > 1) {
+                if (pageNumber != nil && pageNumber > 1) {
                     NSLog(@"[pdfviewer] page: %i", pageNumber);
                     document.pageNumber = [NSNumber numberWithInteger:pageNumber];
                 }
