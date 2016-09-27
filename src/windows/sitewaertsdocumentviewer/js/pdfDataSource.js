@@ -136,8 +136,8 @@
 
                     _buildViewInfo: function ()
                     {
-                        var viewWidth = window.outerWidth;
-                        var viewHeight = window.outerHeight;
+                        var viewWidth = window.innerWidth;
+                        var viewHeight = window.innerHeight;
                         var margin = this._options.containerMargin;
                         var rows = this._options.rows;
 
