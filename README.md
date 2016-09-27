@@ -114,6 +114,7 @@ String pointing to a device local file (e.g. 'file:///...')
 String representing the mime type of the file. Currently only 'application/pdf' is supported.
 
 #### options ####
+Some optional features like search or bookmarks not implemented on every platform! 
 ```js
 options: {
 	title: STRING,
