@@ -9,7 +9,7 @@
     </engines>
     <name>SitewaertsDocumentViewer</name>
     <description>Document viewer phonegap plugin.
-        Currently supports PDF Documents on iOS, Android and Windows 8.1.
+        Currently supports PDF Documents on iOS, Android, Windows 8.1 and Windows 10.
     </description>
     <author>Felix Schauerte</author>
     <email>schauerte@sitewaerts.de</email>
