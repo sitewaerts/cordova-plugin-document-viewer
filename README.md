@@ -228,6 +228,7 @@ function(error){
 
 The plugin uses the awesome VFRReader (https://github.com/vfr/Reader) to embed pdf viewer functionality in the app.
 
+To open a pdf at a given page number add { page: pageIndex } to the options when calling viewDocument. 
 
 ### Screenshots ###
 
