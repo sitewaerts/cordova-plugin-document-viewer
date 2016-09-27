@@ -128,6 +128,11 @@
                 readerViewController.delegate = self;
                 readerViewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
                 readerViewController.modalPresentationStyle = UIModalPresentationFullScreen;
+                NSInteger pageNumber = [[viewerOptions objectForKey:@"page"] integerValue];
+                if (pageNumber > 1) {
+                    NSLog(@"[pdfviewer] page: %i", pageNumber);
+                    document.pageNumber = [NSNumber numberWithInteger:pageNumber];
+                }
 
                 [self.viewController presentViewController:readerViewController animated:YES completion:nil];
                 
