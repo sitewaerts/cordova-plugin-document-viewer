@@ -1,4 +1,4 @@
-doc/todo.txt
-build
+/doc/todo.txt
+/build
 *.iml
-bower_components
+/bower_components

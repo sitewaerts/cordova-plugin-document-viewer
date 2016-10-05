@@ -1,0 +1,24 @@
+{
+  "name": "pdfjs-dist",
+  "version": "1.5.488",
+  "main": [
+    "build/pdf.js",
+    "build/pdf.worker.js"
+  ],
+  "ignore": [],
+  "keywords": [
+    "Mozilla",
+    "pdf",
+    "pdf.js"
+  ],
+  "homepage": "https://github.com/mozilla/pdfjs-dist",
+  "_release": "1.5.488",
+  "_resolution": {
+    "type": "version",
+    "tag": "v1.5.488",
+    "commit": "86b391d3947ff2679f83ecb0aea892d48f828b1c"
+  },
+  "_source": "https://github.com/mozilla/pdfjs-dist.git",
+  "_target": "*",
+  "_originalSource": "pdfjs-dist"
+}

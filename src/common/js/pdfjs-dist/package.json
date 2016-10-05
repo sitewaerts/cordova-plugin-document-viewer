@@ -1,0 +1,25 @@
+{
+  "name": "pdfjs-dist",
+  "version": "1.5.488",
+  "main": "build/pdf.js",
+  "description": "Generic build of Mozilla's PDF.js library.",
+  "keywords": [
+    "Mozilla",
+    "pdf",
+    "pdf.js"
+  ],
+  "homepage": "http://mozilla.github.io/pdf.js/",
+  "bugs": "https://github.com/mozilla/pdf.js/issues",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "node-ensure": "^0.0.0"
+  },
+  "browser": {
+    "node-ensure": false
+  },
+  "format": "amd",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mozilla/pdfjs-dist"
+  }
+}

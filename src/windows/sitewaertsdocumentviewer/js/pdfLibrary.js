@@ -1,16 +1,6 @@
-﻿//// Copyright (c) Microsoft Corporation. All rights reserved
-
-// PDF Helper Library
-// This library contains functions implemented using API's in the Windows.Data.Pdf namespace
-// Methods in this library are invoked by both Virtualized data source and app initialize for loading pdf file
-
+﻿//// inspired by Microsoft Corporation
 pdfLibrary = {
 
-    // This method loads the pdf file
-    //  Arguments:
-    //      fileName:   path of the file to be loaded
-    //  Return Values:
-    //      pdfDocument: initialized pdf document object
     loadPDF: function (file)
     {
         "use strict";
@@ -19,187 +9,317 @@ pdfLibrary = {
             return Windows.Data.Pdf.PdfDocument.loadFromStreamAsync(stream);
         });
     },
-    // This method loads pdf pages in the given range
-    //  Arguments:
-    //      startIndex:                 start index from the range of pages from the pdf file to be loaded
-    //      endIndex:                   end index from the range of pages from the pdf file to be loaded
-    //      pdfDocument:                pdf document object
-    //      inMemory:                   boolean, whether to load the page in memory or on disk
-    //      tempFolder:                 path where images corresponding to pdf pages are kept on disk. This option is used
-    //                                  only when inMemory flag is false
-    //  Return Values:
-    //      pageIndex:                  Array of index of the rendered page                          
-    //      imageSrc:                   Array of Object URL of the image corresponding to pageIndex  array
-
-    loadPages: function (startIndex, endIndex, pdfDocument, pdfPageRenderingOptions, inMemoryFlag, tempFolder)
+    __optimizeOptions: function (pdfPageRenderingOptions)
     {
-        var promiseArray = [];
-        for (var count = startIndex; count < endIndex; count++)
-        {
-            //In memory flag will be false in case of Thumbnail view (zoomed out view). In thumbnail view
-            // images are generated in temporary folder and hence to avoid their regeneration we are checking whether
-            // the view is thumbnail view and if the image is not yet generated then only generate the image
-            var promise;
-
-            var dataItem = this._dataArray[count];
-            if (inMemoryFlag || dataItem.imageSrc === "")
-            {
-                promise = pdfLibrary.loadPage(count, pdfDocument,
-                        dataItem.pdfOptions, inMemoryFlag, tempFolder).then(
-                        function (pageData)
-                        {
-                            return pageData;
-                        });
-            }
-            else
-            {
-                // Else pass the already generated image data
-                promise = WinJS.Promise.wrap(dataItem);
-            }
-
-            promiseArray.push(promise);
-        }
-        return WinJS.Promise.join(promiseArray);
+        pdfPageRenderingOptions.bitmapEncoderId = Windows.Graphics.Imaging.BitmapEncoder.pngEncoderId;
+        return pdfPageRenderingOptions;
     },
-
-    // This method is invoked internally by loadPages to load individual page
-    //  Arguments:
-    //      pageIndex:                  index of page from the pdf file to be rendered
-    //      pdfDocument:                pdf document object
-    //      inMemory:                   boolean, whether to load the page in memory or on disk
-    //      tempFolder:                 path where images corresponding to pdf pages are kept on disk. This option is used
-    //                                  only when inMemory flag is false
-    //  Return Values:
-    //      pageIndex:                  index of the rendered page
-    //      imageSrc:                   Object URL of the image corresponding to pageIndex
-
 
     loadPage: function (pageIndex, pdfDocument, pdfPageRenderingOptions, inMemoryFlag, tempFolder)
     {
-        var filePointer = null;
-        var exist = false;
-
-        pdfPageRenderingOptions.bitmapEncoderId = Windows.Graphics.Imaging.BitmapEncoder.pngEncoderId;
-
-        var promise = null;
         if (inMemoryFlag)
+            return this.loadPageInMemory(pageIndex, pdfDocument,
+                    pdfPageRenderingOptions);
+        return this.loadPageInFile(pageIndex, pdfDocument,
+                pdfPageRenderingOptions, tempFolder);
+    },
+    loadPageInFile: function (pageIndex, pdfDocument, pdfPageRenderingOptions, tempFolder)
+    {
+        pdfPageRenderingOptions = this.__optimizeOptions(
+                pdfPageRenderingOptions);
+
+        function _deleteFile(file)
         {
-            promise = WinJS.Promise.wrap(
-                    new Windows.Storage.Streams.InMemoryRandomAccessStream());
+            if (!file)
+                return WinJS.Promise.wrap(null);
+            var fp = file;
+            file = null;
+            return fp.deleteAsync(
+                    Windows.Storage.StorageDeleteOption.permanentDelete);
+
         }
-        else
+
+        /**
+         * @returns {WinJS.Promise}
+         * @private
+         */
+        function _getOutputInfo()
         {
-            // Creating file on disk to store the rendered image for a page on disk
-            // This image will be stored in the temporary folder provided during VDS init
-            var filename = pageIndex
-                    + "-"
-                    + this.intForFileName(
-                            pdfPageRenderingOptions.destinationWidth)
-                    + "x"
-                    + this.intForFileName(
-                            pdfPageRenderingOptions.destinationHeight)
-                    + ".png";
 
-            promise = tempFolder.getFileAsync(filename).then(function (filePtr)
-            {
-                // file already exists: reuse it
-                exist = true;
-                filePointer = filePtr;
+            var _canceled = false;
+            var _filePointer = null;
 
-                // return no stream (not needed)
-                return null;
-            }, function (error)
+            function _cleanup()
             {
-                // file not exists: create it
-                return tempFolder.createFileAsync(filename,
-                        Windows.Storage.CreationCollisionOption.replaceExisting).then(
-                        function (filePtr)
-                        {
-                            // created new file
-                            exist = false;
-                            filePointer = filePtr;
-                            // return the stream
-                            return filePointer.openAsync(
-                                    Windows.Storage.FileAccessMode.readWrite);
-                        });
+                return WinJS.Promise.wrap(null);
+            }
+
+            return new WinJS.Promise(function (completeDispatch, errorDispatch)
+            {
+                // Creating file on disk to store the rendered image for a page on disk
+                // This image will be stored in the temporary folder provided during VDS init
+                var filename = pageIndex
+                        + "-"
+                        + pdfLibrary._intForFileName(
+                                pdfPageRenderingOptions.destinationWidth)
+                        + "x"
+                        + pdfLibrary._intForFileName(
+                                pdfPageRenderingOptions.destinationHeight)
+                        + ".png";
+
+                tempFolder.getFileAsync(filename).then(function (filePtr)
+                {
+                    // file already exists: reuse it
+                    // return no stream (not needed)
+                    _filePointer = filePtr;
+                    completeDispatch({write: false, filePointer: filePtr});
+                }, function (error)
+                {
+                    if (_canceled)
+                        return errorDispatch(error);
+
+                    // file not exists: create it
+                    tempFolder.createFileAsync(filename,
+                            Windows.Storage.CreationCollisionOption.replaceExisting)
+                            .then(function (filePtr)
+                            {
+                                // created new file
+                                // return the stream
+                                _filePointer = filePtr;
+                                return filePtr.openAsync(
+                                        Windows.Storage.FileAccessMode.readWrite);
+                            })
+                            .then(function (os)
+                            {
+                                return {
+                                    write: true,
+                                    filePointer: _filePointer,
+                                    os: os
+                                };
+                            })
+                            .done(function (result)
+                            {
+                                completeDispatch(result);
+                            }, function (error)
+                            {
+                                _cleanup().done(function ()
+                                {
+                                    errorDispatch(error);
+                                })
+                            });
+                });
+
+
+            }, function ()
+            {
+                _canceled = true;
+                return _cleanup();
             });
         }
 
-        return promise.then(function (imageStream)
+        function _renderOutput(outputInfo)
         {
-            if (exist)
+            var _canceled = false;
+
+            function _cleanup()
             {
-                // reuse existing file
-                return {
-                    pageIndex: pageIndex,
-                    imageSrc: filePointer
-                };
+                //if (!_canceled)
+                    return WinJS.Promise.wrap(null);
+                //return _deleteFile(outputInfo.filePointer);
             }
 
-            // render to file or memory
-
-            var pdfPage = pdfDocument.getPage(pageIndex);
-            return pdfPage.renderToStreamAsync(imageStream,
-                    pdfPageRenderingOptions).then(function ()
+            return new WinJS.Promise(function (completeDispatch, errorDispatch)
             {
-                return imageStream.flushAsync();
-            })
-                    .then(function ()
+                var imageStream = outputInfo.os;
+                // render to file
+                var pdfPage = pdfDocument.getPage(pageIndex);
+
+                function _close()
+                {
+                    // Cleaning the objects
+                    if (imageStream)
                     {
-                        if (inMemoryFlag)
+                        imageStream.close();
+                        imageStream = null;
+                    }
+                    if (pdfPage)
+                    {
+                        pdfPage.close();
+                        pdfPage = null;
+                    }
+                }
+
+                function _cancel()
+                {
+                    _close();
+                    _cleanup().done(function ()
+                    {
+                        errorDispatch(
+                                new WinJS.ErrorFromName("Canceled", "Canceled"))
+                    });
+                    return null;
+                }
+
+                if (_canceled)
+                    return _cancel();
+
+                pdfPage.renderToStreamAsync(imageStream,
+                        pdfPageRenderingOptions)
+                        .then(imageStream.flushAsync.bind(imageStream))
+                        .then(function ()
                         {
-                            var renderStream = Windows.Storage.Streams.RandomAccessStreamReference.createFromStream(
-                                    imageStream);
-                            return renderStream.openReadAsync().then(
-                                    function (stream)
-                                    {
-
-                                        // Cleaning the objects
-                                        imageStream.close();
-                                        pdfPage.close();
-
-                                        return {
-                                            pageIndex: pageIndex,
-                                            imageSrc: stream
-                                        };
-
-                                    });
-                        }
-                        else
-                        {
-                            // Cleaning the objects
-                            imageStream.close();
-                            pdfPage.close();
-
                             return {
                                 pageIndex: pageIndex,
-                                imageSrc: filePointer
+                                imageSrc: outputInfo.filePointer
                             };
-                        }
-                    });
-        }, function (error)
+                        })
+                        .done(function (result)
+                        {
+                            if (_canceled)
+                                return _cancel();
+                            _close();
+                            completeDispatch(result);
+
+                        }, function (error)
+                        {
+                            if (_canceled)
+                                return _cancel();
+                            _close();
+                            errorDispatch(error);
+                        });
+
+            }, function ()
+            {
+                _canceled = true;
+            });
+
+        }
+
+        function main()
         {
-            // error opening stream
-            return {pageIndex: pageIndex, imageSrc: null};
+
+            var _canceled = false;
+
+            /**
+             * @type {WinJS.Promise}
+             */
+            var out = null;
+
+            /**
+             * @type {WinJS.Promise}
+             */
+            var render = null;
+
+            return new WinJS.Promise(function (completeDispatch, errorDispatch)
+            {
+                out = _getOutputInfo();
+                out.done(function (outputInfo)
+                {
+                    out = null;
+
+                    if (!outputInfo.write && outputInfo.filePointer)
+                    {
+                        // reuse existing file
+                        completeDispatch({
+                            pageIndex: pageIndex,
+                            imageSrc: outputInfo.filePointer
+                        });
+                        return;
+                    }
+
+                    render = _renderOutput(outputInfo).done(
+                            function (result)
+                            {
+                                render = null;
+                                completeDispatch(result);
+                            },
+                            function (error)
+                            {
+                                render = null;
+                                errorDispatch(error);
+                            }
+                    );
+
+                }, function (error)
+                {
+                    out = null;
+                    errorDispatch(error);
+                });
+
+            }, function ()
+            {
+                _canceled = true;
+                if (out)
+                {
+                    out.cancel();
+                    out = null;
+                }
+                if (render)
+                {
+                    render.cancel();
+                    render = null;
+                }
+            });
+
+
+        }
+
+        return main();
+
+
+    },
+    loadPageInMemory: function (pageIndex, pdfDocument, pdfPageRenderingOptions)
+    {
+        return new WinJS.Promise(function (completeDispatch, errorDispatch)
+        {
+
+            pdfPageRenderingOptions = this.__optimizeOptions(
+                    pdfPageRenderingOptions);
+
+            var imageStream = new Windows.Storage.Streams.InMemoryRandomAccessStream();
+
+            // render to memory
+            var pdfPage = pdfDocument.getPage(pageIndex);
+
+            function _close()
+            {
+                // Cleaning the objects
+                imageStream.close();
+                pdfPage.close();
+            }
+
+            pdfPage.renderToStreamAsync(imageStream,
+                    pdfPageRenderingOptions)
+                    .then(imageStream.flushAsync.bind(imageStream))
+                    .then(function ()
+                    {
+                        var renderStream = Windows.Storage.Streams.RandomAccessStreamReference.createFromStream(
+                                imageStream);
+                        renderStream.openReadAsync().then(
+                                function (stream)
+                                {
+                                    return {
+                                        pageIndex: pageIndex,
+                                        imageSrc: stream
+                                    };
+
+                                });
+                    })
+                    .done(function (result)
+                    {
+                        _close();
+                        completeDispatch(result);
+                    }, function (error)
+                    {
+                        _close();
+                        errorDispatch(error);
+                    });
+
+
         });
     },
-    _counter: 0,
-    // Utility functions to create random string used as a file name
-    randomString: function ()
-    {
-        return Math.floor((1 + Math.random()) * 0x10000)
-                .toString(16)
-                .substring(1);
-    },
-
-    randomFileName: function ()
-    {
-        var counter = this._counter = this._counter + 1;
-
-        return counter + '-' + this.randomString();
-    },
-
-    intForFileName: function (integer)
+    // private utility function to create random string used as a file name
+    _intForFileName: function (integer)
     {
         if (integer)
             return "" + integer;

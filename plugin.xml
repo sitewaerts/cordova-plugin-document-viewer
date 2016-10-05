@@ -2,14 +2,14 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
         id="de.sitewaerts.cordova.documentviewer"
         xmlns:android="http://schemas.android.com/apk/res/android"
-        version="0.4.2">
+        version="0.5.0">
     <engines>
         <engine name="cordova" version=">=3.7.0"/>
         <engine name="cordova-windows" version=">=4.4.0"/>
     </engines>
     <name>SitewaertsDocumentViewer</name>
     <description>Document viewer phonegap plugin.
-        Currently supports PDF Documents on iOS, Android, Windows 8.1 and Windows 10.
+        Currently supports PDF Documents on iOS, Android and Windows 8.1 + 10.
     </description>
     <author>Felix Schauerte</author>
     <email>schauerte@sitewaerts.de</email>
@@ -189,20 +189,18 @@ not sure if this is correct, it creates a second application tag in the manifest
 
     </platform>
 
-    <!--<platform name="windows">-->
-        <!--<js-module src="src/windows/sitewaertsdocumentviewerProxy_pdfjs.js"-->
-                   <!--name="SitewaertsDocumentViewerProxy">-->
-            <!--<merges target=""/>-->
-        <!--</js-module>-->
-        <!--<asset src="src/pdfjs" target="pdfjs" />-->
-    <!--</platform>-->
-
     <platform name="windows">
         <js-module src="src/windows/sitewaertsdocumentviewerProxy_native.js"
                    name="SitewaertsDocumentViewerProxy">
             <merges target=""/>
         </js-module>
+
         <asset src="src/windows/sitewaertsdocumentviewer" target="sitewaertsdocumentviewer" />
+
+        <asset src="src/common/js/winjs" target="sitewaertsdocumentviewer/js/winjs" />
+        <asset src="src/common/js/angular" target="sitewaertsdocumentviewer/js/angular" />
+        <asset src="src/common/js/angular-winjs/js" target="sitewaertsdocumentviewer/js/angular-winjs" />
+        <asset src="src/common/js/pdfjs-dist/build" target="sitewaertsdocumentviewer/js/pdfjs-dist" />
     </platform>
 
 

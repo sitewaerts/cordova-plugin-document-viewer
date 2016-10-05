@@ -1,8 +1,6 @@
 Cordova Document Viewer Plugin
 ============================
 
-**This project is currently in beta stage and may only be carefully used in productive environments.**
-
 A common requirement when developing a cordova based app is to embed a
 performant and secure inline viewer for pdf files which doesn't allow the user
 to extract a copy of the pdf file out of the apps sandbox.
@@ -37,10 +35,6 @@ document types by using native viewer components.
 4. [Known issues](#known-issues)
 
 ## Supported Platforms ##
-
-* Cordova/Phonegap >=3.7.0
-  * iOS 7+
-  * Android 4.1+
 
 * Cordova/Phonegap >=4.4.0
   * iOS 7+
@@ -114,7 +108,7 @@ String pointing to a device local file (e.g. 'file:///...')
 String representing the mime type of the file. Currently only 'application/pdf' is supported.
 
 #### options ####
-Some optional features like search or bookmarks not implemented on every platform! 
+Some optional features like search or bookmarks are not (yet) implemented on every platform! 
 ```js
 options: {
 	title: STRING,
@@ -254,7 +248,9 @@ redirected to the google play app store.
 
 ## Windows ##
 
-The plugin uses [Windows.Data.Pdf.PdfDocument][Windows.Data.Pdf.PdfDocument] to display PDF files.
+The plugin uses 
+- [Windows.Data.Pdf.PdfDocument][Windows.Data.Pdf.PdfDocument] to generate images for PDF pages
+- [pdf.js][PDFJS] to display outline / table of contents
 
 ### Screenshots ###
 
@@ -277,7 +273,9 @@ based on https://github.com/vfr/Reader
 
 based on https://github.com/mindstorm/CDVPDFViewer
 
-based on https://mozilla.github.io/pdf.js/
+based on [pdf.js][PDFJS]
+
+based on [winjs][winjs]
 
 inspired by https://github.com/pebois/phonegap-plugin-PDFViewer
 
@@ -290,3 +288,4 @@ inspired by https://msdn.microsoft.com/en-us/library/windows/apps/dn263105.aspx
 [CDV_plugin]: http://plugins.cordova.io/#/package/de.sitewaerts.cordova.documentviewer
 [PDFJS]: https://mozilla.github.io/pdf.js/
 [Windows.Data.Pdf.PdfDocument]: https://msdn.microsoft.com/en-us/library/windows/apps/windows.data.pdf.pdfdocument
+[winjs]: http://try.buildwinjs.com/

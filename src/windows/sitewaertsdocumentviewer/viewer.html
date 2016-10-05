@@ -1,101 +1,123 @@
 ﻿<!DOCTYPE html>
-<html>
+<html ng-app="viewer" ng-csp>
 <head>
     <meta charset="utf-8" />
     <title>Document Viewer</title>
+    <meta id="viewPortId" name="viewport"
+          content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1"/>
     <meta http-equiv="Content-Security-Policy"
-          content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'">
+          content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; child-src 'self' gap:; img-src blob:">
 
-    <!-- common WinJS references -->
     <link href="js/winjs/css/ui-dark.css" rel="stylesheet" />
     <script src="js/winjs/js/base.js"></script>
     <script src="js/winjs/js/ui.js"></script>
 
+    <link href="js/angular/angular-csp.css" rel="stylesheet" />
+    <script src="js/angular/angular.min.js"></script>
+
+    <script src="js/angular-winjs/angular-winjs.js"></script>
+
+    <script src="js/pdfjs-dist/pdf.js"></script>
+
     <!-- viewer references -->
     <link href="css/default.css" rel="stylesheet" />
     <script src="js/pdfLibrary.js"></script>
-    <script src="js/pdfDataSource.js"></script>
-    <script src="js/default.js"></script>
+    <script src="js/pdfviewer.js"></script>
 </head>
-<body>
-    <!-- Simple template for the ListView instantiation  fullscreen -->
-    <div id="fullScreenViewTemplate" data-win-control="WinJS.Binding.Template"
-         style="display: none">
-        <div class="pdf_page" data-win-control="WinJS.UI.ViewBox"
-             data-win-bind="style.width: maxWidthPx; style.height: maxHeightPx">
-            <img src="images/placeholder.jpg" data-win-bind="src: imageSrc blobUriFromStream; width: width; height: height">
+<body ng-controller="PdfViewerCtrl as viewer"
+      ng-init="global = {}"
+      class="win-type-body"
+      ng-class="{'has-outline' : viewer.doc.outline, 'has-no-outline' : !viewer.doc.outline, 'has-one-page' : viewer.doc.pageCount == 1, 'has-many-pages' : viewer.doc.pageCount > 1}">
+
+    <script type="text/ng-template" id="loading.html">
+        <progress class="win-ring win-large"></progress>
+    </script>
+
+    <script type="text/ng-template" id="tiles.html">
+        <div ng-controller="TilesViewCtrl as view" class="view-controller tiles">
+            <win-list-view win-control="view.viewWinControl" item-data-source="view.pages.dataSource">
+                <win-item-template>
+                    <div class="pdf_page"
+                         ng-init="item.data.triggerLoad(true)"
+                         background-image="item.data.imageSrc"
+                        ng-click="viewer.setFocusedPageIndex(item.data.pageIndex); viewer.setView('pageflow');">
+                        <div class="loading"><p class="page_index" ng-bind="item.data.pageIndex + 1"></p><progress class="win-ring"></progress></div>
+                    </div>
+                </win-item-template>
+                <win-cell-spanning-layout
+                        group-info="view.getGroupInfo"
+                        item-info="view.getItemInfo"></win-cell-spanning-layout>
+            </win-list-view>
         </div>
-    </div>
+    </script>
 
-    <!-- Simple template for the ListView instantiation  thumbnails -->
-    <div id="thumbnailViewTemplate" data-win-control="WinJS.Binding.Template"
-         style="display: none">
-        <div class="pdf_thumb" data-win-bind="style.width: maxWidthPx; style.height: maxHeightPx">
-            <img src="images/placeholder.jpg" data-win-bind="src: imageSrc blobUriFromStream; width: width; height: height">
+    <script type="text/ng-template" id="pageflow.html">
+        <div ng-controller="PageflowViewCtrl as view" class="view-controller pageflow">
+            <win-list-view win-control="view.viewWinControl" item-data-source="view.pages.dataSource">
+                <win-item-template>
+                    <div class="pdf_page"
+                         ng-init="item.data.triggerLoad(true)"
+                         background-image="item.data.imageSrc"
+                         ng-click="viewer.appBar.show(); viewer.setFocusedPageIndex(item.data.pageIndex);">
+                        <div class="loading"><p class="page_index" ng-bind="item.data.pageIndex + 1"></p><progress class="win-ring"></progress></div>
+                    </div>
+                </win-item-template>
+                <win-cell-spanning-layout
+                        group-info="view.getGroupInfo"
+                        item-info="view.getItemInfo"></win-cell-spanning-layout>
+            </win-list-view>
         </div>
-    </div>
+    </script>
 
-    <div id="semanticZoomDiv" data-win-control="WinJS.UI.SemanticZoom"
-         data-win-options="{zoomedInItem: PDFViewer.zoomedInItem, zoomedOutItem: PDFViewer.zoomedOutItem }">
-        <!-- zoomed-in view / fullscreen -->
-        <div id="zoomedInListView"
-             class="zoomed_in"
-             data-win-control="WinJS.UI.ListView"
-             data-win-options="{
-                                itemTemplate: select('#fullScreenViewTemplate'),
-                                selectionMode: 'none',
-                                tapBehavior: 'invokeOnly',
-                                swipeBehavior: 'none' ,
-                                layout: {
-                                    type: WinJS.UI.CellSpanningLayout,
-                                    groupInfo: PDFViewer.fullScreenView.groupInfo,
-                                    itemInfo: PDFViewer.fullScreenView.itemInfo
-                                }
-                              }"
-                data-win-bind="winControl.itemDataSource: PDFViewer.fullScreenView.dataSource">
+    <script type="text/ng-template" id="outline.html">
+        <div ng-controller="OutlineViewCtrl as view" class="view-controller outline">
+            <ul ng-if="view.outline">
+               <li ng-repeat="item in view.outline" ng-include="'outline_item.html'"></li>
+            </ul>
         </div>
+    </script>
 
-        <!--- zoomed-out view / thumbnails -->
-        <div id="zoomedOutListView"
-             class="zoomed_out"
-             data-win-control="WinJS.UI.ListView"
-             data-win-options="{
-                                itemTemplate: select('#thumbnailViewTemplate'),
-                                selectionMode: 'none',
-                                tapBehavior: 'invokeOnly',
-                                swipeBehavior: 'none',
-                                layout: {
-                                    type: WinJS.UI.CellSpanningLayout,
-                                    groupInfo: PDFViewer.thumbnailView.groupInfo,
-                                    itemInfo: PDFViewer.thumbnailView.itemInfo
-                                }
-                              }"
-             data-win-bind="winControl.itemDataSource: PDFViewer.thumbnailView.dataSource">
-        </div>
-    </div>
+    <script type="text/ng-template" id="outline_item.html">
+            <div class="item"
+                 ng-class="{folder : item.items, linked : item.pageIndex!=null}"
+                 ng-click="viewer.gotoPage(item.pageIndex, 'pageflow')">
+                <span class="title win-type-subtitle" ng-bind="item.title || '??'"></span>
+                <span class="page-index win-type-subtitle" ng-bind="item.pageIndex + 1"></span>
+            </div>
+            <ul ng-if="item.items">
+                <li ng-repeat="item in item.items" ng-include="'outline_item.html'"></li>
+            </ul>
+        </li>
+    </script>
 
-    <div id="mainNavBar" data-win-control="WinJS.UI.NavBar" data-win-options="{maxRows: 1}">
-            <div data-win-control="WinJS.UI.NavBarCommand"
-                 id="close"
-                 data-win-bind="winControl.label: PDFViewer.title"
-                 data-win-options="{icon: WinJS.UI.AppBarIcon.back}"></div>
-    </div>
+    <div id="viewer_view" ng-include="viewer.view.template">...</div>
 
-    <!-- Adding command bar option to open and load a PDF file -->
-    <!--
-    <div id="appBar" data-win-control="WinJS.UI.AppBar">
-        <button data-win-control="WinJS.UI.AppBarCommand"
-                data-win-options="{
-                                    id:'open',
-                                    label:'open',
-                                    icon:'openlocal',
-                                    section:'global',
-                                    extraClass:'singleSelect',
-                                    tooltip:'Open PDF'
-                                   }">
-        </button>
-    </div>
-    -->
+    <win-app-bar win-control="viewer.appBar.winControl" placement="'bottom'">
+        <win-app-bar-command type="button" icon="'back'" on-click="viewer.close()"></win-app-bar-command>
+        <win-tool-bar-content><h3 class="title win-h3" ng-bind="viewer.doc.title"></h3></win-tool-bar-content>
+        <win-app-bar-separator></win-app-bar-separator>
+        <win-app-bar-command type="'button'" icon="'document'"
+                             class="view pageflow"
+                             selected="viewer.view.id == 'pageflow'"
+                             on-click="viewer.setView('pageflow')"></win-app-bar-command>
+        <win-app-bar-command type="'button'" icon="'list'"
+                             class="view outline"
+                             selected="viewer.view.id == 'outline'"
+                             on-click="viewer.setView('outline')"></win-app-bar-command>
+        <win-app-bar-command type="'button'" icon="'viewall'"
+                             class="view tiles"
+                             selected="viewer.view.id == 'tiles'"
+                             on-click="viewer.setView('tiles')"></win-app-bar-command>
+    </win-app-bar>
+
+    <win-content-dialog win-control="viewer.error.dialog.winControl"
+                        primary-command-text="'ok'"
+                        title="'Error'"
+                        ng-init="viewer.error.dialog.winControl.hide()">
+        An error occurred: {{viewer.error.message}}
+    </win-content-dialog>
+
+
 
 </body>
 </html>

@@ -1,27 +1,94 @@
-﻿html, body{
+﻿html{
+    touch-action: none;
+}
+
+html, body{
     padding:0;
     margin:0;
 }
 
-.win-navbarcommand-label
-{
-    font-family: sans-serif;
+.win-appbar-overflowbutton{
+    display: none !important;
+}
+
+.title.win-h3{
+    line-height: 48px;
 }
 
 
-#semanticZoomDiv{
-    width: 100%;
+#viewer_view,
+.view-controller{
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.view-controller .win-listview,
+.view-controller .win-listview .win-item{
     height: 100%;
 }
 
-.win-navbarcommand-button
-{
-    background-color: transparent;
+
+.view-controller.pageflow>.win-listview>.win-viewport{
+    -ms-content-zooming: zoom;
+    overflow-y: auto;
+}
+
+.view-controller.pageflow>.win-listview>.win-viewport>.win-gridlayout{
+    touch-action: pan-x pan-y pinch-zoom
+}
+
+.pdf_page{
+    height: 100%;
+    background-size: contain;
+    background: no-repeat top left;
+    position: relative;
+}
+
+.pdf_page>.loading{
+    position: absolute;
+    top: 40%;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    color: white;
+    font-size: 200%;
+    font-weight: bold;
+    opacity: 0.8;
+    z-index: -1;
+}
+
+.pdf_page>.loading .page_index{
+    margin: 1em;
+}
+
+.view-controller.outline{
+    overflow-x: auto;
+}
+
+.view-controller.outline li{
+    margin-top: .6em;
+    list-style-type: none;
+}
+
+/*first level*/
+.view-controller.outline > ul > li{
+    margin-top: 1.2em;
+}
+
+.view-controller.outline .item{
+    position: relative;
+    border-bottom: 1px dotted gray;
+}
+
+.view-controller.outline .item .page-index{
+    position: absolute;
+    right: 2em;
 }
 
 
-#mainNavBar
-{
-    opacity : .7 !important;
+.has-no-outline .win-command.view.outline,
+.has-one-page .win-command.view,
+.has-one-page hr.win-command{
+    display: none;
 }
-

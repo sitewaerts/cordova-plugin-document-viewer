@@ -1,5 +1,8 @@
 var PDF = "application/pdf";
 
+// this dir must be located in www
+var viewerLocation = "sitewaertsdocumentviewer";
+
 var Args = {
     URL: "url",
     CONTENT_TYPE: "contentType",
@@ -125,8 +128,7 @@ cordova.commandProxy.add("SitewaertsDocumentViewer", {
         }
 
         // current page must be located in www
-        // sitewaertsdocumentviewer must be located in www
-        iframe.src = "./sitewaertsdocumentviewer/viewer.html";
+        iframe.src = "./" + viewerLocation + "/viewer.html";
 
         iframe.onload = function ()
         {
