@@ -76,7 +76,7 @@ cordova.commandProxy.add("SitewaertsDocumentViewer", {
 
         // current page must be located in www
         // pdfjs must be located in www
-        iframe.src = "./pdfjs/web/viewer.html?file="+encodeURIComponent(url);
+        iframe.src = "/www/pdfjs/web/viewer.html?file="+encodeURIComponent(url);
         var body = document.getElementsByTagName("body")[0];
         viewer.appendChild(iframe);
         viewer.appendChild(close);

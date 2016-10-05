@@ -126,7 +126,7 @@ cordova.commandProxy.add("SitewaertsDocumentViewer", {
 
         // current page must be located in www
         // sitewaertsdocumentviewer must be located in www
-        iframe.src = "./sitewaertsdocumentviewer/viewer.html";
+        iframe.src = "/www/sitewaertsdocumentviewer/viewer.html";
 
         iframe.onload = function ()
         {
