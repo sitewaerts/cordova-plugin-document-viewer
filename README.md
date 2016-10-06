@@ -1,6 +1,8 @@
 Cordova Document Viewer Plugin
 ============================
 
+**The plugin is now published at npm with a new plugin id: cordova-plugin-document-viewer** 
+
 A common requirement when developing a cordova based app is to embed a
 performant and secure inline viewer for pdf files which doesn't allow the user
 to extract a copy of the pdf file out of the apps sandbox.
@@ -57,17 +59,17 @@ cordova plugin add https://github.com/sitewaerts/cordova-plugin-document-viewer.
 from a local folder:
 ```bash
 # ~~ local folder ~~
-cordova plugin add de.sitewaerts.cordova.documentviewer --searchpath path/to/plugin
+cordova plugin add cordova-plugin-document-viewer --searchpath path/to/plugin
 ```
 or to use the last stable version:
 ```bash
 # ~~ stable version ~~
-cordova plugin add de.sitewaerts.cordova.documentviewer
+cordova plugin add cordova-plugin-document-viewer
 ```
 or to use a specific version:
 ```bash
 # ~~ stable version ~~
-cordova plugin add de.sitewaerts.cordova.documentviewer@[VERSION]
+cordova plugin add cordova-plugin-document-viewer@[VERSION]
 ```
 
 You may replace cordova with phonegap regarding to your needs.
@@ -75,13 +77,13 @@ You may replace cordova with phonegap regarding to your needs.
 ### PhoneGap Build
 Add the following xml to your config.xml to always use the latest version of this plugin:
 ```xml
-<gap:plugin name="de.sitewaerts.cordova.documentviewer" source="plugins.cordova.io" />
+<gap:plugin name="cordova-plugin-document-viewer" />
 ```
 or a specific version:
 ```xml
-<gap:plugin name="de.sitewaerts.cordova.documentviewer" source="plugins.cordova.io" version="[VERSION]"/>
+<gap:plugin name="cordova-plugin-document-viewer" version="[VERSION]"/>
 ```
-For available versions and additional information visit the [cordova plugin registry][CDV_plugin].
+For available versions and additional information visit the [npm plugin registry][CDV_plugin].
 
 
 ## Using the plugin ##
@@ -285,7 +287,7 @@ inspired by https://msdn.microsoft.com/en-us/library/windows/apps/dn263105.aspx
 [cordova]: https://cordova.apache.org
 [CLI]: http://cordova.apache.org/docs/en/edge/guide_cli_index.md.html#The%20Command-line%20Interface
 [PGB]: http://docs.build.phonegap.com/en_US/index.html
-[CDV_plugin]: http://plugins.cordova.io/#/package/de.sitewaerts.cordova.documentviewer
+[CDV_plugin]: https://www.npmjs.com/package/cordova-plugin-document-viewer
 [PDFJS]: https://mozilla.github.io/pdf.js/
 [Windows.Data.Pdf.PdfDocument]: https://msdn.microsoft.com/en-us/library/windows/apps/windows.data.pdf.pdfdocument
 [winjs]: http://try.buildwinjs.com/

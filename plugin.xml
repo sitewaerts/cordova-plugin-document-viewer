@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
-        id="de.sitewaerts.cordova.documentviewer"
+        id="cordova-plugin-document-viewer"
         xmlns:android="http://schemas.android.com/apk/res/android"
         version="0.5.0">
     <engines>
@@ -8,9 +8,7 @@
         <engine name="cordova-windows" version=">=4.4.0"/>
     </engines>
     <name>SitewaertsDocumentViewer</name>
-    <description>Document viewer phonegap plugin.
-        Currently supports PDF Documents on iOS, Android and Windows 8.1 + 10.
-    </description>
+    <description>Document viewer cordova plugin for iOS, Android and Windows 8.1 + 10.</description>
     <author>Felix Schauerte</author>
     <email>schauerte@sitewaerts.de</email>
     <license>MIT</license>
