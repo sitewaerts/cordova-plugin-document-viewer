@@ -40,8 +40,9 @@ html, body{
 
 .pdf_page{
     height: 100%;
+    background-repeat: no-repeat;
+    background-position: top left;
     background-size: contain;
-    background: no-repeat top left;
     position: relative;
 }
 
