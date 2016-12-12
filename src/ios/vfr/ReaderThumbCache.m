@@ -1,9 +1,9 @@
 //
 //	ReaderThumbCache.m
-//	Reader v2.8.0
+//	Reader v2.9.0
 //
 //	Created by Julius Oklamcak on 2011-09-01.
-//	Copyright © 2011-2014 Julius Oklamcak. All rights reserved.
+//	Copyright © 2011-2015 Julius Oklamcak. All rights reserved.
 //
 //	Permission is hereby granted, free of charge, to any person obtaining a copy
 //	of this software and associated documentation files (the "Software"), to deal
@@ -177,7 +177,7 @@
 
 			[thumbFetch setQueuePriority:(priority ? NSOperationQueuePriorityNormal : NSOperationQueuePriorityLow)]; // Queue priority
 
-			request.thumbView.operation = thumbFetch; [thumbFetch setThreadPriority:(priority ? 0.55 : 0.35)]; // Thread priority
+			request.thumbView.operation = thumbFetch; //[thumbFetch setThreadPriority:(priority ? 0.55 : 0.35)]; // Thread priority
 
 			[[ReaderThumbQueue sharedInstance] addLoadOperation:thumbFetch]; // Queue the operation
 		}

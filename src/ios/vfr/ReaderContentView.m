@@ -1,9 +1,9 @@
 //
 //	ReaderContentView.m
-//	Reader v2.8.3
+//	Reader v2.8.7
 //
 //	Created by Julius Oklamcak on 2011-07-01.
-//	Copyright © 2011-2014 Julius Oklamcak. All rights reserved.
+//	Copyright © 2011-2016 Julius Oklamcak. All rights reserved.
 //
 //	Permission is hereby granted, free of charge, to any person obtaining a copy
 //	of this software and associated documentation files (the "Software"), to deal
@@ -41,10 +41,12 @@
 #define ZOOM_FACTOR 2.0f
 #define ZOOM_MAXIMUM 16.0f
 
-#define PAGE_THUMB_LARGE 240
 #define PAGE_THUMB_SMALL 144
+#define PAGE_THUMB_LARGE 240
 
 static void *ReaderContentViewContext = &ReaderContentViewContext;
+
+static CGFloat g_BugFixWidthInset = 0.0f;
 
 #pragma mark - Properties
 
@@ -52,22 +54,43 @@ static void *ReaderContentViewContext = &ReaderContentViewContext;
 
 #pragma mark - ReaderContentView functions
 
-static inline CGFloat zoomScaleThatFits(CGSize target, CGSize source, CGFloat bfwi)
+static inline CGFloat zoomScaleThatFits(CGSize target, CGSize source)
 {
-	CGFloat w_scale = (target.width / (source.width + bfwi));
+	CGFloat w_scale = (target.width / (source.width + g_BugFixWidthInset));
 
 	CGFloat h_scale = (target.height / source.height);
 
 	return ((w_scale < h_scale) ? w_scale : h_scale);
 }
 
+#pragma mark - ReaderContentView class methods
+
++ (void)initialize
+{
+	if (self == [ReaderContentView self]) // Do once - iOS 8.0 UIScrollView bug workaround
+	{
+		if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPhone) // Not iPads
+		{
+			NSString *iosVersion = [UIDevice currentDevice].systemVersion; // iOS version as a string
+
+			if ([@"8.0" compare:iosVersion options:NSNumericSearch] != NSOrderedDescending) // 8.0 and up
+			{
+//				if ([@"8.2" compare:iosVersion options:NSNumericSearch] == NSOrderedDescending) // Below 8.2
+//				{
+					g_BugFixWidthInset = 2.0f * [[UIScreen mainScreen] scale]; // Reduce width of content view
+//				}
+			}
+		}
+	}
+}
+
 #pragma mark - ReaderContentView instance methods
 
 - (void)updateMinimumMaximumZoom
 {
-	CGFloat zoomScale = zoomScaleThatFits(self.bounds.size, theContentPage.bounds.size, bugFixWidthInset);
+	CGFloat zoomScale = zoomScaleThatFits(self.bounds.size, theContentPage.bounds.size);
 
-	self.minimumZoomScale = zoomScale; self.maximumZoomScale = (zoomScale * ZOOM_MAXIMUM); // Limits
+	self.minimumZoomScale = zoomScale; self.maximumZoomScale = (zoomScale * ZOOM_MAXIMUM);
 
 	realMaximumZoom = self.maximumZoomScale; tempMaximumZoom = (realMaximumZoom * ZOOM_FACTOR);
 }
@@ -103,18 +126,6 @@ static inline CGFloat zoomScaleThatFits(CGSize target, CGSize source, CGFloat bf
 		self.delegate = self;
 
 		userInterfaceIdiom = [UIDevice currentDevice].userInterfaceIdiom; // User interface idiom
-
-#ifndef __arm64__ // Only under 32-bit iOS
-		if (userInterfaceIdiom == UIUserInterfaceIdiomPhone) // iOS 8.0 UIScrollView bug workaround
-		{
-			NSString *iosVersion = [UIDevice currentDevice].systemVersion; // iOS version as a string
-
-			if ([@"8.0" compare:iosVersion options:NSNumericSearch] != NSOrderedDescending) // 8.0 and up
-			{
-				bugFixWidthInset = 4.0f; // Slightly reduce width of content view
-			}
-		}
-#endif // End of only under 32-bit iOS code
 
 		theContentPage = [[ReaderContentPage alloc] initWithURL:fileURL page:page password:phrase];
 
@@ -163,17 +174,9 @@ static inline CGFloat zoomScaleThatFits(CGSize target, CGSize source, CGFloat bf
 	return self;
 }
 
-//XXX:  ignore exceptions, that occur because observer has to be removed in subclass and subclass dealloc automatically calls super dealloc with arc
 - (void)dealloc
 {
-    @try
-    {
-        [self removeObserver:self forKeyPath:@"frame" context:ReaderContentViewContext];
-    }
-    @catch (NSException *e)
-    {
-        NSLog(@"ignored ReaderContentView dealloc exception");
-    }
+	[self removeObserver:self forKeyPath:@"frame" context:ReaderContentViewContext];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
