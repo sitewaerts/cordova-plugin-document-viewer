@@ -173,7 +173,7 @@ BOOL CGPDFDocumentUrlNeedsPassword(CFURLRef theURL, NSString *password)
 				}
 			}
 
-			CGPDFDocumentRelease(thePDFDocRef); // Cleanup CGPDFDocumentRef
+			CGPDFDocumentRelease(thePDFDocRef),thePDFDocRef = NULL; // Cleanup CGPDFDocumentRef
 		}
 	}
 	else // Log an error diagnostic
@@ -226,7 +226,7 @@ BOOL CGPDFDocumentDataNeedsPassword(CGDataProviderRef dataProvider, NSString *pa
 				}
 			}
 
-			CGPDFDocumentRelease(thePDFDocRef); // Cleanup CGPDFDocumentRef
+			CGPDFDocumentRelease(thePDFDocRef),thePDFDocRef = NULL; // Cleanup CGPDFDocumentRef
 		}
 	}
 	else // Log an error diagnostic

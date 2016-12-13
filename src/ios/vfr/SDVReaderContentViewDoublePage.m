@@ -81,12 +81,12 @@ static inline CGFloat zoomScaleThatFits(CGSize target, CGSize source, CGFloat bf
 //}
 
 
-- (id)initWithFrame:(CGRect)frame fileURL:(NSURL *)fileURL page:(NSUInteger)page password:(NSString *)phrase
+- (id)initWithFrame:(CGRect)frame pdfDocumentRef:(CGPDFDocumentRef *)pdfDocumentRef page:(NSUInteger)page
 {
-    return [self initWithFrame:frame fileURL:fileURL page:page password:phrase mode:SDVReaderContentViewDoublePageModeDefault];
+    return [self initWithFrame:frame pdfDocumentRef:pdfDocumentRef page:page mode:SDVReaderContentViewDoublePageModeDefault];
 }
 
-- (id)initWithFrame:(CGRect)frame fileURL:(NSURL *)fileURL page:(NSUInteger)page password:(NSString *)phrase mode:(SDVReaderContentViewDoublePageMode) mode
+- (id)initWithFrame:(CGRect)frame pdfDocumentRef:(CGPDFDocumentRef *)pdfDocumentRef page:(NSUInteger)page mode:(SDVReaderContentViewDoublePageMode) mode
 {
     if ((self = [super initWithFrame:frame]))
     {
@@ -117,7 +117,7 @@ static inline CGFloat zoomScaleThatFits(CGSize target, CGSize source, CGFloat bf
         }
 #endif // End of only under 32-bit iOS code
         
-        theContentPage = [[ReaderContentPage alloc] initWithURL:fileURL page:page password:phrase];
+        theContentPage = [[ReaderContentPage alloc] initWithDocument:pdfDocumentRef page:page];
         
         theContentPage1 = nil;
         theThumbView1 = nil;
@@ -128,7 +128,7 @@ static inline CGFloat zoomScaleThatFits(CGSize target, CGSize source, CGFloat bf
             
             theContentPage.frame=CGRectMake(theContentPage.frame.origin.x, theContentPage.frame.origin.y,theContentPage.frame.size.width/2, theContentPage.frame.size.height/2);
             //if double page 2
-            theContentPage1 = [[ReaderContentPage alloc] initWithURL:fileURL page:page+1 password:phrase];
+            theContentPage1 = [[ReaderContentPage alloc] initWithDocument:pdfDocumentRef page:page+1];
             theContentPage1.frame =CGRectMake(theContentPage.frame.size.width, theContentPage.frame.origin.y,theContentPage.frame.size.width, theContentPage.frame.size.height);
                 
             containerFrame = CGRectMake(theContentPage.frame.origin.x, theContentPage.frame.origin.y, theContentPage.frame.size.width*2, theContentPage.frame.size.height);
@@ -236,7 +236,7 @@ static inline CGFloat zoomScaleThatFits(CGSize target, CGSize source, CGFloat bf
     }
     @catch (NSException *e)
     {
-        NSLog(@"ignored SDVReaderContentView dealloc exception");
+        NSLog(@"ignored DVReaderContentViewDoublePage dealloc exception");
     }
 }
 
@@ -274,20 +274,20 @@ static inline CGFloat zoomScaleThatFits(CGSize target, CGSize source, CGFloat bf
 //    }
 //}
 
-- (void)showPageThumb:(NSURL *)fileURL page:(NSInteger)page password:(NSString *)phrase guid:(NSString *)guid
+- (void)showPageThumb:(CGPDFDocumentRef *)pdfDocumentRef page:(NSInteger)page guid:(NSString *)guid
 {
 #if (READER_ENABLE_PREVIEW == TRUE) // Option
     
     CGSize size = ((userInterfaceIdiom == UIUserInterfaceIdiomPad) ? CGSizeMake(PAGE_THUMB_LARGE, PAGE_THUMB_LARGE) : CGSizeMake(PAGE_THUMB_SMALL, PAGE_THUMB_SMALL));
     
-    ReaderThumbRequest *request = [ReaderThumbRequest newForView:theThumbView fileURL:fileURL password:phrase guid:guid page:page size:size];
+    ReaderThumbRequest *request = [ReaderThumbRequest newForView:theThumbView pdfDocumentRef:pdfDocumentRef guid:guid page:page size:size];
     
     UIImage *image = [[ReaderThumbCache sharedInstance] thumbRequest:request priority:YES]; // Request the page thumb
     
     if ([image isKindOfClass:[UIImage class]]) [theThumbView showImage:image]; // Show image from cache
     
     if (theThumbView1) {
-        ReaderThumbRequest *request1 = [ReaderThumbRequest newForView:theThumbView1 fileURL:fileURL password:phrase guid:guid page:page+1 size:size];
+        ReaderThumbRequest *request1 = [ReaderThumbRequest newForView:theThumbView1 pdfDocumentRef:pdfDocumentRef guid:guid page:page+1 size:size];
         
         UIImage *image1 = [[ReaderThumbCache sharedInstance] thumbRequest:request1 priority:YES]; // Request the page thumb
         

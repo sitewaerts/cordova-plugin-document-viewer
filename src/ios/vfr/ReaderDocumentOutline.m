@@ -369,35 +369,29 @@ void logDictionaryEntry(const char *key, CGPDFObjectRef object, void *info)
 	} while (CGPDFDictionaryGetDictionary(outlineDictionary, "Next", &outlineDictionary) == true);
 }
 
-+ (NSArray *)outlineFromFileURL:(NSURL *)fileURL password:(NSString *)phrase
++ (NSArray *)outlineFromDocument:(CGPDFDocumentRef)pdfDocumentRef
 {
 	NSMutableArray *outlineArray = nil; // Mutable outline array
 
-	if ((fileURL != nil) && [fileURL isFileURL]) // Check for valid file URL
-	{
-		CGPDFDocumentRef document = CGPDFDocumentCreateUsingUrl((__bridge CFURLRef)fileURL, phrase);
+    if (pdfDocumentRef != NULL) // Check for non-NULL CGPDFDocumentRef
+    {
+        CGPDFDictionaryRef outlines = NULL; // Document's outlines
 
-		if (document != NULL) // Check for non-NULL CGPDFDocumentRef
-		{
-			CGPDFDictionaryRef outlines = NULL; // Document's outlines
+        CGPDFDictionaryRef catalog = CGPDFDocumentGetCatalog(pdfDocumentRef);
 
-			CGPDFDictionaryRef catalog = CGPDFDocumentGetCatalog(document);
+        if (CGPDFDictionaryGetDictionary(catalog, "Outlines", &outlines) == true)
+        {
+            CGPDFDictionaryRef firstItem = NULL; // First outline item entry
 
-			if (CGPDFDictionaryGetDictionary(catalog, "Outlines", &outlines) == true)
-			{
-				CGPDFDictionaryRef firstItem = NULL; // First outline item entry
+            if (CGPDFDictionaryGetDictionary(outlines, "First", &firstItem) == true)
+            {
+                outlineArray = [NSMutableArray array]; // Top level outline entries array
 
-				if (CGPDFDictionaryGetDictionary(outlines, "First", &firstItem) == true)
-				{
-					outlineArray = [NSMutableArray array]; // Top level outline entries array
+                [self outlineItems:firstItem document:pdfDocumentRef array:outlineArray level:0];
+            }
+        }
 
-					[self outlineItems:firstItem document:document array:outlineArray level:0];
-				}
-			}
-
-			CGPDFDocumentRelease(document); // Cleanup
-		}
-	}
+    }
 
 	//[self logDocumentOutlineArray:outlineArray]; // Log it
 

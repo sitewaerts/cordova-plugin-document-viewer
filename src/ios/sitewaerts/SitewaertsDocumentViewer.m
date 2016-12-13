@@ -1,5 +1,5 @@
 //
-//  CDVPDFViewer.m
+//  SitewaertsDocumentViewer.m
 //
 //  The MIT License
 //

@@ -57,6 +57,8 @@
 	NSString *_filePath;
 
 	NSURL *_fileURL;
+
+	CGPDFDocumentRef *_pdfDocumentRef;
 }
 
 #pragma mark - Properties
@@ -72,6 +74,7 @@
 @synthesize filePath = _filePath;
 @dynamic fileName, fileURL;
 @dynamic canEmail, canExport, canPrint;
+@dynamic pdfDocumentRef;
 
 #pragma mark - ReaderDocument class methods
 
@@ -207,7 +210,7 @@
 
 			CFURLRef docURLRef = (__bridge CFURLRef)[self fileURL]; // CFURLRef from NSURL
 
-			CGPDFDocumentRef thePDFDocRef = CGPDFDocumentCreateUsingUrl(docURLRef, _password);
+			CGPDFDocumentRef thePDFDocRef = [self pdfDocumentRef];
 
 			if (thePDFDocRef != NULL) // Get the total number of pages in the document
 			{
@@ -215,7 +218,7 @@
 
 				_pageCount = [NSNumber numberWithInteger:pageCount];
 
-				CGPDFDocumentRelease(thePDFDocRef); // Cleanup
+				//CGPDFDocumentRelease(thePDFDocRef),thePDFDocRef = NULL; // Cleanup
 			}
 			else // Cupertino, we have a problem with the document
 			{
@@ -272,6 +275,15 @@
 	return YES;
 }
 
+- (CGPDFDocumentRef)pdfDocumentRef
+{
+	if (_pdfDocumentRef == nil){
+        CFURLRef docURLRef = (__bridge CFURLRef)[self fileURL]; // CFURLRef from NSURL
+        _pdfDocumentRef = CGPDFDocumentCreateUsingUrl(docURLRef, _password);
+	}
+	return _pdfDocumentRef;
+}
+
 - (BOOL)archiveDocumentProperties
 {
 	NSString *archiveFilePath = [ReaderDocument archiveFilePath:[self fileName]];
@@ -291,7 +303,7 @@
 
 		_pageCount = [NSNumber numberWithInteger:pageCount];
 
-		CGPDFDocumentRelease(thePDFDocRef); // Cleanup
+		CGPDFDocumentRelease(thePDFDocRef),thePDFDocRef = NULL; // Cleanup
 	}
 
 	NSFileManager *fileManager = [NSFileManager defaultManager]; // Singleton

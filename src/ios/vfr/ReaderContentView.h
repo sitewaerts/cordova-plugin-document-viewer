@@ -59,9 +59,9 @@
 
 @property (nonatomic, weak, readwrite) id <ReaderContentViewDelegate> message;
 
-- (instancetype)initWithFrame:(CGRect)frame fileURL:(NSURL *)fileURL page:(NSUInteger)page password:(NSString *)phrase;
+- (instancetype)initWithFrame:(CGRect)frame pdfDocumentRef:(CGPDFDocumentRef *)pdfDocumentRef page:(NSUInteger)page;
 
-- (void)showPageThumb:(NSURL *)fileURL page:(NSInteger)page password:(NSString *)phrase guid:(NSString *)guid;
+- (void)showPageThumb:(CGPDFDocumentRef *)pdfDocumentRef page:(NSInteger)page guid:(NSString *)guid;
 
 - (id)processSingleTap:(UITapGestureRecognizer *)recognizer;
 

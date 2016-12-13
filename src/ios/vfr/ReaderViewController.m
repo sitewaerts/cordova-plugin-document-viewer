@@ -105,12 +105,13 @@
 	viewRect.origin.x = (viewRect.size.width * (page - 1)); viewRect = CGRectInset(viewRect, scrollViewOutset, 0.0f);
 
 	NSURL *fileURL = document.fileURL; NSString *phrase = document.password; NSString *guid = document.guid; // Document properties
+	CGPDFDocumentRef *pdfDocumentRef = document.pdfDocumentRef;
 
-	ReaderContentView *contentView = [[ReaderContentView alloc] initWithFrame:viewRect fileURL:fileURL page:page password:phrase]; // ReaderContentView
+	ReaderContentView *contentView = [[ReaderContentView alloc] initWithFrame:viewRect pdfDocumentRef:pdfDocumentRef page:page]; // ReaderContentView
 
 	contentView.message = self; [contentViews setObject:contentView forKey:[NSNumber numberWithInteger:page]]; [scrollView addSubview:contentView];
 
-	[contentView showPageThumb:fileURL page:page password:phrase guid:guid]; // Request page preview thumb
+	[contentView showPageThumb:pdfDocumentRef page:page guid:guid]; // Request page preview thumb
 }
 
 - (void)layoutContentViews:(UIScrollView *)scrollView
@@ -290,7 +291,14 @@
 
 - (void)dealloc
 {
-	[[NSNotificationCenter defaultCenter] removeObserver:self];
+    @try
+    {
+	    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    }
+    @catch (NSException *e)
+    {
+        NSLog(@"ignored ReaderViewController dealloc exception");
+    }
 }
 
 - (void)viewDidLoad

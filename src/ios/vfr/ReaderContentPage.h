@@ -27,7 +27,7 @@
 
 @interface ReaderContentPage : UIView
 
-- (instancetype)initWithURL:(NSURL *)fileURL page:(NSInteger)page password:(NSString *)phrase;
+- (instancetype)initWithDocument:(CGPDFDocumentRef)pdfDocumentRef page:(NSInteger)page;
 
 - (id)processSingleTap:(UITapGestureRecognizer *)recognizer;
 

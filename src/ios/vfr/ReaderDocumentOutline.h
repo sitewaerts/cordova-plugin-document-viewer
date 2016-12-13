@@ -27,7 +27,7 @@
 
 @interface ReaderDocumentOutline : NSObject <NSObject>
 
-+ (NSArray *)outlineFromFileURL:(NSURL *)fileURL password:(NSString *)phrase;
++ (NSArray *)outlineFromDocument:(CGPDFDocumentRef)pdfDocumentRef;
 
 + (void)logDocumentOutlineArray:(NSArray *)array;
 

@@ -173,7 +173,8 @@
 //    }
     viewRect = CGRectInset(viewRect, scrollViewOutset, 0.0f);
     
-    NSURL *fileURL = document.fileURL; NSString *phrase = document.password; NSString *guid = document.guid; // Document properties
+    NSString *phrase = document.password; NSString *guid = document.guid; // Document properties
+    CGPDFDocumentRef *pdfDocumentRef = document.pdfDocumentRef;
     ReaderContentView *contentView;
     NSString *key;
     // view initialisation depending on view mode and page
@@ -188,13 +189,13 @@
 //            }
 //            
 //            if (page < maximumPage) {
-//                contentView = [[SDVReaderContentViewDoublePage alloc] initWithFrame:viewRect fileURL:fileURL page:page password:phrase]; // ReaderContentView
+//                contentView = [[SDVReaderContentViewDoublePage alloc] initWithFrame:viewRect pdfDocumentRef:pdfDocumentRef page:page]; // ReaderContentView
 //            }
 //            //single last page
 //            else
 //            {
-//                //                contentView = [[ReaderContentView alloc] initWithFrame:viewRect fileURL:fileURL page:page password:phrase]; // ReaderContentView
-//                contentView = [[SDVReaderContentViewDoublePage alloc] initWithFrame:viewRect fileURL:fileURL page:page password:phrase mode:SDVReaderContentViewDoublePageModeLeft]; // ReaderContentView
+//                //                contentView = [[ReaderContentView alloc] initWithFrame:viewRect pdfDocumentRef:pdfDocumentRef page:page]; // ReaderContentView
+//                contentView = [[SDVReaderContentViewDoublePage alloc] initWithFrame:viewRect pdfDocumentRef:pdfDocumentRef page:page mode:SDVReaderContentViewDoublePageModeLeft]; // ReaderContentView
 //            }
 //            break;
 //        }
@@ -209,16 +210,16 @@
 //            //first page and single last page
 //            if (page == 1)
 //            {
-//                //                contentView = [[ReaderContentView alloc] initWithFrame:viewRect fileURL:fileURL page:page password:phrase]; // ReaderContentView
-//                contentView = [[SDVReaderContentViewDoublePage alloc] initWithFrame:viewRect fileURL:fileURL page:page password:phrase mode:SDVReaderContentViewDoublePageModeRight]; // ReaderContentView
+//                //                contentView = [[ReaderContentView alloc] initWithFrame:viewRect pdfDocumentRef:pdfDocumentRef page:page]; // ReaderContentView
+//                contentView = [[SDVReaderContentViewDoublePage alloc] initWithFrame:viewRect pdfDocumentRef:pdfDocumentRef page:page mode:SDVReaderContentViewDoublePageModeRight]; // ReaderContentView
 //            }
 //            else if (page == maximumPage)
 //            {
-//                contentView = [[SDVReaderContentViewDoublePage alloc] initWithFrame:viewRect fileURL:fileURL page:page password:phrase mode:SDVReaderContentViewDoublePageModeLeft]; // ReaderContentView
+//                contentView = [[SDVReaderContentViewDoublePage alloc] initWithFrame:viewRect pdfDocumentRef:pdfDocumentRef page:page mode:SDVReaderContentViewDoublePageModeLeft]; // ReaderContentView
 //            }
 //            else
 //            {
-//                contentView = [[SDVReaderContentViewDoublePage alloc] initWithFrame:viewRect fileURL:fileURL page:page password:phrase]; // ReaderContentView
+//                contentView = [[SDVReaderContentViewDoublePage alloc] initWithFrame:viewRect pdfDocumentRef:pdfDocumentRef page:page]; // ReaderContentView
 //            }
 //            break;
 //        }
@@ -230,7 +231,7 @@
 //                [contentView removeFromSuperview];
 //                [contentViews removeObjectForKey:key];
 //            }
-//            contentView = [[ReaderContentView alloc] initWithFrame:viewRect fileURL:fileURL page:page password:phrase]; // ReaderContentView
+//            contentView = [[ReaderContentView alloc] initWithFrame:viewRect pdfDocumentRef:pdfDocumentRef page:page]; // ReaderContentView
             break;
         }
     }
@@ -242,14 +243,14 @@
     
     if (renderDoublePage) {
         if (singleFirstPage) {
-            contentView = [[SDVReaderContentViewDoublePage alloc] initWithFrame:viewRect fileURL:fileURL page:renderPage password:phrase mode:SDVReaderContentViewDoublePageModeRight]; // ReaderContentView
+            contentView = [[SDVReaderContentViewDoublePage alloc] initWithFrame:viewRect pdfDocumentRef:pdfDocumentRef page:renderPage mode:SDVReaderContentViewDoublePageModeRight]; // ReaderContentView
         } else if (singleLastPage) {
-            contentView = [[SDVReaderContentViewDoublePage alloc] initWithFrame:viewRect fileURL:fileURL page:renderPage password:phrase mode:SDVReaderContentViewDoublePageModeLeft]; // ReaderContentView
+            contentView = [[SDVReaderContentViewDoublePage alloc] initWithFrame:viewRect pdfDocumentRef:pdfDocumentRef page:renderPage mode:SDVReaderContentViewDoublePageModeLeft]; // ReaderContentView
         } else {
-            contentView = [[SDVReaderContentViewDoublePage alloc] initWithFrame:viewRect fileURL:fileURL page:renderPage password:phrase mode:SDVReaderContentViewDoublePageModeDefault]; // ReaderContentView
+            contentView = [[SDVReaderContentViewDoublePage alloc] initWithFrame:viewRect pdfDocumentRef:pdfDocumentRef page:renderPage mode:SDVReaderContentViewDoublePageModeDefault]; // ReaderContentView
         }
     } else {
-        contentView = [[ReaderContentView alloc] initWithFrame:viewRect fileURL:fileURL page:renderPage password:phrase]; // ReaderContentView
+        contentView = [[ReaderContentView alloc] initWithFrame:viewRect pdfDocumentRef:pdfDocumentRef page:renderPage]; // ReaderContentView
     }
     
     contentView.message = self;
@@ -257,7 +258,7 @@
     [contentViews setObject:contentView forKey:key];
     [scrollView addSubview:contentView];
     
-    [contentView showPageThumb:fileURL page:renderPage password:phrase guid:guid]; // Request page preview thumb
+    [contentView showPageThumb:pdfDocumentRef page:renderPage guid:guid]; // Request page preview thumb
 }
 
 // override layout
@@ -552,7 +553,8 @@
 //                document.pageNumber = [NSNumber numberWithInteger:page]; // Update page number
 //            }
 //            
-//            NSURL *fileURL = document.fileURL; NSString *phrase = document.password; NSString *guid = document.guid;
+//            NSString *phrase = document.password; NSString *guid = document.guid;
+//            CGPDFDocumentRef *pdfDocumentRef = document.pdfDocumentRef;
 //            
 //            if ([newPageSet containsIndex:page] == YES) // Preview visible page first
 //            {
@@ -560,7 +562,7 @@
 //                
 //                ReaderContentView *targetView = [contentViews objectForKey:key];
 //                
-//                [targetView showPageThumb:fileURL page:page password:phrase guid:guid];
+//                [targetView showPageThumb:pdfDocumentRef page:page guid:guid];
 //                
 //                [newPageSet removeIndex:page]; // Remove visible page from set
 //            }
@@ -572,7 +574,7 @@
 //                 
 //                 ReaderContentView *targetView = [contentViews objectForKey:key];
 //                 
-//                 [targetView showPageThumb:fileURL page:number password:phrase guid:guid];
+//                 [targetView showPageThumb:pdfDocumentRef page:number guid:guid];
 //             }
 //             ];
 //            newPageSet = nil; // Release new page set
@@ -723,7 +725,8 @@
 //                document.pageNumber = [NSNumber numberWithInteger:page]; // Update page number
 //            }
 //            
-//            NSURL *fileURL = document.fileURL; NSString *phrase = document.password; NSString *guid = document.guid;
+//            NSString *phrase = document.password; NSString *guid = document.guid;
+//            CGPDFDocumentRef *pdfDocumentRef = document.pdfDocumentRef;
 //            
 //            if ([newPageSet containsIndex:page] == YES) // Preview visible page first
 //            {
@@ -731,7 +734,7 @@
 //                
 //                ReaderContentView *targetView = [contentViews objectForKey:key];
 //                
-//                [targetView showPageThumb:fileURL page:page password:phrase guid:guid];
+//                [targetView showPageThumb:pdfDocumentRef page:page guid:guid];
 //                
 //                [newPageSet removeIndex:page]; // Remove visible page from set
 //            }
@@ -743,7 +746,7 @@
 //                 
 //                 ReaderContentView *targetView = [contentViews objectForKey:key];
 //                 
-//                 [targetView showPageThumb:fileURL page:number password:phrase guid:guid];
+//                 [targetView showPageThumb:pdfDocumentRef page:number guid:guid];
 //             }
 //             ];
 //            newPageSet = nil; // Release new page set
@@ -840,9 +843,10 @@
 //            //
 //            //                if (contentView == nil) // Create a brand new document content view
 //            //                {
-//            //                    NSURL *fileURL = document.fileURL; NSString *phrase = document.password; // Document properties
+//            //                    NSString *phrase = document.password; // Document properties
+//            //                    CGPDFDocumentRef *pdfDocumentRef = document.pdfDocumentRef;
 //            //
-//            //                    contentView = [[ReaderContentView alloc] initWithFrame:viewRect fileURL:fileURL page:number password:phrase];
+//            //                    contentView = [[ReaderContentView alloc] initWithFrame:viewRect pdfDocumentRef:pdfDocumentRef page:number];
 //            //
 //            //                    [theScrollView addSubview:contentView]; [contentViews setObject:contentView forKey:key];
 //            //
@@ -898,7 +902,8 @@
 //            //                document.pageNumber = [NSNumber numberWithInteger:page]; // Update page number
 //            //            }
 //            //
-//            //            NSURL *fileURL = document.fileURL; NSString *phrase = document.password; NSString *guid = document.guid;
+//            //            NSString *phrase = document.password; NSString *guid = document.guid;
+//            //            CGPDFDocumentRef *pdfDocumentRef = document.pdfDocumentRef;
 //            //
 //            //            if ([newPageSet containsIndex:page] == YES) // Preview visible page first
 //            //            {
@@ -906,7 +911,7 @@
 //            //                
 //            //                ReaderContentView *targetView = [contentViews objectForKey:key];
 //            //                
-//            //                [targetView showPageThumb:fileURL page:page password:phrase guid:guid];
+//            //                [targetView showPageThumb:pdfDocumentRef page:page guid:guid];
 //            //                
 //            //                [newPageSet removeIndex:page]; // Remove visible page from set
 //            //            }
@@ -918,7 +923,7 @@
 //            //                 
 //            //                 ReaderContentView *targetView = [contentViews objectForKey:key];
 //            //                 
-//            //                 [targetView showPageThumb:fileURL page:number password:phrase guid:guid];
+//            //                 [targetView showPageThumb:pdfDocumentRef page:number guid:guid];
 //            //             }
 //            //             ];
 //            //            

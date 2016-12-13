@@ -73,15 +73,14 @@
 
 - (void)main
 {
-	NSInteger page = request.thumbPage; NSString *password = request.password;
+	NSInteger page = request.thumbPage;
 
-	CGImageRef imageRef = NULL; CFURLRef fileURL = (__bridge CFURLRef)request.fileURL;
+	CGImageRef imageRef = NULL;
+	CGPDFDocumentRef pdfDocumentRef = request.pdfDocumentRef;
 
-	CGPDFDocumentRef thePDFDocRef = CGPDFDocumentCreateUsingUrl(fileURL, password);
-
-	if (thePDFDocRef != NULL) // Check for non-NULL CGPDFDocumentRef
+	if (pdfDocumentRef != NULL) // Check for non-NULL CGPDFDocumentRef
 	{
-		CGPDFPageRef thePDFPageRef = CGPDFDocumentGetPage(thePDFDocRef, page);
+		CGPDFPageRef thePDFPageRef = CGPDFDocumentGetPage(pdfDocumentRef, page);
 
 		if (thePDFPageRef != NULL) // Check for non-NULL CGPDFPageRef
 		{
@@ -157,7 +156,7 @@
 			CGColorSpaceRelease(rgb); // Release device RGB color space reference
 		}
 
-		CGPDFDocumentRelease(thePDFDocRef); // Release CGPDFDocumentRef reference
+		//CGPDFDocumentRelease(thePDFDocRef),thePDFDocRef = NULL; // Release CGPDFDocumentRef reference
 	}
 
 	if (imageRef != NULL) // Create UIImage from CGImage and show it, then save thumb as PNG

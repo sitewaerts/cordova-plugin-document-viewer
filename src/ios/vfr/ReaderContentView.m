@@ -110,7 +110,7 @@ static inline CGFloat zoomScaleThatFits(CGSize target, CGSize source)
 	if (UIEdgeInsetsEqualToEdgeInsets(self.contentInset, insets) == false) self.contentInset = insets;
 }
 
-- (instancetype)initWithFrame:(CGRect)frame fileURL:(NSURL *)fileURL page:(NSUInteger)page password:(NSString *)phrase
+- (instancetype)initWithFrame:(CGRect)frame pdfDocumentRef:(CGPDFDocumentRef *)pdfDocumentRef page:(NSUInteger)page
 {
 	if ((self = [super initWithFrame:frame]))
 	{
@@ -127,7 +127,7 @@ static inline CGFloat zoomScaleThatFits(CGSize target, CGSize source)
 
 		userInterfaceIdiom = [UIDevice currentDevice].userInterfaceIdiom; // User interface idiom
 
-		theContentPage = [[ReaderContentPage alloc] initWithURL:fileURL page:page password:phrase];
+		theContentPage = [[ReaderContentPage alloc] initWithDocument:pdfDocumentRef page:page];
 
 		if (theContentPage != nil) // Must have a valid and initialized content page
 		{
@@ -176,7 +176,14 @@ static inline CGFloat zoomScaleThatFits(CGSize target, CGSize source)
 
 - (void)dealloc
 {
-	[self removeObserver:self forKeyPath:@"frame" context:ReaderContentViewContext];
+    @try
+    {
+        [self removeObserver:self forKeyPath:@"frame" context:ReaderContentViewContext];
+    }
+    @catch (NSException *e)
+    {
+        NSLog(@"ignored ReaderContentView dealloc exception");
+    }
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
@@ -213,13 +220,13 @@ static inline CGFloat zoomScaleThatFits(CGSize target, CGSize source)
 	}
 }
 
-- (void)showPageThumb:(NSURL *)fileURL page:(NSInteger)page password:(NSString *)phrase guid:(NSString *)guid
+- (void)showPageThumb:(CGPDFDocumentRef *)pdfDocumentRef page:(NSInteger)page guid:(NSString *)guid
 {
 #if (READER_ENABLE_PREVIEW == TRUE) // Option
 
 	CGSize size = ((userInterfaceIdiom == UIUserInterfaceIdiomPad) ? CGSizeMake(PAGE_THUMB_LARGE, PAGE_THUMB_LARGE) : CGSizeMake(PAGE_THUMB_SMALL, PAGE_THUMB_SMALL));
 
-	ReaderThumbRequest *request = [ReaderThumbRequest newForView:theThumbView fileURL:fileURL password:phrase guid:guid page:page size:size];
+	ReaderThumbRequest *request = [ReaderThumbRequest newForView:theThumbView pdfDocumentRef:pdfDocumentRef guid:guid page:page size:size];
 
 	UIImage *image = [[ReaderThumbCache sharedInstance] thumbRequest:request priority:YES]; // Request the page thumb
 

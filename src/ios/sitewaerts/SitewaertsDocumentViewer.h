@@ -1,10 +1,10 @@
 //
-//  CDVPDFViewer.h
+//  SitewaertsDocumentViewer.h
 //  based on https://github.com/vfr/Reader
 //
 //  The MIT License
 //
-//  Copyright (c) 2013 Paul Cervenka
+//  Copyright (c) 2016 sitewaerts GmbH
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy of this
 //  software and associated documentation files (the "Software"), to deal in the Software

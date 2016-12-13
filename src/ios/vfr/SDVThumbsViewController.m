@@ -40,7 +40,7 @@
 {
     self = [super initWithReaderDocument:object];
     self.viewerOptions = options;
-    self.documentOutline = [SDVThumbsViewController flattenOutline:[ReaderDocumentOutline outlineFromFileURL:object.fileURL password: nil]];
+    self.documentOutline = [SDVThumbsViewController flattenOutline:[ReaderDocumentOutline outlineFromDocument:object.pdfDocumentRef]];
     NSLog(@"[pdfviewer] document-outline: %@", self.documentOutline);
 
     return self;

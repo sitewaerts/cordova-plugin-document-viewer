@@ -18,6 +18,6 @@ typedef enum
 
 @interface SDVReaderContentViewDoublePage : ReaderContentView
 
-- (id)initWithFrame:(CGRect)frame fileURL:(NSURL *)fileURL page:(NSUInteger)page password:(NSString *)phrase mode:(SDVReaderContentViewDoublePageMode) mode;
+- (id)initWithFrame:(CGRect)frame pdfDocumentRef:(CGPDFDocumentRef *)pdfDocumentRef page:(NSUInteger)page mode:(SDVReaderContentViewDoublePageMode) mode;
 
 @end

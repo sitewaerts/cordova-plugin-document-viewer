@@ -28,11 +28,9 @@
 
 @implementation ReaderThumbRequest
 {
-	NSURL *_fileURL;
+	CGPDFDocumentRef *_pdfDocumentRef;
 
 	NSString *_guid;
-
-	NSString *_password;
 
 	NSString *_cacheKey;
 
@@ -52,8 +50,7 @@
 #pragma mark - Properties
 
 @synthesize guid = _guid;
-@synthesize fileURL = _fileURL;
-@synthesize password = _password;
+@synthesize pdfDocumentRef = _pdfDocumentRef;
 @synthesize thumbView = _thumbView;
 @synthesize thumbPage = _thumbPage;
 @synthesize thumbSize = _thumbSize;
@@ -64,14 +61,14 @@
 
 #pragma mark - ReaderThumbRequest class methods
 
-+ (instancetype)newForView:(ReaderThumbView *)view fileURL:(NSURL *)url password:(NSString *)phrase guid:(NSString *)guid page:(NSInteger)page size:(CGSize)size
++ (instancetype)newForView:(ReaderThumbView *)view pdfDocumentRef:(CGPDFDocumentRef *)pdfDocumentRef guid:(NSString *)guid page:(NSInteger)page size:(CGSize)size
 {
-	return [[ReaderThumbRequest alloc] initForView:view fileURL:url password:phrase guid:guid page:page size:size];
+	return [[ReaderThumbRequest alloc] initForView:view pdfDocumentRef:pdfDocumentRef guid:guid page:page size:size];
 }
 
 #pragma mark - ReaderThumbRequest instance methods
 
-- (instancetype)initForView:(ReaderThumbView *)view fileURL:(NSURL *)url password:(NSString *)phrase guid:(NSString *)guid page:(NSInteger)page size:(CGSize)size
+- (instancetype)initForView:(ReaderThumbView *)view pdfDocumentRef:(CGPDFDocumentRef *)pdfDocumentRef guid:(NSString *)guid page:(NSInteger)page size:(CGSize)size
 {
 	if ((self = [super init])) // Initialize object
 	{
@@ -79,7 +76,7 @@
 
 		_thumbView = view; _thumbPage = page; _thumbSize = size;
 
-		_fileURL = [url copy]; _password = [phrase copy]; _guid = [guid copy];
+		_pdfDocumentRef = pdfDocumentRef;
 
 		_thumbName = [[NSString alloc] initWithFormat:@"%07i-%04ix%04i", (int)page, (int)w, (int)h];
 

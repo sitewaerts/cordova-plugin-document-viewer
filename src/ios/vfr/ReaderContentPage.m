@@ -420,79 +420,72 @@
 	return self;
 }
 
-- (instancetype)initWithURL:(NSURL *)fileURL page:(NSInteger)page password:(NSString *)phrase
+- (instancetype)initWithDocument:(CGPDFDocumentRef)pdfDocumentRef page:(NSInteger)page
 {
 	CGRect viewRect = CGRectZero; // View rect
 
-	if (fileURL != nil) // Check for non-nil file URL
-	{
-		_PDFDocRef = CGPDFDocumentCreateUsingUrl((__bridge CFURLRef)fileURL, phrase);
+    if (pdfDocumentRef != NULL) // Check for non-NULL CGPDFDocumentRef
+    {
+        if (page < 1) page = 1; // Check the lower page bounds
 
-		if (_PDFDocRef != NULL) // Check for non-NULL CGPDFDocumentRef
-		{
-			if (page < 1) page = 1; // Check the lower page bounds
+        NSInteger pages = CGPDFDocumentGetNumberOfPages(pdfDocumentRef);
 
-			NSInteger pages = CGPDFDocumentGetNumberOfPages(_PDFDocRef);
+        if (page > pages) page = pages; // Check the upper page bounds
 
-			if (page > pages) page = pages; // Check the upper page bounds
+        _PDFPageRef = CGPDFDocumentGetPage(pdfDocumentRef, page); // Get page
 
-			_PDFPageRef = CGPDFDocumentGetPage(_PDFDocRef, page); // Get page
+        if (_PDFPageRef != NULL) // Check for non-NULL CGPDFPageRef
+        {
+            CGPDFPageRetain(_PDFPageRef); // Retain the PDF page
 
-			if (_PDFPageRef != NULL) // Check for non-NULL CGPDFPageRef
-			{
-				CGPDFPageRetain(_PDFPageRef); // Retain the PDF page
+            CGRect cropBoxRect = CGPDFPageGetBoxRect(_PDFPageRef, kCGPDFCropBox);
+            CGRect mediaBoxRect = CGPDFPageGetBoxRect(_PDFPageRef, kCGPDFMediaBox);
+            CGRect effectiveRect = CGRectIntersection(cropBoxRect, mediaBoxRect);
 
-				CGRect cropBoxRect = CGPDFPageGetBoxRect(_PDFPageRef, kCGPDFCropBox);
-				CGRect mediaBoxRect = CGPDFPageGetBoxRect(_PDFPageRef, kCGPDFMediaBox);
-				CGRect effectiveRect = CGRectIntersection(cropBoxRect, mediaBoxRect);
+            _pageAngle = CGPDFPageGetRotationAngle(_PDFPageRef); // Angle
 
-				_pageAngle = CGPDFPageGetRotationAngle(_PDFPageRef); // Angle
+            switch (_pageAngle) // Page rotation angle (in degrees)
+            {
+                default: // Default case
+                case 0: case 180: // 0 and 180 degrees
+                {
+                    _pageWidth = effectiveRect.size.width;
+                    _pageHeight = effectiveRect.size.height;
+                    _pageOffsetX = effectiveRect.origin.x;
+                    _pageOffsetY = effectiveRect.origin.y;
+                    break;
+                }
 
-				switch (_pageAngle) // Page rotation angle (in degrees)
-				{
-					default: // Default case
-					case 0: case 180: // 0 and 180 degrees
-					{
-						_pageWidth = effectiveRect.size.width;
-						_pageHeight = effectiveRect.size.height;
-						_pageOffsetX = effectiveRect.origin.x;
-						_pageOffsetY = effectiveRect.origin.y;
-						break;
-					}
+                case 90: case 270: // 90 and 270 degrees
+                {
+                    _pageWidth = effectiveRect.size.height;
+                    _pageHeight = effectiveRect.size.width;
+                    _pageOffsetX = effectiveRect.origin.y;
+                    _pageOffsetY = effectiveRect.origin.x;
+                    break;
+                }
+            }
 
-					case 90: case 270: // 90 and 270 degrees
-					{
-						_pageWidth = effectiveRect.size.height;
-						_pageHeight = effectiveRect.size.width;
-						_pageOffsetX = effectiveRect.origin.y;
-						_pageOffsetY = effectiveRect.origin.x;
-						break;
-					}
-				}
+            NSInteger page_w = _pageWidth; // Integer width
+            NSInteger page_h = _pageHeight; // Integer height
 
-				NSInteger page_w = _pageWidth; // Integer width
-				NSInteger page_h = _pageHeight; // Integer height
+            if (page_w % 2) page_w--; if (page_h % 2) page_h--; // Even
 
-				if (page_w % 2) page_w--; if (page_h % 2) page_h--; // Even
+            viewRect.size = CGSizeMake(page_w, page_h); // View size
 
-				viewRect.size = CGSizeMake(page_w, page_h); // View size
-			}
-			else // Error out with a diagnostic
-			{
-				CGPDFDocumentRelease(_PDFDocRef), _PDFDocRef = NULL;
+            //CGPDFDocumentRelease(pdfDocumentRef), pdfDocumentRef = NULL;
+        }
+        else // Error out with a diagnostic
+        {
+            //CGPDFDocumentRelease(pdfDocumentRef), pdfDocumentRef = NULL;
 
-				NSAssert(NO, @"CGPDFPageRef == NULL");
-			}
-		}
-		else // Error out with a diagnostic
-		{
-			NSAssert(NO, @"CGPDFDocumentRef == NULL");
-		}
-	}
-	else // Error out with a diagnostic
-	{
-		NSAssert(NO, @"fileURL == nil");
-	}
+            NSAssert(NO, @"CGPDFPageRef == NULL");
+        }
+    }
+    else // Error out with a diagnostic
+    {
+        NSAssert(NO, @"CGPDFDocumentRef == NULL");
+    }
 
 	ReaderContentPage *view = [self initWithFrame:viewRect];
 
@@ -512,9 +505,23 @@
 
 - (void)dealloc
 {
-	CGPDFPageRelease(_PDFPageRef), _PDFPageRef = NULL;
+    @try
+    {
+        //CGPDFPageRelease(_PDFPageRef), _PDFPageRef = NULL;
+    }
+    @catch (NSException *e)
+    {
+        NSLog(@"ignored ReaderContentPage / CGPDFPageRelease dealloc exception");
+    }
+    @try
+    {
+        //CGPDFDocumentRelease(_PDFDocRef), _PDFDocRef = NULL;
+    }
+    @catch (NSException *e)
+    {
+        NSLog(@"ignored ReaderContentPage / CGPDFDocumentRelease dealloc exception");
+    }
 
-	CGPDFDocumentRelease(_PDFDocRef), _PDFDocRef = NULL;
 }
 
 #if (READER_DISABLE_RETINA == TRUE) // Option
