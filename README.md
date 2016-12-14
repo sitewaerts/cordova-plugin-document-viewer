@@ -50,6 +50,8 @@ The plugin can either be installed from git repository, from local file system
 through the [Command-line Interface][CLI],
 or cloud based through [PhoneGap Build][PGB].
 
+The plugin is published at the [npm plugin registry][CDV_plugin].
+
 ### Local development environment
 From master:
 ```bash
@@ -138,7 +140,7 @@ options: {
 }
 ```
 
-### Check if a Document File could be shown###
+### Check if a Document File could be shown ###
 ```js
 SitewaertsDocumentViewer.canViewDocument(
     url, contentType, options, onPossible, onMissingApp, onImpossible, onError);
@@ -291,3 +293,4 @@ inspired by https://msdn.microsoft.com/en-us/library/windows/apps/dn263105.aspx
 [PDFJS]: https://mozilla.github.io/pdf.js/
 [Windows.Data.Pdf.PdfDocument]: https://msdn.microsoft.com/en-us/library/windows/apps/windows.data.pdf.pdfdocument
 [winjs]: http://try.buildwinjs.com/
+
