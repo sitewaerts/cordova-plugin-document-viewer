@@ -114,7 +114,7 @@ String representing the mime type of the file. Currently only 'application/pdf' 
 #### options ####
 Some optional features like search or bookmarks are not (yet) implemented on every platform! 
 ```js
-options: {
+var options = {
 	title: STRING,
 	documentView : {
 		closeLabel : STRING
@@ -136,7 +136,7 @@ options: {
 	},
 	search : {
 		enabled : BOOLEAN
-	},
+	}
 }
 ```
 
@@ -148,7 +148,7 @@ SitewaertsDocumentViewer.canViewDocument(
 
 #### onPossible ####
 ```js
-function(){
+function onPossible(){
   window.console.log('document can be shown');
   //e.g. track document usage
 }
@@ -156,7 +156,7 @@ function(){
 
 #### onMissingApp ####
 ```js
-function(appId, installer)
+function onMissingApp(appId, installer)
 {
     if(confirm("Do you want to install the free PDF Viewer App "
             + appId + " for Android?"))
@@ -168,7 +168,7 @@ function(appId, installer)
 
 #### onImpossible ####
 ```js
-function(){
+function onImpossible(){
   window.console.log('document cannot be shown');
   //e.g. track document usage
 }
@@ -176,7 +176,7 @@ function(){
 
 #### onError ####
 ```js
-function(error){
+function onError(error){
   window.console.log(error);
   alert("Sorry! Cannot show document.");
 }
@@ -191,21 +191,21 @@ SitewaertsDocumentViewer.viewDocument(
 
 #### onShow ####
 ```js
-function(){
+function onShow(){
   window.console.log('document shown');
   //e.g. track document usage
 }
 ```
 #### onClose ####
 ```js
-function(){
+function onClose(){
   window.console.log('document closed');
   //e.g. remove temp files
 }
 ```
 #### onMissingApp ####
 ```js
-function(id, installer)
+function onMissingApp(id, installer)
 {
     if(confirm("Do you want to install the free PDF Viewer App "
             + appId + " for Android?"))
@@ -216,7 +216,7 @@ function(id, installer)
 ```
 #### onError ####
 ```js
-function(error){
+function onError(error){
   window.console.log(error);
   alert("Sorry! Cannot view document.");
 }
