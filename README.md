@@ -142,7 +142,7 @@ var options = {
 
 ### Check if a Document File could be shown ###
 ```js
-SitewaertsDocumentViewer.canViewDocument(
+cordova.plugins.SitewaertsDocumentViewer.canViewDocument(
     url, contentType, options, onPossible, onMissingApp, onImpossible, onError);
 ```
 
@@ -185,7 +185,7 @@ function onError(error){
 
 ### Open a Document File ###
 ```js
-SitewaertsDocumentViewer.viewDocument(
+cordova.plugins.SitewaertsDocumentViewer.viewDocument(
     url, mimeType, options, onShow, onClose, onMissingApp, onError);
 ```
 
