@@ -131,7 +131,7 @@ var SitewaertsDocumentViewer = {
                     },
                     function (err)
                     {
-                        window.console.log(errorPrefix,  err);
+                        window.console.log(errorPrefix, err);
                         if (onError)
                         {
                             onError(err);
@@ -214,8 +214,53 @@ var SitewaertsDocumentViewer = {
 
     viewDocument: function (url, contentType, options, onShow, onClose, onMissingApp, onError)
     {
-        var me = this;
         var errorPrefix = "Error in " + JS_HANDLE + ".viewDocument(): ";
+
+        var _hideStatusBarOnClose = false;
+
+        function _beforeShow(next)
+        {
+            if (window.StatusBar && window.device
+                    && window.device.platform.toLowerCase() == 'ios')
+            {
+                if (!window.StatusBar.isVisible)
+                {
+                    // show statusbar to avoid black bar on top of native document viewer screen
+                    // should better be fixed in native ios code
+                    window.StatusBar.show();
+                    _hideStatusBarOnClose = true;
+                }
+            }
+            if(next)
+                next();
+        }
+
+        function _beforeClose(next)
+        {
+            if (_hideStatusBarOnClose)
+            {
+                _hideStatusBarOnClose = false;
+                window.StatusBar.hide();
+            }
+            if(next)
+                next();
+        }
+
+        function _close(){
+            _beforeClose(onClose);
+        }
+
+        function _onError(e)
+        {
+            window.console.log(errorPrefix, e);
+            _beforeClose(function ()
+            {
+                if (onError)
+                    onError(e);
+            });
+        }
+
+
         try
         {
             options = getOptions(options);
@@ -229,70 +274,70 @@ var SitewaertsDocumentViewer = {
                     options,
                     function ()
                     {
-                        exec(
-                                function (result)
-                                {
-                                    var status = result ? result.status : null;
+                        _beforeShow(function ()
+                        {
+                            exec(
+                                    function (result)
+                                    {
+                                        var status = result ? result.status : null;
 
-                                    if (status == 1)
-                                    {
-                                        if (onShow)
-                                            onShow();
-                                    }
-                                    else if (status == 0)
-                                    {
-                                        if (onClose)
-                                            onClose();
-                                    }
-                                    else
-                                    {
-                                        var errorMsg =
-                                                "unknown state '" + status
-                                                        + "'";
-                                        window.console.log(
-                                                errorPrefix + errorMsg);
-                                    }
-                                },
-                                function (err)
-                                {
-                                    window.console.log(errorPrefix, err);
-                                    if (onError)
-                                        onError(err);
-                                },
-                                CDV_HANDLE,
-                                CDV_HANDLE_ACTIONS.VIEW_DOCUMENT,
-                                [
-                                    {url: url, contentType: contentType, options: options}
-                                ]
-                        );
+                                        if (status == 1)
+                                        {
+                                            if (onShow)
+                                                onShow();
+                                        }
+                                        else if (status == 0)
+                                        {
+                                            _close();
+                                        }
+                                        else
+                                        {
+                                            var errorMsg =
+                                                    "unknown state '" + status
+                                                    + "'";
+                                            window.console.log(
+                                                    errorPrefix + errorMsg);
+                                        }
+                                    },
+                                    _onError,
+                                    CDV_HANDLE,
+                                    CDV_HANDLE_ACTIONS.VIEW_DOCUMENT,
+                                    [
+                                        {
+                                            url: url,
+                                            contentType: contentType,
+                                            options: options
+                                        }
+                                    ]
+                            );
+                        });
                     },
                     function (appId, installer)
                     {
-                        if (onMissingApp)
-                            onMissingApp(appId, installer);
-                        else
-                            installer(function ()
-                            {
-                                window.console.log("App successfully installed");
-                            }, onError);
+                        _beforeClose(function ()
+                        {
+                            if (onMissingApp)
+                                onMissingApp(appId, installer);
+                            else
+                                installer(function ()
+                                {
+                                    window.console.log(
+                                            "App successfully installed");
+                                }, _onError);
+                        });
                     },
                     function ()
                     {
-                        var errorMsg = "invalid file url '" + url + "' or no viewer for mime type '" + contentType + "'";
-                        window.console.log(errorPrefix + errorMsg);
-                        if (onError)
-                            onError(errorMsg);
+                        _onError("invalid file url '" + url
+                                + "' or no viewer for mime type '" + contentType
+                                + "'");
                     },
-                    onError
+                    _onError
             );
-
-
         }
         catch (e)
         {
-            window.console.log(errorPrefix, e);
-            if (onError)
-                onError(e);
+            _onError(e);
         }
     }
 };
