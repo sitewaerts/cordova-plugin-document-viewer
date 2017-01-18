@@ -78,6 +78,8 @@
 
 		_pdfDocumentRef = pdfDocumentRef;
 
+		_guid = guid;
+
 		_thumbName = [[NSString alloc] initWithFormat:@"%07i-%04ix%04i", (int)page, (int)w, (int)h];
 
 		_cacheKey = [[NSString alloc] initWithFormat:@"%@+%@", _thumbName, _guid];

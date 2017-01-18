@@ -231,6 +231,8 @@
 
 - (void)showDocument
 {
+	[[ReaderThumbCache sharedInstance] removeAllObjects]; // Empty the thumb cache
+
 	[self updateContentSize:theScrollView]; // Update content size first
 
 	[self showDocumentPage:[document.pageNumber integerValue]]; // Show page

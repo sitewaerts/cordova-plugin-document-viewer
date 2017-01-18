@@ -15,6 +15,7 @@
 #import "SDVThumbsViewController.h"
 #import "SDVReaderMainPagebar.h"
 #import "SDVReaderContentViewDoublePage.h"
+#import "ReaderThumbCache.h"
 
 @implementation SDVReaderViewController
 
@@ -988,7 +989,9 @@
 - (void)showDocument
 {
 //    UIInterfaceOrientation orientation= [[UIApplication sharedApplication] statusBarOrientation];
-    
+
+    [[ReaderThumbCache sharedInstance] removeAllObjects]; // Empty the thumb cache
+
     if((viewMode == SDVReaderContentViewModeDoublePage)
        || (viewMode == SDVReaderContentViewModeCoverDoublePage)){
         currentPage = [document.pageNumber integerValue];
