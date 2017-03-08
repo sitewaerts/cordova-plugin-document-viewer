@@ -136,6 +136,9 @@ var options = {
 	},
 	search : {
 		enabled : BOOLEAN
+	},
+	autoClose: {
+		onPause : BOOLEAN
 	}
 }
 ```
@@ -262,11 +265,11 @@ TODO
 
 ## Known issues ##
 - Add transparent support for online files.
-- The external Viewer App (Android) cannot access files stored in app private directories. Due to this fact, the plugin copies a file to a shared temp folder before starting the viewer. When the viewer is closed, the temp file is immediately deleted. While the viewer is running, a sophisticated user may 'steel' the file from the shared temp directory. We are still searching for a better solution, any good idea is welcome.
+- The external Viewer App (Android) cannot access files stored in app private directories. Due to this fact, the plugin copies a file to a shared temp folder before starting the viewer. When the viewer is closed, the temp file is immediately deleted. While the viewer is running, a sophisticated user may 'steal' the file from the shared temp directory. We are still searching for a better solution, any good idea is welcome.
 - Add support for pdf forms.
 - Add fulltext search features.
 - Add user bookmark support.
-- Add support for additional mime types like dwg, docx etc.
+- Add support for additional mime types like dwg, docx, etc.
 - Optimize user experience for small screens. Currently the viewer components are tested and optimized on tablets only.
 - Let developers provide graphics for buttons at runtime.
 

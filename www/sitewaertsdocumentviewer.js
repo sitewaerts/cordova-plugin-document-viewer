@@ -18,6 +18,10 @@ var CDV_HANDLE_ACTIONS = {
 
     VIEW_DOCUMENT: "viewDocument",
 
+    APP_PAUSED: "appPaused",
+
+    APP_RESUMED: "appResumed",
+
     INSTALL_VIEWER_APP: "install"
 };
 
@@ -70,6 +74,8 @@ function getOptions(provided)
     if (!options.search.enabled)
         options.search.enabled = false;
 
+    if (!options.autoClose)
+        options.autoClose = {onPause : false};
 
     if (!options.android)
         options.android = {};
@@ -218,6 +224,34 @@ var SitewaertsDocumentViewer = {
 
         var _hideStatusBarOnClose = false;
 
+        // only needed on iOS as I don't know how to listen for this event in native C code
+        function _firePause(){
+            exec(
+                    function ()
+                    {
+                        window.console.log(JS_HANDLE + ": fired pause event to native plugin");
+                    },
+                    _logError,
+                    CDV_HANDLE,
+                    CDV_HANDLE_ACTIONS.APP_PAUSED,
+                    []
+            );
+        }
+
+        // only needed on iOS as I don't know how to listen for this event in native C code
+        function _fireResume(){
+            exec(
+                    function ()
+                    {
+                        window.console.log(JS_HANDLE + ": fired resume event to native plugin");
+                    },
+                    _logError,
+                    CDV_HANDLE,
+                    CDV_HANDLE_ACTIONS.APP_RESUMED,
+                    []
+            );
+        }
+
         function _beforeShow(next)
         {
             if (window.StatusBar && window.device
@@ -235,6 +269,15 @@ var SitewaertsDocumentViewer = {
                 next();
         }
 
+        function _onShow(){
+
+            document.addEventListener("pause", _firePause, false);
+            document.addEventListener("resume", _fireResume, false);
+
+            if (onShow)
+                onShow();
+        }
+
         function _beforeClose(next)
         {
             if (_hideStatusBarOnClose)
@@ -242,17 +285,25 @@ var SitewaertsDocumentViewer = {
                 _hideStatusBarOnClose = false;
                 window.StatusBar.hide();
             }
+
+            document.removeEventListener("pause", _firePause);
+            document.removeEventListener("resume", _fireResume);
+
             if(next)
                 next();
         }
 
-        function _close(){
+        function _onClose(){
             _beforeClose(onClose);
+        }
+
+        function _logError(e){
+            window.console.error(errorPrefix, e);
         }
 
         function _onError(e)
         {
-            window.console.log(errorPrefix, e);
+            _logError(e);
             _beforeClose(function ()
             {
                 if (onError)
@@ -283,19 +334,18 @@ var SitewaertsDocumentViewer = {
 
                                         if (status == 1)
                                         {
-                                            if (onShow)
-                                                onShow();
+                                            _onShow();
                                         }
                                         else if (status == 0)
                                         {
-                                            _close();
+                                            _onClose();
                                         }
                                         else
                                         {
                                             var errorMsg =
                                                     "unknown state '" + status
                                                     + "'";
-                                            window.console.log(
+                                            window.console.error(
                                                     errorPrefix + errorMsg);
                                         }
                                     },

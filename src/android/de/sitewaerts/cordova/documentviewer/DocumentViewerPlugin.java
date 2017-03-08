@@ -28,20 +28,15 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-//import android.support.v4.content.FileProvider;
 import android.util.Log;
-
 import org.apache.cordova.*;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
+
+//import android.support.v4.content.FileProvider;
 
 public final class DocumentViewerPlugin
         extends CordovaPlugin
@@ -57,6 +52,10 @@ public final class DocumentViewerPlugin
         public static final String CAN_VIEW = "canViewDocument";
 
         public static final String VIEW_DOCUMENT = "viewDocument";
+
+        public static final String APP_PAUSED = "appPaused";
+
+        public static final String APP_RESUMED = "appResumed";
 
         public static final String INSTALL_VIEWER_APP = "install";
 
@@ -90,6 +89,14 @@ public final class DocumentViewerPlugin
         public static final String CLOSE_LABEL = "closeLabel";
 
         public static final String ENABLED = "enabled";
+    }
+
+    public static final class AutoCloseOptions
+    {
+        public static final String NAME = "autoClose";
+
+        public static final String OPTION_ON_PAUSE = "onPause";
+
     }
 
     public static final String PDF = "application/pdf";
@@ -183,23 +190,27 @@ public final class DocumentViewerPlugin
             );
             viewerOptions.putBoolean(EMAIL_OPTIONS + "." + Options.ENABLED,
                     options.getJSONObject(EMAIL_OPTIONS)
-                            .getBoolean(Options.ENABLED)
+                            .optBoolean(Options.ENABLED, false)
             );
             viewerOptions.putBoolean(PRINT_OPTIONS + "." + Options.ENABLED,
                     options.getJSONObject(PRINT_OPTIONS)
-                            .getBoolean(Options.ENABLED)
+                            .optBoolean(Options.ENABLED, false)
             );
             viewerOptions.putBoolean(OPENWITH_OPTIONS + "." + Options.ENABLED,
                     options.getJSONObject(OPENWITH_OPTIONS)
-                            .getBoolean(Options.ENABLED)
+                            .optBoolean(Options.ENABLED, false)
             );
             viewerOptions.putBoolean(BOOKMARKS_OPTIONS + "." + Options.ENABLED,
                     options.getJSONObject(BOOKMARKS_OPTIONS)
-                            .getBoolean(Options.ENABLED)
+                            .optBoolean(Options.ENABLED, false)
             );
             viewerOptions.putBoolean(SEARCH_OPTIONS + "." + Options.ENABLED,
                     options.getJSONObject(SEARCH_OPTIONS)
-                            .getBoolean(Options.ENABLED)
+                            .optBoolean(Options.ENABLED, false)
+            );
+            viewerOptions.putBoolean(AutoCloseOptions.NAME + "." + AutoCloseOptions.OPTION_ON_PAUSE,
+                    options.getJSONObject(AutoCloseOptions.NAME)
+                            .optBoolean(AutoCloseOptions.OPTION_ON_PAUSE, false)
             );
             viewerOptions
                     .putString(TITLE_OPTIONS, options.getString(TITLE_OPTIONS));
@@ -208,6 +219,14 @@ public final class DocumentViewerPlugin
                     callbackContext,
                     viewerOptions
             );
+        }
+        else if (action.equals(Actions.APP_PAUSED))
+        {
+            this._ignore(callbackContext);
+        }
+        else if (action.equals(Actions.APP_RESUMED))
+        {
+            this._ignore(callbackContext);
         }
         else if (action.equals(Actions.INSTALL_VIEWER_APP))
         {
@@ -325,6 +344,12 @@ public final class DocumentViewerPlugin
             this.callbackContext.success();
             this.callbackContext = null;
         }
+    }
+
+    private void _ignore(CallbackContext callbackContext)
+    {
+        // ignore
+        callbackContext.success();
     }
 
     private void _open(String url, String contentType, String packageId, String activity, CallbackContext callbackContext, Bundle viewerOptions)

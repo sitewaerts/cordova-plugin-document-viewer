@@ -6,16 +6,42 @@
         enabled: true
     };
 
+    var _suspended = false;
+
+    function _onSuspending()
+    {
+        _suspended = true;
+    }
+
+    function _onResuming()
+    {
+        _suspended = false;
+    }
+
+
     function createCommonErrorHandler(context)
     {
         return function (eventInfo)
         {
             window.console.error(context, eventInfo);
 
-            var detail = eventInfo.detail;
-            var dialog = new Windows.UI.Popups.MessageDialog(
-                    detail.stack, detail.message);
-            dialog.showAsync().done();
+            if (!_suspended)
+            {
+                var dialog;
+                if (eventInfo.detail)
+                {
+                    var detail = eventInfo.detail;
+                    dialog = new Windows.UI.Popups.MessageDialog(
+                            detail.stack, detail.message);
+                }
+                else
+                {
+                    dialog = new Windows.UI.Popups.MessageDialog(
+                            context, eventInfo);
+
+                }
+                dialog.showAsync().done();
+            }
 
             // By returning true, we signal that the exception was handled,
             // preventing the application from being terminated
@@ -27,7 +53,54 @@
             'WinJS.Application.onerror');
     WinJS.Promise.onerror = createCommonErrorHandler('WinJS.Promise.onerror');
 
+
+    window.onerror = function (msg, url, line, col, error)
+    {
+        window.console.error(msg,
+                {url: url, line: line, col: col, error: error});
+
+        // TODO: suspend event not fired in windows apps. why?
+        // if (!_suspended)
+        // {
+        //     try
+        //     {
+        //         var extra = !col ? '' : '\ncolumn: ' + col;
+        //         extra += !error ? '' : '\nerror: ' + error;
+        //
+        //         var dialog = new Windows.UI.Popups.MessageDialog(
+        //                 msg, "\nurl: " + url + "\nline: " + line + extra);
+        //         dialog.showAsync().done();
+        //     }
+        //     catch (e)
+        //     {
+        //         // ignore
+        //         window.console.error("cannot show dialog", e);
+        //     }
+        // }
+        //
+        return true;
+    };
+
+    // var webUIApp = (Windows
+    // && Windows.UI) ? Windows.UI.WebUI.WebUIApplication : null;
+    // if (webUIApp)
+    // {
+    //     webUIApp.addEventListener("suspending", _onSuspending);
+    //     webUIApp.addEventListener("resuming", _onResuming);
+    // }
+    //
+
+
+
+
     var module = angular.module('viewer', ['winjs'], null);
+
+    module.run(function($rootScope){
+        $rootScope.$on("app.suspending", _onSuspending);
+        $rootScope.$on("app.resuming", _onResuming);
+    });
+
+
 
     module.factory('log', function ($window)
     {
@@ -128,14 +201,14 @@
 
         ctrl.setView = _setView;
 
-        ctrl.gotoPage = function(pageIndex, viewId)
+        ctrl.gotoPage = function (pageIndex, viewId)
         {
-            if(pageIndex==null)
+            if (pageIndex == null)
                 return;
 
             ctrl.setFocusedPageIndex(pageIndex);
 
-            if(viewId)
+            if (viewId)
                 ctrl.setView(viewId);
         };
 
@@ -573,30 +646,39 @@
                                 },
                                 applyResult: function (pi)
                                 {
-                                    if (generator.canceled || _generator
-                                            != generator)
-                                        return;
-
-                                    _dirty = false;
-                                    _generator = null;
-
-                                    var srcObject = pi.imageSrc;
-
-                                    $scope.$evalAsync(function ()
+                                    try
                                     {
-                                        if (generator.canceled)
+                                        if (generator.canceled || _generator
+                                                != generator)
                                             return;
 
-                                        page.setImageSrc(
-                                                URL.createObjectURL(
-                                                        srcObject,
-                                                        {oneTimeOnly: false}),
-                                                URL.revokeObjectURL
-                                        );
-                                    });
+                                        _dirty = false;
+                                        _generator = null;
+
+                                        var srcObject = pi.imageSrc;
+
+                                        $scope.$evalAsync(function ()
+                                        {
+                                            if (generator.canceled)
+                                                return;
+
+                                            page.setImageSrc(
+                                                    URL.createObjectURL(
+                                                            srcObject,
+                                                            {oneTimeOnly: false}),
+                                                    URL.revokeObjectURL
+                                            );
+                                        });
+                                    }
+                                    catch (e)
+                                    {
+                                        window.console.error(e);
+                                    }
                                 },
                                 applyError: function (error)
                                 {
+                                    window.console.error(error);
+
                                     if (generator.canceled || _generator
                                             != generator)
                                         return;
@@ -608,11 +690,30 @@
                                 }
                             };
 
+                            var _unregisterOnSuspending;
+
+                            function _onSuspending()
+                            {
+                                // webUIApp.removeEventListener("suspending",
+                                //         _onSuspending);
+                                if(_unregisterOnSuspending)
+                                {
+                                    _unregisterOnSuspending();
+                                    _unregisterOnSuspending = null;
+                                }
+                                generator.cancel();
+                            }
+
                             // force async exec
                             $scope.$applyAsync(function ()
                             {
                                 if (generator.canceled)
                                     return;
+
+                                // if (webUIApp)
+                                //     webUIApp.addEventListener("suspending",
+                                //             _onSuspending);
+                                _unregisterOnSuspending = $scope.$on("app.suspending", _onSuspending);
 
                                 generator.promise = pdfLibrary.loadPage(
                                         page.pageIndex,
@@ -978,17 +1079,19 @@
     });
 
 
-    module.controller('OutlineViewCtrl', function (ViewCtrlBase, $scope, pdfViewer)
-    {
-        var ctrl = this;
-        ViewCtrlBase.call(ctrl, $scope);
+    module.controller('OutlineViewCtrl',
+            function (ViewCtrlBase, $scope, pdfViewer)
+            {
+                var ctrl = this;
+                ViewCtrlBase.call(ctrl, $scope);
 
-        function _showOutline(){
-            ctrl.outline = pdfViewer.doc.outline;
-        }
+                function _showOutline()
+                {
+                    ctrl.outline = pdfViewer.doc.outline;
+                }
 
-        pdfViewer.waitForPDF().then(_showOutline);
-    });
+                pdfViewer.waitForPDF().then(_showOutline);
+            });
 
 
     module.factory('pdfViewer', function ($rootScope, $q, log)
@@ -1051,8 +1154,10 @@
             }
 
             loadFile(pdfUri)
-                    .then(function(file){
-                        return $q.all([loadPDF(file), loadPDFOutline(pdfUri)]);})
+                    .then(function (file)
+                    {
+                        return $q.all([loadPDF(file), loadPDFOutline(pdfUri)]);
+                    })
                     .done(function ()
                     {
                         $rootScope.$broadcast(EVENTS.SHOW_PDF);
@@ -1146,7 +1251,7 @@
                                 getPageIndex(item).then(
                                         function (pageIndex)
                                         {
-                                            if(pageIndex!=null)
+                                            if (pageIndex != null)
                                                 item.pageIndex = pageIndex;
                                             else
                                                 delete item.pageIndex;
@@ -1220,9 +1325,17 @@
             }
         }
 
-        _setHandler(function (args)
-        {
-            _showPdf(args);
+        _setHandler({
+            showPDF: function (args)
+            {
+                _showPdf(args);
+            },
+            appSuspend : function(){
+                $rootScope.$broadcast("app.suspend");
+            },
+            appResume : function(){
+                $rootScope.$broadcast("app.resume");
+            }
         });
 
 
@@ -1328,20 +1441,11 @@
     var _args = null;
     var _handler = [];
 
-    function _setArgs(args)
-    {
-        _args = args;
-        _handler.forEach(function (handler)
-        {
-            handler(_args);
-        });
-    }
-
     function _setHandler(handler)
     {
         _handler.push(handler);
         if (_args)
-            handler(_args);
+            handler.showPDF(_args);
     }
 
     /**
@@ -1354,10 +1458,32 @@
 
     window.showPDF = function (pdfUri, pdfOptions, closeHandler)
     {
-        _setArgs({
+        _args = {
             pdfUri: pdfUri,
             pdfOptions: pdfOptions,
             closeHandler: closeHandler
+        };
+        _handler.forEach(function (handler)
+        {
+            handler.showPDF(_args);
+        });
+    };
+
+
+    window.appSuspend = function ()
+    {
+        _handler.forEach(function (handler)
+        {
+            handler.appSuspend(_args);
+        });
+
+    };
+
+    window.appResume = function ()
+    {
+        _handler.forEach(function (handler)
+        {
+            handler.appResume(_args);
         });
     };
 

@@ -66,6 +66,7 @@
     NSDate *lastHideTime;
     
     BOOL ignoreDidScroll;
+
 }
 
 
@@ -74,5 +75,7 @@
 - (instancetype)initWithReaderDocument:(ReaderDocument *)object;
 
 - (void)updateContentViews:(UIScrollView *)scrollView;
+
+- (void)closeDocument;
 
 @end

@@ -35,6 +35,8 @@
 @implementation SitewaertsDocumentViewer
 {
     NSString *tmpCommandCallbackID;
+    SDVReaderViewController *readerViewController;
+    BOOL autoCloseOnPause;
 }
 
 #pragma mark - SitewaertsDocumentViewer methods
@@ -124,11 +126,15 @@
                 // get options from cordova
                 NSMutableDictionary *viewerOptions = [options objectForKey:@"options"];
                 NSLog(@"[pdfviewer] options: %@", viewerOptions);
-                SDVReaderViewController *readerViewController = [[SDVReaderViewController alloc] initWithReaderDocument:document options:viewerOptions];
+                readerViewController = [[SDVReaderViewController alloc] initWithReaderDocument:document options:viewerOptions];
                 readerViewController.delegate = self;
                 readerViewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
                 readerViewController.modalPresentationStyle = UIModalPresentationFullScreen;
                 NSInteger pageNumber = [[viewerOptions objectForKey:@"page"] integerValue];
+
+                autoCloseOnPause = [[[viewerOptions objectForKey: @"autoClose"] objectForKey: @"onPause"] boolValue];
+
+
                 if (pageNumber != nil && pageNumber >= 1) {
                     NSLog(@"[pdfviewer] page: %i", pageNumber);
                     document.pageNumber = [NSNumber numberWithInteger:pageNumber];
@@ -160,10 +166,68 @@
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
+- (void)appPaused:(CDVInvokedUrlCommand*)command {
+
+    if(readerViewController!=NULL)
+    {
+        if(autoCloseOnPause)
+            [readerViewController closeDocument];
+    }
+
+
+    // result object
+    NSMutableDictionary *jsonObj = [ [NSMutableDictionary alloc]
+                                    initWithObjectsAndKeys :
+                                    nil, @"status",
+                                    nil, @"message",
+                                    nil, @"missingAppId",
+                                    nil
+                                    ];
+    [jsonObj setObject:[NSNumber numberWithInt:CDVCommandStatus_OK]  forKey:@"status"];
+    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:jsonObj];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
+- (void)appResumed:(CDVInvokedUrlCommand*)command {
+
+    // ignore
+
+    NSMutableDictionary *jsonObj = [ [NSMutableDictionary alloc]
+                                    initWithObjectsAndKeys :
+                                    nil, @"status",
+                                    nil, @"message",
+                                    nil, @"missingAppId",
+                                    nil
+                                    ];
+    [jsonObj setObject:[NSNumber numberWithInt:CDVCommandStatus_OK]  forKey:@"status"];
+    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:jsonObj];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
+- (void)close:(CDVInvokedUrlCommand*)command {
+
+    if(readerViewController!=NULL)
+        [readerViewController closeDocument];
+
+    // result object
+    NSMutableDictionary *jsonObj = [ [NSMutableDictionary alloc]
+                                    initWithObjectsAndKeys :
+                                    nil, @"status",
+                                    nil, @"message",
+                                    nil, @"missingAppId",
+                                    nil
+                                    ];
+    [jsonObj setObject:[NSNumber numberWithInt:CDVCommandStatus_OK]  forKey:@"status"];
+    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:jsonObj];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
 #pragma mark - ReaderViewControllerDelegate methods
 
 - (void)dismissReaderViewController:(ReaderViewController *)viewController {
     [self.viewController dismissViewControllerAnimated:YES completion:nil];
+    readerViewController=NULL;
+    autoCloseOnPause=NO;
     //send "no result" result to trigger onClose
     // result object
     NSMutableDictionary *jsonObj = [ [NSMutableDictionary alloc]

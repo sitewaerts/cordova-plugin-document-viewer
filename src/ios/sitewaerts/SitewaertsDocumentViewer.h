@@ -35,4 +35,10 @@
 
 - (void)viewDocument:(CDVInvokedUrlCommand*)command;
 
+- (void)appPaused:(CDVInvokedUrlCommand*)command;
+
+- (void)appResumed:(CDVInvokedUrlCommand*)command;
+
+- (void)close:(CDVInvokedUrlCommand*)command;
+
 @end
