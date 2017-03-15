@@ -34,7 +34,7 @@
     </script>
 
     <script type="text/ng-template" id="tiles.html">
-        <div ng-controller="TilesViewCtrl as view" class="view-controller tiles">
+        <div ng-controller="TilesViewCtrl as view" class="view-controller tiles app_bar_always">
             <win-list-view win-control="view.viewWinControl" item-data-source="view.pages.dataSource">
                 <win-item-template>
                     <div class="pdf_page"
@@ -70,7 +70,7 @@
     </script>
 
     <script type="text/ng-template" id="outline.html">
-        <div ng-controller="OutlineViewCtrl as view" class="view-controller outline">
+        <div ng-controller="OutlineViewCtrl as view" class="view-controller outline app_bar_always">
             <ul ng-if="view.outline">
                <li ng-repeat="item in view.outline" ng-include="'outline_item.html'"></li>
             </ul>
@@ -92,8 +92,8 @@
 
     <div id="viewer_view" ng-include="viewer.view.template">...</div>
 
-    <win-app-bar win-control="viewer.appBar.winControl" placement="'bottom'">
-        <win-app-bar-command type="button" icon="'back'" on-click="viewer.close()"></win-app-bar-command>
+    <win-app-bar win-control="viewer.appBar.winControl" placement="'top'">
+        <win-app-bar-command type="button" icon="'back'" on-click="viewer.close()" class="close"></win-app-bar-command>
         <win-tool-bar-content><h3 class="title win-h3" ng-bind="viewer.doc.title"></h3></win-tool-bar-content>
         <win-app-bar-separator></win-app-bar-separator>
         <win-app-bar-command type="'button'" icon="'document'"

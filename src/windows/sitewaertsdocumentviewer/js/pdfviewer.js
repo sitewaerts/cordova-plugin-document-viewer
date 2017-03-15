@@ -372,7 +372,7 @@
                     ViewCtrlBase.call(ctrl, $scope);
 
                     ctrl.options = angular.extend(
-                            {containerMargin: 5, isIgnoringHighContrast: false},
+                            {containerMargin: 5, isIgnoringHighContrast: false, verticalCutOff : 0},
                             opts);
 
 
@@ -396,10 +396,10 @@
                         var margin = ctrl.options.containerMargin;
                         var rows = Math.max(1, ctrl.options.rows);
 
-                        var rawViewHeight = viewHeight;
+                        var rawViewHeight = viewHeight - ctrl.options.verticalCutOff;
 
                         if (rows > 1)
-                            rawViewHeight = viewHeight
+                            rawViewHeight = rawViewHeight
                                     - (2 * margin) // top and bottom
                                     - ((rows - 1) * (2 * margin)); // margins between rows
 
@@ -421,7 +421,7 @@
 
                         return {
                             viewWidth: viewWidth,
-                            viewHeight: viewHeight,
+                            viewHeight: rawViewHeight,
                             containerWidth: viewWidth,
                             containerHeight: containerHeight,
                             imageHeight: imageHeight,
@@ -1063,7 +1063,8 @@
         ViewCtrlPagesBase.call(ctrl, $scope, {
             rows: 1,
             inMemory: false,
-            pagesToLoad: 2
+            pagesToLoad: 2,
+            verticalCutOff : 0
         });
     });
 
@@ -1074,7 +1075,8 @@
         ViewCtrlPagesBase.call(ctrl, $scope, {
             rows: 4,
             inMemory: false,
-            pagesToLoad: 2
+            pagesToLoad: 2,
+            verticalCutOff : 50
         });
     });
 

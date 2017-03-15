@@ -79,7 +79,7 @@ function _getContainer(create){
 
     function _appSuspend(){
         var w = iframe.window || iframe.contentWindow;
-        if(w)
+        if(w && w.appSuspend)
             w.appSuspend();
         if(_closeOnPause)
              _doClose();
@@ -87,7 +87,7 @@ function _getContainer(create){
 
     function _appResume(){
         var w = iframe.window || iframe.contentWindow;
-        if(w)
+        if(w && w.appResume)
             w.appResume();
     }
 

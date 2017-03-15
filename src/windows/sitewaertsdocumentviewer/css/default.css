@@ -11,6 +11,11 @@ html, body{
     display: none !important;
 }
 
+.win-appbar button.close{
+    position: absolute;
+    left: 0;
+}
+
 .title.win-h3{
     line-height: 48px;
 }
@@ -21,6 +26,12 @@ html, body{
     height: 100%;
     margin: 0;
     padding: 0;
+}
+
+.view-controller.app_bar_always{
+    /*reserve space for app bar*/
+    height: calc(100% - 40px);
+    padding-top: 40px;
 }
 
 .view-controller .win-listview,
@@ -41,7 +52,7 @@ html, body{
 .pdf_page{
     height: 100%;
     background-repeat: no-repeat;
-    background-position: top left;
+    background-position: center left;
     background-size: contain;
     position: relative;
 }

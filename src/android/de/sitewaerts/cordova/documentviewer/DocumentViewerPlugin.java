@@ -23,6 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 package de.sitewaerts.cordova.documentviewer;
 
+import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -38,6 +39,9 @@ import java.io.*;
 
 //import android.support.v4.content.FileProvider;
 
+//15: Android 4.0.3
+//19: Android 4.4.2
+@TargetApi(15)
 public final class DocumentViewerPlugin
         extends CordovaPlugin
 {
@@ -248,14 +252,13 @@ public final class DocumentViewerPlugin
                     Options.VIEWER_APP_PACKAGE_ID
             );
 
-            JSONObject successObj = null;
+            final JSONObject successObj = new JSONObject();
             if (PDF.equals(contentType))
             {
                 if (canGetFile(url))
                 {
                     if (!this._appIsInstalled(packageId))
                     {
-                        successObj = new JSONObject();
                         successObj.put(Result.STATUS,
                                 PluginResult.Status.NO_RESULT.ordinal()
                         );
@@ -263,7 +266,6 @@ public final class DocumentViewerPlugin
                     }
                     else
                     {
-                        successObj = new JSONObject();
                         successObj.put(Result.STATUS,
                                 PluginResult.Status.OK.ordinal()
                         );
@@ -271,16 +273,22 @@ public final class DocumentViewerPlugin
                 }
                 else
                 {
-                    Log.d(TAG, "File " + url + " not available");
+                    String message = "File '" + url + "' is not available";
+                    Log.d(TAG, message);
+                    successObj.put(Result.STATUS,
+                            PluginResult.Status.NO_RESULT.ordinal()
+                    );
+                    successObj.put(Result.MESSAGE, message);
                 }
             }
-
-            if (successObj == null)
+            else
             {
-                successObj = new JSONObject();
+                String message = "Content type '" + contentType + "' is not supported";
+                Log.d(TAG, message);
                 successObj.put(Result.STATUS,
                         PluginResult.Status.NO_RESULT.ordinal()
                 );
+                successObj.put(Result.MESSAGE, message);
             }
 
             callbackContext.success(successObj);
@@ -406,7 +414,7 @@ public final class DocumentViewerPlugin
         {
             JSONObject errorObj = new JSONObject();
             errorObj.put(Result.STATUS, PluginResult.Status.ERROR.ordinal());
-            errorObj.put(Result.MESSAGE, "File not found");
+            errorObj.put(Result.MESSAGE, "File '" + url + "' is not available");
             callbackContext.error(errorObj);
         }
     }
@@ -518,6 +526,7 @@ public final class DocumentViewerPlugin
     private boolean canGetFile(String fileArg)
             throws JSONException
     {
+        // TODO: better check for assets files ...
         return fileArg.startsWith(ASSETS) || getFile(fileArg).exists();
     }
 
