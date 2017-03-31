@@ -224,6 +224,10 @@ function onError(error){
   alert("Sorry! Cannot view document.");
 }
 ```
+### Close a Document File ###
+```js
+cordova.plugins.SitewaertsDocumentViewer.viewDocument()
+...
 
 ## iOS ##
 
