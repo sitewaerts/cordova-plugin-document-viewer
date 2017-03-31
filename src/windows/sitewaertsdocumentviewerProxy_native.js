@@ -142,6 +142,19 @@ cordova.commandProxy.add("SitewaertsDocumentViewer", {
 
         successCallback({status: 1}); // YES
     },
+    closeDocument: function () {
+        // window.console.log("Closing pdf");
+        var c = _getContainer(false);
+        try {
+            if (c)
+                c.close();
+            //successCallback({ status: 0 }); // 1 = closed
+        }
+        catch (e) {
+            c.cleanup();
+            errorCallback({ status: 0, message: "cannot close frame", error: e });
+        }
+    },
     viewDocument: function (successCallback, errorCallback, params)
     {
         if (!params || params.length != 1)

@@ -18,6 +18,8 @@ var CDV_HANDLE_ACTIONS = {
 
     VIEW_DOCUMENT: "viewDocument",
 
+    CLOSE_DOCUMENT: "closeDocument",
+
     APP_PAUSED: "appPaused",
 
     APP_RESUMED: "appResumed",
@@ -216,6 +218,19 @@ var SitewaertsDocumentViewer = {
             if (onError)
                 onError(e);
         }
+    },
+
+    closeDocument: function () {
+        exec(
+            function () {
+                window.console.log(JS_HANDLE + ": clsoing document frame with success");
+            },
+            function () {
+                window.console.log(JS_HANDLE + ": clsoing document frame failed");
+            },
+             CDV_HANDLE,
+             CDV_HANDLE_ACTIONS.CLOSE_DOCUMENT,
+            []); 
     },
 
     viewDocument: function (url, contentType, options, onShow, onClose, onMissingApp, onError)
