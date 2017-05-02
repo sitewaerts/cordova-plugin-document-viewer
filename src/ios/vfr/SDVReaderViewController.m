@@ -17,7 +17,9 @@
 #import "SDVReaderContentViewDoublePage.h"
 #import "ReaderThumbCache.h"
 
-@implementation SDVReaderViewController
+@implementation SDVReaderViewController {
+    void (^linkHandler)(NSString*, void (^)(void));
+}
 
 #pragma mark - Constants
 
@@ -1006,10 +1008,11 @@
 
 #pragma mark - UIViewController methods
 
-- (instancetype)initWithReaderDocument:(ReaderDocument *)object options:(NSMutableDictionary *)options
+- (instancetype)initWithReaderDocument:(ReaderDocument *)object options:(NSMutableDictionary *)options linkHandler:(void (^)(NSString*, void (^)(void)))newLinkHandler
 {
     self = [super initWithReaderDocument:object];
     self.viewerOptions = options;
+    linkHandler = newLinkHandler;
     return self;
 }
 
@@ -1241,38 +1244,53 @@
             
             if (target != nil) // Handle the returned target object
             {
-                if ([target isKindOfClass:[NSURL class]]) // Open a URL
+                NSString *link;
+                if ([target isKindOfClass:[NSURL class]])
                 {
-                    NSURL *url = (NSURL *)target; // Cast to a NSURL object
-                    
-                    if (url.scheme == nil) // Handle a missing URL scheme
+                    link = [target absoluteString];
+                }
+                else if ([target isKindOfClass:[NSNumber class]])
+                {
+                    link = [target stringValue];
+                }
+                else
+                {
+                    link = [target description];
+                }
+                linkHandler(link, ^{
+                    if ([target isKindOfClass:[NSURL class]]) // Open a URL
                     {
-                        NSString *www = url.absoluteString; // Get URL string
+                        NSURL *url = (NSURL *)target; // Cast to a NSURL object
                         
-                        if ([www hasPrefix:@"www"] == YES) // Check for 'www' prefix
+                        if (url.scheme == nil) // Handle a missing URL scheme
                         {
-                            NSString *http = [[NSString alloc] initWithFormat:@"http://%@", www];
+                            NSString *www = url.absoluteString; // Get URL string
                             
-                            url = [NSURL URLWithString:http]; // Proper http-based URL
+                            if ([www hasPrefix:@"www"] == YES) // Check for 'www' prefix
+                            {
+                                NSString *http = [[NSString alloc] initWithFormat:@"http://%@", www];
+                                
+                                url = [NSURL URLWithString:http]; // Proper http-based URL
+                            }
+                        }
+                        
+                        if ([[UIApplication sharedApplication] openURL:url] == NO)
+                        {
+#ifdef DEBUG
+                            NSLog(@"%s '%@'", __FUNCTION__, url); // Bad or unknown URL
+#endif
                         }
                     }
-                    
-                    if ([[UIApplication sharedApplication] openURL:url] == NO)
+                    else // Not a URL, so check for another possible object type
                     {
-#ifdef DEBUG
-                        NSLog(@"%s '%@'", __FUNCTION__, url); // Bad or unknown URL
-#endif
+                        if ([target isKindOfClass:[NSNumber class]]) // Goto page
+                        {
+                            NSInteger number = [target integerValue]; // Number
+                            
+                            [self showDocumentPage:number]; // Show the page
+                        }
                     }
-                }
-                else // Not a URL, so check for another possible object type
-                {
-                    if ([target isKindOfClass:[NSNumber class]]) // Goto page
-                    {
-                        NSInteger number = [target integerValue]; // Number
-                        
-                        [self showDocumentPage:number]; // Show the page
-                    }
-                }
+                });
             }
             else // Nothing active tapped in the target content view
             {

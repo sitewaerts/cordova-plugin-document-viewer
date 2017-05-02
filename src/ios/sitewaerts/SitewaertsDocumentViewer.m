@@ -37,6 +37,7 @@
     NSString *tmpCommandCallbackID;
     SDVReaderViewController *readerViewController;
     BOOL autoCloseOnPause;
+    NSMutableDictionary<NSString*, void (^)(void)> *nativeLinkHandlers;
 }
 
 #pragma mark - SitewaertsDocumentViewer methods
@@ -126,7 +127,16 @@
                 // get options from cordova
                 NSMutableDictionary *viewerOptions = [options objectForKey:@"options"];
                 NSLog(@"[pdfviewer] options: %@", viewerOptions);
-                readerViewController = [[SDVReaderViewController alloc] initWithReaderDocument:document options:viewerOptions];
+                NSString *jsHandlerId = [options objectForKey:@"linkHandlerId"];
+                readerViewController = [[SDVReaderViewController alloc] initWithReaderDocument:document options:viewerOptions linkHandler:^(NSString *link, void (^nativeLinkHandler)(void)) {
+                    if (nativeLinkHandlers == nil)
+                    {
+                        nativeLinkHandlers = [NSMutableDictionary new];
+                    }
+                    NSString *occurrenceId = [[NSUUID UUID] UUIDString];
+                    nativeLinkHandlers[occurrenceId] = nativeLinkHandler;
+                    [self.commandDelegate evalJs:[NSString stringWithFormat:@"cordova.fireDocumentEvent('sdvlinkopened', { handlerId: %@, link: '%@', occurrenceId: '%@' })", jsHandlerId, link, occurrenceId]];
+                }];
                 readerViewController.delegate = self;
                 readerViewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
                 readerViewController.modalPresentationStyle = UIModalPresentationFullScreen;
@@ -164,6 +174,11 @@
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageToErrorObject:1];
     }
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
+- (void)openLink:(CDVInvokedUrlCommand*)command {
+    NSString *eventId = command.arguments[0];
+    nativeLinkHandlers[eventId]();
 }
 
 - (void)appPaused:(CDVInvokedUrlCommand*)command {

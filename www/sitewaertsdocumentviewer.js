@@ -22,7 +22,9 @@ var CDV_HANDLE_ACTIONS = {
 
     APP_RESUMED: "appResumed",
 
-    INSTALL_VIEWER_APP: "install"
+    INSTALL_VIEWER_APP: "install",
+
+    OPEN_LINK: "openLink"
 };
 
 var exec = require('cordova/exec');
@@ -115,6 +117,16 @@ function installApp(options, onSuccess, onError)
             onError(e);
     }
 }
+
+var linkHandlers = [];
+document.addEventListener("sdvlinkopened", function(e) {
+    var handled = (linkHandlers[e.handlerId] || function() {
+        return false;
+    })(e.link);
+    if (!handled) {
+        exec(null, null, CDV_HANDLE, CDV_HANDLE_ACTIONS.OPEN_LINK, [e.occurrenceId]);
+    }
+});
 
 /*  public API of the plugin    */
 
@@ -218,8 +230,11 @@ var SitewaertsDocumentViewer = {
         }
     },
 
-    viewDocument: function (url, contentType, options, onShow, onClose, onMissingApp, onError)
+    viewDocument: function (url, contentType, options, onShow, onClose, onMissingApp, onError, onLink)
     {
+        linkHandlers.push(onLink);
+        var linkHandlerId = linkHandlers.length - 1;
+
         var errorPrefix = "Error in " + JS_HANDLE + ".viewDocument(): ";
 
         var _hideStatusBarOnClose = false;
@@ -356,7 +371,8 @@ var SitewaertsDocumentViewer = {
                                         {
                                             url: url,
                                             contentType: contentType,
-                                            options: options
+                                            options: options,
+                                            linkHandlerId: linkHandlerId
                                         }
                                     ]
                             );
