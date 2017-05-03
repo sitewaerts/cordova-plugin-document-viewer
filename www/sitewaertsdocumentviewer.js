@@ -118,7 +118,8 @@ function installApp(options, onSuccess, onError)
     }
 }
 
-var linkHandlers = [];
+var linkHandlers = {};
+var linkHandlerCount = 0;
 document.addEventListener("sdvlinkopened", function(e) {
     var handled = (linkHandlers[e.handlerId] || function() {
         return false;
@@ -127,6 +128,10 @@ document.addEventListener("sdvlinkopened", function(e) {
         occurrenceId: e.occurrenceId,
         handled: handled
     }]);
+});
+
+document.addEventListener("sdvpdfclosed", function(e) {
+    delete linkHandlers[e.handlerId];
 });
 
 /*  public API of the plugin    */
@@ -233,10 +238,11 @@ var SitewaertsDocumentViewer = {
 
     viewDocument: function (url, contentType, options, onShow, onClose, onMissingApp, onError, onLink)
     {
-        linkHandlers.push(!options.linkPattern ? onLink : function(link) {
+        var linkHandlerId = linkHandlerCount;
+        linkHandlers[linkHandlerId] = !options.linkPattern ? onLink : function(link) {
             return options.linkPattern.test(link) ? onLink(link) : false;
-        });
-        var linkHandlerId = linkHandlers.length - 1;
+        };
+        linkHandlerCount++;
 
         var errorPrefix = "Error in " + JS_HANDLE + ".viewDocument(): ";
 

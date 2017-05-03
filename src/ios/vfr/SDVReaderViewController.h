@@ -24,7 +24,7 @@ typedef enum
 @property int pagesPerScreen;
 @property SDVReaderContentViewMode viewMode;
 
-- (instancetype)initWithReaderDocument:(ReaderDocument *)object options:(NSMutableDictionary *)options linkHandler:(void (^)(NSString*, void (^)(void)))linkHandler;
+- (instancetype)initWithReaderDocument:(ReaderDocument *)object options:(NSMutableDictionary *)options linkHandler:(void (^)(NSString*, void (^)(void)))linkHandler closeHandler:(void (^)(void))closeHandler;
 
 - (void)layoutContentViews:(UIScrollView *)scrollView;
 

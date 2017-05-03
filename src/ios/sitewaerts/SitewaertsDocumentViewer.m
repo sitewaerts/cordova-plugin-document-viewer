@@ -136,6 +136,8 @@
                     NSString *occurrenceId = [[NSUUID UUID] UUIDString];
                     nativeLinkHandlers[occurrenceId] = nativeLinkHandler;
                     [self.commandDelegate evalJs:[NSString stringWithFormat:@"cordova.fireDocumentEvent('sdvlinkopened', { handlerId: %@, link: '%@', occurrenceId: '%@' })", jsHandlerId, link, occurrenceId]];
+                } closeHandler:^{
+                    [self.commandDelegate evalJs:[NSString stringWithFormat:@"cordova.fireDocumentEvent('sdvpdfclosed', { handlerId: %@ })", jsHandlerId]];
                 }];
                 readerViewController.delegate = self;
                 readerViewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
