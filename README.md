@@ -139,7 +139,9 @@ var options = {
 	},
 	autoClose: {
 		onPause : BOOLEAN
-	}
+	},
+	// used in onLink callback (see documentation below)
+	linkPattern: REGEX
 }
 ```
 
@@ -222,6 +224,15 @@ function onMissingApp(id, installer)
 function onError(error){
   window.console.log(error);
   alert("Sorry! Cannot view document.");
+}
+```
+#### onLink ####
+Overrides the default link handler. Optional.
+```js
+function onLink(link) {
+  // if options.linkPattern is set to a regex pattern this function will only be called for matching links
+  // return true to mark the link as handled and suppress the default link handler
+  return confirm("The link is:\n" + link + "\nMark as handled?");
 }
 ```
 
