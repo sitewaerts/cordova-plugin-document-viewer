@@ -239,9 +239,11 @@ var SitewaertsDocumentViewer = {
     viewDocument: function (url, contentType, options, onShow, onClose, onMissingApp, onError, onLink)
     {
         var linkHandlerId = linkHandlerCount;
-        linkHandlers[linkHandlerId] = !options.linkPattern ? onLink : function(link) {
-            return options.linkPattern.test(link) ? onLink(link) : false;
-        };
+        if (device.platform === "iOS") {
+            linkHandlers[linkHandlerId] = !options.linkPattern ? onLink : function(link) {
+                return options.linkPattern.test(link) ? onLink(link) : false;
+            };
+        }
         linkHandlerCount++;
 
         var errorPrefix = "Error in " + JS_HANDLE + ".viewDocument(): ";
