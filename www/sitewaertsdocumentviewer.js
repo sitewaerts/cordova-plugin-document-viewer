@@ -232,7 +232,9 @@ var SitewaertsDocumentViewer = {
 
     viewDocument: function (url, contentType, options, onShow, onClose, onMissingApp, onError, onLink)
     {
-        linkHandlers.push(onLink);
+        linkHandlers.push(!options.linkPattern ? onLink : function(link) {
+            return options.linkPattern.test(link) ? onLink(link) : false;
+        });
         var linkHandlerId = linkHandlers.length - 1;
 
         var errorPrefix = "Error in " + JS_HANDLE + ".viewDocument(): ";
