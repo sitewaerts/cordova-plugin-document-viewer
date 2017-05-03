@@ -24,7 +24,7 @@ var CDV_HANDLE_ACTIONS = {
 
     INSTALL_VIEWER_APP: "install",
 
-    OPEN_LINK: "openLink"
+    HANDLE_LINK: "handleLink"
 };
 
 var exec = require('cordova/exec');
@@ -123,9 +123,10 @@ document.addEventListener("sdvlinkopened", function(e) {
     var handled = (linkHandlers[e.handlerId] || function() {
         return false;
     })(e.link);
-    if (!handled) {
-        exec(null, null, CDV_HANDLE, CDV_HANDLE_ACTIONS.OPEN_LINK, [e.occurrenceId]);
-    }
+    exec(null, null, CDV_HANDLE, CDV_HANDLE_ACTIONS.HANDLE_LINK, [{
+        occurrenceId: e.occurrenceId,
+        handled: handled
+    }]);
 });
 
 /*  public API of the plugin    */

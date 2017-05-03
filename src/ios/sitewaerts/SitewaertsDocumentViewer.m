@@ -176,9 +176,14 @@
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
-- (void)openLink:(CDVInvokedUrlCommand*)command {
-    NSString *eventId = command.arguments[0];
-    nativeLinkHandlers[eventId]();
+- (void)handleLink:(CDVInvokedUrlCommand*)command {
+    NSMutableDictionary *options = command.arguments[0];
+    NSString *occurrenceId = options[@"occurrenceId"];
+    BOOL handled = [options[@"handled"] boolValue];
+    if (!handled) {
+        nativeLinkHandlers[occurrenceId]();
+    }
+    [nativeLinkHandlers removeObjectForKey:occurrenceId];
 }
 
 - (void)appPaused:(CDVInvokedUrlCommand*)command {
