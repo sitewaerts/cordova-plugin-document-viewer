@@ -210,7 +210,7 @@ function onClose(){
 ```
 #### onMissingApp ####
 ```js
-function onMissingApp(id, installer)
+function onMissingApp(appId, installer)
 {
     if(confirm("Do you want to install the free PDF Viewer App "
             + appId + " for Android?"))
