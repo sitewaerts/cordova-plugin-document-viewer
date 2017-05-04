@@ -23,6 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 package de.sitewaerts.cordova.documentviewer;
 
+import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -38,6 +39,9 @@ import java.io.*;
 
 //import android.support.v4.content.FileProvider;
 
+//15: Android 4.0.3
+//19: Android 4.4.2
+@TargetApi(15)
 public final class DocumentViewerPlugin
         extends CordovaPlugin
 {
@@ -52,6 +56,8 @@ public final class DocumentViewerPlugin
         public static final String CAN_VIEW = "canViewDocument";
 
         public static final String VIEW_DOCUMENT = "viewDocument";
+
+        public static final String CLOSE = "close";
 
         public static final String APP_PAUSED = "appPaused";
 
@@ -114,7 +120,9 @@ public final class DocumentViewerPlugin
 
     private static final int REQUEST_CODE_OPEN = 1000;
 
-    private static final int REQUEST_CODE_INSTALL = 1001;
+    private static final int REQUEST_CODE_CLOSE = 1001;
+
+    private static final int REQUEST_CODE_INSTALL = 1002;
 
     private CallbackContext callbackContext;
 
@@ -136,6 +144,22 @@ public final class DocumentViewerPlugin
         clearTempFiles();
         super.onReset();
     }
+
+    private final class Current
+    {
+        private final String packageId;
+        private final String activity;
+        private final String url;
+
+        public Current(String packageId, String activity, String url)
+        {
+            this.packageId = packageId;
+            this.activity = activity;
+            this.url = url;
+        }
+    }
+
+    private Current current;
 
     /**
      * Executes the request and returns a boolean.
@@ -208,7 +232,8 @@ public final class DocumentViewerPlugin
                     options.getJSONObject(SEARCH_OPTIONS)
                             .optBoolean(Options.ENABLED, false)
             );
-            viewerOptions.putBoolean(AutoCloseOptions.NAME + "." + AutoCloseOptions.OPTION_ON_PAUSE,
+            viewerOptions.putBoolean(AutoCloseOptions.NAME + "."
+                            + AutoCloseOptions.OPTION_ON_PAUSE,
                     options.getJSONObject(AutoCloseOptions.NAME)
                             .optBoolean(AutoCloseOptions.OPTION_ON_PAUSE, false)
             );
@@ -219,6 +244,10 @@ public final class DocumentViewerPlugin
                     callbackContext,
                     viewerOptions
             );
+        }
+        else if (action.equals(Actions.CLOSE))
+        {
+            this._close(callbackContext);
         }
         else if (action.equals(Actions.APP_PAUSED))
         {
@@ -248,14 +277,13 @@ public final class DocumentViewerPlugin
                     Options.VIEWER_APP_PACKAGE_ID
             );
 
-            JSONObject successObj = null;
+            final JSONObject successObj = new JSONObject();
             if (PDF.equals(contentType))
             {
                 if (canGetFile(url))
                 {
                     if (!this._appIsInstalled(packageId))
                     {
-                        successObj = new JSONObject();
                         successObj.put(Result.STATUS,
                                 PluginResult.Status.NO_RESULT.ordinal()
                         );
@@ -263,7 +291,6 @@ public final class DocumentViewerPlugin
                     }
                     else
                     {
-                        successObj = new JSONObject();
                         successObj.put(Result.STATUS,
                                 PluginResult.Status.OK.ordinal()
                         );
@@ -271,16 +298,23 @@ public final class DocumentViewerPlugin
                 }
                 else
                 {
-                    Log.d(TAG, "File " + url + " not available");
+                    String message = "File '" + url + "' is not available";
+                    Log.d(TAG, message);
+                    successObj.put(Result.STATUS,
+                            PluginResult.Status.NO_RESULT.ordinal()
+                    );
+                    successObj.put(Result.MESSAGE, message);
                 }
             }
-
-            if (successObj == null)
+            else
             {
-                successObj = new JSONObject();
+                String message =
+                        "Content type '" + contentType + "' is not supported";
+                Log.d(TAG, message);
                 successObj.put(Result.STATUS,
                         PluginResult.Status.NO_RESULT.ordinal()
                 );
+                successObj.put(Result.MESSAGE, message);
             }
 
             callbackContext.success(successObj);
@@ -316,11 +350,13 @@ public final class DocumentViewerPlugin
      */
     public void onActivityResult(int requestCode, int resultCode, Intent intent)
     {
-        if(this.callbackContext == null)
+        if (this.callbackContext == null)
             return;
+
 
         if (requestCode == REQUEST_CODE_OPEN)
         {
+            this.current = null;
             //remove tmp file
             clearTempFiles();
             try
@@ -340,6 +376,7 @@ public final class DocumentViewerPlugin
         }
         else if (requestCode == REQUEST_CODE_INSTALL)
         {
+            this.current = null;
             // send success event
             this.callbackContext.success();
             this.callbackContext = null;
@@ -352,6 +389,29 @@ public final class DocumentViewerPlugin
         callbackContext.success();
     }
 
+    private void _close(CallbackContext callbackContext)
+            throws JSONException
+    {
+        if (current == null)
+        {
+            callbackContext.success();
+            return;
+        }
+
+        try
+        {
+            this.cordova.getActivity().finishActivity(REQUEST_CODE_OPEN);
+        }
+        catch (Exception e)
+        {
+            // ignore
+        }
+
+        this.current = null;
+        callbackContext.success();
+
+    }
+
     private void _open(String url, String contentType, String packageId, String activity, CallbackContext callbackContext, Bundle viewerOptions)
             throws JSONException
     {
@@ -359,7 +419,7 @@ public final class DocumentViewerPlugin
 
         File file = getAccessibleFile(url);
 
-        if (file!=null && file.exists() && file.isFile())
+        if (file != null && file.exists() && file.isFile())
         {
             try
             {
@@ -381,6 +441,8 @@ public final class DocumentViewerPlugin
                         REQUEST_CODE_OPEN
                 );
 
+                this.current = new Current(packageId, activity, url);
+
                 // send shown event
                 JSONObject successObj = new JSONObject();
                 successObj.put(Result.STATUS, PluginResult.Status.OK.ordinal());
@@ -393,6 +455,7 @@ public final class DocumentViewerPlugin
             }
             catch (android.content.ActivityNotFoundException e)
             {
+                this.current = null;
                 JSONObject errorObj = new JSONObject();
                 errorObj.put(Result.STATUS, PluginResult.Status.ERROR.ordinal()
                 );
@@ -404,9 +467,10 @@ public final class DocumentViewerPlugin
         }
         else
         {
+            this.current = null;
             JSONObject errorObj = new JSONObject();
             errorObj.put(Result.STATUS, PluginResult.Status.ERROR.ordinal());
-            errorObj.put(Result.MESSAGE, "File not found");
+            errorObj.put(Result.MESSAGE, "File '" + url + "' is not available");
             callbackContext.error(errorObj);
         }
     }
@@ -501,7 +565,7 @@ public final class DocumentViewerPlugin
         if (!f.exists())
             return;
 
-        if(f.isDirectory())
+        if (f.isDirectory())
         {
             File[] files = f.listFiles();
             for (File file : files)
@@ -518,6 +582,7 @@ public final class DocumentViewerPlugin
     private boolean canGetFile(String fileArg)
             throws JSONException
     {
+        // TODO: better check for assets files ...
         return fileArg.startsWith(ASSETS) || getFile(fileArg).exists();
     }
 
@@ -621,15 +686,22 @@ public final class DocumentViewerPlugin
         {
             this.callbackContext = callbackContext;
 
-            try {
+            try
+            {
                 Intent intent = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("market://details?id=" + packageId));
+                        Uri.parse("market://details?id=" + packageId)
+                );
                 this.cordova.startActivityForResult(this, intent,
                         REQUEST_CODE_INSTALL
                 );
-            } catch (android.content.ActivityNotFoundException e) {
+            }
+            catch (android.content.ActivityNotFoundException e)
+            {
                 Intent intent = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("https://play.google.com/store/apps/details?id=" + packageId));
+                        Uri.parse(
+                                "https://play.google.com/store/apps/details?id="
+                                        + packageId)
+                );
                 this.cordova.startActivityForResult(this, intent,
                         REQUEST_CODE_INSTALL
                 );

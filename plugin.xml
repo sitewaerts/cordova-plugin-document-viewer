@@ -19,11 +19,6 @@
         <clobbers target="SitewaertsDocumentViewer"/>
     </js-module>
 
-<!-- uncomment this if you get MuPDF to work with content:// uris -->
-<!--     
-    <dependency id="android.support.v4" url="https://github.com/MobileChromeApps/cordova-plugin-android-support-v4.git"  />
- -->
-
     <platform name="android">
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="SitewaertsDocumentViewer">
@@ -32,14 +27,18 @@
             </feature>
         </config-file>
 
-        <config-file target="AndroidManifest.xml" parent="/*">
+        <config-file target="AndroidManifest.xml" parent="/manifest">
             <uses-permission
                     android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+        </config-file>
 
-<!-- uncomment this if you get MuPDF to work with content:// uris 
-not sure if this is correct, it creates a second application tag in the manifest instead of adding to the existing one -->
-<!--         
-        <application>
+<!-- uncomment this if you get MuPDF to work with content:// uris
+
+        <dependency id="android.support.v4" url="https://github.com/MobileChromeApps/cordova-plugin-android-support-v4.git"  />
+        <dependency id="cordova-plugin-android-support-v4-jar"/>
+
+        <config-file target="AndroidManifest.xml" parent="/manifest/application">
+
              <provider
                 android:name="android.support.v4.content.FileProvider"
                 android:authorities="de.sitewaerts.cordova.fileprovider"
@@ -49,14 +48,9 @@ not sure if this is correct, it creates a second application tag in the manifest
                     android:name="android.support.FILE_PROVIDER_PATHS"
                     android:resource="@xml/documentviewer_file_paths" />
             </provider>
-        </application>
- -->  
 
         </config-file>
 
-<!-- uncomment this if you get MuPDF to work with content:// uris -->
- 
-<!--
         <source-file
             src="src/android/res/xml/documentviewer_file_paths.xml"
             target-dir="res/xml"/>
