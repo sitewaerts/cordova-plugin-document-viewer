@@ -236,6 +236,28 @@ function onLink(link) {
 }
 ```
 
+### Close the viewer ###
+```js
+cordova.plugins.SitewaertsDocumentViewer.closeDocument(onClose, onError);
+```
+
+#### onShow ####
+```js
+function onClose(url){
+    if(url)
+        window.console.log('closed viewer document ' + url);
+    else
+        window.console.log('viewer not open');
+}
+```
+#### onError ####
+```js
+function onError(error){
+  window.console.log(error);
+  alert("Sorry! Cannot close viewer.");
+}
+```
+
 ## iOS ##
 
 The plugin uses the awesome VFRReader (https://github.com/vfr/Reader) to embed pdf viewer functionality in the app.
