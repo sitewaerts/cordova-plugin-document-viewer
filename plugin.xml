@@ -2,7 +2,7 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
         id="cordova-plugin-document-viewer"
         xmlns:android="http://schemas.android.com/apk/res/android"
-        version="0.8.1">
+        version="0.9.0">
     <engines>
         <engine name="cordova" version=">=3.7.0"/>
         <engine name="cordova-windows" version=">=4.4.0"/>
@@ -19,11 +19,6 @@
         <clobbers target="SitewaertsDocumentViewer"/>
     </js-module>
 
-<!-- uncomment this if you get MuPDF to work with content:// uris -->
-<!--     
-    <dependency id="android.support.v4" url="https://github.com/MobileChromeApps/cordova-plugin-android-support-v4.git"  />
- -->
-
     <platform name="android">
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="SitewaertsDocumentViewer">
@@ -32,39 +27,31 @@
             </feature>
         </config-file>
 
-        <config-file target="AndroidManifest.xml" parent="/*">
+        <config-file target="AndroidManifest.xml" parent="/manifest">
             <uses-permission
                     android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+        </config-file>
 
-<!-- uncomment this if you get MuPDF to work with content:// uris 
-not sure if this is correct, it creates a second application tag in the manifest instead of adding to the existing one -->
-<!--         
-        <application>
+        <!--see http://stackoverflow.com/questions/38200282/android-os-fileuriexposedexception-file-storage-emulated-0-test-txt-exposed-->
+        <dependency id="cordova-plugin-android-support-v4-jar"/>
+
+        <config-file target="AndroidManifest.xml" parent="/manifest/application">
+
              <provider
                 android:name="android.support.v4.content.FileProvider"
-                android:authorities="de.sitewaerts.cordova.fileprovider"
+                android:authorities="de.sitewaerts.DocumentViewerPlugin.fileprovider"
                 android:exported="false"
                 android:grantUriPermissions="true">
                 <meta-data
                     android:name="android.support.FILE_PROVIDER_PATHS"
                     android:resource="@xml/documentviewer_file_paths" />
             </provider>
-        </application>
- -->  
 
         </config-file>
-
-<!-- uncomment this if you get MuPDF to work with content:// uris -->
- 
-<!--
         <source-file
             src="src/android/res/xml/documentviewer_file_paths.xml"
             target-dir="res/xml"/>
-        <source-file
-            src="src/android/de/sitewaerts/cordova/documentviewer/SDVCachedFileProvider.java"
-            target-dir="src/de/sitewaerts/cordova/documentviewer"/>
- -->
- 
+
         <source-file
                 src="src/android/de/sitewaerts/cordova/documentviewer/DocumentViewerPlugin.java"
                 target-dir="src/de/sitewaerts/cordova/documentviewer"/>

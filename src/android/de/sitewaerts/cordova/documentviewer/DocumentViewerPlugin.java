@@ -28,7 +28,9 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.FileProvider;
 import android.util.Log;
 import org.apache.cordova.*;
 import org.json.JSONArray;
@@ -41,7 +43,8 @@ import java.io.*;
 
 //15: Android 4.0.3
 //19: Android 4.4.2
-@TargetApi(15)
+//25: Android 7
+@TargetApi(25)
 public final class DocumentViewerPlugin
         extends CordovaPlugin
 {
@@ -141,6 +144,44 @@ public final class DocumentViewerPlugin
         super.onReset();
     }
 
+    private static String getStackTrace(Throwable t)
+    {
+        if (t == null)
+            return "";
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter writer = new PrintWriter(stringWriter);
+        t.printStackTrace(writer);
+
+        try
+        {
+            writer.close();
+            stringWriter.flush();
+            stringWriter.close();
+        }
+        catch (Exception err)
+        {
+            // ignorieren
+        }
+        return stringWriter.toString();
+    }
+
+
+    private JSONObject createError(Exception ex)
+    {
+        JSONObject error = new JSONObject();
+
+        try
+        {
+            error.put("message", ex.getMessage());
+            error.put("stacktrace", getStackTrace(ex));
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return error;
+    }
+
     /**
      * Executes the request and returns a boolean.
      *
@@ -149,7 +190,29 @@ public final class DocumentViewerPlugin
      * @param callbackContext The callback context used when calling back into JavaScript.
      * @return boolean.
      */
-    public boolean execute(String action, JSONArray argsArray, CallbackContext callbackContext)
+    public boolean execute(final String action, final JSONArray argsArray, final CallbackContext callbackContext)
+            throws JSONException
+    {
+        final DocumentViewerPlugin me = this;
+        cordova.getThreadPool().execute(new Runnable()
+        {
+            public void run()
+            {
+                try
+                {
+                    me.doExecute(action, argsArray, callbackContext);
+                }
+                catch (JSONException e)
+                {
+                    e.printStackTrace();
+                    callbackContext.error(createError(e));
+                }
+            }
+        });
+        return true;
+    }
+
+    private void doExecute(String action, JSONArray argsArray, CallbackContext callbackContext)
             throws JSONException
     {
         JSONObject args;
@@ -212,7 +275,8 @@ public final class DocumentViewerPlugin
                     options.getJSONObject(SEARCH_OPTIONS)
                             .optBoolean(Options.ENABLED, false)
             );
-            viewerOptions.putBoolean(AutoCloseOptions.NAME + "." + AutoCloseOptions.OPTION_ON_PAUSE,
+            viewerOptions.putBoolean(AutoCloseOptions.NAME + "."
+                            + AutoCloseOptions.OPTION_ON_PAUSE,
                     options.getJSONObject(AutoCloseOptions.NAME)
                             .optBoolean(AutoCloseOptions.OPTION_ON_PAUSE, false)
             );
@@ -283,7 +347,8 @@ public final class DocumentViewerPlugin
             }
             else
             {
-                String message = "Content type '" + contentType + "' is not supported";
+                String message =
+                        "Content type '" + contentType + "' is not supported";
                 Log.d(TAG, message);
                 successObj.put(Result.STATUS,
                         PluginResult.Status.NO_RESULT.ordinal()
@@ -310,7 +375,6 @@ public final class DocumentViewerPlugin
             errorObj.put(Result.MESSAGE, "Invalid action '" + action + "'");
             callbackContext.error(errorObj);
         }
-        return true;
     }
 
 
@@ -324,7 +388,7 @@ public final class DocumentViewerPlugin
      */
     public void onActivityResult(int requestCode, int resultCode, Intent intent)
     {
-        if(this.callbackContext == null)
+        if (this.callbackContext == null)
             return;
 
         if (requestCode == REQUEST_CODE_OPEN)
@@ -367,16 +431,31 @@ public final class DocumentViewerPlugin
 
         File file = getAccessibleFile(url);
 
-        if (file!=null && file.exists() && file.isFile())
+        if (file != null && file.exists() && file.isFile())
         {
             try
             {
                 Intent intent = new Intent(Intent.ACTION_VIEW);
-                Uri path = Uri.fromFile(file);
 
                 // @see http://stackoverflow.com/questions/2780102/open-another-application-from-your-own-intent
                 intent.addCategory(Intent.CATEGORY_EMBED);
-                intent.setDataAndType(path, contentType);
+
+
+                if (newApi())
+                {
+                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    Uri contentUri = FileProvider.getUriForFile(
+                            cordova.getActivity().getApplicationContext(),
+                            "de.sitewaerts.DocumentViewerPlugin.fileprovider",
+                            file
+                    );
+                    intent.setDataAndType(contentUri, contentType);
+                }
+                else
+                {
+                    intent.setDataAndType(Uri.fromFile(file), contentType);
+                }
+
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.putExtra(this.getClass().getName(), viewerOptions);
                 //activity needs fully qualified name here
@@ -488,10 +567,20 @@ public final class DocumentViewerPlugin
 
     private File getSharedTempDir()
     {
-        return new File(
-                new File(cordova.getActivity().getExternalFilesDir(null), "tmp"
-                ), TAG
-        );
+        if (newApi())
+        {
+            return new File(
+                    new File(cordova.getActivity().getCacheDir(), "tmp"), TAG
+            );
+        }
+        else
+        {
+            return new File(
+                    new File(cordova.getActivity().getExternalFilesDir(null),
+                            "tmp"
+                    ), TAG
+            );
+        }
     }
 
     private void clearTempFiles()
@@ -509,7 +598,7 @@ public final class DocumentViewerPlugin
         if (!f.exists())
             return;
 
-        if(f.isDirectory())
+        if (f.isDirectory())
         {
             File[] files = f.listFiles();
             for (File file : files)
@@ -530,7 +619,68 @@ public final class DocumentViewerPlugin
         return fileArg.startsWith(ASSETS) || getFile(fileArg).exists();
     }
 
+    private boolean newApi()
+    {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.N;
+    }
+
     private File getAccessibleFile(String fileArg)
+            throws JSONException
+    {
+        if (newApi())
+            return getAccessibleFileNew(fileArg);
+        else
+            return getAccessibleFileOld(fileArg);
+    }
+
+    private void close(Closeable c)
+    {
+        try
+        {
+            if (c != null)
+                c.close();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    private File getAccessibleFileNew(String fileArg)
+            throws JSONException
+    {
+        CordovaResourceApi cra = webView.getResourceApi();
+        Uri uri = Uri.parse(fileArg);
+        OutputStream os = null;
+        try
+        {
+            String fileName = new File(uri.getPath()).getName();
+            File tmpFile = getSharedTempFile(fileName);
+            tmpFile.getParentFile().mkdirs();
+            os = new FileOutputStream(tmpFile);
+            cra.copyResource(uri, os);
+            tmpFile.deleteOnExit();
+            return tmpFile;
+        }
+        catch (FileNotFoundException e)
+        {
+            return null; // not found
+        }
+        catch (Exception e)
+        {
+            Log.e(TAG, "Failed to copy file: " + fileArg, e);
+            JSONException je = new JSONException(e.getMessage());
+            je.initCause(e);
+            throw je;
+        }
+        finally
+        {
+            close(os);
+        }
+    }
+
+
+    private File getAccessibleFileOld(String fileArg)
             throws JSONException
     {
         if (fileArg.startsWith(ASSETS))
@@ -609,6 +759,24 @@ public final class DocumentViewerPlugin
     private File getFile(String fileArg)
             throws JSONException
     {
+        if (newApi())
+            return getFileNew(fileArg);
+        else
+            return getFileOld(fileArg);
+    }
+
+    private File getFileNew(String fileArg)
+            throws JSONException
+    {
+        CordovaResourceApi cra = webView.getResourceApi();
+        Uri uri = Uri.parse(fileArg);
+        File f = cra.mapUriToFile(uri);
+        return f;
+    }
+
+    private File getFileOld(String fileArg)
+            throws JSONException
+    {
         String filePath;
         try
         {
@@ -630,15 +798,22 @@ public final class DocumentViewerPlugin
         {
             this.callbackContext = callbackContext;
 
-            try {
+            try
+            {
                 Intent intent = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("market://details?id=" + packageId));
+                        Uri.parse("market://details?id=" + packageId)
+                );
                 this.cordova.startActivityForResult(this, intent,
                         REQUEST_CODE_INSTALL
                 );
-            } catch (android.content.ActivityNotFoundException e) {
+            }
+            catch (android.content.ActivityNotFoundException e)
+            {
                 Intent intent = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("https://play.google.com/store/apps/details?id=" + packageId));
+                        Uri.parse(
+                                "https://play.google.com/store/apps/details?id="
+                                        + packageId)
+                );
                 this.cordova.startActivityForResult(this, intent,
                         REQUEST_CODE_INSTALL
                 );
