@@ -445,8 +445,8 @@ public final class DocumentViewerPlugin
                 {
                     intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                     Uri contentUri = FileProvider.getUriForFile(
-                            cordova.getActivity().getApplicationContext(),
-                            "de.sitewaerts.DocumentViewerPlugin.fileprovider",
+                            webView.getContext(),
+                            cordova.getActivity().getPackageName() + "." + TAG + ".fileprovider",
                             file
                     );
                     intent.setDataAndType(contentUri, contentType);
