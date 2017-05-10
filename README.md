@@ -1,8 +1,6 @@
 Cordova Document Viewer Plugin
 ============================
 
-**The plugin is now published at npm with a new plugin id: cordova-plugin-document-viewer** 
-
 A common requirement when developing a cordova based app is to embed a
 performant and secure inline viewer for pdf files which doesn't allow the user
 to extract a copy of the pdf file out of the apps sandbox.
@@ -51,6 +49,8 @@ through the [Command-line Interface][CLI],
 or cloud based through [PhoneGap Build][PGB].
 
 The plugin is published at the [npm plugin registry][CDV_plugin].
+
+An [ionic native wrapper][ionic] for the plugin is available.
 
 ### Local development environment
 From master:
@@ -296,4 +296,5 @@ inspired by https://msdn.microsoft.com/en-us/library/windows/apps/dn263105.aspx
 [PDFJS]: https://mozilla.github.io/pdf.js/
 [Windows.Data.Pdf.PdfDocument]: https://msdn.microsoft.com/en-us/library/windows/apps/windows.data.pdf.pdfdocument
 [winjs]: http://try.buildwinjs.com/
+[ionic]: https://github.com/driftyco/ionic-native/tree/master/src/@ionic-native/plugins/document-viewer
 
