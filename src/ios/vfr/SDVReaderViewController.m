@@ -19,7 +19,6 @@
 
 @implementation SDVReaderViewController {
     void (^linkHandler)(NSString*, void (^)(void));
-    void (^closeHandler)(void);
 }
 
 #pragma mark - Constants
@@ -70,11 +69,6 @@
 //    
 //    scrollView.contentSize = CGSizeMake(contentWidth, contentHeight);
 //}
-
-- (void)viewDidDisappear:(BOOL)animated {
-    [super viewDidDisappear:animated];
-    closeHandler();
-}
 
 // https://github.com/etabard/Reader/commit/1001fcee4ccef5db329452dd59d5dfe48bdb783c
 - (void)handleLandscapeDoublePage {
@@ -1014,12 +1008,11 @@
 
 #pragma mark - UIViewController methods
 
-- (instancetype)initWithReaderDocument:(ReaderDocument *)object options:(NSMutableDictionary *)options linkHandler:(void (^)(NSString*, void (^)(void)))newLinkHandler closeHandler:(void (^)(void))newCloseHandler
+- (instancetype)initWithReaderDocument:(ReaderDocument *)object options:(NSMutableDictionary *)options linkHandler:(void (^)(NSString*, void (^)(void)))newLinkHandler
 {
     self = [super initWithReaderDocument:object];
     self.viewerOptions = options;
     linkHandler = newLinkHandler;
-    closeHandler = newCloseHandler;
     return self;
 }
 

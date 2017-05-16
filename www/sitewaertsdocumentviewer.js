@@ -24,9 +24,7 @@ var CDV_HANDLE_ACTIONS = {
 
     APP_RESUMED: "appResumed",
 
-    INSTALL_VIEWER_APP: "install",
-
-    HANDLE_LINK: "handleLink"
+    INSTALL_VIEWER_APP: "install"
 };
 
 var exec = require('cordova/exec');
@@ -123,22 +121,6 @@ function installApp(options, onSuccess, onError)
             onError(e);
     }
 }
-
-var linkHandlers = {};
-var linkHandlerCount = 0;
-document.addEventListener("sdvlinkopened", function(e) {
-    var handled = (linkHandlers[e.handlerId] || function() {
-        return false;
-    })(e.link);
-    exec(null, null, CDV_HANDLE, CDV_HANDLE_ACTIONS.HANDLE_LINK, [{
-        occurrenceId: e.occurrenceId,
-        handled: handled
-    }]);
-});
-
-document.addEventListener("sdvpdfclosed", function(e) {
-    delete linkHandlers[e.handlerId];
-});
 
 /*  public API of the plugin    */
 
@@ -242,15 +224,20 @@ var SitewaertsDocumentViewer = {
         }
     },
 
-    viewDocument: function (url, contentType, options, onShow, onClose, onMissingApp, onError, onLink)
+    viewDocument: function (url, contentType, options, onShow, onClose, onMissingApp, onError)
     {
-        var linkHandlerId = linkHandlerCount;
-        if (device.platform === "iOS") {
-            linkHandlers[linkHandlerId] = !options.linkPattern ? onLink : function(link) {
-                return options.linkPattern.test(link) ? onLink(link) : false;
-            };
-        }
-        linkHandlerCount++;
+        // maintain the same order
+        var linkPatterns = !options.linkHandlers ? [] : options.linkHandlers.map(function (element) {
+            return element.pattern;
+        });
+
+        // for easier lookup (but not guaranteed same order anymore)
+        var linkHandlers = {};
+        if (options.linkHandlers) {
+            options.linkHandlers.forEach(function (element) {
+                linkHandlers[element.pattern] = element;
+            });
+        };
 
         var errorPrefix = "Error in " + JS_HANDLE + ".viewDocument(): ";
 
@@ -397,6 +384,14 @@ var SitewaertsDocumentViewer = {
                                         {
                                             _onClose();
                                         }
+                                        else if (status === 2)
+                                        {
+                                            var linkHandler = linkHandlers[result.linkPattern];
+                                            if (linkHandler.close) {
+                                                _current.doCloseDocument(_onClose, _onError);
+                                            }
+                                            linkHandler.handler(result.link);
+                                        }
                                         else
                                         {
                                             var errorMsg =
@@ -414,7 +409,7 @@ var SitewaertsDocumentViewer = {
                                             url: url,
                                             contentType: contentType,
                                             options: options,
-                                            linkHandlerId: linkHandlerId
+                                            linkPatterns: linkPatterns
                                         }
                                     ]
                             );

@@ -37,7 +37,6 @@
     NSString *tmpCommandCallbackID;
     SDVReaderViewController *readerViewController;
     BOOL autoCloseOnPause;
-    NSMutableDictionary<NSString*, void (^)(void)> *nativeLinkHandlers;
 }
 
 #pragma mark - SitewaertsDocumentViewer methods
@@ -127,18 +126,33 @@
                 // get options from cordova
                 NSMutableDictionary *viewerOptions = [options objectForKey:@"options"];
                 NSLog(@"[pdfviewer] options: %@", viewerOptions);
-                NSString *jsHandlerId = [options objectForKey:@"linkHandlerId"];
+                
+                NSArray *linkPatterns = [options objectForKey:@"linkPatterns"];
+                NSMutableArray *linkRegexes = [NSMutableArray new];
+                for (NSString *pattern in linkPatterns) {
+                    [linkRegexes addObject:[NSRegularExpression regularExpressionWithPattern:pattern options:0 error:nil]];
+                }
+                
                 readerViewController = [[SDVReaderViewController alloc] initWithReaderDocument:document options:viewerOptions linkHandler:^(NSString *link, void (^nativeLinkHandler)(void)) {
-                    if (nativeLinkHandlers == nil)
-                    {
-                        nativeLinkHandlers = [NSMutableDictionary new];
+                    BOOL handled = NO;
+                    for (NSRegularExpression *regex in linkRegexes) {
+                        NSRange matchedRange = [regex rangeOfFirstMatchInString:link options:0 range:NSMakeRange(0, link.length)];
+                        BOOL hasMatch = !NSEqualRanges(matchedRange, NSMakeRange(NSNotFound, 0));
+                        if (hasMatch) {
+                            handled = YES;
+                            NSDictionary *message = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:2], @"status", regex.pattern, @"linkPattern", link, @"link", nil];
+                            CDVPluginResult *result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:message];
+                            // allow the callback to be called multiple times
+                            [result setKeepCallbackAsBool:YES];
+                            [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
+                            break;
+                        }
                     }
-                    NSString *occurrenceId = [[NSUUID UUID] UUIDString];
-                    nativeLinkHandlers[occurrenceId] = nativeLinkHandler;
-                    [self.commandDelegate evalJs:[NSString stringWithFormat:@"cordova.fireDocumentEvent('sdvlinkopened', { handlerId: %@, link: '%@', occurrenceId: '%@' })", jsHandlerId, link, occurrenceId]];
-                } closeHandler:^{
-                    [self.commandDelegate evalJs:[NSString stringWithFormat:@"cordova.fireDocumentEvent('sdvpdfclosed', { handlerId: %@ })", jsHandlerId]];
+                    if (!handled) {
+                        nativeLinkHandler();
+                    }
                 }];
+                
                 readerViewController.delegate = self;
                 readerViewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
                 readerViewController.modalPresentationStyle = UIModalPresentationFullScreen;
@@ -176,16 +190,6 @@
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageToErrorObject:1];
     }
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-}
-
-- (void)handleLink:(CDVInvokedUrlCommand*)command {
-    NSMutableDictionary *options = command.arguments[0];
-    NSString *occurrenceId = options[@"occurrenceId"];
-    BOOL handled = [options[@"handled"] boolValue];
-    if (!handled) {
-        nativeLinkHandlers[occurrenceId]();
-    }
-    [nativeLinkHandlers removeObjectForKey:occurrenceId];
 }
 
 - (void)appPaused:(CDVInvokedUrlCommand*)command {
