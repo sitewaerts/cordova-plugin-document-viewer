@@ -235,7 +235,10 @@ var SitewaertsDocumentViewer = {
         var linkHandlers = {};
         if (options.linkHandlers) {
             options.linkHandlers.forEach(function (element) {
-                linkHandlers[element.pattern] = element;
+                // use the first handler if there are duplicates
+                if (!(element.pattern in linkHandlers)) {
+                    linkHandlers[element.pattern] = element;
+                }
             });
         };
 
