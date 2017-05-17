@@ -226,11 +226,6 @@ var SitewaertsDocumentViewer = {
 
     viewDocument: function (url, contentType, options, onShow, onClose, onMissingApp, onError)
     {
-        // maintain the same order
-        var linkPatterns = !options.linkHandlers ? [] : options.linkHandlers.map(function (element) {
-            return element.pattern;
-        });
-
         // for easier lookup (but not guaranteed same order anymore)
         var linkHandlers = {};
         if (options.linkHandlers) {
@@ -390,9 +385,6 @@ var SitewaertsDocumentViewer = {
                                         else if (status === 2)
                                         {
                                             var linkHandler = linkHandlers[result.linkPattern];
-                                            if (linkHandler.close) {
-                                                _current.doCloseDocument(_onClose, _onError);
-                                            }
                                             linkHandler.handler(result.link);
                                         }
                                         else
@@ -412,7 +404,8 @@ var SitewaertsDocumentViewer = {
                                             url: url,
                                             contentType: contentType,
                                             options: options,
-                                            linkPatterns: linkPatterns
+                                            // use the original linkHandlers list to guarantee the same order
+                                            linkHandlers: options.linkHandlers
                                         }
                                     ]
                             );

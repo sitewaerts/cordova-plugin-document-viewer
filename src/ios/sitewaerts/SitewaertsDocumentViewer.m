@@ -28,6 +28,17 @@
 #import "SitewaertsDocumentViewer.h"
 #import "SDVReaderViewController.h"
 
+// "private" helper class
+@interface SDVLinkHandlerInfo : NSObject 
+
+@property NSRegularExpression *regex;
+@property BOOL shouldClose;
+
+@end
+
+@implementation SDVLinkHandlerInfo
+@end
+
 @interface SitewaertsDocumentViewer () <ReaderViewControllerDelegate>
 
 @end
@@ -127,24 +138,31 @@
                 NSMutableDictionary *viewerOptions = [options objectForKey:@"options"];
                 NSLog(@"[pdfviewer] options: %@", viewerOptions);
                 
-                NSArray *linkPatterns = [options objectForKey:@"linkPatterns"];
-                NSMutableArray *linkRegexes = [NSMutableArray new];
-                for (NSString *pattern in linkPatterns) {
-                    [linkRegexes addObject:[NSRegularExpression regularExpressionWithPattern:pattern options:0 error:nil]];
+                NSMutableArray *linkHandlers = [NSMutableArray new];
+                for (NSDictionary *handler in options[@"linkHandlers"]) {
+                    SDVLinkHandlerInfo *handlerInfo = [SDVLinkHandlerInfo new];
+                    handlerInfo.regex = [NSRegularExpression regularExpressionWithPattern:handler[@"pattern"] options:0 error:nil];
+                    handlerInfo.shouldClose = [handler[@"close"] boolValue];
+                    [linkHandlers addObject:handlerInfo];
                 }
                 
                 readerViewController = [[SDVReaderViewController alloc] initWithReaderDocument:document options:viewerOptions linkHandler:^(NSString *link, void (^nativeLinkHandler)(void)) {
                     BOOL handled = NO;
-                    for (NSRegularExpression *regex in linkRegexes) {
-                        NSRange matchedRange = [regex rangeOfFirstMatchInString:link options:0 range:NSMakeRange(0, link.length)];
+                    for (SDVLinkHandlerInfo *handler in linkHandlers) {
+                        NSRange matchedRange = [handler.regex rangeOfFirstMatchInString:link options:0 range:NSMakeRange(0, link.length)];
                         BOOL hasMatch = !NSEqualRanges(matchedRange, NSMakeRange(NSNotFound, 0));
                         if (hasMatch) {
                             handled = YES;
-                            NSDictionary *message = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:2], @"status", regex.pattern, @"linkPattern", link, @"link", nil];
+                            
+                            NSDictionary *message = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:2], @"status", handler.regex.pattern, @"linkPattern", link, @"link", nil];
                             CDVPluginResult *result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:message];
                             // allow the callback to be called multiple times
                             [result setKeepCallbackAsBool:YES];
                             [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
+                            
+                            if (handler.shouldClose) {
+                                [readerViewController closeDocument];
+                            }
                             break;
                         }
                     }
