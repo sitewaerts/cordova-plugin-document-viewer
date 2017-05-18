@@ -183,7 +183,7 @@ var SitewaertsDocumentViewer = {
                             if (onPossible)
                                 onPossible();
                         }
-                        else if (result.missingAppId != null)
+                        else if (result.missingAppId)
                         {
                             if (onMissingApp)
                             {
@@ -235,7 +235,7 @@ var SitewaertsDocumentViewer = {
                     linkHandlers[element.pattern] = element;
                 }
             });
-        };
+        }
 
         var errorPrefix = "Error in " + JS_HANDLE + ".viewDocument(): ";
 
@@ -421,7 +421,7 @@ var SitewaertsDocumentViewer = {
                                 installer(function ()
                                 {
                                     window.console.log(
-                                            "App successfully installed");
+                                            "App " + appId + " successfully installed");
                                 }, _onError);
                         });
                     },
