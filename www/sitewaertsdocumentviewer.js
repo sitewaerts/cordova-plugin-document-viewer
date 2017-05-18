@@ -2,7 +2,7 @@
 //
 //  Created by Felix Schauerte 25.09.2014
 //
-//  Copyright 2015 sitewaerts GmbH. All rights reserved.
+//  Copyright 2017 sitewaerts GmbH. All rights reserved.
 //  MIT Licensed
 
 /*  configuration   */
@@ -17,6 +17,8 @@ var CDV_HANDLE_ACTIONS = {
     CAN_VIEW: "canViewDocument",
 
     VIEW_DOCUMENT: "viewDocument",
+
+    CLOSE: "close",
 
     APP_PAUSED: "appPaused",
 
@@ -75,7 +77,9 @@ function getOptions(provided)
         options.search.enabled = false;
 
     if (!options.autoClose)
-        options.autoClose = {onPause : false};
+        options.autoClose = {onPause: false};
+    if (!options.autoClose.onPause)
+        options.autoClose.onPause = false;
 
     if (!options.android)
         options.android = {};
@@ -86,6 +90,8 @@ function getOptions(provided)
 
     return options;
 }
+
+var _current = null;
 
 function installApp(options, onSuccess, onError)
 {
@@ -172,12 +178,12 @@ var SitewaertsDocumentViewer = {
                     {
                         var status = result ? result.status : null;
 
-                        if (status == 1)
+                        if (status === 1)
                         {
                             if (onPossible)
                                 onPossible();
                         }
-                        else if (result.missingAppId != null)
+                        else if (result.missingAppId)
                         {
                             if (onMissingApp)
                             {
@@ -218,18 +224,31 @@ var SitewaertsDocumentViewer = {
         }
     },
 
-    viewDocument: function (url, contentType, options, onShow, onClose, onMissingApp, onError)
+    viewDocument: function (url, contentType, options, onShow, onClose, onMissingApp, onError, linkHandlers)
     {
+        // for easier lookup (but not guaranteed same order anymore)
+        var _linkHandlers = {};
+        if (linkHandlers) {
+            linkHandlers.forEach(function (element) {
+                // use the first handler if there are duplicates
+                if (!(element.pattern in _linkHandlers)) {
+                    _linkHandlers[element.pattern] = element;
+                }
+            });
+        }
+
         var errorPrefix = "Error in " + JS_HANDLE + ".viewDocument(): ";
 
         var _hideStatusBarOnClose = false;
 
         // only needed on iOS as I don't know how to listen for this event in native C code
-        function _firePause(){
+        function _firePause()
+        {
             exec(
                     function ()
                     {
-                        window.console.log(JS_HANDLE + ": fired pause event to native plugin");
+                        window.console.log(JS_HANDLE
+                                + ": fired pause event to native plugin");
                     },
                     _logError,
                     CDV_HANDLE,
@@ -239,11 +258,13 @@ var SitewaertsDocumentViewer = {
         }
 
         // only needed on iOS as I don't know how to listen for this event in native C code
-        function _fireResume(){
+        function _fireResume()
+        {
             exec(
                     function ()
                     {
-                        window.console.log(JS_HANDLE + ": fired resume event to native plugin");
+                        window.console.log(JS_HANDLE
+                                + ": fired resume event to native plugin");
                     },
                     _logError,
                     CDV_HANDLE,
@@ -255,7 +276,7 @@ var SitewaertsDocumentViewer = {
         function _beforeShow(next)
         {
             if (window.StatusBar && window.device
-                    && window.device.platform.toLowerCase() == 'ios')
+                    && window.device.platform.toLowerCase() === 'ios')
             {
                 if (!window.StatusBar.isVisible)
                 {
@@ -265,11 +286,28 @@ var SitewaertsDocumentViewer = {
                     _hideStatusBarOnClose = true;
                 }
             }
-            if(next)
+            if (next)
                 next();
         }
 
-        function _onShow(){
+        function _onShow()
+        {
+
+            _current = {
+                url : url,
+                doCloseDocument : function(success, error){
+                    exec(
+                            function(){
+                                if(success)
+                                    success(url);
+                            },
+                            error,
+                            CDV_HANDLE,
+                            CDV_HANDLE_ACTIONS.CLOSE,
+                            []
+                    );
+                }
+            };
 
             document.addEventListener("pause", _firePause, false);
             document.addEventListener("resume", _fireResume, false);
@@ -289,15 +327,19 @@ var SitewaertsDocumentViewer = {
             document.removeEventListener("pause", _firePause);
             document.removeEventListener("resume", _fireResume);
 
-            if(next)
+            _current = null;
+
+            if (next)
                 next();
         }
 
-        function _onClose(){
+        function _onClose()
+        {
             _beforeClose(onClose);
         }
 
-        function _logError(e){
+        function _logError(e)
+        {
             window.console.error(errorPrefix, e);
         }
 
@@ -332,13 +374,18 @@ var SitewaertsDocumentViewer = {
                                     {
                                         var status = result ? result.status : null;
 
-                                        if (status == 1)
+                                        if (status === 1)
                                         {
                                             _onShow();
                                         }
-                                        else if (status == 0)
+                                        else if (status === 0)
                                         {
                                             _onClose();
+                                        }
+                                        else if (status === 2)
+                                        {
+                                            var linkHandler = _linkHandlers[result.linkPattern];
+                                            linkHandler.handler(result.link);
                                         }
                                         else
                                         {
@@ -356,7 +403,9 @@ var SitewaertsDocumentViewer = {
                                         {
                                             url: url,
                                             contentType: contentType,
-                                            options: options
+                                            options: options,
+                                            // use the original linkHandlers list to guarantee the same order
+                                            linkHandlers: linkHandlers
                                         }
                                     ]
                             );
@@ -372,7 +421,7 @@ var SitewaertsDocumentViewer = {
                                 installer(function ()
                                 {
                                     window.console.log(
-                                            "App successfully installed");
+                                            "App " + appId + " successfully installed");
                                 }, _onError);
                         });
                     },
@@ -389,6 +438,33 @@ var SitewaertsDocumentViewer = {
         {
             _onError(e);
         }
+    },
+    closeDocument: function (onClose, onError)
+    {
+        var errorPrefix = "Error in " + JS_HANDLE + ".closeDocument(): ";
+
+        var _onClose = onClose || function (url)
+                {
+                };
+
+        var _onError = function (e)
+                {
+                    window.console.error(errorPrefix, e);
+                    if(onError)
+                        onError(e);
+                };
+
+        try
+        {
+            if (!_current)
+                return _onClose(null);
+            _current.doCloseDocument(_onClose, _onError);
+        }
+        catch (e)
+        {
+            _onError(e);
+        }
+
     }
 };
 

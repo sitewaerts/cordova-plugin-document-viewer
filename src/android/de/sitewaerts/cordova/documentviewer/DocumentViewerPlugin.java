@@ -1,7 +1,7 @@
 /*
 The MIT License (MIT)
 
-Copyright 2014 sitewaerts GmbH. All rights reserved.
+Copyright 2017 sitewaerts GmbH. All rights reserved.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -59,6 +59,8 @@ public final class DocumentViewerPlugin
         public static final String CAN_VIEW = "canViewDocument";
 
         public static final String VIEW_DOCUMENT = "viewDocument";
+
+        public static final String CLOSE = "close";
 
         public static final String APP_PAUSED = "appPaused";
 
@@ -121,7 +123,9 @@ public final class DocumentViewerPlugin
 
     private static final int REQUEST_CODE_OPEN = 1000;
 
-    private static final int REQUEST_CODE_INSTALL = 1001;
+    private static final int REQUEST_CODE_CLOSE = 1001;
+
+    private static final int REQUEST_CODE_INSTALL = 1002;
 
     private CallbackContext callbackContext;
 
@@ -144,43 +148,21 @@ public final class DocumentViewerPlugin
         super.onReset();
     }
 
-    private static String getStackTrace(Throwable t)
+    private final class Current
     {
-        if (t == null)
-            return "";
-        StringWriter stringWriter = new StringWriter();
-        PrintWriter writer = new PrintWriter(stringWriter);
-        t.printStackTrace(writer);
+        private final String packageId;
+        private final String activity;
+        private final String url;
 
-        try
+        public Current(String packageId, String activity, String url)
         {
-            writer.close();
-            stringWriter.flush();
-            stringWriter.close();
+            this.packageId = packageId;
+            this.activity = activity;
+            this.url = url;
         }
-        catch (Exception err)
-        {
-            // ignorieren
-        }
-        return stringWriter.toString();
     }
 
-
-    private JSONObject createError(Exception ex)
-    {
-        JSONObject error = new JSONObject();
-
-        try
-        {
-            error.put("message", ex.getMessage());
-            error.put("stacktrace", getStackTrace(ex));
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        return error;
-    }
+    private Current current;
 
     /**
      * Executes the request and returns a boolean.
@@ -190,29 +172,7 @@ public final class DocumentViewerPlugin
      * @param callbackContext The callback context used when calling back into JavaScript.
      * @return boolean.
      */
-    public boolean execute(final String action, final JSONArray argsArray, final CallbackContext callbackContext)
-            throws JSONException
-    {
-        final DocumentViewerPlugin me = this;
-        cordova.getThreadPool().execute(new Runnable()
-        {
-            public void run()
-            {
-                try
-                {
-                    me.doExecute(action, argsArray, callbackContext);
-                }
-                catch (JSONException e)
-                {
-                    e.printStackTrace();
-                    callbackContext.error(createError(e));
-                }
-            }
-        });
-        return true;
-    }
-
-    private void doExecute(String action, JSONArray argsArray, CallbackContext callbackContext)
+    public boolean execute(String action, JSONArray argsArray, CallbackContext callbackContext)
             throws JSONException
     {
         JSONObject args;
@@ -287,6 +247,10 @@ public final class DocumentViewerPlugin
                     callbackContext,
                     viewerOptions
             );
+        }
+        else if (action.equals(Actions.CLOSE))
+        {
+            this._close(callbackContext);
         }
         else if (action.equals(Actions.APP_PAUSED))
         {
@@ -375,6 +339,7 @@ public final class DocumentViewerPlugin
             errorObj.put(Result.MESSAGE, "Invalid action '" + action + "'");
             callbackContext.error(errorObj);
         }
+        return true;
     }
 
 
@@ -393,6 +358,7 @@ public final class DocumentViewerPlugin
 
         if (requestCode == REQUEST_CODE_OPEN)
         {
+            this.current = null;
             //remove tmp file
             clearTempFiles();
             try
@@ -412,6 +378,7 @@ public final class DocumentViewerPlugin
         }
         else if (requestCode == REQUEST_CODE_INSTALL)
         {
+            this.current = null;
             // send success event
             this.callbackContext.success();
             this.callbackContext = null;
@@ -422,6 +389,29 @@ public final class DocumentViewerPlugin
     {
         // ignore
         callbackContext.success();
+    }
+
+    private void _close(CallbackContext callbackContext)
+            throws JSONException
+    {
+        if (current == null)
+        {
+            callbackContext.success();
+            return;
+        }
+
+        try
+        {
+            this.cordova.getActivity().finishActivity(REQUEST_CODE_OPEN);
+        }
+        catch (Exception e)
+        {
+            // ignore
+        }
+
+        this.current = null;
+        callbackContext.success();
+
     }
 
     private void _open(String url, String contentType, String packageId, String activity, CallbackContext callbackContext, Bundle viewerOptions)
@@ -468,6 +458,8 @@ public final class DocumentViewerPlugin
                         REQUEST_CODE_OPEN
                 );
 
+                this.current = new Current(packageId, activity, url);
+
                 // send shown event
                 JSONObject successObj = new JSONObject();
                 successObj.put(Result.STATUS, PluginResult.Status.OK.ordinal());
@@ -480,6 +472,7 @@ public final class DocumentViewerPlugin
             }
             catch (android.content.ActivityNotFoundException e)
             {
+                this.current = null;
                 JSONObject errorObj = new JSONObject();
                 errorObj.put(Result.STATUS, PluginResult.Status.ERROR.ordinal()
                 );
@@ -491,6 +484,7 @@ public final class DocumentViewerPlugin
         }
         else
         {
+            this.current = null;
             JSONObject errorObj = new JSONObject();
             errorObj.put(Result.STATUS, PluginResult.Status.ERROR.ordinal());
             errorObj.put(Result.MESSAGE, "File '" + url + "' is not available");

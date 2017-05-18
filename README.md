@@ -189,7 +189,7 @@ function onError(error){
 ### Open a Document File ###
 ```js
 cordova.plugins.SitewaertsDocumentViewer.viewDocument(
-    url, mimeType, options, onShow, onClose, onMissingApp, onError);
+    url, mimeType, options, onShow, onClose, onMissingApp, onError, linkHandlers);
 ```
 
 #### onShow ####
@@ -208,7 +208,7 @@ function onClose(){
 ```
 #### onMissingApp ####
 ```js
-function onMissingApp(id, installer)
+function onMissingApp(appId, installer)
 {
     if(confirm("Do you want to install the free PDF Viewer App "
             + appId + " for Android?"))
@@ -222,6 +222,52 @@ function onMissingApp(id, installer)
 function onError(error){
   window.console.log(error);
   alert("Sorry! Cannot view document.");
+}
+```
+#### linkHandlers ####
+Currently only supported on iOS! 
+
+Array of link handlers. Optional. 
+
+Links in the pdf (when clicked by the user) are delegated to the first linkHandler with a matching pattern. 
+If no matching pattern is found, the link is handled with the default link handler of the native viewer component (if any).  
+
+```js
+var linkHandlers = [
+            {
+                pattern: STRING, // string representation of a plain regexp (no flags)
+                close: BOOLEAN, // shall the document bes closed, after the link handler was executed?
+                handler: function (link) {} // link handler to be executed when the user clicks on a link matching the pattern
+            },
+            {
+                pattern: '^\/',
+                close: false,
+                handler: function (link) {
+                    window.console.log('link clicked: ' + link);
+                }
+            }
+    ];
+```
+
+### Close the viewer ###
+```js
+cordova.plugins.SitewaertsDocumentViewer.closeDocument(onClose, onError);
+```
+
+#### onShow ####
+```js
+function onClose(url){
+    if(url)
+        window.console.log('closed viewer document ' + url);
+    else
+        window.console.log('viewer not open');
+}
+```
+#### onError ####
+```js
+function onError(error){
+  window.console.log(error);
+  alert("Sorry! Cannot close viewer.");
 }
 ```
 

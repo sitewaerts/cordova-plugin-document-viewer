@@ -19,6 +19,11 @@
         <clobbers target="SitewaertsDocumentViewer"/>
     </js-module>
 
+<!-- uncomment this if you get MuPDF to work with content:// uris -->
+<!--     
+    <dependency id="android.support.v4" url="https://github.com/MobileChromeApps/cordova-plugin-android-support-v4.git"  />
+ -->
+
     <platform name="android">
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="SitewaertsDocumentViewer">
