@@ -139,9 +139,7 @@ var options = {
 	},
 	autoClose: {
 		onPause : BOOLEAN
-	},
-	// used in onLink callback (see documentation below)
-	linkPattern: REGEX
+	}
 }
 ```
 
@@ -191,7 +189,7 @@ function onError(error){
 ### Open a Document File ###
 ```js
 cordova.plugins.SitewaertsDocumentViewer.viewDocument(
-    url, mimeType, options, onShow, onClose, onMissingApp, onError);
+    url, mimeType, options, onShow, onClose, onMissingApp, onError, linkHandlers);
 ```
 
 #### onShow ####
@@ -226,14 +224,29 @@ function onError(error){
   alert("Sorry! Cannot view document.");
 }
 ```
-#### onLink ####
-Overrides the default link handler. Optional.
+#### linkHandlers ####
+Currently only supported on iOS! 
+
+Array of link handlers. Optional. 
+
+Links in the pdf (when clicked by the user) are delegated to the first linkHandler with a matching pattern. 
+If no matching pattern is found, the link is handled with the default link handler of the native viewer component (if any).  
+
 ```js
-function onLink(link) {
-  // if options.linkPattern is set to a regex pattern this function will only be called for matching links
-  // return true to mark the link as handled and suppress the default link handler
-  return confirm("The link is:\n" + link + "\nMark as handled?");
-}
+var linkHandlers = [
+            {
+                pattern: STRING, // string representation of a plain regexp (no flags)
+                close: BOOLEAN, // shall the document bes closed, after the link handler was executed?
+                handler: function (link) {} // link handler to be executed when the user clicks on a link matching the pattern
+            },
+            {
+                pattern: '^\/',
+                close: false,
+                handler: function (link) {
+                    window.console.log('link clicked: ' + link);
+                }
+            }
+    ];
 ```
 
 ### Close the viewer ###

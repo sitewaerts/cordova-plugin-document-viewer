@@ -224,15 +224,15 @@ var SitewaertsDocumentViewer = {
         }
     },
 
-    viewDocument: function (url, contentType, options, onShow, onClose, onMissingApp, onError)
+    viewDocument: function (url, contentType, options, onShow, onClose, onMissingApp, onError, linkHandlers)
     {
         // for easier lookup (but not guaranteed same order anymore)
-        var linkHandlers = {};
-        if (options.linkHandlers) {
-            options.linkHandlers.forEach(function (element) {
+        var _linkHandlers = {};
+        if (linkHandlers) {
+            linkHandlers.forEach(function (element) {
                 // use the first handler if there are duplicates
-                if (!(element.pattern in linkHandlers)) {
-                    linkHandlers[element.pattern] = element;
+                if (!(element.pattern in _linkHandlers)) {
+                    _linkHandlers[element.pattern] = element;
                 }
             });
         }
@@ -384,7 +384,7 @@ var SitewaertsDocumentViewer = {
                                         }
                                         else if (status === 2)
                                         {
-                                            var linkHandler = linkHandlers[result.linkPattern];
+                                            var linkHandler = _linkHandlers[result.linkPattern];
                                             linkHandler.handler(result.link);
                                         }
                                         else
@@ -405,7 +405,7 @@ var SitewaertsDocumentViewer = {
                                             contentType: contentType,
                                             options: options,
                                             // use the original linkHandlers list to guarantee the same order
-                                            linkHandlers: options.linkHandlers
+                                            linkHandlers: linkHandlers
                                         }
                                     ]
                             );
