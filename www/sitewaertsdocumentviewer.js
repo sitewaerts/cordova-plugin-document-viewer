@@ -2,7 +2,7 @@
 //
 //  Created by Felix Schauerte 25.09.2014
 //
-//  Copyright 2015 sitewaerts GmbH. All rights reserved.
+//  Copyright 2017 sitewaerts GmbH. All rights reserved.
 //  MIT Licensed
 
 /*  configuration   */
