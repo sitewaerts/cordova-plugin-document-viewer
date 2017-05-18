@@ -123,9 +123,7 @@ public final class DocumentViewerPlugin
 
     private static final int REQUEST_CODE_OPEN = 1000;
 
-    private static final int REQUEST_CODE_CLOSE = 1001;
-
-    private static final int REQUEST_CODE_INSTALL = 1002;
+    private static final int REQUEST_CODE_INSTALL = 1001;
 
     private CallbackContext callbackContext;
 
