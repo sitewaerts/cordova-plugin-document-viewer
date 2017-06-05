@@ -58,6 +58,10 @@
             target-dir="res/xml"/>
 
         <source-file
+          src="src/android/de/sitewaerts/cordova/documentviewer/FileProvider.java" 
+          target-dir="src/de/sitewaerts/cordova/documentviewer"/>
+
+        <source-file
                 src="src/android/de/sitewaerts/cordova/documentviewer/DocumentViewerPlugin.java"
                 target-dir="src/de/sitewaerts/cordova/documentviewer"/>
      </platform>
