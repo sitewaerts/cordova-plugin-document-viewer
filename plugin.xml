@@ -20,7 +20,7 @@
     </js-module>
 
 <!-- uncomment this if you get MuPDF to work with content:// uris -->
-<!--     
+<!--
     <dependency id="android.support.v4" url="https://github.com/MobileChromeApps/cordova-plugin-android-support-v4.git"  />
  -->
 
@@ -43,7 +43,7 @@
         <config-file target="AndroidManifest.xml" parent="/manifest/application">
 
              <provider
-                android:name="android.support.v4.content.FileProvider"
+                android:name="de.sitewaerts.cordova.documentviewer.FileProvider"
                 android:authorities="$PACKAGE_NAME.DocumentViewerPlugin.fileprovider"
                 android:exported="false"
                 android:grantUriPermissions="true">
@@ -56,6 +56,10 @@
         <source-file
             src="src/android/res/xml/documentviewer_file_paths.xml"
             target-dir="res/xml"/>
+
+        <source-file
+          src="src/android/de/sitewaerts/cordova/documentviewer/FileProvider.java" 
+          target-dir="src/de/sitewaerts/cordova/documentviewer"/>
 
         <source-file
                 src="src/android/de/sitewaerts/cordova/documentviewer/DocumentViewerPlugin.java"
