@@ -118,6 +118,8 @@ public final class DocumentViewerPlugin
 
         public static final String MESSAGE = "message";
 
+        public static final String DETAILS = "details";
+
         public static final String MISSING_APP_ID = "missingAppId";
     }
 
@@ -170,7 +172,72 @@ public final class DocumentViewerPlugin
      * @param callbackContext The callback context used when calling back into JavaScript.
      * @return boolean.
      */
-    public boolean execute(String action, JSONArray argsArray, CallbackContext callbackContext)
+    public boolean execute(final String action, final JSONArray argsArray, final CallbackContext callbackContext)
+            throws JSONException
+    {
+        cordova.getThreadPool().execute(new Runnable()
+        {
+            public void run()
+            {
+                try
+                {
+                    doExecute(action, argsArray, callbackContext);
+                }
+                catch (Exception e)
+                {
+                    handleException(e, action, argsArray, callbackContext);
+                }
+            }
+        });
+        return true;
+    }
+
+
+    private void handleException(Exception e, String action, JSONArray argsArray, CallbackContext callbackContext)
+    {
+        e.printStackTrace();
+
+        try
+        {
+            JSONObject errorObj = new JSONObject();
+            errorObj.put(Result.STATUS,
+                    PluginResult.Status.ERROR.ordinal()
+            );
+            errorObj.put(Result.MESSAGE, e.getMessage());
+            errorObj.put(Result.DETAILS, getStackTrace(e));
+            callbackContext.error(errorObj);
+        }
+        catch (JSONException e1)
+        {
+            // should never happen
+            e1.printStackTrace();
+            callbackContext.error(e.getMessage());
+        }
+    }
+
+    private String getStackTrace(Throwable t)
+    {
+        if (t == null)
+            return "";
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        t.printStackTrace(pw);
+
+        try
+        {
+            pw.close();
+            sw.flush();
+            sw.close();
+        }
+        catch (Exception e)
+        {
+            // ignorieren
+        }
+
+        return sw.toString();
+    }
+
+    private void doExecute(String action, JSONArray argsArray, CallbackContext callbackContext)
             throws JSONException
     {
         JSONObject args;
@@ -337,7 +404,6 @@ public final class DocumentViewerPlugin
             errorObj.put(Result.MESSAGE, "Invalid action '" + action + "'");
             callbackContext.error(errorObj);
         }
-        return true;
     }
 
 
@@ -434,7 +500,8 @@ public final class DocumentViewerPlugin
                     intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                     Uri contentUri = FileProvider.getUriForFile(
                             webView.getContext(),
-                            cordova.getActivity().getPackageName() + "." + TAG + ".fileprovider",
+                            cordova.getActivity().getPackageName() + "." + TAG
+                                    + ".fileprovider",
                             file
                     );
                     intent.setDataAndType(contentUri, contentType);
