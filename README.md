@@ -236,7 +236,7 @@ If no matching pattern is found, the link is handled with the default link handl
 var linkHandlers = [
             {
                 pattern: STRING, // string representation of a plain regexp (no flags)
-                close: BOOLEAN, // shall the document bes closed, after the link handler was executed?
+                close: BOOLEAN, // shall the document be closed, after the link handler was executed?
                 handler: function (link) {} // link handler to be executed when the user clicks on a link matching the pattern
             },
             {
