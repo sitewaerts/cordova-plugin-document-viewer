@@ -680,7 +680,21 @@ public final class DocumentViewerPlugin
 
     private boolean newApi()
     {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.N;
+        /*
+
+         see https://github.com/sitewaerts/cordova-plugin-document-viewer/issues/76
+
+         This is due to backwards compatibility with the android viewer app (https://github.com/sitewaerts/android-document-viewer and https://play.google.com/store/apps/details?id=de.sitewaerts.cleverdox.viewer).
+
+         - The outdated version 1.1.2 (minSDK 15 = 4.0.3/Ice Cream Sandwich) will be still be delivered to some (probably old) devices.
+            + supports old style access via public files
+         - The current version 1.2.0 (minSDK 16 = 4.2/Jelly Bean) will be delivered to all other devices.
+            + supports the FileProvider API.
+            + supports old style access via public files
+            + Starting with Nougat the usage of the FileProvider API is obligatory, the old style access via public files won't work anymore.
+         */
+
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN;
     }
 
     private File getAccessibleFile(String fileArg)
