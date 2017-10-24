@@ -305,7 +305,14 @@ static inline CGFloat zoomScaleThatFits(CGSize target, CGSize source, CGFloat bf
     // to be 0,0 for the subsequent CGRectContainsPoint check to work correctly
     // luckily that is the case right now but keep in mind for the future
     CGPoint point = [recognizer locationInView:theContentPage]; // Point
-    if (CGRectContainsPoint(theContentPage.frame, point) == true)
+    
+    CGRect frame = theContentPage.frame;
+    // SDVReaderContentViewModeCoverDoublePage uses theContentPage instead of
+    // theContentPage1 for the first page on the right which means that
+    // theContentPage.frame.origin is not 0,0 anymore
+    frame = CGRectMake(0, 0, frame.size.width, frame.size.height);
+    
+    if (CGRectContainsPoint(frame, point) == true)
     {
         return [theContentPage processSingleTap:recognizer];
     }
