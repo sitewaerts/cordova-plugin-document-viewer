@@ -301,17 +301,18 @@ static inline CGFloat zoomScaleThatFits(CGSize target, CGSize source, CGFloat bf
 //url detection etc
 - (id)processSingleTap:(UITapGestureRecognizer *)recognizer
 {
-//    CGPoint point = [recognizer locationInView:recognizer.view]; // Point
-//    if (CGRectContainsPoint(theContentPage.frame, point) == true)
-//    {
-//        return [theContentPage processSingleTap:recognizer];
-//    }
-//    else
-//    {
-//        return [theContentPage1 processSingleTap:recognizer];
-//    }
-    //deactivated because it is to complicated to recalculate the link positions
-    return nil;
+    // using theContentPage for locationInView requires theContentPage.frame.origin
+    // to be 0,0 for the subsequent CGRectContainsPoint check to work correctly
+    // luckily that is the case right now but keep in mind for the future
+    CGPoint point = [recognizer locationInView:theContentPage]; // Point
+    if (CGRectContainsPoint(theContentPage.frame, point) == true)
+    {
+        return [theContentPage processSingleTap:recognizer];
+    }
+    else
+    {
+        return [theContentPage1 processSingleTap:recognizer];
+    }
 }
 
 @end

@@ -390,6 +390,9 @@
 		if (_links.count > 0) // Process the single tap
 		{
 			CGPoint point = [recognizer locationInView:self];
+			CGFloat xFactor = _pageWidth / self.frame.size.width;
+			CGFloat yFactor = _pageHeight / self.frame.size.height;
+			point = CGPointMake(point.x * xFactor, point.y * yFactor);
 
 			for (ReaderDocumentLink *link in _links) // Enumerate links
 			{
