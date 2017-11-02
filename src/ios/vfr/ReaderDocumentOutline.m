@@ -28,6 +28,8 @@
 
 @implementation ReaderDocumentOutline
 
+static NSMutableDictionary<NSNumber *, NSArray *> *pageDictionariesCache;
+
 #pragma mark - Build option flags
 
 #define HIERARCHICAL_OUTLINE TRUE
@@ -198,7 +200,7 @@ void logDictionaryEntry(const char *key, CGPDFObjectRef object, void *info)
 	return NULL;
 }
 
-+ (id)outlineEntryTarget:(CGPDFDictionaryRef)outlineDictionary document:(CGPDFDocumentRef)document
++ (id)outlineEntryTarget:(CGPDFDictionaryRef)outlineDictionary document:(CGPDFDocumentRef)document cacheKey:(NSNumber*)cacheKey
 {
 	id entryTarget = nil; // Entry target object
 
@@ -290,19 +292,48 @@ void logDictionaryEntry(const char *key, CGPDFObjectRef object, void *info)
 
 		if (CGPDFArrayGetDictionary(destArray, 0, &pageDictionaryFromDestArray) == true)
 		{
-			NSInteger pageCount = CGPDFDocumentGetNumberOfPages(document); // Pages
-
-			for (NSInteger pageNumber = 1; pageNumber <= pageCount; pageNumber++)
-			{
-				CGPDFPageRef pageRef = CGPDFDocumentGetPage(document, pageNumber);
-
-				CGPDFDictionaryRef pageDictionaryFromPage = CGPDFPageGetDictionary(pageRef);
-
-				if (pageDictionaryFromPage == pageDictionaryFromDestArray) // Found it
-				{
-					targetPageNumber = pageNumber; break;
-				}
-			}
+            if (pageDictionariesCache == nil)
+            {
+                pageDictionariesCache = [NSMutableDictionary dictionary];
+            }
+            
+            NSArray *pageDictionaries = pageDictionariesCache[cacheKey];
+            
+            if (pageDictionaries == nil)
+            {
+                // loop through pages once for each document and cache the result to avoid
+                // unnecessary calls to the expensive (in iOS 11) CGPDFDocumentGetPage method
+                // see https://openradar.appspot.com/35125028
+                
+                NSMutableArray *newPageDictionaries = [NSMutableArray array];
+                
+                NSInteger pageCount = CGPDFDocumentGetNumberOfPages(document); // Pages
+                
+                for (NSInteger pageNumber = 1; pageNumber <= pageCount; pageNumber++)
+                {
+                    CGPDFPageRef pageRef = CGPDFDocumentGetPage(document, pageNumber);
+                    
+                    CGPDFDictionaryRef pageDictionaryFromPage = CGPDFPageGetDictionary(pageRef);
+                    
+                    NSNumber *storablePageDictionaryFromPage = [NSNumber numberWithInteger:(NSInteger)pageDictionaryFromPage];
+                    
+                    [newPageDictionaries addObject:storablePageDictionaryFromPage];
+                }
+                
+                pageDictionariesCache[cacheKey] = newPageDictionaries;
+                
+                pageDictionaries = newPageDictionaries;
+            }
+            
+            for (NSInteger pageNumber = 1; pageNumber <= [pageDictionaries count]; pageNumber++)
+            {
+                CGPDFDictionaryRef pageDictionaryFromPage = (CGPDFDictionaryRef)[pageDictionaries[pageNumber - 1] integerValue];
+                
+                 if (pageDictionaryFromPage == pageDictionaryFromDestArray) // Found it
+                 {
+                     targetPageNumber = pageNumber; break;
+                 }
+            }
 		}
 		else // Try page number from array possibility
 		{
@@ -325,6 +356,8 @@ void logDictionaryEntry(const char *key, CGPDFObjectRef object, void *info)
 
 + (void)outlineItems:(CGPDFDictionaryRef)outlineDictionary document:(CGPDFDocumentRef)document array:(NSMutableArray *)array level:(NSInteger)level
 {
+    NSNumber *cacheKey = [NSNumber numberWithInteger:(NSInteger)document];
+
 	do // Loop through current level outline entries
 	{
 		DocumentOutlineEntry *outlineEntry = nil; // An entry
@@ -339,7 +372,7 @@ void logDictionaryEntry(const char *key, CGPDFObjectRef object, void *info)
 			{
 				NSString *titleString = (__bridge NSString *)title; // CFString to NSString toll-free bridge cast
 
-				id entryTarget = [self outlineEntryTarget:outlineDictionary document:document]; // Get target object
+                id entryTarget = [self outlineEntryTarget:outlineDictionary document:document cacheKey:cacheKey]; // Get target object
 
 				NSString *trimmed = [titleString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
 
@@ -367,6 +400,8 @@ void logDictionaryEntry(const char *key, CGPDFObjectRef object, void *info)
 		}
 
 	} while (CGPDFDictionaryGetDictionary(outlineDictionary, "Next", &outlineDictionary) == true);
+
+    [pageDictionariesCache removeObjectForKey:cacheKey];
 }
 
 + (NSArray *)outlineFromDocument:(CGPDFDocumentRef)pdfDocumentRef
