@@ -51,7 +51,7 @@ function _getContainer(create){
 
     var _closeOnPause;
     function _setCloseOnPause(closeOnPause){
-       _closeOnPause = closeOnPause == true;
+       _closeOnPause = closeOnPause === true;
     }
 
     /**
@@ -116,27 +116,33 @@ cordova.commandProxy.add("SitewaertsDocumentViewer", {
     },
     canViewDocument: function (successCallback, errorCallback, params)
     {
-        var no = {status: 0};
+        function _no(message){
+            return {
+                status: 0,
+                message : message,
+                params : params
+            };
+        }
 
-        if (!params || params.length != 1)
+        if (!params || params.length !== 1)
         {
-            successCallback(no);
+            successCallback(_no("missing or invalid params"));
             return;
         }
         params = params[0];
 
         var url = params[Args.URL];
-        if (!url)
+        if (!url || typeof url !== "string")
         {
-            successCallback(no);
+            successCallback(_no("missing or invalid param " + Args.URL));
             return;
         }
         // TODO: check availability of url
 
         var contentType = params[Args.CONTENT_TYPE];
-        if (contentType != PDF)
+        if (contentType !== PDF)
         {
-            successCallback(no);
+            successCallback(_no("missing or invalid param " + Args.CONTENT_TYPE));
             return;
         }
 
@@ -144,7 +150,7 @@ cordova.commandProxy.add("SitewaertsDocumentViewer", {
     },
     viewDocument: function (successCallback, errorCallback, params)
     {
-        if (!params || params.length != 1)
+        if (!params || params.length !== 1)
         {
             errorCallback({status: 0, message: "missing arguments"});
             return;
@@ -153,14 +159,14 @@ cordova.commandProxy.add("SitewaertsDocumentViewer", {
         params = params[0];
 
         var url = params[Args.URL];
-        if (!url)
+        if (!url || typeof url !== "string")
         {
             errorCallback({status: 0, message: "missing argument url"});
             return;
         }
 
         var contentType = params[Args.CONTENT_TYPE];
-        if (contentType != PDF)
+        if (contentType !== PDF)
         {
             errorCallback({status: 0, message: "illegal content type "
                     + contentType});

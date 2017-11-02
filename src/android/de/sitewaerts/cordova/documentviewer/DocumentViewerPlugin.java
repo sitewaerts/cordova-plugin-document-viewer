@@ -23,6 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 package de.sitewaerts.cordova.documentviewer;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -54,19 +55,19 @@ public final class DocumentViewerPlugin
     public static final class Actions
     {
 
-        public static final String GET_SUPPORT_INFO = "getSupportInfo";
+        static final String GET_SUPPORT_INFO = "getSupportInfo";
 
-        public static final String CAN_VIEW = "canViewDocument";
+        static final String CAN_VIEW = "canViewDocument";
 
-        public static final String VIEW_DOCUMENT = "viewDocument";
+        static final String VIEW_DOCUMENT = "viewDocument";
 
-        public static final String CLOSE = "close";
+        static final String CLOSE = "close";
 
-        public static final String APP_PAUSED = "appPaused";
+        static final String APP_PAUSED = "appPaused";
 
-        public static final String APP_RESUMED = "appResumed";
+        static final String APP_RESUMED = "appResumed";
 
-        public static final String INSTALL_VIEWER_APP = "install";
+        static final String INSTALL_VIEWER_APP = "install";
 
     }
 
@@ -74,37 +75,37 @@ public final class DocumentViewerPlugin
     {
         public static final String URL = "url";
 
-        public static final String CONTENT_TYPE = "contentType";
+        static final String CONTENT_TYPE = "contentType";
 
-        public static final String OPTIONS = "options";
+        static final String OPTIONS = "options";
     }
 
-    public static final String ANDROID_OPTIONS = "android";
-    public static final String DOCUMENTVIEW_OPTIONS = "documentView";
-    public static final String NAVIGATIONVIEW_OPTIONS = "navigationView";
-    public static final String EMAIL_OPTIONS = "email";
-    public static final String PRINT_OPTIONS = "print";
-    public static final String OPENWITH_OPTIONS = "openWith";
-    public static final String BOOKMARKS_OPTIONS = "bookmarks";
-    public static final String SEARCH_OPTIONS = "search";
-    public static final String TITLE_OPTIONS = "title";
+    private static final String ANDROID_OPTIONS = "android";
+    private static final String DOCUMENTVIEW_OPTIONS = "documentView";
+    private static final String NAVIGATIONVIEW_OPTIONS = "navigationView";
+    private static final String EMAIL_OPTIONS = "email";
+    private static final String PRINT_OPTIONS = "print";
+    private static final String OPENWITH_OPTIONS = "openWith";
+    private static final String BOOKMARKS_OPTIONS = "bookmarks";
+    private static final String SEARCH_OPTIONS = "search";
+    private static final String TITLE_OPTIONS = "title";
 
     public static final class Options
     {
-        public static final String VIEWER_APP_PACKAGE_ID = "viewerAppPackage";
+        static final String VIEWER_APP_PACKAGE_ID = "viewerAppPackage";
 
-        public static final String VIEWER_APP_ACTIVITY = "viewerAppActivity";
+        static final String VIEWER_APP_ACTIVITY = "viewerAppActivity";
 
-        public static final String CLOSE_LABEL = "closeLabel";
+        static final String CLOSE_LABEL = "closeLabel";
 
-        public static final String ENABLED = "enabled";
+        static final String ENABLED = "enabled";
     }
 
     public static final class AutoCloseOptions
     {
-        public static final String NAME = "autoClose";
+        static final String NAME = "autoClose";
 
-        public static final String OPTION_ON_PAUSE = "onPause";
+        static final String OPTION_ON_PAUSE = "onPause";
 
     }
 
@@ -112,15 +113,15 @@ public final class DocumentViewerPlugin
 
     public static final class Result
     {
-        public static final String SUPPORTED = "supported";
+        static final String SUPPORTED = "supported";
 
-        public static final String STATUS = "status";
+        static final String STATUS = "status";
 
-        public static final String MESSAGE = "message";
+        static final String MESSAGE = "message";
 
-        public static final String DETAILS = "details";
+        static final String DETAILS = "details";
 
-        public static final String MISSING_APP_ID = "missingAppId";
+        static final String MISSING_APP_ID = "missingAppId";
     }
 
     private static final int REQUEST_CODE_OPEN = 1000;
@@ -366,7 +367,7 @@ public final class DocumentViewerPlugin
                 }
                 else
                 {
-                    String message = "File '" + url + "' is not available";
+                    String message = "File '" + url + "' is not available (cannot access file)";
                     Log.d(TAG, message);
                     successObj.put(Result.STATUS,
                             PluginResult.Status.NO_RESULT.ordinal()
@@ -552,7 +553,7 @@ public final class DocumentViewerPlugin
             this.current = null;
             JSONObject errorObj = new JSONObject();
             errorObj.put(Result.STATUS, PluginResult.Status.ERROR.ordinal());
-            errorObj.put(Result.MESSAGE, "File '" + url + "' is not available");
+            errorObj.put(Result.MESSAGE, "File '" + url + "' is not available (Cannot create accessible file).");
             callbackContext.error(errorObj);
         }
     }
@@ -678,6 +679,7 @@ public final class DocumentViewerPlugin
         return fileArg.startsWith(ASSETS) || getFile(fileArg).exists();
     }
 
+    @SuppressLint("ObsoleteSdkInt")
     private boolean newApi()
     {
         /*
@@ -729,7 +731,10 @@ public final class DocumentViewerPlugin
         {
             String fileName = new File(uri.getPath()).getName();
             File tmpFile = getSharedTempFile(fileName);
-            tmpFile.getParentFile().mkdirs();
+            if(!tmpFile.getParentFile().mkdirs())
+                throw new IOException("mkdirs "
+                        + tmpFile.getParentFile().getAbsolutePath()
+                        + " failed.");
             os = new FileOutputStream(tmpFile);
             cra.copyResource(uri, os);
             tmpFile.deleteOnExit();
@@ -843,8 +848,7 @@ public final class DocumentViewerPlugin
     {
         CordovaResourceApi cra = webView.getResourceApi();
         Uri uri = Uri.parse(fileArg);
-        File f = cra.mapUriToFile(uri);
-        return f;
+        return cra.mapUriToFile(uri);
     }
 
     private File getFileOld(String fileArg)

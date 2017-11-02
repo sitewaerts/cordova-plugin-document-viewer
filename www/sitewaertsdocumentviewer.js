@@ -122,7 +122,7 @@ function installApp(options, onSuccess, onError)
     }
 }
 
-/*  public API of the plugin    */
+/*  public plugin API */
 
 var SitewaertsDocumentViewer = {
 
@@ -200,7 +200,7 @@ var SitewaertsDocumentViewer = {
                         else
                         {
                             if (onImpossible)
-                                onImpossible();
+                                onImpossible(result);
                         }
                     },
                     function (err)
@@ -425,11 +425,11 @@ var SitewaertsDocumentViewer = {
                                 }, _onError);
                         });
                     },
-                    function ()
+                    function (e)
                     {
-                        _onError("invalid file url '" + url
+                        _onError({message : "invalid file url '" + url
                                 + "' or no viewer for mime type '" + contentType
-                                + "'");
+                                + "'", details : e});
                     },
                     _onError
             );

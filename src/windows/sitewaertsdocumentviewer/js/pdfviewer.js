@@ -1191,7 +1191,7 @@
                 return pdfLibrary.loadPDF(file).then(
                         function (pdfDocument)
                         {
-                            if (pdfDocument == null)
+                            if (!pdfDocument)
                                 throw new Error({message: "pdf file cannot be loaded"});
 
                             // Updating details of file currently loaded
@@ -1219,7 +1219,7 @@
 
                     function onError(error)
                     {
-                        log.error("cannot load outline for pdf", fileUri,
+                        log.info("cannot load outline for pdf", fileUri,
                                 error);
                         service.doc.outline = null;
                         resolve();

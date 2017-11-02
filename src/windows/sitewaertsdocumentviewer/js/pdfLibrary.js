@@ -67,17 +67,8 @@ pdfLibrary = {
                                 pdfPageRenderingOptions.destinationHeight)
                         + ".png";
 
-                tempFolder.getFileAsync(filename).then(function (filePtr)
+                function createFile()
                 {
-                    // file already exists: reuse it
-                    // return no stream (not needed)
-                    _filePointer = filePtr;
-                    completeDispatch({write: false, filePointer: filePtr});
-                }, function (error)
-                {
-                    if (_canceled)
-                        return errorDispatch(error);
-
                     // file not exists: create it
                     tempFolder.createFileAsync(filename,
                             Windows.Storage.CreationCollisionOption.replaceExisting)
@@ -107,7 +98,32 @@ pdfLibrary = {
                                     errorDispatch(error);
                                 })
                             });
-                });
+                }
+
+                try
+                {
+
+                    tempFolder.getFileAsync(filename).then(function (filePtr)
+                    {
+                        // file already exists: reuse it
+                        // return no stream (not needed)
+                        _filePointer = filePtr;
+                        completeDispatch({write: false, filePointer: filePtr});
+                    }, function (error)
+                    {
+                        if (_canceled)
+                            return errorDispatch(error);
+                        createFile();
+                    });
+                }
+                catch (e)
+                {
+                    // may happen  on file not found (only in VS debugger ??)
+                    // see https://social.msdn.microsoft.com/Forums/en-US/d650d547-c054-497d-82b0-3ed6fbe9af28/storagefoldergetfileasync-throws-exception-when-file-doesnt-exist-in-win8-rp?forum=winappswithhtml5
+                    if (_canceled)
+                        return errorDispatch(error);
+                    createFile();
+                }
 
 
             }, function ()
@@ -124,7 +140,7 @@ pdfLibrary = {
             function _cleanup()
             {
                 //if (!_canceled)
-                    return WinJS.Promise.wrap(null);
+                return WinJS.Promise.wrap(null);
                 //return _deleteFile(outputInfo.filePointer);
             }
 
