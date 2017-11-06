@@ -571,8 +571,8 @@ public final class DocumentViewerPlugin
     {
         OutputStream out = null;
         //create tmp folder if not present
-        if (!target.getParentFile().exists() && !target.getParentFile()
-                .mkdirs())
+        if (!target.getParentFile().exists()
+                && !target.getParentFile().mkdirs())
             throw new IOException("Cannot create path " + target.getParentFile()
                     .getAbsolutePath()
             );
@@ -731,7 +731,8 @@ public final class DocumentViewerPlugin
         {
             String fileName = new File(uri.getPath()).getName();
             File tmpFile = getSharedTempFile(fileName);
-            if(!tmpFile.getParentFile().mkdirs())
+            if(!tmpFile.getParentFile().exists()
+                    && !tmpFile.getParentFile().mkdirs())
                 throw new IOException("mkdirs "
                         + tmpFile.getParentFile().getAbsolutePath()
                         + " failed.");
