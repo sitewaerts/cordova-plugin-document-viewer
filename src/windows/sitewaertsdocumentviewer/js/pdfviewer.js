@@ -1,5 +1,4 @@
-(function (window)
-{
+(function (window) {
     "use strict";
 
     var debug = {
@@ -21,8 +20,7 @@
 
     function createCommonErrorHandler(context)
     {
-        return function (eventInfo)
-        {
+        return function (eventInfo) {
             window.console.error(context, eventInfo);
 
             if (!_suspended)
@@ -54,8 +52,7 @@
     WinJS.Promise.onerror = createCommonErrorHandler('WinJS.Promise.onerror');
 
 
-    window.onerror = function (msg, url, line, col, error)
-    {
+    window.onerror = function (msg, url, line, col, error) {
         window.console.error(msg,
                 {url: url, line: line, col: col, error: error});
 
@@ -91,28 +88,21 @@
     //
 
 
-
-
     var module = angular.module('viewer', ['winjs'], null);
 
-    module.run(function($rootScope){
+    module.run(function ($rootScope) {
         $rootScope.$on("app.suspending", _onSuspending);
         $rootScope.$on("app.resuming", _onResuming);
     });
 
 
-
-    module.factory('log', function ($window)
-    {
-        var console = $window.console;
-
-        return console;
+    module.factory('log', function ($window) {
+        return $window.console;
     });
 
     module.config([
         '$compileProvider',
-        function ($compileProvider)
-        {
+        function ($compileProvider) {
             // ms-appx|ms-appx-web ??
             //$compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|blob):/);
             $compileProvider.imgSrcSanitizationWhitelist(
@@ -121,12 +111,9 @@
     ]);
 
 
-    module.directive('backgroundImage', function ()
-    {
-        return function (scope, element, attrs)
-        {
-            scope.$watch(attrs.backgroundImage, function (newValue)
-            {
+    module.directive('backgroundImage', function () {
+        return function (scope, element, attrs) {
+            scope.$watch(attrs.backgroundImage, function (newValue) {
                 if (newValue && newValue.length > 0)
                     element.css('background-image', 'url("' + newValue + '")');
                 else
@@ -135,8 +122,54 @@
         };
     });
 
-    module.factory('views', function ()
-    {
+    module.directive('interactionObserver', function ($timeout) {
+        return function (scope, element, attrs) {
+            var mouse = {};
+            scope.interaction = {mouse: mouse};
+
+            var _endIt;
+
+            function _mouseDetected()
+            {
+                if (_endIt)
+                {
+                    $timeout.cancel(_endIt);
+                    _endIt = null;
+                }
+                _endIt = $timeout(function () {
+                    _endIt = null;
+                    _deactivateMouse();
+                }, 4000);
+
+                if (!mouse.detected || !mouse.active)
+                {
+                    scope.$evalAsync(function () {
+                        mouse.detected = true;
+                        mouse.active = true;
+                    });
+                }
+            }
+
+            function _deactivateMouse()
+            {
+                if (_endIt)
+                {
+                    $timeout.cancel(_endIt);
+                    _endIt = null;
+                }
+                mouse.active = false;
+            }
+
+            element.on(
+                    "mouseenter mouseleave mousemove mouseover mouseout mousedown mouseup",
+                    _mouseDetected);
+
+            // TODO: detect touch events etc.
+
+        };
+    });
+
+    module.factory('views', function () {
         var _views = {
             loading: {
                 id: 'loading',
@@ -174,35 +207,21 @@
     });
 
 
-    module.controller('PdfViewerCtrl', function ($scope, pdfViewer, views)
-    {
+    module.controller('PdfViewerCtrl', function ($scope, pdfViewer, views) {
         var ctrl = this;
 
         function _setView(id)
         {
-            if (!ctrl.view || ctrl.view.id != id)
+            if (!ctrl.view || ctrl.view.id !== id)
             {
                 ctrl.view = views.getView(id);
-                if (ctrl.view && ctrl.appBar.winControl)
-                {
-                    if (ctrl.view.appBar.always)
-                    {
-                        ctrl.appBar.winControl.close();
-                        ctrl.appBar.winControl.closedDisplayMode = 'full';
-                    }
-                    else
-                    {
-                        ctrl.appBar.winControl.open();
-                        ctrl.appBar.winControl.closedDisplayMode = 'none';
-                    }
-                }
+                ctrl.appBar.show();
             }
         }
 
         ctrl.setView = _setView;
 
-        ctrl.gotoPage = function (pageIndex, viewId)
-        {
+        ctrl.gotoPage = function (pageIndex, viewId) {
             if (pageIndex == null)
                 return;
 
@@ -219,8 +238,8 @@
 
         ctrl.appBar = {
             winControl: null,
-            show: function ()
-            {
+            shown : false,
+            toggle : function(){
                 if (ctrl.view && ctrl.appBar.winControl)
                 {
                     if (ctrl.view.appBar.always)
@@ -229,8 +248,43 @@
                     }
                     else
                     {
-                        if (!ctrl.appBar.winControl.opened)
-                            ctrl.appBar.winControl.open();
+                        if (ctrl.appBar.shown)
+                            ctrl.appBar.hide();
+                        else
+                            ctrl.appBar.show();
+                    }
+                }
+            },
+            show: function () {
+                if (ctrl.view && ctrl.appBar.winControl)
+                {
+                    ctrl.appBar.shown=true;
+                    if (ctrl.view.appBar.always)
+                    {
+                        // nothing to do
+                    }
+                    else
+                    {
+
+                        if(ctrl.appBar.winControl.opened)
+                            ctrl.appBar.winControl.close();
+                        ctrl.appBar.winControl.closedDisplayMode = 'full';
+                    }
+                }
+            },
+            hide: function () {
+                if (ctrl.view && ctrl.appBar.winControl)
+                {
+                    ctrl.appBar.shown=false;
+                    if (ctrl.view.appBar.always)
+                    {
+                        // nothing to do
+                    }
+                    else
+                    {
+                        if(ctrl.appBar.winControl.opened)
+                            ctrl.appBar.winControl.close();
+                        ctrl.appBar.winControl.closedDisplayMode = 'none';
                     }
                 }
             }
@@ -240,8 +294,7 @@
             message: null,
             dialog: {
                 winControl: null,
-                show: function ()
-                {
+                show: function () {
                     if (ctrl.error.dialog.winControl)
                     {
                         // var _hideOnce = function(){
@@ -252,8 +305,7 @@
                         ctrl.error.dialog.winControl.show();
                     }
                 },
-                hide: function ()
-                {
+                hide: function () {
                     if (ctrl.error.dialog.winControl)
                     {
                         ctrl.error.dialog.winControl.hide();
@@ -296,8 +348,7 @@
         $scope.$on("$destroy", pdfViewer.onPDFError(_setViewerError));
     });
 
-    module.factory('ViewCtrlBase', function ($q, $window)
-    {
+    module.factory('ViewCtrlBase', function ($q, $window, pdfViewer) {
 
         function ViewCtrlBase($scope)
         {
@@ -318,13 +369,10 @@
                 if (ctrl.viewWinControl
                         && ctrl.viewWinControl._element)
                     return $q.when(ctrl.viewWinControl);
-                else return $q(function (resolve, reject)
-                {
-                    var remove = $scope.$watch(function ()
-                    {
+                else return $q(function (resolve, reject) {
+                    var remove = $scope.$watch(function () {
                         return ctrl.viewWinControl;
-                    }, function (viewWinControl)
-                    {
+                    }, function (viewWinControl) {
                         if (viewWinControl
                                 && viewWinControl._element)
                         {
@@ -343,7 +391,6 @@
                     ctrl.resize();
             }
 
-
             function close()
             {
                 if (ctrl.close)
@@ -351,8 +398,7 @@
             }
 
             $window.addEventListener("resize", resize, false);
-            $scope.$on('$destroy', function ()
-            {
+            $scope.$on('$destroy', function () {
                 $window.removeEventListener("resize", resize);
             });
 
@@ -363,16 +409,23 @@
     });
 
     module.factory('ViewCtrlPagesBase',
-            function ($q, $timeout, $interval, $window, pdfViewer, ViewCtrlBase)
-            {
+            function ($q, $timeout, $interval, $window, pdfViewer, ViewCtrlBase) {
 
                 function ViewCtrlPagesBase($scope, opts)
                 {
                     var ctrl = this;
                     ViewCtrlBase.call(ctrl, $scope);
 
+                    var localScope = $scope.$new();
+                    localScope.ctrl = ctrl;
+
                     ctrl.options = angular.extend(
-                            {containerMargin: 5, isIgnoringHighContrast: false, verticalCutOff : 0},
+                            {
+                                containerMargin: 5,
+                                isIgnoringHighContrast: false,
+                                verticalCutOff: 0,
+                                horizontalCutOff: 0
+                            },
                             opts);
 
 
@@ -382,8 +435,7 @@
                     {
                         if (ctrl.options.inMemory || _tmp)
                             return $q.when(_tmp);
-                        return pdfViewer.getTemp().then(function (tmp)
-                        {
+                        return pdfViewer.getTemp().then(function (tmp) {
                             _tmp = tmp;
                             return $q.when(_tmp);
                         })
@@ -396,8 +448,8 @@
                         var margin = ctrl.options.containerMargin;
                         var rows = Math.max(1, ctrl.options.rows);
 
-                        var rawViewHeight = viewHeight - ctrl.options.verticalCutOff;
-
+                        var rawViewHeight = viewHeight
+                                - ctrl.options.verticalCutOff;
                         if (rows > 1)
                             rawViewHeight = rawViewHeight
                                     - (2 * margin) // top and bottom
@@ -405,24 +457,31 @@
 
                         var containerHeight = Math.floor(rawViewHeight / rows);
 
+                        var rawViewWidth = viewWidth
+                                - ctrl.options.horizontalCutOff;
+                        rawViewWidth = rawViewWidth
+                                - (2 * margin); // left and right
+
+                        var containerWidth = Math.floor(rawViewWidth);
+
                         var imageHeight = Math.max(
-                                        window.screen.width,
-                                        window.screen.height) / rows;
+                                window.screen.width,
+                                window.screen.height) / rows;
 
 
                         var zoomFactor = 1;
                         var resolutionFactor = 1;
-                        if (rows == 1)
+                        if (rows === 1)
                         {
-                            //zoomFactor = 1.3;
+                            // zoomFactor = 1.3;
                             // the use of dip should automatically apply the devicePixelRatio factor (but it actually doesn't)
                             resolutionFactor = window.devicePixelRatio;
                         }
 
                         return {
-                            viewWidth: viewWidth,
+                            viewWidth: rawViewWidth,
                             viewHeight: rawViewHeight,
-                            containerWidth: viewWidth,
+                            containerWidth: containerWidth,
                             containerHeight: containerHeight,
                             imageHeight: imageHeight,
                             zoomFactor: zoomFactor * resolutionFactor
@@ -455,13 +514,11 @@
                         return ctrl._viewInfo;
                     }
 
-                    ctrl.getGroupInfo = function ()
-                    {
+                    ctrl.getGroupInfo = function () {
                         return ctrl.groupInfo;
                     };
 
-                    ctrl.getItemInfo = function (index)
-                    {
+                    ctrl.getItemInfo = function (index) {
                         if (!ctrl.pages || !ctrl.pages.list)
                             return null;
                         var p = ctrl.pages.list[index];
@@ -502,9 +559,8 @@
 
                         var _imageSrc_revoker;
 
-                        this.setImageSrc = function (url, revoker)
-                        {
-                            if (page.imageSrc != url)
+                        this.setImageSrc = function (url, revoker) {
+                            if (page.imageSrc !== url)
                             {
                                 _clearImageSrc();
                                 page.imageSrc = url;
@@ -512,8 +568,7 @@
                             }
                         };
 
-                        this.close = function ()
-                        {
+                        this.close = function () {
                             _cancelGenerator();
                             _clearImageSrc();
                         };
@@ -576,7 +631,7 @@
                             _pdfOptions.destinationWidth = null; // keep page ratio
 
                             var pdfOptionsChecksum = _getChecksum(_pdfOptions);
-                            if (_pdfOptionsChecksum != pdfOptionsChecksum
+                            if (_pdfOptionsChecksum !== pdfOptionsChecksum
                                     && page.imageSrc)
                                 _dirty = true;
                             _pdfOptionsChecksum = pdfOptionsChecksum;
@@ -609,7 +664,7 @@
                                 return;
 
                             if (_generator.pdfOptionsChecksum
-                                    == _pdfOptionsChecksum)
+                                    === _pdfOptionsChecksum)
                                 return;
 
                             _cancelGenerator();
@@ -635,8 +690,7 @@
                                 pdfOptionsChecksum: _pdfOptionsChecksum,
                                 promise: null,
                                 canceled: false,
-                                cancel: function ()
-                                {
+                                cancel: function () {
                                     if (generator.canceled)
                                         return;
 
@@ -644,12 +698,11 @@
                                     if (generator.promise)
                                         generator.promise.cancel();
                                 },
-                                applyResult: function (pi)
-                                {
+                                applyResult: function (pi) {
                                     try
                                     {
                                         if (generator.canceled || _generator
-                                                != generator)
+                                                !== generator)
                                             return;
 
                                         _dirty = false;
@@ -657,8 +710,7 @@
 
                                         var srcObject = pi.imageSrc;
 
-                                        $scope.$evalAsync(function ()
-                                        {
+                                        $scope.$evalAsync(function () {
                                             if (generator.canceled)
                                                 return;
 
@@ -675,12 +727,11 @@
                                         window.console.error(e);
                                     }
                                 },
-                                applyError: function (error)
-                                {
+                                applyError: function (error) {
                                     window.console.error(error);
 
                                     if (generator.canceled || _generator
-                                            != generator)
+                                            !== generator)
                                         return;
 
                                     //_dirty = false;
@@ -696,7 +747,7 @@
                             {
                                 // webUIApp.removeEventListener("suspending",
                                 //         _onSuspending);
-                                if(_unregisterOnSuspending)
+                                if (_unregisterOnSuspending)
                                 {
                                     _unregisterOnSuspending();
                                     _unregisterOnSuspending = null;
@@ -705,15 +756,15 @@
                             }
 
                             // force async exec
-                            $scope.$applyAsync(function ()
-                            {
+                            $scope.$applyAsync(function () {
                                 if (generator.canceled)
                                     return;
 
                                 // if (webUIApp)
                                 //     webUIApp.addEventListener("suspending",
                                 //             _onSuspending);
-                                _unregisterOnSuspending = $scope.$on("app.suspending", _onSuspending);
+                                _unregisterOnSuspending = $scope.$on(
+                                        "app.suspending", _onSuspending);
 
                                 generator.promise = pdfLibrary.loadPage(
                                         page.pageIndex,
@@ -728,14 +779,12 @@
                             });
                         }
 
-                        this.prepareDimensions = function ()
-                        {
+                        this.prepareDimensions = function () {
                             return _updateViewIfNecessary();
                         };
 
                         // called when view dimensions may have changed
-                        this.triggerRefresh = function ()
-                        {
+                        this.triggerRefresh = function () {
                             if (_isViewUpToDate())
                                 return;
                             _updateView();
@@ -746,8 +795,7 @@
                         };
 
                         // called when image src is definitely needed (item s rendered)
-                        this.triggerLoad = function (async)
-                        {
+                        this.triggerLoad = function (async) {
                             if (!_isViewUpToDate())
                                 _updateView();
 
@@ -764,11 +812,9 @@
                     function createPagesDataSource(pages)
                     {
                         // implements IListDataAdapter (get only)
-                        var DataAdapter = WinJS.Class.define(function ()
-                        {
+                        var DataAdapter = WinJS.Class.define(function () {
                         }, {
-                            getCount: function ()
-                            {
+                            getCount: function () {
                                 return WinJS.Promise.wrap(pages.length);
                             },
 
@@ -777,11 +823,11 @@
                             // The implementation should return the specific item and, in addition, can choose to return a range of items on either
                             // side of the requested index. The number of extra items returned by the implementation can be more or less than the number requested.
 
-                            itemsFromIndex: function (requestIndex, countBefore, countAfter)
-                            {
+                            itemsFromIndex: function (requestIndex, countBefore, countAfter) {
                                 if (requestIndex >= pages.length)
                                     return WinJS.Promise.wrapError(
-                                            new WinJS.ErrorFromName(WinJS.UI.FetchError.doesNotExist));
+                                            new WinJS.ErrorFromName(
+                                                    WinJS.UI.FetchError.doesNotExist));
 
                                 // countBefore = Math.min(ctrl.options.pagesToLoad,
                                 //         countBefore);
@@ -820,16 +866,15 @@
                                     items: results, // The array of items.
                                     offset: requestIndex - fetchIndex, // The index of the requested item in the items array.
                                     totalCount: pages.length, // The total number of records. This is equal to total number of pages in a PDF file ,
-                                    atStart: fetchIndex == 0,
-                                    atEnd: fetchIndex == pages.length - 1
+                                    atStart: fetchIndex === 0,
+                                    atEnd: fetchIndex === pages.length - 1
                                 });
                             }
                         });
 
                         var DataSource = WinJS.Class.derive(
                                 WinJS.UI.VirtualizedDataSource,
-                                function ()
-                                {
+                                function () {
                                     this._baseDataSourceConstructor(
                                             new DataAdapter(),
                                             {
@@ -897,7 +942,7 @@
                             var rows = ctrl.options.rows;
 
                             var cellWidth;
-                            if (rows == 1)
+                            if (rows === 1)
                             {
                                 cellWidth = ctrl.options.containerMargin;
                             }
@@ -908,7 +953,7 @@
 
                             var cellHeight = ctrl.groupInfo.cellHeight;
 
-                            if (rows != 1)
+                            if (rows !== 1)
                             {
                                 for (var i = 0; i < pages.length; i++)
                                 {
@@ -928,14 +973,14 @@
                                  * @type {Page}
                                  */
                                 var page = pages[j];
-                                if (rows == 1)
+                                if (rows === 1)
                                 {
                                     // calc needed number of cells spanned
                                     page.itemInfo.width = (Math.floor(page.width
-                                                    / cellWidth)) * cellWidth;
-                                    if (page.width % cellWidth != 0)
-                                        page.itemInfo.width = page.itemInfo.width
-                                                + cellWidth;
+                                            / cellWidth)) * cellWidth;
+                                    // if (page.width % cellWidth !== 0)
+                                    //     page.itemInfo.width = page.itemInfo.width
+                                    //             + cellWidth;
                                 }
                                 else
                                 {
@@ -950,8 +995,7 @@
 
                         _gotoPageIndex(pdfViewer.getFocusedPageIndex());
 
-                        $scope.$applyAsync(function ()
-                        {
+                        $scope.$applyAsync(function () {
                             ctrl.pages = {
                                 list: pages,
                                 dataSource: createPagesDataSource(pages),
@@ -971,18 +1015,18 @@
                             function isStateOK()
                             {
                                 return winControl.loadingState
-                                        == "viewPortLoaded";
+                                        === "viewPortLoaded";
                             }
 
                             if (isStateOK())
                                 return $q.when(winControl);
                             else
-                                return $q(function (resolve, reject)
-                                {
+                                return $q(function (resolve, reject) {
 
                                     winControl.addEventListener(
                                             "loadingstatechanged",
                                             checkState);
+
                                     function checkState()
                                     {
                                         if (isStateOK())
@@ -1019,28 +1063,164 @@
                     }
 
 
-                    ctrl.close = function ()
-                    {
+                    ctrl.close = function () {
                         if (ctrl.pages)
                             ctrl.pages.close();
                         delete ctrl.pages;
                     };
 
-                    ctrl.resize = function ()
-                    {
+                    ctrl.resize = function () {
                         var i = ctrl.viewWinControl.indexOfFirstVisible;
                         $scope.$evalAsync(
-                                function ()
-                                {
+                                function () {
                                     _refreshView();
                                     ctrl.viewWinControl.indexOfFirstVisible = i;
-                                    $scope.$applyAsync(function ()
-                                    {
+                                    $scope.$applyAsync(function () {
                                         ctrl.viewWinControl.indexOfFirstVisible = i;
                                     });
                                 }
                         );
                     };
+
+
+                    var _nav = ctrl.nav = {
+                        scrollLeft: null,
+                        scrollRight: null
+                    };
+
+                    function _scrollLeft()
+                    {
+                        if (_nav.nextLeftIndex != null)
+                            ctrl.focusPage(_nav.nextLeftIndex);
+                    }
+
+                    function _scrollRight()
+                    {
+                        if (_nav.nextRightIndex != null)
+                            ctrl.focusPage(_nav.nextRightIndex);
+                    }
+
+                    function _noNav()
+                    {
+                        delete _nav.nextLeftIndex;
+                        delete _nav.scrollLeft;
+                        delete _nav.nextRightIndex;
+                        delete _nav.scrollRight;
+                    }
+
+                    function _updateNav()
+                    {
+                        if (!ctrl.viewWinControl || !ctrl.pages
+                                || !ctrl.pages.list)
+                            return _noNav();
+
+                        var _vwc = ctrl.viewWinControl;
+                        var fvIdx = _vwc.indexOfFirstVisible;
+                        var lvIdx = _vwc.indexOfLastVisible;
+                        var length = ctrl.pages.list.length;
+
+                        var sp = _vwc.scrollPosition;
+
+                        var width = _vwc.element.clientWidth;
+
+                        var fvE = _vwc.elementFromIndex(fvIdx);
+                        if (!fvE)
+                            return _noNav();
+
+                        var fvEOffset = fvE.offsetParent.offsetLeft;
+                        var nextLeftIndex = fvEOffset < sp ?
+                                fvIdx // scroll the first item to be fully visible
+                                : fvIdx - 1; // scroll to the next left item
+
+                        var lvE = _vwc.elementFromIndex(lvIdx);
+                        var lvEOffset = lvE.offsetParent.offsetLeft;
+                        var nextRightIndex = (lvEOffset + lvE.offsetWidth) > (sp
+                                + width) ?
+                                lvIdx // scroll the last item to be fully visible
+                                : lvIdx + 1; // scroll to the next right item
+
+
+                        if (nextLeftIndex >= 0)
+                        {
+                            _nav.nextLeftIndex = nextLeftIndex;
+                            _nav.scrollLeft = _scrollLeft;
+                        }
+                        else
+                        {
+                            delete _nav.nextLeftIndex;
+                            delete _nav.scrollLeft;
+                        }
+
+                        if (nextRightIndex < length)
+                        {
+                            _nav.nextRightIndex = nextRightIndex;
+                            _nav.scrollRight = _scrollRight;
+                        }
+                        else
+                        {
+                            delete _nav.nextRightIndex;
+                            delete _nav.scrollRight;
+                        }
+
+                    }
+
+                    localScope.$watch('ctrl.viewWinControl.indexOfFirstVisible',
+                            _updateNav);
+                    localScope.$watch('ctrl.viewWinControl.indexOfLastVisible',
+                            _updateNav);
+                    localScope.$watch('ctrl.viewWinControl.scrollPosition',
+                            _updateNav);
+                    localScope.$watch('ctrl.pages.list.length', _updateNav);
+
+                    function _isFullyVisible(idx)
+                    {
+                        if (!ctrl.viewWinControl || !ctrl.pages
+                                || !ctrl.pages.list)
+                            return false;
+                        if (idx == null)
+                            return false;
+                        if (idx < 0)
+                            return false;
+
+                        var length = ctrl.pages.list.length;
+                        if (idx > length - 1)
+                            return false;
+
+                        var _vwc = ctrl.viewWinControl;
+
+                        var e = _vwc.elementFromIndex(idx);
+                        if (!e)
+                            return false;
+
+                        var sp = _vwc.scrollPosition;
+                        var width = _vwc.element.clientWidth;
+
+                        var offset = e.offsetParent.offsetLeft;
+                        if (offset < sp)
+                            return false;
+                        return (offset + e.offsetWidth) <= (sp + width);
+                    }
+
+
+                    ctrl.ensurePageFocused = function (pageIndex) {
+
+                        if (_isFullyVisible(pageIndex))
+                            return false;
+                        ctrl.focusPage(pageIndex);
+                        return true;
+                    };
+
+                    ctrl.focusPage = function (pageIndex) {
+                        if (pageIndex == null)
+                            return;
+                        if (!ctrl.viewWinControl)
+                            return;
+
+                        pdfViewer.setFocusedPageIndex(pageIndex);
+                        ctrl.viewWinControl.ensureVisible(pageIndex);
+                        //ctrl.viewWinControl.recalculateItemPosition();
+                    };
+
 
                     function _waitForPDF()
                     {
@@ -1057,33 +1237,32 @@
                 return ViewCtrlPagesBase;
             });
 
-    module.controller('PageflowViewCtrl', function (ViewCtrlPagesBase, $scope)
-    {
+    module.controller('PageflowViewCtrl', function (ViewCtrlPagesBase, $scope) {
         var ctrl = this;
         ViewCtrlPagesBase.call(ctrl, $scope, {
             rows: 1,
             inMemory: false,
             pagesToLoad: 2,
-            verticalCutOff : 0
+            verticalCutOff: 0,
+            horizontalCutOff: 0
         });
     });
 
 
-    module.controller('TilesViewCtrl', function (ViewCtrlPagesBase, $scope)
-    {
+    module.controller('TilesViewCtrl', function (ViewCtrlPagesBase, $scope) {
         var ctrl = this;
         ViewCtrlPagesBase.call(ctrl, $scope, {
             rows: 4,
             inMemory: false,
             pagesToLoad: 2,
-            verticalCutOff : 50
+            verticalCutOff: 50,
+            horizontalCutOff: 0
         });
     });
 
 
     module.controller('OutlineViewCtrl',
-            function (ViewCtrlBase, $scope, pdfViewer)
-            {
+            function (ViewCtrlBase, $scope, pdfViewer) {
                 var ctrl = this;
                 ViewCtrlBase.call(ctrl, $scope);
 
@@ -1096,8 +1275,7 @@
             });
 
 
-    module.factory('pdfViewer', function ($rootScope, $q, log)
-    {
+    module.factory('pdfViewer', function ($rootScope, $q, log) {
         var EVENTS = {
             LOADING_PDF: 'pdf.loading',
             SHOW_PDF: 'pdf.loaded',
@@ -1156,12 +1334,10 @@
             }
 
             loadFile(pdfUri)
-                    .then(function (file)
-                    {
+                    .then(function (file) {
                         return $q.all([loadPDF(file), loadPDFOutline(pdfUri)]);
                     })
-                    .done(function ()
-                    {
+                    .done(function () {
                         $rootScope.$broadcast(EVENTS.SHOW_PDF);
                     }, _onError);
 
@@ -1170,8 +1346,7 @@
                 var uri = new Windows.Foundation.Uri(fileUri);
                 return Windows.Storage.StorageFile.getFileFromApplicationUriAsync(
                         uri).then(
-                        function (file)
-                        {
+                        function (file) {
                             // Updating details of file currently loaded
                             service.doc.file.loaded = file;
                             $rootScope.$broadcast(EVENTS.LOADING_PDF);
@@ -1189,17 +1364,16 @@
                 // TODO: Password protected file? user should provide a password to open the file
 
                 return pdfLibrary.loadPDF(file).then(
-                        function (pdfDocument)
-                        {
+                        function (pdfDocument) {
                             if (!pdfDocument)
-                                throw new Error({message: "pdf file cannot be loaded"});
+                                throw new Error(
+                                        {message: "pdf file cannot be loaded"});
 
                             // Updating details of file currently loaded
                             service.doc.file.pdf = pdfDocument;
                             $rootScope.$broadcast(EVENTS.LOADING_PDF);
 
-                            return getCleanTemp().then(function ()
-                            {
+                            return getCleanTemp().then(function () {
                                 return pdfDocument
                             });
                         });
@@ -1213,8 +1387,7 @@
                 PDFJS.disableWorker = true;
                 PDFJS.workerSrc = 'js/pdfjs-dist/pdf.worker.js';
 
-                return $q(function (resolve, reject)
-                {
+                return $q(function (resolve, reject) {
 
 
                     function onError(error)
@@ -1248,18 +1421,15 @@
                             if (!items || items.length <= 0)
                                 return;
 
-                            items.forEach(function (item)
-                            {
+                            items.forEach(function (item) {
                                 getPageIndex(item).then(
-                                        function (pageIndex)
-                                        {
+                                        function (pageIndex) {
                                             if (pageIndex != null)
                                                 item.pageIndex = pageIndex;
                                             else
                                                 delete item.pageIndex;
                                         },
-                                        function (error)
-                                        {
+                                        function (error) {
                                             log.error(
                                                     "cannot determine page index for outline item",
                                                     item, error);
@@ -1272,8 +1442,7 @@
 
                         function getPageIndex(item)
                         {
-                            return $q(function (resolve, reject)
-                            {
+                            return $q(function (resolve, reject) {
                                 var dest = item.dest;
                                 var destProm;
                                 if (typeof dest === 'string')
@@ -1281,8 +1450,7 @@
                                 else
                                     destProm = Promise.resolve(dest);
 
-                                destProm.then(function (destination)
-                                {
+                                destProm.then(function (destination) {
                                     if (!(destination instanceof Array))
                                     {
                                         reject(destination);
@@ -1292,8 +1460,7 @@
                                     var destRef = destination[0];
 
                                     pdf.getPageIndex(destRef).then(
-                                            function (pageIndex)
-                                            {
+                                            function (pageIndex) {
                                                 resolve(pageIndex);
                                             }, reject);
                                 }, reject);
@@ -1316,10 +1483,8 @@
                         resolve();
                     }
 
-                    PDFJS.getDocument(fileUri).then(function (pdf)
-                    {
-                        pdf.getOutline().then(function (outline)
-                        {
+                    PDFJS.getDocument(fileUri).then(function (pdf) {
+                        pdf.getOutline().then(function (outline) {
                             onSuccess(pdf, outline);
                         }, onError);
                     }, onError);
@@ -1328,14 +1493,13 @@
         }
 
         _setHandler({
-            showPDF: function (args)
-            {
+            showPDF: function (args) {
                 _showPdf(args);
             },
-            appSuspend : function(){
+            appSuspend: function () {
                 $rootScope.$broadcast("app.suspend");
             },
-            appResume : function(){
+            appResume: function () {
                 $rootScope.$broadcast("app.resume");
             }
         });
@@ -1364,44 +1528,36 @@
         service.getTemp = getTemp;
 
 
-        service.close = function ()
-        {
+        service.close = function () {
             closeHandler();
         };
 
-        service.onPDFLoading = function (handler)
-        {
+        service.onPDFLoading = function (handler) {
             if (pdfUri)
                 handler();
             return $rootScope.$on(EVENTS.LOADING_PDF, handler);
         };
 
-        service.onPDFLoaded = function (handler)
-        {
+        service.onPDFLoaded = function (handler) {
             if (pdfUri)
                 handler();
             return $rootScope.$on(EVENTS.SHOW_PDF, handler);
         };
 
-        service.isPDFLoaded = function ()
-        {
+        service.isPDFLoaded = function () {
             return service.doc && service.doc.file && service.doc.file.pdf;
         };
 
-        service.waitForPDF = function ()
-        {
+        service.waitForPDF = function () {
             if (service.isPDFLoaded())
                 return $q.when();
-            return $q(function (resolve, reject)
-            {
-                var removeLoaded = service.onPDFLoaded(function notify()
-                {
+            return $q(function (resolve, reject) {
+                var removeLoaded = service.onPDFLoaded(function notify() {
                     cleanup();
                     resolve();
                 });
 
-                var removeError = service.onPDFError(function notify()
-                {
+                var removeError = service.onPDFError(function notify() {
                     cleanup();
                     reject();
                 });
@@ -1417,20 +1573,17 @@
         };
 
 
-        service.onPDFError = function (handler)
-        {
+        service.onPDFError = function (handler) {
             return $rootScope.$on(EVENTS.ERROR, handler);
         };
 
         var _focusedPageIndex = 0;
 
-        service.setFocusedPageIndex = function (idx)
-        {
+        service.setFocusedPageIndex = function (idx) {
             _focusedPageIndex = idx;
         };
 
-        service.getFocusedPageIndex = function ()
-        {
+        service.getFocusedPageIndex = function () {
             return _focusedPageIndex;
         };
 
@@ -1458,33 +1611,27 @@
      * @param closeHandler
      */
 
-    window.showPDF = function (pdfUri, pdfOptions, closeHandler)
-    {
+    window.showPDF = function (pdfUri, pdfOptions, closeHandler) {
         _args = {
             pdfUri: pdfUri,
             pdfOptions: pdfOptions,
             closeHandler: closeHandler
         };
-        _handler.forEach(function (handler)
-        {
+        _handler.forEach(function (handler) {
             handler.showPDF(_args);
         });
     };
 
 
-    window.appSuspend = function ()
-    {
-        _handler.forEach(function (handler)
-        {
+    window.appSuspend = function () {
+        _handler.forEach(function (handler) {
             handler.appSuspend(_args);
         });
 
     };
 
-    window.appResume = function ()
-    {
-        _handler.forEach(function (handler)
-        {
+    window.appResume = function () {
+        _handler.forEach(function (handler) {
             handler.appResume(_args);
         });
     };

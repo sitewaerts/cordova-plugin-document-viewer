@@ -174,7 +174,6 @@ public final class DocumentViewerPlugin
      * @return boolean.
      */
     public boolean execute(final String action, final JSONArray argsArray, final CallbackContext callbackContext)
-            throws JSONException
     {
         cordova.getThreadPool().execute(new Runnable()
         {
@@ -457,7 +456,6 @@ public final class DocumentViewerPlugin
     }
 
     private void _close(CallbackContext callbackContext)
-            throws JSONException
     {
         if (current == null)
         {
@@ -673,7 +671,6 @@ public final class DocumentViewerPlugin
     private static final String ASSETS = "file:///android_asset/";
 
     private boolean canGetFile(String fileArg)
-            throws JSONException
     {
         // TODO: better check for assets files ...
         return fileArg.startsWith(ASSETS) || getFile(fileArg).exists();
@@ -836,7 +833,6 @@ public final class DocumentViewerPlugin
 
 
     private File getFile(String fileArg)
-            throws JSONException
     {
         if (newApi())
             return getFileNew(fileArg);
@@ -845,7 +841,6 @@ public final class DocumentViewerPlugin
     }
 
     private File getFileNew(String fileArg)
-            throws JSONException
     {
         CordovaResourceApi cra = webView.getResourceApi();
         Uri uri = Uri.parse(fileArg);
@@ -853,7 +848,6 @@ public final class DocumentViewerPlugin
     }
 
     private File getFileOld(String fileArg)
-            throws JSONException
     {
         String filePath;
         try

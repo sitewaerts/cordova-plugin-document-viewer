@@ -1,55 +1,94 @@
-﻿html{
+﻿html {
     touch-action: none;
 }
 
-html, body{
-    padding:0;
-    margin:0;
+html, body {
+    padding: 0;
+    margin: 0;
 }
 
-.win-appbar-overflowbutton{
+.win-appbar-overflowbutton {
     display: none !important;
 }
 
-.win-appbar button.close{
+.win-appbar button.close {
     position: absolute;
     left: 0;
 }
 
-.title.win-h3{
+.title.win-h3 {
     line-height: 48px;
 }
 
-
 #viewer_view,
-.view-controller{
+.view-controller {
     height: 100%;
     margin: 0;
     padding: 0;
 }
 
-.view-controller.app_bar_always{
+.view-controller.app_bar_always {
     /*reserve space for app bar*/
     height: calc(100% - 40px);
     padding-top: 40px;
 }
 
 .view-controller .win-listview,
-.view-controller .win-listview .win-item{
+.view-controller .win-listview .win-item {
     height: 100%;
 }
 
+.view-controller.pageflow > .win-listview > .win-viewport > .win-headercontainer,
+.view-controller.pageflow > .win-listview > .win-viewport > .win-footercontainer{
+    /* avoid vertical scrollbar */
+    display: none;
+}
 
-.view-controller.pageflow>.win-listview>.win-viewport{
+.view-controller.pageflow > .win-listview > .win-viewport {
     -ms-content-zooming: zoom;
+}
+
+.win-listview > .win-viewport.win-horizontal {
+    /* native scrolling by mouse wheel */
+    -ms-scroll-translation: vertical-to-horizontal;
+
+    /* needed for native pinch-and-zoom */
     overflow-y: auto;
+
 }
 
-.view-controller.pageflow>.win-listview>.win-viewport>.win-gridlayout{
-    touch-action: pan-x pan-y pinch-zoom
+.view-controller.pageflow > .win-listview > .win-viewport > .win-gridlayout {
+    /* native scrolling (panning), pinch and zoom */
+    touch-action: pan-x pan-y pinch-zoom double-tap-zoom;
 }
 
-.pdf_page{
+.view-controller.pageflow .scroll_nav {
+    position: absolute;
+    top: 50%;
+    background-color: rgba(1,1,1, 0.4);
+}
+
+.view-controller.pageflow .scroll_nav{
+    display: none;
+}
+
+.mouse-active .view-controller.pageflow .scroll_nav{
+    display: block;
+}
+
+.view-controller.pageflow .scroll_nav:hover {
+    background-color: rgba(1,1,1, 0.7) !important;
+}
+
+.view-controller.pageflow .scroll_nav.prev {
+    left: 0;
+}
+
+.view-controller.pageflow .scroll_nav.next {
+    right: 0;
+}
+
+.pdf_page {
     height: 100%;
     background-repeat: no-repeat;
     background-position: center left;
@@ -57,7 +96,7 @@ html, body{
     position: relative;
 }
 
-.pdf_page>.loading{
+.pdf_page > .loading {
     position: absolute;
     top: 40%;
     left: 0;
@@ -70,37 +109,36 @@ html, body{
     z-index: -1;
 }
 
-.pdf_page>.loading .page_index{
+.pdf_page > .loading .page_index {
     margin: 1em;
 }
 
-.view-controller.outline{
+.view-controller.outline {
     overflow-x: auto;
 }
 
-.view-controller.outline li{
+.view-controller.outline li {
     margin-top: .6em;
     list-style-type: none;
 }
 
 /*first level*/
-.view-controller.outline > ul > li{
+.view-controller.outline > ul > li {
     margin-top: 1.2em;
 }
 
-.view-controller.outline .item{
+.view-controller.outline .item {
     position: relative;
     border-bottom: 1px dotted gray;
 }
 
-.view-controller.outline .item .page-index{
+.view-controller.outline .item .page-index {
     position: absolute;
     right: 2em;
 }
 
-
 .has-no-outline .win-command.view.outline,
 .has-one-page .win-command.view,
-.has-one-page hr.win-command{
+.has-one-page hr.win-command {
     display: none;
 }

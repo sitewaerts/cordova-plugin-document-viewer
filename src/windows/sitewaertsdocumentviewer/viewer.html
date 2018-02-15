@@ -23,11 +23,33 @@
     <link href="css/default.css" rel="stylesheet" />
     <script src="js/pdfLibrary.js"></script>
     <script src="js/pdfviewer.js"></script>
+
+
+    <!--TODO
+
+    https://docs.microsoft.com/en-us/windows/uwp/design/input/mouse-interactions
+    https://docs.microsoft.com/en-us/windows/uwp/design/input/guidelines-for-optical-zoom
+
+    wird bei pinch-zoom evtl. zoom angepasst? das wäre eine brücke zu js ....
+    http://cdn.rawgit.com/atanassov/css-zoom/master/Overview.html
+    https://developer.mozilla.org/en-US/docs/Web/CSS/zoom
+
+    
+    https://books.google.de/books?id=eBINBAAAQBAJ&pg=PA638&lpg=PA638&dq=css+%22pinch-zoom%22+%22zoom%22&source=bl&ots=hKYqgVKdXr&sig=OypAWfardHlxbsJ4lIY15XaoceQ&hl=de&sa=X&ved=0ahUKEwiX7rKq2qXZAhVSI1AKHYXnA2I4KBDoAQhSMAU#v=onepage&q=css%20%22pinch-zoom%22%20%22zoom%22&f=false
+
+
+    Windows 10 example from Microsoft
+    https://github.com/Microsoft/Windows-universal-samples/tree/master/Samples/PdfDocument
+
+    -->
+
+
 </head>
 <body ng-controller="PdfViewerCtrl as viewer"
+      interaction-observer
       ng-init="global = {}"
       class="win-type-body"
-      ng-class="{'has-outline' : viewer.doc.outline, 'has-no-outline' : !viewer.doc.outline, 'has-one-page' : viewer.doc.pageCount == 1, 'has-many-pages' : viewer.doc.pageCount > 1}">
+      ng-class="{'has-outline' : viewer.doc.outline, 'has-no-outline' : !viewer.doc.outline, 'has-one-page' : viewer.doc.pageCount == 1, 'has-many-pages' : viewer.doc.pageCount > 1, 'mouse-active' : interaction.mouse.active}">
 
     <script type="text/ng-template" id="loading.html">
         <progress class="win-ring win-large"></progress>
@@ -58,7 +80,7 @@
                     <div class="pdf_page"
                          ng-init="item.data.triggerLoad(true)"
                          background-image="item.data.imageSrc"
-                         ng-click="viewer.appBar.show(); viewer.setFocusedPageIndex(item.data.pageIndex);">
+                         ng-click="_res = view.ensurePageFocused(item.data.pageIndex) ? viewer.appBar.hide() : viewer.appBar.toggle();">
                         <div class="loading"><p class="page_index" ng-bind="item.data.pageIndex + 1"></p><progress class="win-ring"></progress></div>
                     </div>
                 </win-item-template>
@@ -66,6 +88,16 @@
                         group-info="view.getGroupInfo"
                         item-info="view.getItemInfo"></win-cell-spanning-layout>
             </win-list-view>
+            <win-app-bar-command ng-if="view.nav.scrollLeft"
+                                 class="scroll_nav prev" type="button" icon="'back'"
+                                 on-click="viewer.appBar.hide(); view.nav.scrollLeft();"
+                                 draggable="false"
+                           ondragstart="event.preventDefault();"></win-app-bar-command>
+            <win-app-bar-command ng-if="view.nav.scrollRight"
+                                 class="scroll_nav next" type="button" icon="'forward'"
+                                 on-click="viewer.appBar.hide(); view.nav.scrollRight();"
+                                 draggable="false"
+                           ondragstart="event.preventDefault();"></win-app-bar-command>
         </div>
     </script>
 
@@ -78,16 +110,15 @@
     </script>
 
     <script type="text/ng-template" id="outline_item.html">
-            <div class="item"
-                 ng-class="{folder : item.items, linked : item.pageIndex!=null}"
-                 ng-click="viewer.gotoPage(item.pageIndex, 'pageflow')">
-                <span class="title win-type-subtitle" ng-bind="item.title || '??'"></span>
-                <span class="page-index win-type-subtitle" ng-bind="item.pageIndex + 1"></span>
-            </div>
-            <ul ng-if="item.items">
-                <li ng-repeat="item in item.items" ng-include="'outline_item.html'"></li>
-            </ul>
-        </li>
+        <div class="item"
+             ng-class="{folder : item.items, linked : item.pageIndex!=null}"
+             ng-click="viewer.gotoPage(item.pageIndex, 'pageflow')">
+            <span class="title win-type-subtitle" ng-bind="item.title || '??'"></span>
+            <span class="page-index win-type-subtitle" ng-bind="item.pageIndex + 1"></span>
+        </div>
+        <ul ng-if="item.items">
+            <li ng-repeat="item in item.items" ng-include="'outline_item.html'"></li>
+        </ul>
     </script>
 
     <div id="viewer_view" ng-include="viewer.view.template">...</div>
