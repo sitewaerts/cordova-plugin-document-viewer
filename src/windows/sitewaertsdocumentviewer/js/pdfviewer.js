@@ -88,6 +88,116 @@
     //
 
 
+    function _eventLogger(element)
+    {
+        var events = [
+            'MSPointerDown',
+            'MSPointerUp',
+            'MSPointerCancel',
+            'MSPointerMove',
+            'MSPointerOver',
+            'MSPointerOut',
+            'MSPointerEnter',
+            'MSPointerLeave',
+            'MSGotPointerCapture',
+            'MSLostPointerCapture',
+            'pointerdown',
+            'pointerup',
+            'pointercancel',
+            'pointermove',
+            'pointerover',
+            'pointerout',
+            'pointerenter',
+            'pointerleave',
+            'gotpointercapture',
+            'lostpointercapture',
+            'touchstart',
+            'touchmove',
+            'touchend',
+            'touchenter',
+            'touchleave',
+            'touchcancel',
+            'mouseover',
+            'mousemove',
+            'mouseout',
+            'mouseenter',
+            'mouseleave',
+            'mousedown',
+            'mouseup',
+            'focus',
+            'blur',
+            'click',
+            'webkitmouseforcewillbegin',
+            'webkitmouseforcedown',
+            'webkitmouseforceup',
+            'webkitmouseforcechanged'
+        ];
+
+        function report(e)
+        {
+            console.log("event logger [" + e.type + "]", e, element);
+        }
+
+        for (var i = 0; i < events.length; i++)
+            element.addEventListener(events[i], report, false);
+    }
+
+    $.fn.scrollLeftTo = function (target, options, callback) {
+        if (typeof options === 'function' && arguments.length === 2)
+        {
+            callback = options;
+            options = target;
+        }
+        var settings = $.extend({
+            scrollTarget: target,
+            offsetLeft: 50,
+            duration: 500,
+            easing: 'swing'
+        }, options);
+        return this.each(function () {
+            var scrollPane = $(this);
+
+            var scrollX = -1;
+
+            if (typeof settings.scrollTarget === "number")
+            {
+                scrollX = settings.scrollTarget;
+            }
+            else
+            {
+                if (settings.scrollTarget)
+                {
+                    var scrollTarget = $(settings.scrollTarget);
+                    if (scrollTarget[0] && scrollTarget.offset())
+                        scrollX = scrollTarget.offset().left
+                                + scrollPane.scrollLeft() - (scrollPane.width()
+                                        / 2)
+                                + (scrollTarget.outerWidth() / 2);
+                }
+            }
+
+
+            if (scrollX >= 0)
+            {
+                scrollPane.animate({scrollLeft: scrollX},
+                        parseInt(settings.duration), settings.easing,
+                        function () {
+                            if (typeof callback === 'function')
+                            {
+                                callback.call(this);
+                            }
+                        });
+            }
+            else
+            {
+                if (typeof callback === 'function')
+                {
+                    callback.call(this);
+                }
+            }
+        });
+    };
+
     var module = angular.module('viewer', ['winjs'], null);
 
     module.run(function ($rootScope) {
@@ -106,7 +216,7 @@
             // ms-appx|ms-appx-web ??
             //$compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|blob):/);
             $compileProvider.imgSrcSanitizationWhitelist(
-                    /^\s*(blob|file|local):/);
+                    /^\s*(blob|file|local|data):/);
         }
     ]);
 
@@ -124,48 +234,113 @@
 
     module.directive('interactionObserver', function ($timeout) {
         return function (scope, element, attrs) {
+
+            var pointer = {};
             var mouse = {};
-            scope.interaction = {mouse: mouse};
+            var touch = {};
+            var pen = {};
 
-            var _endIt;
+            var timeout = 3000;
 
-            function _mouseDetected()
+            scope.interaction = {
+                pointer: pointer,
+                mouse: mouse,
+                touch: touch,
+                pen: pen
+            };
+
+            function Observer(model, onActive)
             {
-                if (_endIt)
-                {
-                    $timeout.cancel(_endIt);
-                    _endIt = null;
-                }
-                _endIt = $timeout(function () {
-                    _endIt = null;
-                    _deactivateMouse();
-                }, 4000);
 
-                if (!mouse.detected || !mouse.active)
+                var _endIt;
+
+                function _detected()
                 {
-                    scope.$evalAsync(function () {
-                        mouse.detected = true;
-                        mouse.active = true;
-                    });
+                    if (_endIt)
+                    {
+                        $timeout.cancel(_endIt);
+                        _endIt = null;
+                    }
+                    _endIt = $timeout(function () {
+                        _endIt = null;
+                        _deactivate();
+                    }, timeout);
+
+                    if (!model.detected || !model.active)
+                    {
+                        model.detected = true;
+                        model.active = true;
+                        scope.$evalAsync(function () {
+                            if (onActive)
+                                onActive();
+                        });
+                    }
                 }
+
+                function _deactivate()
+                {
+                    if (_endIt)
+                    {
+                        $timeout.cancel(_endIt);
+                        _endIt = null;
+                    }
+                    if (model.active)
+                    {
+                        model.active = false;
+                        scope.$evalAsync(function () {
+                        });
+                    }
+                }
+
+                this.onActivity = function () {
+                    _detected();
+                };
+
+                this.deactivate = function () {
+                    _deactivate();
+                };
             }
 
-            function _deactivateMouse()
-            {
-                if (_endIt)
-                {
-                    $timeout.cancel(_endIt);
-                    _endIt = null;
+            var _pointer = new Observer(pointer, function () {
+            });
+
+            var _mouse = new Observer(mouse, function () {
+                _touch.deactivate();
+                _pen.deactivate();
+            });
+            var _touch = new Observer(touch, function () {
+                _mouse.deactivate();
+                _pen.deactivate();
+            });
+            var _pen = new Observer(pen, function () {
+                _touch.deactivate();
+                _mouse.deactivate();
+            });
+
+            var _handlers = {
+                'mouse': {
+                    onActivity: _mouse.onActivity.bind(_mouse)
+                },
+                'touch': {
+                    onActivity: _touch.onActivity.bind(_touch)
+                },
+                'pen': {
+                    onActivity: _pen.onActivity.bind(_pen)
                 }
-                mouse.active = false;
+            };
+
+            function _onPointerActivity(e)
+            {
+                _pointer.onActivity(e);
+                var device = e.pointerType;
+                var h = _handlers[device];
+                if (h)
+                    h.onActivity(e);
             }
 
             element.on(
-                    "mouseenter mouseleave mousemove mouseover mouseout mousedown mouseup",
-                    _mouseDetected);
-
-            // TODO: detect touch events etc.
-
+                    "pointerenter pointerleave pointermove pointerout pointerover pointerup pointerdown",
+                    _onPointerActivity)
         };
     });
 
@@ -173,23 +348,19 @@
         var _views = {
             loading: {
                 id: 'loading',
-                template: 'loading.html',
-                appBar: {always: true}
+                template: 'loading.html'
             },
             pageflow: {
                 id: 'pageflow',
-                template: 'pageflow.html',
-                appBar: {always: false}
+                template: 'pageflow.html'
             },
             outline: {
                 id: 'outline',
-                template: 'outline.html',
-                appBar: {always: true}
+                template: 'outline.html'
             },
             tiles: {
                 id: 'tiles',
-                template: 'tiles.html',
-                appBar: {always: true}
+                template: 'tiles.html'
             }
         };
 
@@ -213,10 +384,7 @@
         function _setView(id)
         {
             if (!ctrl.view || ctrl.view.id !== id)
-            {
                 ctrl.view = views.getView(id);
-                ctrl.appBar.show();
-            }
         }
 
         ctrl.setView = _setView;
@@ -235,60 +403,6 @@
 
         ctrl.setFocusedPageIndex = pdfViewer.setFocusedPageIndex.bind(
                 pdfViewer);
-
-        ctrl.appBar = {
-            winControl: null,
-            shown : false,
-            toggle : function(){
-                if (ctrl.view && ctrl.appBar.winControl)
-                {
-                    if (ctrl.view.appBar.always)
-                    {
-                        // nothing to do
-                    }
-                    else
-                    {
-                        if (ctrl.appBar.shown)
-                            ctrl.appBar.hide();
-                        else
-                            ctrl.appBar.show();
-                    }
-                }
-            },
-            show: function () {
-                if (ctrl.view && ctrl.appBar.winControl)
-                {
-                    ctrl.appBar.shown=true;
-                    if (ctrl.view.appBar.always)
-                    {
-                        // nothing to do
-                    }
-                    else
-                    {
-
-                        if(ctrl.appBar.winControl.opened)
-                            ctrl.appBar.winControl.close();
-                        ctrl.appBar.winControl.closedDisplayMode = 'full';
-                    }
-                }
-            },
-            hide: function () {
-                if (ctrl.view && ctrl.appBar.winControl)
-                {
-                    ctrl.appBar.shown=false;
-                    if (ctrl.view.appBar.always)
-                    {
-                        // nothing to do
-                    }
-                    else
-                    {
-                        if(ctrl.appBar.winControl.opened)
-                            ctrl.appBar.winControl.close();
-                        ctrl.appBar.winControl.closedDisplayMode = 'none';
-                    }
-                }
-            }
-        };
 
         ctrl.error = {
             message: null,
@@ -423,7 +537,7 @@
                             {
                                 containerMargin: 5,
                                 isIgnoringHighContrast: false,
-                                verticalCutOff: 0,
+                                verticalCutOff: 50,
                                 horizontalCutOff: 0
                             },
                             opts);
@@ -477,6 +591,9 @@
                             // the use of dip should automatically apply the devicePixelRatio factor (but it actually doesn't)
                             resolutionFactor = window.devicePixelRatio;
                         }
+
+                        // init listeners etc.
+                        _getScrollContainer();
 
                         return {
                             viewWidth: rawViewWidth,
@@ -728,11 +845,12 @@
                                     }
                                 },
                                 applyError: function (error) {
-                                    window.console.error(error);
 
                                     if (generator.canceled || _generator
                                             !== generator)
                                         return;
+
+                                    window.console.error(error);
 
                                     //_dirty = false;
                                     _generator = null;
@@ -1060,6 +1178,8 @@
 
                         if (ctrl.pages)
                             ctrl.pages.refresh();
+
+                        _updateNav();
                     }
 
 
@@ -1092,75 +1212,142 @@
                     {
                         if (_nav.nextLeftIndex != null)
                             ctrl.focusPage(_nav.nextLeftIndex);
+                        else if (_nav.nextLeftPixel != null)
+                            ctrl.scrollToPixel(_nav.nextLeftPixel);
                     }
 
                     function _scrollRight()
                     {
                         if (_nav.nextRightIndex != null)
                             ctrl.focusPage(_nav.nextRightIndex);
+                        else if (_nav.nextRightPixel != null)
+                            ctrl.scrollToPixel(_nav.nextRightPixel);
                     }
 
                     function _noNav()
                     {
+                        _noLeftNav();
+                        _noRightNav();
+                    }
+
+                    function _noLeftNav()
+                    {
                         delete _nav.nextLeftIndex;
+                        delete _nav.nextLeftPixel;
                         delete _nav.scrollLeft;
+                    }
+
+                    function _noRightNav()
+                    {
                         delete _nav.nextRightIndex;
+                        delete _nav.nextRightPixel;
                         delete _nav.scrollRight;
                     }
 
+                    var _scrollAnimationRunning = false;
+
                     function _updateNav()
                     {
+                        if (_scrollAnimationRunning)
+                            return;
+
                         if (!ctrl.viewWinControl || !ctrl.pages
                                 || !ctrl.pages.list)
                             return _noNav();
 
                         var _vwc = ctrl.viewWinControl;
-                        var fvIdx = _vwc.indexOfFirstVisible;
-                        var lvIdx = _vwc.indexOfLastVisible;
-                        var length = ctrl.pages.list.length;
-
-                        var sp = _vwc.scrollPosition;
-
+                        var sc = _getScrollContainer();
+                        //var sp = _vwc.scrollPosition;
+                        var sp = sc.scrollLeft;
                         var width = _vwc.element.clientWidth;
 
-                        var fvE = _vwc.elementFromIndex(fvIdx);
-                        if (!fvE)
-                            return _noNav();
 
-                        var fvEOffset = fvE.offsetParent.offsetLeft;
-                        var nextLeftIndex = fvEOffset < sp ?
-                                fvIdx // scroll the first item to be fully visible
-                                : fvIdx - 1; // scroll to the next left item
-
-                        var lvE = _vwc.elementFromIndex(lvIdx);
-                        var lvEOffset = lvE.offsetParent.offsetLeft;
-                        var nextRightIndex = (lvEOffset + lvE.offsetWidth) > (sp
-                                + width) ?
-                                lvIdx // scroll the last item to be fully visible
-                                : lvIdx + 1; // scroll to the next right item
-
-
-                        if (nextLeftIndex >= 0)
+                        if (!ctrl.zoom.zoomed)
                         {
-                            _nav.nextLeftIndex = nextLeftIndex;
-                            _nav.scrollLeft = _scrollLeft;
+                            var fvIdx = _vwc.indexOfFirstVisible;
+                            var lvIdx = _vwc.indexOfLastVisible;
+                            var length = ctrl.pages.list.length;
+
+                            var fvE = _vwc.elementFromIndex(fvIdx);
+                            if (!fvE || !fvE.offsetParent)
+                                return _noNav();
+
+                            var fvEOffset = fvE.offsetParent.offsetLeft;
+                            var nextLeftIndex = fvEOffset < sp ?
+                                    fvIdx // scroll the first item to be fully visible
+                                    : fvIdx - 1; // scroll to the next left item
+
+                            var lvE = _vwc.elementFromIndex(lvIdx);
+                            if (!lvE || !lvE.offsetParent)
+                                return _noNav();
+
+                            var lvEOffset = lvE.offsetParent.offsetLeft;
+                            var nextRightIndex = (lvEOffset + lvE.offsetWidth)
+                            > (sp
+                                    + width) ?
+                                    lvIdx // scroll the last item to be fully visible
+                                    : lvIdx + 1; // scroll to the next right item
+
+
+                            if (nextLeftIndex >= 0)
+                            {
+                                _nav.nextLeftIndex = nextLeftIndex;
+                                delete _nav.nextLeftPixel;
+                                _nav.scrollLeft = _scrollLeft;
+                            }
+                            else
+                            {
+                                _noLeftNav();
+                            }
+
+                            if (nextRightIndex < length)
+                            {
+                                _nav.nextRightIndex = nextRightIndex;
+                                delete _nav.nextRightPixel;
+                                _nav.scrollRight = _scrollRight;
+                            }
+                            else
+                            {
+                                _noRightNav();
+                            }
+
                         }
                         else
                         {
-                            delete _nav.nextLeftIndex;
-                            delete _nav.scrollLeft;
+
+                            var totalWidth = sc.scrollWidth;
+                            var maxScrollLeft = _fixedScrollPos(totalWidth,
+                                    totalWidth, width * -1, ctrl.zoom.factor);
+
+                            if (sp > 0)
+                            {
+                                delete _nav.nextLeftIndex;
+                                _nav.nextLeftPixel = Math.max(0,
+                                        _fixedScrollPos(totalWidth, sp, width
+                                                * -1, ctrl.zoom.factor));
+                                _nav.scrollLeft = _scrollLeft;
+                            }
+                            else
+                            {
+                                _noLeftNav();
+                            }
+
+                            if (sp < maxScrollLeft)
+                            {
+                                delete _nav.nextRightIndex;
+                                // browser will auto fix values which exceed the limit
+                                _nav.nextRightPixel = _fixedScrollPos(
+                                        totalWidth, sp, width,
+                                        ctrl.zoom.factor);
+                                _nav.scrollRight = _scrollRight;
+                            }
+                            else
+                            {
+                                _noRightNav();
+                            }
+
                         }
 
-                        if (nextRightIndex < length)
-                        {
-                            _nav.nextRightIndex = nextRightIndex;
-                            _nav.scrollRight = _scrollRight;
-                        }
-                        else
-                        {
-                            delete _nav.nextRightIndex;
-                            delete _nav.scrollRight;
-                        }
 
                     }
 
@@ -1172,27 +1359,198 @@
                             _updateNav);
                     localScope.$watch('ctrl.pages.list.length', _updateNav);
 
-                    function _isFullyVisible(idx)
+                    var _fixedScrollPos = function (scrollWidth, start, delta, zoomFactor) {
+                        if (zoomFactor != null && zoomFactor * 100 !== 100)
+                        {
+                            // hack: edge calculates wrong scrollLeft, width etc. when zoomed
+                            return Math.floor(((start * zoomFactor) + delta)
+                                    / zoomFactor);
+                        }
+                        return start + delta;
+                    };
+
+                    function _addMouseDragScroll(scrollable)
+                    {
+                        if (!scrollable || scrollable._mouseDragScroll)
+                            return;
+
+                        scrollable._mouseDragScroll = true;
+
+                        //_eventLogger(scrollable);
+
+                        scrollable.ondragstart = function () {
+                            return false;
+                        };
+
+                        function _isMouseEvent(event)
+                        {
+                            return event && event.pointerType === 'mouse';
+                        }
+
+                        function _onScrollStart(event)
+                        {
+
+                            if (!_isMouseEvent(event))
+                                return;
+
+                            // event.preventDefault();
+                            // event.stopPropagation();
+                            // event.stopImmediatePropagation();
+
+                            var target = event.target;
+
+                            var zoom = _zoomForElement(scrollable);
+                            var sw = scrollable.scrollWidth;
+                            var sh = scrollable.scrollHeight;
+
+                            var _mouseStartX = event.pageX;
+                            var _scrollStartX = scrollable.scrollLeft;
+                            var _mouseStartY = event.pageY;
+                            var _scrollStartY = scrollable.scrollTop;
+                            var _moved = false;
+                            var _capturedPointerId = null;
+
+                            function _onScroll(event)
+                            {
+                                if (!_isMouseEvent(event))
+                                    return;
+
+                                // event.preventDefault();
+                                // event.stopPropagation();
+                                // event.stopImmediatePropagation();
+
+
+                                if (!_moved)
+                                {
+                                    // this is a scroll situation:
+                                    // capture the event to tell others that
+                                    // they must cancel their pending tasks (e.g. click)
+                                    _moved = true;
+                                    _capturedPointerId = event.pointerId;
+                                    target.setPointerCapture(event.pointerId);
+                                }
+
+                                var sl = _fixedScrollPos(
+                                        sw, _scrollStartX, _mouseStartX
+                                        - event.pageX, zoom);
+                                var st = _fixedScrollPos(
+                                        sh, _scrollStartY, _mouseStartY
+                                        - event.pageY, zoom);
+
+                                scrollable.scrollLeft = sl;
+                                scrollable.scrollTop = st;
+                            }
+
+                            function _onScrollEnd(event)
+                            {
+                                // event.preventDefault();
+                                // event.stopPropagation();
+                                // event.stopImmediatePropagation();
+
+                                target.removeEventListener('pointermove',
+                                        _onScroll);
+                                target.removeEventListener('pointerup',
+                                        _onScrollEnd);
+                                //scrollable.removeEventListener('pointerout', _onScrollEnd);
+                                target.removeEventListener('lostpointercapture',
+                                        _onScrollEnd);
+                                target.removeEventListener('pointercancel',
+                                        _onScrollEnd);
+
+                                if (_moved && _capturedPointerId === event.pointerId)
+                                {
+                                    event.preventDefault();
+                                    event.stopPropagation();
+                                    event.stopImmediatePropagation();
+
+                                    target.releasePointerCapture(
+                                            event.pointerId);
+                                    _onScroll(event);
+                                }
+
+                                scrollable.addEventListener('pointerdown',
+                                        _onScrollStart);
+                            }
+
+                            scrollable.removeEventListener('pointerdown',
+                                    _onScrollStart);
+
+                            target.addEventListener('pointermove', _onScroll);
+                            target.addEventListener('pointerup', _onScrollEnd);
+                            //scrollable.addEventListener('pointerout', _onScrollEnd, false);
+                            target.addEventListener('lostpointercapture',
+                                    _onScrollEnd);
+                            target.addEventListener('pointercancel',
+                                    _onScrollEnd);
+                        }
+
+                        scrollable.addEventListener('pointerdown',
+                                _onScrollStart);
+                    }
+
+                    function _getScrollContainer()
+                    {
+                        if (!ctrl.viewWinControl)
+                            return null;
+                        var e = ctrl.viewWinControl.element.querySelector(
+                                '.win-viewport.win-horizontal');
+
+                        if (e && !e._zoomListener)
+                        {
+                            e._zoomListener = true;
+                            e.addEventListener("MSContentZoom",
+                                    _$updateZoom);
+                        }
+
+                        _addMouseDragScroll(e);
+                        return e;
+                    }
+
+                    function _get$ScrollContainer()
+                    {
+                        var e = _getScrollContainer();
+                        if (!e)
+                            return null;
+                        return $(e);
+                    }
+
+                    function _getPageElement(idx)
                     {
                         if (!ctrl.viewWinControl || !ctrl.pages
                                 || !ctrl.pages.list)
-                            return false;
+                            return null;
                         if (idx == null)
-                            return false;
+                            return null;
                         if (idx < 0)
-                            return false;
+                            return null;
 
                         var length = ctrl.pages.list.length;
                         if (idx > length - 1)
-                            return false;
+                            return null;
 
                         var _vwc = ctrl.viewWinControl;
 
-                        var e = _vwc.elementFromIndex(idx);
+                        return _vwc.elementFromIndex(idx);
+                    }
+
+                    function _getPageScrollPos(idx)
+                    {
+                        var e = _getPageElement(idx);
+                        if (!e)
+                            return null;
+                        return e.offsetParent.offsetLeft;
+                    }
+
+                    function _isFullyVisible(idx)
+                    {
+                        var e = _getPageElement(idx);
                         if (!e)
                             return false;
 
-                        var sp = _vwc.scrollPosition;
+                        var _vwc = ctrl.viewWinControl;
+                        var sc = _getScrollContainer();
+                        //var sp = _vwc.scrollPosition;
+                        var sp = sc.scrollLeft;
                         var width = _vwc.element.clientWidth;
 
                         var offset = e.offsetParent.offsetLeft;
@@ -1216,12 +1574,137 @@
                         if (!ctrl.viewWinControl)
                             return;
 
+                        var pixel = _getPageScrollPos(pageIndex);
+                        if (pixel == null)
+                            return;
+
+                        var sc = _getScrollContainer();
+                        var sp = sc.scrollLeft;
+                        if (sp < pixel)
+                        {
+                            var _vwc = ctrl.viewWinControl;
+                            var width = _vwc.element.clientWidth;
+                            // scroll right --> adjust on right side
+                            pixel = pixel - width + _getPageElement(
+                                    pageIndex).offsetWidth
+                        }
+
                         pdfViewer.setFocusedPageIndex(pageIndex);
-                        ctrl.viewWinControl.ensureVisible(pageIndex);
+                        ctrl.scrollToPixel(pixel);
+
+                        // ctrl.viewWinControl.ensureVisible(pageIndex);
                         //ctrl.viewWinControl.recalculateItemPosition();
                     };
 
+                    ctrl.scrollToPixel = function (pixel) {
+                        if (pixel == null)
+                            return;
+                        if (!ctrl.viewWinControl)
+                            return;
+                        //ctrl.viewWinControl.scrollPosition = pixel;
+                        _scrollAnimationRunning = true;
+                        _get$ScrollContainer().scrollLeftTo(pixel, function () {
+                            // done
+                            _scrollAnimationRunning = false;
+                            $scope.$evalAsync(function () {
+                                _updateNav();
+                            });
 
+                        });
+                    };
+
+                    var _zoomLevels = [1, 1.5, 2, 3];
+
+                    function _findNextZoomLevelUp(current)
+                    {
+                        for (var i = 0; i < _zoomLevels.length; i++)
+                        {
+                            var zl = _zoomLevels[i];
+                            if (zl > current)
+                                return zl;
+                        }
+                        return null;
+                    }
+
+                    function _findNextZoomLevelDown(current)
+                    {
+                        for (var i = _zoomLevels.length - 1; i >= 0; i--)
+                        {
+                            var zl = _zoomLevels[i];
+                            if (zl < current)
+                                return zl;
+                        }
+                        return null;
+                    }
+
+                    function _zoom(factor)
+                    {
+                        return _zoomForElement(_getScrollContainer(), factor);
+                    }
+
+                    function _zoomForElement(element, factor)
+                    {
+                        var result = null;
+                        if (element)
+                        {
+                            result = element.msContentZoomFactor.toFixed(2);
+                            if (factor != null)
+                                element.msContentZoomFactor = factor;
+                        }
+                        if (isNaN(result) || result == null || result === "")
+                            return 1;
+                        return result;
+                    }
+
+                    ctrl.zoom = {
+                        factor: 1,
+                        zoomed: false,
+                        forward: function () {
+                            var current = _zoom();
+                            var next = _findNextZoomLevelUp(current);
+                            if (next == null)
+                                next = _zoomLevels[0];
+                            _zoom(next);
+                        },
+                        zoomIn: function () {
+                            var current = _zoom();
+                            var next = _findNextZoomLevelUp(current);
+                            if (next != null)
+                                _zoom(next);
+                        },
+                        zoomOut: function () {
+                            var current = _zoom();
+                            var next = _findNextZoomLevelDown(current);
+                            if (next != null)
+                                _zoom(next);
+                        }
+                    };
+
+                    function _$updateZoom()
+                    {
+                        var newZoom = _zoom();
+                        if (ctrl.zoom.factor !== newZoom)
+                        {
+                            ctrl.zoom.factor = newZoom;
+                            ctrl.zoom.zoomed = ctrl.zoom.factor * 100
+                                    !== 100;
+                            $scope.$evalAsync(function () {
+                                _updateNav();
+                            });
+                        }
+                    }
+
+                    // function _updateZoom()
+                    // {
+                    //     ctrl.zoom.factor = _zoom();
+                    //     ctrl.zoom.zoomed = ctrl.zoom.factor * 100 !== 100;
+                    //     _updateNav();
+                    // }
+                    //
+                    // localScope.$watch('ctrl.viewWinControl.element.style.zoom',
+                    //         _updateZoom);
+                    //
+                    //
                     function _waitForPDF()
                     {
                         return getTemp().then(
@@ -1243,7 +1726,7 @@
             rows: 1,
             inMemory: false,
             pagesToLoad: 2,
-            verticalCutOff: 0,
+            verticalCutOff: 50,
             horizontalCutOff: 0
         });
     });
@@ -1533,15 +2016,25 @@
         };
 
         service.onPDFLoading = function (handler) {
+            function _handler()
+            {
+                $rootScope.$applyAsync(handler);
+            }
+
             if (pdfUri)
-                handler();
-            return $rootScope.$on(EVENTS.LOADING_PDF, handler);
+                _handler();
+            return $rootScope.$on(EVENTS.LOADING_PDF, _handler);
         };
 
         service.onPDFLoaded = function (handler) {
-            if (pdfUri)
-                handler();
-            return $rootScope.$on(EVENTS.SHOW_PDF, handler);
+            function _handler()
+            {
+                $rootScope.$applyAsync(handler);
+            }
+
+            if (service.isPDFLoaded())
+                _handler();
+            return $rootScope.$on(EVENTS.SHOW_PDF, _handler);
         };
 
         service.isPDFLoaded = function () {
@@ -1565,7 +2058,9 @@
 
                 function cleanup()
                 {
+                    // if(removeLoaded)
                     removeLoaded();
+                    // if(removeError)
                     removeError();
                 }
 
@@ -1574,7 +2069,12 @@
 
 
         service.onPDFError = function (handler) {
-            return $rootScope.$on(EVENTS.ERROR, handler);
+            function _handler()
+            {
+                $rootScope.$applyAsync(handler);
+            }
+
+            return $rootScope.$on(EVENTS.ERROR, _handler);
         };
 
         var _focusedPageIndex = 0;

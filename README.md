@@ -24,7 +24,7 @@ Viewer features like "Save as" or "Send via EMail" are configurable at runtime.
 Labels for buttons (i18n) are configurable at runtime.
 
 ### Plugin's Purpose
-The purpose of the plugin is to create an platform independent javascript
+The purpose of the plugin is to create a platform independent javascript
 interface for [Cordova][cordova] based mobile applications to view different
 document types by using native viewer components.
 

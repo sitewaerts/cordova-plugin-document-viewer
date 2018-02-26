@@ -21,7 +21,7 @@
  */
 'use strict';
 
-var pdfjsVersion = '2.0.376';
-var pdfjsBuild = '4f5fb782';
+var pdfjsVersion = '2.0.385';
+var pdfjsBuild = '99060e24';
 var pdfjsCoreWorker = require('./core/worker.js');
 exports.WorkerMessageHandler = pdfjsCoreWorker.WorkerMessageHandler;

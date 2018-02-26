@@ -1,7 +1,8 @@
 {
   "name": "cordova-plugin-document-viewer",
-  "version": "0.9.7",
+  "version": "0.9.8",
   "dependencies": {
+    "jquery" : "latest",
     "winjs": "latest",
     "angular-winjs": "latest",
     "angular": "<1.5",

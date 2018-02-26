@@ -7,15 +7,6 @@ html, body {
     margin: 0;
 }
 
-.win-appbar-overflowbutton {
-    display: none !important;
-}
-
-.win-appbar button.close {
-    position: absolute;
-    left: 0;
-}
-
 .title.win-h3 {
     line-height: 48px;
 }
@@ -27,10 +18,34 @@ html, body {
     padding: 0;
 }
 
-.view-controller.app_bar_always {
-    /*reserve space for app bar*/
-    height: calc(100% - 40px);
-    padding-top: 40px;
+#viewer_view > .loading{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.win-toolbar.head{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+
+.win-toolbar.head .win-command.title{
+    position: absolute;
+    left: 0;
+}
+
+.win-toolbar.head .win-toolbar-overflowbutton{
+    display: none;
+}
+
+
+.view-controller {
+    /*reserve space for head button bar*/
+    height: calc(100% - 50px);
+    margin-top: 50px;
 }
 
 .view-controller .win-listview,
@@ -45,48 +60,79 @@ html, body {
 }
 
 .view-controller.pageflow > .win-listview > .win-viewport {
-    -ms-content-zooming: zoom;
+    /*-ms-content-zooming: zoom;*/
 }
 
 .win-listview > .win-viewport.win-horizontal {
     /* native scrolling by mouse wheel */
     -ms-scroll-translation: vertical-to-horizontal;
+}
+
+.view-controller.tiles > .win-listview > .win-viewport.win-horizontal{
+    /* needed for native scroll/pan */
+    touch-action: pan-x;
+}
+
+.view-controller.pageflow > .win-listview > .win-viewport.win-horizontal {
 
     /* needed for native pinch-and-zoom */
     overflow-y: auto;
+    touch-action: pan-x pan-y pinch-zoom;
 
+    -ms-content-zooming: zoom;
+    -ms-content-zoom-limit-min: 100%;
+    -ms-content-zoom-limit-max: 300%;
+    -ms-content-zoom-snap-points: snapList(100%, 150%, 200%, 300%);
+    -ms-content-zoom-snap-type: mandatory;
 }
 
 .view-controller.pageflow > .win-listview > .win-viewport > .win-gridlayout {
+    /* native scrolling (panning) */
+    /*touch-action: pan-x pan-y;*/
     /* native scrolling (panning), pinch and zoom */
-    touch-action: pan-x pan-y pinch-zoom double-tap-zoom;
+    /*touch-action: pan-x pan-y pinch-zoom double-tap-zoom;*/
 }
 
-.view-controller.pageflow .scroll_nav {
-    position: absolute;
-    top: 50%;
-    background-color: rgba(1,1,1, 0.4);
-}
 
-.view-controller.pageflow .scroll_nav{
+.view-controller.pageflow .overlay_nav{
     display: none;
 }
 
-.mouse-active .view-controller.pageflow .scroll_nav{
+.view-controller.pageflow .overlay_nav button{
+    background-color: rgba(0,0,0, 0.4);
+}
+
+.view-controller.pageflow .overlay_nav button:hover {
+    background-color: rgba(0,0,0, 0.7) !important;
+}
+
+
+.pointer-active .view-controller.pageflow .overlay_nav.scroll{
     display: block;
 }
 
-.view-controller.pageflow .scroll_nav:hover {
-    background-color: rgba(1,1,1, 0.7) !important;
+.view-controller.pageflow .overlay_nav.scroll button{
+    position: absolute;
+    top: 50%;
 }
 
-.view-controller.pageflow .scroll_nav.prev {
+.view-controller.pageflow .overlay_nav.scroll button.prev {
     left: 0;
 }
 
-.view-controller.pageflow .scroll_nav.next {
+.view-controller.pageflow .overlay_nav.scroll button.next {
     right: 0;
 }
+
+
+
+.mouse-active .view-controller.pageflow .overlay_nav.zoom{
+    display: block;
+    position: absolute;
+    right: 2em;
+    bottom: 2em;
+}
+
 
 .pdf_page {
     height: 100%;

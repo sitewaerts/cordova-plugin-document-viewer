@@ -2,13 +2,13 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
         id="cordova-plugin-document-viewer"
         xmlns:android="http://schemas.android.com/apk/res/android"
-        version="0.9.7">
+        version="0.9.8">
     <engines>
         <engine name="cordova" version=">=3.7.0"/>
         <engine name="cordova-windows" version=">=4.4.0"/>
     </engines>
     <name>SitewaertsDocumentViewer</name>
-    <description>Document viewer cordova plugin for iOS, Android and Windows 8.1 + 10.</description>
+    <description>Document viewer cordova plugin for iOS, Android and Windows 8.1 + 10</description>
     <author>Felix Schauerte</author>
     <email>schauerte@sitewaerts.de</email>
     <license>MIT</license>
@@ -187,6 +187,7 @@
         <asset src="src/common/js/angular" target="sitewaertsdocumentviewer/js/angular" />
         <asset src="src/common/js/angular-winjs/js" target="sitewaertsdocumentviewer/js/angular-winjs" />
         <asset src="src/common/js/pdfjs-dist/build" target="sitewaertsdocumentviewer/js/pdfjs-dist" />
+        <asset src="src/common/js/jquery/dist" target="sitewaertsdocumentviewer/js/jquery" />
     </platform>
 
 
