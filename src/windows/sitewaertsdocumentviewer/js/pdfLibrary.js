@@ -135,6 +135,8 @@ pdfLibrary = {
 
         function _renderOutput(outputInfo)
         {
+            //TODO: thread pooling
+
             var _canceled = false;
 
             function _cleanup()

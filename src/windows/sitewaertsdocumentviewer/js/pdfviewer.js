@@ -537,6 +537,7 @@
                             {
                                 containerMargin: 5,
                                 isIgnoringHighContrast: false,
+                                highRes : false,
                                 verticalCutOff: 50,
                                 horizontalCutOff: 0
                             },
@@ -585,7 +586,7 @@
 
                         var zoomFactor = 1;
                         var resolutionFactor = 1;
-                        if (rows === 1)
+                        if (ctrl.options.highRes)
                         {
                             // zoomFactor = 1.3;
                             // the use of dip should automatically apply the devicePixelRatio factor (but it actually doesn't)
@@ -912,7 +913,7 @@
                             $scope.$applyAsync(_load);
                         };
 
-                        // called when image src is definitely needed (item s rendered)
+                        // called when image src is definitely needed (item is rendered)
                         this.triggerLoad = function (async) {
                             if (!_isViewUpToDate())
                                 _updateView();
@@ -1726,6 +1727,7 @@
             rows: 1,
             inMemory: false,
             pagesToLoad: 2,
+            highRes : true,
             verticalCutOff: 50,
             horizontalCutOff: 0
         });
@@ -1738,6 +1740,7 @@
             rows: 4,
             inMemory: false,
             pagesToLoad: 2,
+            highRes : false,
             verticalCutOff: 50,
             horizontalCutOff: 0
         });
