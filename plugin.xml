@@ -38,7 +38,7 @@
         </config-file>
 
         <!--see http://stackoverflow.com/questions/38200282/android-os-fileuriexposedexception-file-storage-emulated-0-test-txt-exposed-->
-        <framework src="com.android.support:support-v4:+" />
+        <framework src="com.android.support:support-v4:27+" />
 
         <config-file target="AndroidManifest.xml" parent="/manifest/application">
 
