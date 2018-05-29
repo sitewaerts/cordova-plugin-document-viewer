@@ -673,7 +673,10 @@ public final class DocumentViewerPlugin
     private boolean canGetFile(String fileArg)
     {
         // TODO: better check for assets files ...
-        return fileArg.startsWith(ASSETS) || getFile(fileArg).exists();
+        if(fileArg.startsWith(ASSETS))
+            return true;
+        File f = getFile(fileArg);
+        return f != null && f.exists();
     }
 
     @SuppressLint("ObsoleteSdkInt")
@@ -797,7 +800,7 @@ public final class DocumentViewerPlugin
         else
         {
             File file = getFile(fileArg);
-            if (!file.exists() || !file.isFile())
+            if (file == null || !file.exists() || !file.isFile())
                 return null;
 
             // detect private files, copy to accessible tmp dir if necessary
