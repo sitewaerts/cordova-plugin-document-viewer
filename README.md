@@ -1,6 +1,12 @@
 Cordova Document Viewer Plugin
 ============================
 
+---
+
+*NOTE: This project makes use of a deprecated PDF viewer for iOS, [VFReader](https://github.com/vfr/Reader), which does not support the iPhone X.*
+
+---
+
 A common requirement when developing a cordova based app is to embed a
 performant and secure inline viewer for pdf files which doesn't allow the user
 to extract a copy of the pdf file out of the apps sandbox.
