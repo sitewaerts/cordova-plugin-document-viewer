@@ -1016,6 +1016,8 @@
     return self;
 }
 
+static UIColor *previousColor;
+
 //  override viewDidLoad
 - (void)viewDidLoad
 {
@@ -1024,8 +1026,16 @@
     assert(document != nil); // Must have a valid ReaderDocument
     
     self.view.backgroundColor = [UIColor grayColor]; // Neutral gray
+    UIView *statusBar = [[[UIApplication sharedApplication] valueForKey:@"statusBarWindow"] valueForKey:@"statusBar"];
     
+    if ([statusBar respondsToSelector:@selector(setBackgroundColor:)]) {
+        previousColor = statusBar.backgroundColor;
+        statusBar.backgroundColor = [UIColor blackColor];//set whatever color you like
+        
+    }
+
     UIView *fakeStatusBar = nil; CGRect viewRect = self.view.bounds; // View bounds
+    
     
     if ([self respondsToSelector:@selector(edgesForExtendedLayout)]) // iOS 7+
     {
@@ -1037,10 +1047,17 @@
             fakeStatusBar.backgroundColor = [UIColor blackColor];
             fakeStatusBar.contentMode = UIViewContentModeRedraw;
             fakeStatusBar.userInteractionEnabled = NO;
+            if (@available(iOS 11.0, *)) {
+                viewRect.origin.y = UIApplication.sharedApplication.keyWindow.safeAreaLayoutGuide.layoutFrame.origin.y;
+                viewRect.size.height = UIApplication.sharedApplication.keyWindow.safeAreaLayoutGuide.layoutFrame.size.height;
+            }else{
+            viewRect.origin.y += STATUS_HEIGHT;
+            viewRect.size.height -= STATUS_HEIGHT;
+            }
             
-            viewRect.origin.y += STATUS_HEIGHT; viewRect.size.height -= STATUS_HEIGHT;
         }
     }
+    
     
     //initialise with single page per screen
     [self setPagesPerScreen: 1];
@@ -1062,7 +1079,12 @@
     [self.view addSubview:mainToolbar];
     
     CGRect pagebarRect = self.view.bounds; pagebarRect.size.height = PAGEBAR_HEIGHT;
-    pagebarRect.origin.y = (self.view.bounds.size.height - pagebarRect.size.height);
+   if (@available(iOS 11.0, *)) {
+        pagebarRect.origin.y = (UIApplication.sharedApplication.keyWindow.safeAreaLayoutGuide.layoutFrame.size.height-pagebarRect.size.height/2);
+    } else {
+        // Fallback on earlier versions
+          pagebarRect.origin.y = (self.view.bounds.size.height - pagebarRect.size.height);
+    }
     mainPagebar = [[SDVReaderMainPagebar alloc] initWithFrame:pagebarRect document:document]; // ReaderMainPagebar
     mainPagebar.delegate = self; // ReaderMainPagebarDelegate
     [self.view addSubview:mainPagebar];
@@ -1097,6 +1119,18 @@
 - (BOOL)prefersStatusBarHidden
 {
     return NO;
+}
+
+- (void)viewWillDisappear:(BOOL)animated{
+    self.view.backgroundColor = [UIColor blackColor];
+    UIView *statusBar = [[[UIApplication sharedApplication] valueForKey:@"statusBarWindow"] valueForKey:@"statusBar"];
+    
+    if ([statusBar respondsToSelector:@selector(setBackgroundColor:)]) {
+        
+        statusBar.backgroundColor = previousColor;//set whatever color you like
+    }
+    [super viewWillDisappear:animated];
+    
 }
 
 //  https://github.com/etabard/Reader/commit/1001fcee4ccef5db329452dd59d5dfe48bdb783c
