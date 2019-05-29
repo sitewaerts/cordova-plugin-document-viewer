@@ -2,7 +2,7 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
         id="cordova-plugin-document-viewer"
         xmlns:android="http://schemas.android.com/apk/res/android"
-        version="0.9.10">
+        version="0.9.11">
     <engines>
         <engine name="cordova" version=">=3.7.0"/>
         <engine name="cordova-windows" version=">=4.4.0"/>
