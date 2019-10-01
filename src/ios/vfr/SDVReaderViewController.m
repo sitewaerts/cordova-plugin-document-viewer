@@ -1026,7 +1026,7 @@ static UIColor *previousColor;
     assert(document != nil); // Must have a valid ReaderDocument
     
     self.view.backgroundColor = [UIColor grayColor]; // Neutral gray
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_13_0
+#if defined(__IPHONE_13_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_13_0
     UIView *statusBar;
     if(@available(iOS 13, *)) {
         statusBar = [[UIView alloc]initWithFrame:[UIApplication sharedApplication].keyWindow.windowScene.statusBarManager.statusBarFrame];
@@ -1131,7 +1131,7 @@ static UIColor *previousColor;
 
 - (void)viewWillDisappear:(BOOL)animated{
     self.view.backgroundColor = [UIColor blackColor];
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_13_0
+#if defined(__IPHONE_13_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_13_0
     UIView *statusBar;
     if(@available(iOS 13, *)) {
         statusBar = [[UIView alloc]initWithFrame:[UIApplication sharedApplication].keyWindow.windowScene.statusBarManager.statusBarFrame];
