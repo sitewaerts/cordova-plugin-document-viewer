@@ -1026,13 +1026,16 @@ static UIColor *previousColor;
     assert(document != nil); // Must have a valid ReaderDocument
     
     self.view.backgroundColor = [UIColor grayColor]; // Neutral gray
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_13_0
     UIView *statusBar;
     if(@available(iOS 13, *)) {
         statusBar = [[UIView alloc]initWithFrame:[UIApplication sharedApplication].keyWindow.windowScene.statusBarManager.statusBarFrame];
     } else {
         statusBar = [[[UIApplication sharedApplication] valueForKey:@"statusBarWindow"] valueForKey:@"statusBar"];
     }
-    
+#else
+    UIView *statusBar = [[[UIApplication sharedApplication] valueForKey:@"statusBarWindow"] valueForKey:@"statusBar"];
+#endif
     if ([statusBar respondsToSelector:@selector(setBackgroundColor:)]) {
         previousColor = statusBar.backgroundColor;
         statusBar.backgroundColor = [UIColor blackColor];//set whatever color you like
@@ -1128,13 +1131,16 @@ static UIColor *previousColor;
 
 - (void)viewWillDisappear:(BOOL)animated{
     self.view.backgroundColor = [UIColor blackColor];
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_13_0
     UIView *statusBar;
     if(@available(iOS 13, *)) {
         statusBar = [[UIView alloc]initWithFrame:[UIApplication sharedApplication].keyWindow.windowScene.statusBarManager.statusBarFrame];
     } else {
         statusBar = [[[UIApplication sharedApplication] valueForKey:@"statusBarWindow"] valueForKey:@"statusBar"];
     }
-    
+#else
+    UIView *statusBar = [[[UIApplication sharedApplication] valueForKey:@"statusBarWindow"] valueForKey:@"statusBar"];
+#endif
     if ([statusBar respondsToSelector:@selector(setBackgroundColor:)]) {
         
         statusBar.backgroundColor = previousColor;//set whatever color you like
