@@ -25,27 +25,26 @@
  -->
 
     <platform name="android">
-        <config-file target="res/xml/config.xml" parent="/*">
+        <preference name="ANDROID_SUPPORT_V4_VERSION" default="27.+"/>
+        <config-file target="config.xml" parent="/*">
             <feature name="SitewaertsDocumentViewer">
                 <param name="android-package"
                        value="de.sitewaerts.cordova.documentviewer.DocumentViewerPlugin"/>
             </feature>
         </config-file>
 
-        <config-file target="AndroidManifest.xml" parent="/manifest">
-            <uses-permission
-                    android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+        <config-file target="AndroidManifest.xml" parent="/*">
+            <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
         </config-file>
 
         <!--see http://stackoverflow.com/questions/38200282/android-os-fileuriexposedexception-file-storage-emulated-0-test-txt-exposed-->
         <!--see https://github.com/sitewaerts/cordova-plugin-document-viewer/issues/105-->
         <framework src="com.android.support:support-v4:27+" />
 
-        <config-file target="AndroidManifest.xml" parent="/manifest/application">
-
-             <provider
+        <config-file target="AndroidManifest.xml" parent="application">
+            <provider
                 android:name="de.sitewaerts.cordova.documentviewer.FileProvider"
-                android:authorities="$PACKAGE_NAME.DocumentViewerPlugin.fileprovider"
+                android:authorities="${applicationId}.DocumentViewerPlugin.fileprovider"
                 android:exported="false"
                 android:grantUriPermissions="true">
                 <meta-data
@@ -59,7 +58,7 @@
             target-dir="res/xml"/>
 
         <source-file
-          src="src/android/de/sitewaerts/cordova/documentviewer/FileProvider.java" 
+          src="src/android/de/sitewaerts/cordova/documentviewer/FileProvider.java"
           target-dir="src/de/sitewaerts/cordova/documentviewer"/>
 
         <source-file
