@@ -563,8 +563,7 @@
                         var margin = ctrl.options.containerMargin;
                         var rows = Math.max(1, ctrl.options.rows);
 
-                        var rawViewHeight = viewHeight
-                                - ctrl.options.verticalCutOff;
+                        var rawViewHeight = viewHeight - ctrl.options.verticalCutOff;
                         if (rows > 1)
                             rawViewHeight = rawViewHeight
                                     - (2 * margin) // top and bottom
@@ -572,17 +571,12 @@
 
                         var containerHeight = Math.floor(rawViewHeight / rows);
 
-                        var rawViewWidth = viewWidth
-                                - ctrl.options.horizontalCutOff;
-                        rawViewWidth = rawViewWidth
-                                - (2 * margin); // left and right
+                        var rawViewWidth = viewWidth - ctrl.options.horizontalCutOff;
+                        rawViewWidth = rawViewWidth - (2 * margin); // left and right
 
                         var containerWidth = Math.floor(rawViewWidth);
 
-                        var imageHeight = Math.max(
-                                window.screen.width,
-                                window.screen.height) / rows;
-
+                        var imageHeight = Math.max(window.screen.width, window.screen.height) / rows;
 
                         var zoomFactor = 1;
                         var resolutionFactor = 1;
@@ -617,8 +611,7 @@
                     {
                         var newViewInfo = _buildViewInfo();
 
-                        if (!ctrl._viewInfo || !angular.equals(ctrl._viewInfo,
-                                        newViewInfo))
+                        if (!ctrl._viewInfo || !angular.equals(ctrl._viewInfo, newViewInfo))
                         {
                             ctrl._viewInfo = newViewInfo;
                         }
@@ -706,8 +699,7 @@
                         var _generator = null;
 
                         var _pdfPage = pdf.getPage(page.pageIndex);
-                        var _dimRelation = _pdfPage.size.width
-                                / _pdfPage.size.height;
+                        var _dimRelation = _pdfPage.size.width / _pdfPage.size.height;
 
                         _pdfOptions = new Windows.Data.Pdf.PdfPageRenderOptions();
                         _pdfOptions.isIgnoringHighContrast = page.isIgnoringHighContrast;
@@ -1283,9 +1275,7 @@
                                 return _noNav();
 
                             var lvEOffset = lvE.offsetParent.offsetLeft;
-                            var nextRightIndex = (lvEOffset + lvE.offsetWidth)
-                            > (sp
-                                    + width) ?
+                            var nextRightIndex = (lvEOffset + lvE.offsetWidth) > (sp + width) ?
                                     lvIdx // scroll the last item to be fully visible
                                     : lvIdx + 1; // scroll to the next right item
 
@@ -1317,15 +1307,13 @@
                         {
 
                             var totalWidth = sc.scrollWidth;
-                            var maxScrollLeft = _fixedScrollPos(totalWidth,
-                                    totalWidth, width * -1, ctrl.zoom.factor);
+                            var maxScrollLeft = _fixedScrollPos(totalWidth, totalWidth, width * -1, ctrl.zoom.factor);
 
                             if (sp > 0)
                             {
                                 delete _nav.nextLeftIndex;
                                 _nav.nextLeftPixel = Math.max(0,
-                                        _fixedScrollPos(totalWidth, sp, width
-                                                * -1, ctrl.zoom.factor));
+                                        _fixedScrollPos(totalWidth, sp, width * -1, ctrl.zoom.factor));
                                 _nav.scrollLeft = _scrollLeft;
                             }
                             else
@@ -1337,9 +1325,7 @@
                             {
                                 delete _nav.nextRightIndex;
                                 // browser will auto fix values which exceed the limit
-                                _nav.nextRightPixel = _fixedScrollPos(
-                                        totalWidth, sp, width,
-                                        ctrl.zoom.factor);
+                                _nav.nextRightPixel = _fixedScrollPos(totalWidth, sp, width, ctrl.zoom.factor);
                                 _nav.scrollRight = _scrollRight;
                             }
                             else
@@ -1352,20 +1338,16 @@
 
                     }
 
-                    localScope.$watch('ctrl.viewWinControl.indexOfFirstVisible',
-                            _updateNav);
-                    localScope.$watch('ctrl.viewWinControl.indexOfLastVisible',
-                            _updateNav);
-                    localScope.$watch('ctrl.viewWinControl.scrollPosition',
-                            _updateNav);
+                    localScope.$watch('ctrl.viewWinControl.indexOfFirstVisible', _updateNav);
+                    localScope.$watch('ctrl.viewWinControl.indexOfLastVisible', _updateNav);
+                    localScope.$watch('ctrl.viewWinControl.scrollPosition', _updateNav);
                     localScope.$watch('ctrl.pages.list.length', _updateNav);
 
                     var _fixedScrollPos = function (scrollWidth, start, delta, zoomFactor) {
                         if (zoomFactor != null && zoomFactor * 100 !== 100)
                         {
                             // hack: edge calculates wrong scrollLeft, width etc. when zoomed
-                            return Math.floor(((start * zoomFactor) + delta)
-                                    / zoomFactor);
+                            return Math.floor(((start * zoomFactor) + delta) / zoomFactor);
                         }
                         return start + delta;
                     };
@@ -1390,7 +1372,6 @@
 
                         function _onScrollStart(event)
                         {
-
                             if (!_isMouseEvent(event))
                                 return;
 
@@ -1448,15 +1429,11 @@
                                 // event.stopPropagation();
                                 // event.stopImmediatePropagation();
 
-                                target.removeEventListener('pointermove',
-                                        _onScroll);
-                                target.removeEventListener('pointerup',
-                                        _onScrollEnd);
+                                target.removeEventListener('pointermove', _onScroll);
+                                target.removeEventListener('pointerup', _onScrollEnd);
                                 //scrollable.removeEventListener('pointerout', _onScrollEnd);
-                                target.removeEventListener('lostpointercapture',
-                                        _onScrollEnd);
-                                target.removeEventListener('pointercancel',
-                                        _onScrollEnd);
+                                target.removeEventListener('lostpointercapture', _onScrollEnd);
+                                target.removeEventListener('pointercancel', _onScrollEnd);
 
                                 if (_moved && _capturedPointerId === event.pointerId)
                                 {
@@ -1464,43 +1441,35 @@
                                     event.stopPropagation();
                                     event.stopImmediatePropagation();
 
-                                    target.releasePointerCapture(
-                                            event.pointerId);
+                                    target.releasePointerCapture(event.pointerId);
                                     _onScroll(event);
                                 }
 
-                                scrollable.addEventListener('pointerdown',
-                                        _onScrollStart);
+                                scrollable.addEventListener('pointerdown', _onScrollStart);
                             }
 
-                            scrollable.removeEventListener('pointerdown',
-                                    _onScrollStart);
+                            scrollable.removeEventListener('pointerdown', _onScrollStart);
 
                             target.addEventListener('pointermove', _onScroll);
                             target.addEventListener('pointerup', _onScrollEnd);
                             //scrollable.addEventListener('pointerout', _onScrollEnd, false);
-                            target.addEventListener('lostpointercapture',
-                                    _onScrollEnd);
-                            target.addEventListener('pointercancel',
-                                    _onScrollEnd);
+                            target.addEventListener('lostpointercapture', _onScrollEnd);
+                            target.addEventListener('pointercancel', _onScrollEnd);
                         }
 
-                        scrollable.addEventListener('pointerdown',
-                                _onScrollStart);
+                        scrollable.addEventListener('pointerdown', _onScrollStart);
                     }
 
                     function _getScrollContainer()
                     {
                         if (!ctrl.viewWinControl)
                             return null;
-                        var e = ctrl.viewWinControl.element.querySelector(
-                                '.win-viewport.win-horizontal');
+                        var e = ctrl.viewWinControl.element.querySelector('.win-viewport.win-horizontal');
 
                         if (e && !e._zoomListener)
                         {
                             e._zoomListener = true;
-                            e.addEventListener("MSContentZoom",
-                                    _$updateZoom);
+                            e.addEventListener("MSContentZoom", _$updateZoom);
                         }
 
                         _addMouseDragScroll(e);
@@ -1517,8 +1486,7 @@
 
                     function _getPageElement(idx)
                     {
-                        if (!ctrl.viewWinControl || !ctrl.pages
-                                || !ctrl.pages.list)
+                        if (!ctrl.viewWinControl || !ctrl.pages || !ctrl.pages.list)
                             return null;
                         if (idx == null)
                             return null;
@@ -1562,7 +1530,6 @@
 
 
                     ctrl.ensurePageFocused = function (pageIndex) {
-
                         if (_isFullyVisible(pageIndex))
                             return false;
                         ctrl.focusPage(pageIndex);
@@ -1586,8 +1553,7 @@
                             var _vwc = ctrl.viewWinControl;
                             var width = _vwc.element.clientWidth;
                             // scroll right --> adjust on right side
-                            pixel = pixel - width + _getPageElement(
-                                    pageIndex).offsetWidth
+                            pixel = pixel - width + _getPageElement(pageIndex).offsetWidth
                         }
 
                         pdfViewer.setFocusedPageIndex(pageIndex);
@@ -1687,8 +1653,7 @@
                         if (ctrl.zoom.factor !== newZoom)
                         {
                             ctrl.zoom.factor = newZoom;
-                            ctrl.zoom.zoomed = ctrl.zoom.factor * 100
-                                    !== 100;
+                            ctrl.zoom.zoomed = ctrl.zoom.factor * 100 !== 100;
                             $scope.$evalAsync(function () {
                                 _updateNav();
                             });
