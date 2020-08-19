@@ -48,10 +48,21 @@
     http://cdn.rawgit.com/atanassov/css-zoom/master/Overview.html
     https://developer.mozilla.org/en-US/docs/Web/CSS/zoom
 
-    
+    $scope.$watch('ctrl.element.style.zoom', _updateZoom);
+
+
     https://books.google.de/books?id=eBINBAAAQBAJ&pg=PA638&lpg=PA638&dq=css+%22pinch-zoom%22+%22zoom%22&source=bl&ots=hKYqgVKdXr&sig=OypAWfardHlxbsJ4lIY15XaoceQ&hl=de&sa=X&ved=0ahUKEwiX7rKq2qXZAhVSI1AKHYXnA2I4KBDoAQhSMAU#v=onepage&q=css%20%22pinch-zoom%22%20%22zoom%22&f=false
 
     https://books.google.de/books?id=1Zu98JyQ0i8C&pg=PA432&lpg=PA432&dq=element.ms+Content+Zoom&source=bl&ots=ldDflSj0wz&sig=4zwK4YkbgHN51bwJ-MZ46-jdPz0&hl=de&sa=X&ved=0ahUKEwjnj5bAl6jZAhWJa1AKHYwrBcc4ChDoAQgmMAA#v=onepage&q=element.ms%20Content%20Zoom&f=false
+
+
+
+   https://gist.github.com/kevingessner/5598913
+
+   https://stackoverflow.com/questions/1713771/how-to-detect-page-zoom-level-in-all-modern-browsers
+
+   https://css-tricks.com/almanac/properties/t/touch-action/
+   https://css-tricks.com/almanac/properties/t/touch-action/
 
 
     -->
@@ -80,8 +91,7 @@
             <win-item-template>
                 <div class="pdf_page"
                      ng-init="item.data.triggerLoad(true)"
-                     background-image="item.data.imageSrc"
-                >
+                     background-image="item.data.imageSrc">
                     <div class="loading"><p class="page_index"
                                             ng-bind="item.data.pageIndex + 1"></p>
                         <progress class="win-ring"></progress>
