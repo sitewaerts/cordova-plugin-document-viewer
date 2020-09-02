@@ -1,0 +1,46 @@
+https://www.devexpress.com/Products/NET/Controls/WinRT/PDF-Viewer/
+
+https://github.com/mozilla/pdf.js/blob/master/web/pdf_outline_viewer.js
+https://github.com/mozilla/pdf.js/blob/master/web/pdf_link_service.js
+
+
+https://msdn.microsoft.com/en-us/library/hh920761(v=vs.85).aspx
+http://apprize.info/javascript/microsoft/8.html
+
+https://github.com/winjs/angular-winjs
+http://www.buildwinjs.com/playground/
+
+
+https://blogs.windows.com/buildingapps/2014/02/05/introducing-the-new-hub-control-for-heterogeneous-data/#Wqzy5eoQ2Q2rU0az.97
+https://msdn.microsoft.com/en-us/library/windows/apps/dn255137.aspx
+
+
+https://github.com/winjs/angular-winjs/issues/88
+http://try.buildwinjs.com/tutorial/4Adapters/angular/
+
+
+zoom pinch-zoom mouse vs. touch
+https://www.html5rocks.com/en/mobile/touchandmouse/
+https://cloudup.com/blog/how-we-made-zoom-on-mobile-using-css3-and-js
+https://generatepress.com/forums/topic/google-maps-toggle-disable-scrollenable-pointer-events/
+https://www.w3.org/TR/mediaqueries-4/#mf-interaction
+https://patrickhlauke.github.io/touch/
+
+https://msdn.microsoft.com/en-us/library/hh920761(v=vs.85).aspx
+
+https://msdn.microsoft.com/en-us/library/jj583807(v=vs.85).aspx
+https://msdn.microsoft.com/library/Hh772066
+
+
+https://hospodarets.com/demos/scroll-snap-full-screen/#screen1
+https://projects.lukehaas.me/scrollify/#home
+
+
+- pinch-zoom gesture & tap gesture/click -zoom
+    http://interactjs.io/
+
+- scroll with touch gesture
+    css?
+
+- scroll with mouse via dnd
+    https://github.com/asvd/dragscroll

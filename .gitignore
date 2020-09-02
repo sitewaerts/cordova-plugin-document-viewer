@@ -1,5 +1,4 @@
-/doc/todo.txt
 /build
 *.iml
 /bower_components
-/npm_publish.bat
+/node_modules

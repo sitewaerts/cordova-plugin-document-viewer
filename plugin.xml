@@ -2,13 +2,15 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
         id="cordova-plugin-document-viewer"
         xmlns:android="http://schemas.android.com/apk/res/android"
-        version="0.9.13">
+        version="1.0.0">
     <engines>
         <engine name="cordova" version=">=3.7.0"/>
-        <engine name="cordova-windows" version=">=4.4.0"/>
+        <engine name="cordova-android" version=">=9.0.0"/>
+        <engine name="cordova-ios" version=">=5.1.1"/>
+        <engine name="cordova-windows" version=">=7.0.1"/>
     </engines>
     <name>SitewaertsDocumentViewer</name>
-    <description>Document viewer cordova plugin for iOS, Android and Windows 8.1 + 10</description>
+    <description>Document viewer cordova plugin for iOS, Android and Windows 10</description>
     <author>Felix Schauerte</author>
     <email>schauerte@sitewaerts.de</email>
     <license>MIT</license>
@@ -39,7 +41,9 @@
 
         <!--see http://stackoverflow.com/questions/38200282/android-os-fileuriexposedexception-file-storage-emulated-0-test-txt-exposed-->
         <!--see https://github.com/sitewaerts/cordova-plugin-document-viewer/issues/105-->
-        <framework src="com.android.support:support-v4:27+" />
+<!--        <framework src="com.android.support:support-v4:27+" />-->
+<!--        see https://stackoverflow.com/questions/59429175/migrating-a-cordova-android-project-to-androidx-->
+        <framework src="androidx.appcompat:appcompat:1.0.0" />
 
         <config-file target="AndroidManifest.xml" parent="/manifest/application">
 
