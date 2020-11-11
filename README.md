@@ -1,6 +1,8 @@
 Cordova Document Viewer Plugin
 ============================
 
+!!! This plugin is no longer maintained. For a cross platform pdf viewer take a look at [pdf.js][PDFJS] !!!
+
 A common requirement when developing a cordova based app is to embed a
 performant and secure inline viewer for pdf files which doesn't allow the user
 to extract a copy of the pdf file out of the apps sandbox.
@@ -143,7 +145,7 @@ var options = {
 }
 ```
 
-### Check if a Document File could be shown ###
+### Check if a Viewer File could be shown ###
 ```js
 cordova.plugins.SitewaertsDocumentViewer.canViewDocument(
     url, contentType, options, onPossible, onMissingApp, onImpossible, onError);
@@ -186,7 +188,7 @@ function onError(error){
 ```
 
 
-### Open a Document File ###
+### Open a Viewer File ###
 ```js
 cordova.plugins.SitewaertsDocumentViewer.viewDocument(
     url, mimeType, options, onShow, onClose, onMissingApp, onError, linkHandlers);
