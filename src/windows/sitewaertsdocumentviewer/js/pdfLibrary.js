@@ -18,15 +18,12 @@ pdfLibrary = {
     loadPage: function (pageIndex, pdfDocument, pdfPageRenderingOptions, inMemoryFlag, tempFolder)
     {
         if (inMemoryFlag)
-            return this.loadPageInMemory(pageIndex, pdfDocument,
-                    pdfPageRenderingOptions);
-        return this.loadPageInFile(pageIndex, pdfDocument,
-                pdfPageRenderingOptions, tempFolder);
+            return this.loadPageInMemory(pageIndex, pdfDocument, pdfPageRenderingOptions);
+        return this.loadPageInFile(pageIndex, pdfDocument, pdfPageRenderingOptions, tempFolder);
     },
     loadPageInFile: function (pageIndex, pdfDocument, pdfPageRenderingOptions, tempFolder)
     {
-        pdfPageRenderingOptions = this.__optimizeOptions(
-                pdfPageRenderingOptions);
+        pdfPageRenderingOptions = this.__optimizeOptions(pdfPageRenderingOptions);
 
         function _deleteFile(file)
         {

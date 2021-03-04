@@ -401,8 +401,7 @@
 
         ctrl.close = pdfViewer.close.bind(pdfViewer);
 
-        ctrl.setFocusedPageIndex = pdfViewer.setFocusedPageIndex.bind(
-                pdfViewer);
+        ctrl.setFocusedPageIndex = pdfViewer.setFocusedPageIndex.bind(pdfViewer);
 
         ctrl.error = {
             message: null,
@@ -487,8 +486,7 @@
                     var remove = $scope.$watch(function () {
                         return ctrl.viewWinControl;
                     }, function (viewWinControl) {
-                        if (viewWinControl
-                                && viewWinControl._element)
+                        if (viewWinControl && viewWinControl._element)
                         {
                             remove();
                             resolve(viewWinControl);

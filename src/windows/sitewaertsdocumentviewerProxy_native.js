@@ -71,7 +71,7 @@ function _getContainer(index)
 function _createContainer()
 {
     var viewerIndex = containers.length;
-    var viewerId = viewerIdBase + ".container." + viewerIndex;
+    var viewerId = viewerIdBase + "_" + viewerIndex;
     var iframeId = viewerId + "_iframe";
     var closeId = viewerId + "_close";
 
@@ -103,7 +103,7 @@ function _createContainer()
     viewer.appendChild(close);
     document.body.appendChild(viewer);
 
-    close.onclick=_doClose;
+    close.onclick = _doClose;
 
     var _closeHandler;
 
@@ -132,12 +132,39 @@ function _createContainer()
      * @void
      * @private
      */
-    function _destroy()
+    function _cleanup()
+    {
+        _closeHandler = null;
+        _closeOnPause = null;
+
+        const v = viewer;
+        viewer = null;
+
+        if (v)
+        {
+            v.style.display = 'none';
+            setTimeout(function ()
+            {
+                _destroy(v);
+            }, viewerCloseDelay);
+        }
+        containers[viewerIndex] = null;
+    }
+
+    /**
+     * @param {HTMLElement} viewer
+     * @void
+     * @private
+     */
+    function _destroy(viewer)
     {
         // iframe.src = emptyIFrameSrc;
         // viewer.style.display = 'none';
-        viewer.remove();
-        containers[viewerIndex] = null;
+        if (viewer)
+        {
+            viewer.remove();
+            viewer = null;
+        }
     }
 
     /**
@@ -146,15 +173,10 @@ function _createContainer()
      */
     function _doClose()
     {
-        viewer.style.display = 'none';
-        setTimeout(function ()
-        {
-            _destroy();
-        }, viewerCloseDelay);
-        if (_closeHandler)
-            _closeHandler(); // closed
-        _closeHandler = null;
-        _closeOnPause = null;
+        var ch = _closeHandler;
+        _cleanup();
+        if (ch)
+            ch(); // closed
     }
 
     /**
@@ -182,7 +204,11 @@ function _createContainer()
      */
     function _showPDF(url, options, close)
     {
-        var w = iframe.window || iframe.contentWindow;
+        /**
+         *
+         * @type {Window}
+         */
+        var w = iframe['window'] || iframe.contentWindow;
         w.showPDF(url, options, close);
         viewer.style.display = 'block';
     }
@@ -222,7 +248,7 @@ function _createContainer()
         showPDF: _showPDF,
         prepare: _prepare,
         close: _doClose,
-        cleanup: _destroy,
+        cleanup: _cleanup,
         appSuspend: _appSuspend,
         appResume: _appResume,
         setCloseHandler: _setCloseHandler,
@@ -309,8 +335,6 @@ cordova.commandProxy.add("SitewaertsDocumentViewer", {
 
             var options = params[Args.OPTIONS];
 
-            var currentWindow = window;
-
             var c = _createContainer();
             c.setCloseHandler(function ()
             {
@@ -322,10 +346,13 @@ cordova.commandProxy.add("SitewaertsDocumentViewer", {
 
             function doCloseAsync()
             {
-                currentWindow.setTimeout(function ()
-                {
-                    c.close();
-                }, 100);
+                if (c)
+                    setTimeout(function ()
+                    {
+                        if (c)
+                            c.close();
+                        c = null;
+                    }, 100);
             }
 
 
@@ -337,7 +364,9 @@ cordova.commandProxy.add("SitewaertsDocumentViewer", {
                     successCallback({status: 1}); // 1 = shown
                 } catch (e)
                 {
-                    c.cleanup();
+                    if (c)
+                        c.cleanup();
+                    c = null;
                     errorCallback({status: 0, message: "cannot init frame", error: e});
                 }
             })
@@ -346,6 +375,7 @@ cordova.commandProxy.add("SitewaertsDocumentViewer", {
         {
             if (c)
                 c.cleanup();
+            c = null;
             errorCallback({status: 0, message: "cannot init frame", error: e});
         }
     },
