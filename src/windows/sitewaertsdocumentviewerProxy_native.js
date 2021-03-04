@@ -3,6 +3,14 @@ var PDF = "application/pdf";
 // this dir must be located in www
 var viewerLocation = "sitewaertsdocumentviewer";
 
+var  viewerIFrameSrc = "/www/" + viewerLocation + "/viewer.html";
+
+// avoid loading of apps index.html when source is set to ""
+var  emptyIFrameSrc = "/www/" + viewerLocation + "/empty.html";
+
+// avoid app crash
+var  viewerCloseDelay = 5000;
+
 var Args = {
     URL: "url",
     CONTENT_TYPE: "contentType",
@@ -10,21 +18,25 @@ var Args = {
 };
 
 
-
 var viewerId = "sitewaertsdocumentviewer_windows";
 var iframeId = viewerId + "_iframe";
 var closeId = viewerId + "_close";
 
 
-function _getContainer(create){
+function _getContainer(create)
+{
 
+    /**
+     *
+     * @type {HTMLIFrameElement}
+     */
     var iframe = document.getElementById(iframeId);
     var viewer = document.getElementById(viewerId);
-    var close =  document.getElementById(closeId);
+    var close = document.getElementById(closeId);
 
-    if(!iframe)
+    if (!iframe)
     {
-        if(!create)
+        if (!create)
             return null;
 
         viewer = document.createElement("div");
@@ -35,6 +47,7 @@ function _getContainer(create){
         close.className = "close";
         iframe = document.createElement("iframe");
         iframe.id = iframeId;
+        iframe.src = emptyIFrameSrc;
 
         var body = document.getElementsByTagName("body")[0];
         viewer.appendChild(iframe);
@@ -45,13 +58,17 @@ function _getContainer(create){
     }
 
     var _closeHandler;
-    function _setCloseHandler(closeHandler){
-       _closeHandler = closeHandler;
+
+    function _setCloseHandler(closeHandler)
+    {
+        _closeHandler = closeHandler;
     }
 
     var _closeOnPause;
-    function _setCloseOnPause(closeOnPause){
-       _closeOnPause = closeOnPause === true;
+
+    function _setCloseOnPause(closeOnPause)
+    {
+        _closeOnPause = closeOnPause === true;
     }
 
     /**
@@ -59,49 +76,79 @@ function _getContainer(create){
      */
     function _cleanup()
     {
-        iframe.src = "";
+        iframe.src = emptyIFrameSrc;
         viewer.style.display = 'none';
         _closeOnPause = null;
     }
 
-    function _doClose(){
-        _cleanup();
-        if(_closeHandler)
+    function _doClose()
+    {
+        viewer.style.display = 'none';
+        setTimeout(function ()
+        {
+            _cleanup();
+        }, viewerCloseDelay);
+        if (_closeHandler)
             _closeHandler(); // closed
         _closeHandler = null;
     }
 
-    function _showPDF(url, options, close){
+    function _prepare(callback)
+    {
+        if (iframe.src && iframe.src.endsWith(viewerIFrameSrc))
+        {
+            setTimeout(function ()
+            {
+                _prepare(callback);
+            }, 1000);
+            return;
+        }
+
+        iframe.src = viewerIFrameSrc;
+
+        iframe.onload = function ()
+        {
+            // avoid reloading on close
+            iframe.onload = null;
+            callback();
+        }
+    }
+
+    function _showPDF(url, options, close)
+    {
         var w = iframe.window || iframe.contentWindow;
         w.showPDF(url, options, close);
         viewer.style.display = 'block';
     }
 
-    function _appSuspend(){
+    function _appSuspend()
+    {
         var w = iframe.window || iframe.contentWindow;
-        if(w && w.appSuspend)
+        if (w && w.appSuspend)
             w.appSuspend();
-        if(_closeOnPause)
-             _doClose();
+        if (_closeOnPause)
+            _doClose();
     }
 
-    function _appResume(){
+    function _appResume()
+    {
         var w = iframe.window || iframe.contentWindow;
-        if(w && w.appResume)
+        if (w && w.appResume)
             w.appResume();
     }
 
 
     return {
-        iframe : iframe,
-        viewer : viewer,
-        showPDF : _showPDF,
+        iframe: iframe,
+        viewer: viewer,
+        showPDF: _showPDF,
+        prepare: _prepare,
         close: _doClose,
-        cleanup : _cleanup,
-        appSuspend : _appSuspend,
+        cleanup: _cleanup,
+        appSuspend: _appSuspend,
         appResume: _appResume,
-        setCloseHandler : _setCloseHandler,
-        setCloseOnPause : _setCloseOnPause
+        setCloseHandler: _setCloseHandler,
+        setCloseOnPause: _setCloseOnPause
     };
 }
 
@@ -116,11 +163,12 @@ cordova.commandProxy.add("SitewaertsDocumentViewer", {
     },
     canViewDocument: function (successCallback, errorCallback, params)
     {
-        function _no(message){
+        function _no(message)
+        {
             return {
                 status: 0,
-                message : message,
-                params : params
+                message: message,
+                params: params
             };
         }
 
@@ -168,8 +216,10 @@ cordova.commandProxy.add("SitewaertsDocumentViewer", {
         var contentType = params[Args.CONTENT_TYPE];
         if (contentType !== PDF)
         {
-            errorCallback({status: 0, message: "illegal content type "
-                    + contentType});
+            errorCallback({
+                status: 0, message: "illegal content type "
+                    + contentType
+            });
             return;
         }
 
@@ -179,7 +229,8 @@ cordova.commandProxy.add("SitewaertsDocumentViewer", {
         var currentWindow = window;
 
         var c = _getContainer(true);
-        c.setCloseHandler(function(){
+        c.setCloseHandler(function ()
+        {
             successCallback({status: 0}); // 0 = closed
         });
 
@@ -194,24 +245,18 @@ cordova.commandProxy.add("SitewaertsDocumentViewer", {
             }, 100);
         }
 
-        // sitewaertsdocumentviewer must be located in www
-        c.iframe.src = "/www/" + viewerLocation + "/viewer.html";
 
-        c.iframe.onload = function ()
-        {
-            // avoid reloading on close
-            c.iframe.onload = null;
+        c.prepare(function(){
             try
             {
                 c.showPDF(url, options, doCloseAsync);
                 successCallback({status: 1}); // 1 = shown
-            }
-            catch(e)
+            } catch (e)
             {
                 c.cleanup();
-                errorCallback({status: 0, message: "cannot init frame", error : e});
+                errorCallback({status: 0, message: "cannot init frame", error: e});
             }
-        };
+        })
 
     },
     appPaused: function (successCallback, errorCallback)
@@ -231,14 +276,13 @@ cordova.commandProxy.add("SitewaertsDocumentViewer", {
         var c = _getContainer(false);
         try
         {
-            if(c)
+            if (c)
                 c.close();
             successCallback({status: 0}); // 1 = closed
-        }
-        catch(e)
+        } catch (e)
         {
             c.cleanup();
-            errorCallback({status: 0, message: "cannot close frame", error : e});
+            errorCallback({status: 0, message: "cannot close frame", error: e});
         }
     },
     install: function (successCallback, errorCallback)
@@ -250,16 +294,16 @@ cordova.commandProxy.add("SitewaertsDocumentViewer", {
 // listeners MUST be registered after deviceready event
 // attention: windows app may be never suspended in debug mode!
 // TODO: why are these events no fired in windows app even in release mode?
-document.addEventListener("deviceready", function(){
+document.addEventListener("deviceready", function ()
+{
     document.addEventListener("pause", function ()
     {
         var c = _getContainer(false);
         try
         {
-            if(c)
+            if (c)
                 c.appSuspend();
-        }
-        catch(e)
+        } catch (e)
         {
             window.console.error(e);
         }
@@ -270,10 +314,9 @@ document.addEventListener("deviceready", function(){
         var c = _getContainer(false);
         try
         {
-            if(c)
+            if (c)
                 c.appResume();
-        }
-        catch(e)
+        } catch (e)
         {
             window.console.error(e);
         }

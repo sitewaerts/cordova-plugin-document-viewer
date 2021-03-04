@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-document-viewer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "PDF Document viewer cordova plugin for iOS, Android and Windows 8.1 + 10",
   "license": "MIT",
   "author": "Felix Schauerte",
@@ -30,7 +30,7 @@
   ],
   "engines": {
     "cordovaDependencies": {
-      "1.0.0": {
+      "1.0.1": {
         "cordova": ">=10.0.0",
         "cordova-windows": ">=4.4.0",
         "cordova-android": ">=9.0.0"

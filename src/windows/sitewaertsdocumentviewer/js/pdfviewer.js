@@ -824,11 +824,17 @@
                                             if (generator.canceled)
                                                 return;
 
+                                            // page.setImageSrc(
+                                            //         URL.createObjectURL(
+                                            //                 srcObject,
+                                            //                 {oneTimeOnly: false}),
+                                            //         URL.revokeObjectURL
+                                            // );
                                             page.setImageSrc(
                                                     URL.createObjectURL(
                                                             srcObject,
-                                                            {oneTimeOnly: false}),
-                                                    URL.revokeObjectURL
+                                                            {oneTimeOnly: true}),
+                                                    function(){}
                                             );
                                         });
                                     }
