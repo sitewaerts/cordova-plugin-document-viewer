@@ -47,8 +47,7 @@
         }
     }
 
-    WinJS.Application.onerror = createCommonErrorHandler(
-            'WinJS.Application.onerror');
+    WinJS.Application.onerror = createCommonErrorHandler('WinJS.Application.onerror');
     WinJS.Promise.onerror = createCommonErrorHandler('WinJS.Promise.onerror');
 
 

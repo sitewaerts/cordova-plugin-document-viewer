@@ -144,6 +144,7 @@ function _createContainer()
         console.error('error in iframe', arguments);
         if(_errorHandler)
             _errorHandler.call(arguments);
+        return true; // avoid app crash
     }
 
     /**
@@ -163,7 +164,13 @@ function _createContainer()
             v.style.display = 'none';
             setTimeout(function ()
             {
-                _destroy(v);
+                iframe.src = emptyIFrameSrc;
+                iframe.onload = function(){
+                    setTimeout(function ()
+                    {
+                        _destroy(v);
+                    }, viewerCloseDelay);
+                }
             }, viewerCloseDelay);
         }
         containers[viewerIndex] = null;
