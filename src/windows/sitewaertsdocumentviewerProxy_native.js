@@ -31,6 +31,7 @@ var viewerIdBase = "sitewaertsdocumentviewer_windows";
  * @property {function():void} cleanup,
  * @property {function():void} appSuspend,
  * @property {function():void} appResume,
+ * @property {function(errorHandler:function()):void} setErrorHandler,
  * @property {function(closeHandler:function()):void} setCloseHandler,
  * @property {function(closeOnPause:boolean):void} setCloseOnPause
  */
@@ -104,11 +105,11 @@ function _createContainer()
     document.body.appendChild(viewer);
 
     close.onclick = _doClose;
+    iframe.onerror = _onError;
 
     var _closeHandler;
 
     /**
-     *
      * @param {function():void} closeHandler
      * @private
      */
@@ -126,6 +127,23 @@ function _createContainer()
     function _setCloseOnPause(closeOnPause)
     {
         _closeOnPause = closeOnPause === true;
+    }
+
+
+    var _errorHandler;
+
+    /**
+     * @param {function(error:any):void} errorHandler
+     * @private
+     */
+    function _setErrorHandler(errorHandler){
+        _errorHandler = errorHandler;
+    }
+
+    function _onError(){
+        console.error('error in iframe', arguments);
+        if(_errorHandler)
+            _errorHandler.call(arguments);
     }
 
     /**
@@ -251,6 +269,7 @@ function _createContainer()
         cleanup: _cleanup,
         appSuspend: _appSuspend,
         appResume: _appResume,
+        setErrorHandler: _setErrorHandler,
         setCloseHandler: _setCloseHandler,
         setCloseOnPause: _setCloseOnPause
     };
@@ -336,6 +355,14 @@ cordova.commandProxy.add("SitewaertsDocumentViewer", {
             var options = params[Args.OPTIONS];
 
             var c = _createContainer();
+
+            c.setErrorHandler(function(){
+                if (c)
+                    c.cleanup();
+                c = null;
+
+                errorCallback({status: 0, message: "error in iframe", args: arguments});
+            });
             c.setCloseHandler(function ()
             {
                 successCallback({status: 0}); // 0 = closed
