@@ -3,13 +3,13 @@ var PDF = "application/pdf";
 // this dir must be located in www
 var viewerLocation = "sitewaertsdocumentviewer";
 
-var  viewerIFrameSrc = "/www/" + viewerLocation + "/viewer.html";
+var viewerIFrameSrc = "/www/" + viewerLocation + "/viewer.html";
 
 // avoid loading of apps index.html when source is set to ""
-var  emptyIFrameSrc = "/www/" + viewerLocation + "/empty.html";
+var emptyIFrameSrc = "/www/" + viewerLocation + "/empty.html";
 
 // avoid app crash
-var  viewerCloseDelay = 5000;
+var viewerCloseDelay = 15000;
 
 var Args = {
     URL: "url",
@@ -18,47 +18,100 @@ var Args = {
 };
 
 
-var viewerId = "sitewaertsdocumentviewer_windows";
-var iframeId = viewerId + "_iframe";
-var closeId = viewerId + "_close";
+var viewerIdBase = "sitewaertsdocumentviewer_windows";
+
+/**
+ * @typedef {Object} Container
+ * @property {number} index
+ * @property {HTMLIFrameElement} iframe
+ * @property {HTMLElement} viewer,
+ * @property {function(url:string, options:any, close:function())} showPDF,
+ * @property {function(callback:function()):void} prepare,
+ * @property {function():void} close,
+ * @property {function():void} cleanup,
+ * @property {function():void} appSuspend,
+ * @property {function():void} appResume,
+ * @property {function(closeHandler:function()):void} setCloseHandler,
+ * @property {function(closeOnPause:boolean):void} setCloseOnPause
+ */
+
+/**
+ *
+ * @type {Array<Container | null>}
+ */
+var containers = [];
 
 
-function _getContainer(create)
+/**
+ * @return {Container | null}
+ * @private
+ */
+function _getCurrentContainer()
 {
+    if (containers.length === 0)
+        return null;
+    return containers[containers.length - 1];
+}
 
+/**
+ * @param {number} index
+ * @return {Container | null}
+ * @private
+ */
+function _getContainer(index)
+{
+    return containers[index];
+}
+
+/**
+ *
+ * @return {Container}
+ * @private
+ */
+function _createContainer()
+{
+    var viewerIndex = containers.length;
+    var viewerId = viewerIdBase + ".container." + viewerIndex;
+    var iframeId = viewerId + "_iframe";
+    var closeId = viewerId + "_close";
+
+    /**
+     * @type {HTMLElement}
+     */
+    var viewer = document.getElementById(viewerId) || document.createElement("div");
+
+    // noinspection JSValidateTypes
     /**
      *
      * @type {HTMLIFrameElement}
      */
-    var iframe = document.getElementById(iframeId);
-    var viewer = document.getElementById(viewerId);
-    var close = document.getElementById(closeId);
+    var iframe = document.getElementById(iframeId) || document.createElement("iframe");
 
-    if (!iframe)
-    {
-        if (!create)
-            return null;
+    /**
+     * @type {HTMLElement}
+     */
+    var close = document.getElementById(closeId) || document.createElement("div");
 
-        viewer = document.createElement("div");
-        viewer.id = viewerId;
-        viewer.className = "sitewaertsdocumentviewer windows";
-        close = document.createElement("div");
-        close.id = closeId;
-        close.className = "close";
-        iframe = document.createElement("iframe");
-        iframe.id = iframeId;
-        iframe.src = emptyIFrameSrc;
+    viewer.id = viewerId;
+    viewer.className = "sitewaertsdocumentviewer windows";
+    close.id = closeId;
+    close.className = "close";
+    iframe.id = iframeId;
+    iframe.src = emptyIFrameSrc;
 
-        var body = document.getElementsByTagName("body")[0];
-        viewer.appendChild(iframe);
-        viewer.appendChild(close);
-        body.appendChild(viewer);
+    viewer.appendChild(iframe);
+    viewer.appendChild(close);
+    document.body.appendChild(viewer);
 
-        close.addEventListener("click", _doClose);
-    }
+    close.onclick=_doClose;
 
     var _closeHandler;
 
+    /**
+     *
+     * @param {function():void} closeHandler
+     * @private
+     */
     function _setCloseHandler(closeHandler)
     {
         _closeHandler = closeHandler;
@@ -66,6 +119,10 @@ function _getContainer(create)
 
     var _closeOnPause;
 
+    /**
+     * @param {boolean} closeOnPause
+     * @private
+     */
     function _setCloseOnPause(closeOnPause)
     {
         _closeOnPause = closeOnPause === true;
@@ -73,39 +130,41 @@ function _getContainer(create)
 
     /**
      * @void
+     * @private
      */
-    function _cleanup()
+    function _destroy()
     {
-        iframe.src = emptyIFrameSrc;
-        viewer.style.display = 'none';
-        _closeOnPause = null;
+        // iframe.src = emptyIFrameSrc;
+        // viewer.style.display = 'none';
+        viewer.remove();
+        containers[viewerIndex] = null;
     }
 
+    /**
+     * @void
+     * @private
+     */
     function _doClose()
     {
         viewer.style.display = 'none';
         setTimeout(function ()
         {
-            _cleanup();
+            _destroy();
         }, viewerCloseDelay);
         if (_closeHandler)
             _closeHandler(); // closed
         _closeHandler = null;
+        _closeOnPause = null;
     }
 
+    /**
+     * @param {function():void} callback
+     * @void
+     * @private
+     */
     function _prepare(callback)
     {
-        if (iframe.src && iframe.src.endsWith(viewerIFrameSrc))
-        {
-            setTimeout(function ()
-            {
-                _prepare(callback);
-            }, 1000);
-            return;
-        }
-
         iframe.src = viewerIFrameSrc;
-
         iframe.onload = function ()
         {
             // avoid reloading on close
@@ -114,6 +173,13 @@ function _getContainer(create)
         }
     }
 
+    /**
+     * @param {string} url
+     * @param {any} options
+     * @param {function()} close
+     * @void
+     * @private
+     */
     function _showPDF(url, options, close)
     {
         var w = iframe.window || iframe.contentWindow;
@@ -121,6 +187,10 @@ function _getContainer(create)
         viewer.style.display = 'block';
     }
 
+    /**
+     * @void
+     * @private
+     */
     function _appSuspend()
     {
         var w = iframe.window || iframe.contentWindow;
@@ -130,6 +200,10 @@ function _getContainer(create)
             _doClose();
     }
 
+    /**
+     * @void
+     * @private
+     */
     function _appResume()
     {
         var w = iframe.window || iframe.contentWindow;
@@ -138,18 +212,24 @@ function _getContainer(create)
     }
 
 
-    return {
+    /**
+     *
+     * @type {Container}
+     */
+    var container = {
         iframe: iframe,
         viewer: viewer,
         showPDF: _showPDF,
         prepare: _prepare,
         close: _doClose,
-        cleanup: _cleanup,
+        cleanup: _destroy,
         appSuspend: _appSuspend,
         appResume: _appResume,
         setCloseHandler: _setCloseHandler,
         setCloseOnPause: _setCloseOnPause
     };
+    containers.push(container);
+    return container;
 }
 
 
@@ -198,66 +278,76 @@ cordova.commandProxy.add("SitewaertsDocumentViewer", {
     },
     viewDocument: function (successCallback, errorCallback, params)
     {
-        if (!params || params.length !== 1)
+        try
         {
-            errorCallback({status: 0, message: "missing arguments"});
-            return;
-        }
 
-        params = params[0];
-
-        var url = params[Args.URL];
-        if (!url || typeof url !== "string")
-        {
-            errorCallback({status: 0, message: "missing argument url"});
-            return;
-        }
-
-        var contentType = params[Args.CONTENT_TYPE];
-        if (contentType !== PDF)
-        {
-            errorCallback({
-                status: 0, message: "illegal content type "
-                    + contentType
-            });
-            return;
-        }
-
-
-        var options = params[Args.OPTIONS];
-
-        var currentWindow = window;
-
-        var c = _getContainer(true);
-        c.setCloseHandler(function ()
-        {
-            successCallback({status: 0}); // 0 = closed
-        });
-
-        c.setCloseOnPause(options && options.autoClose && options.autoClose.onPause);
-
-
-        function doCloseAsync()
-        {
-            currentWindow.setTimeout(function ()
+            if (!params || params.length !== 1)
             {
-                c.close();
-            }, 100);
-        }
-
-
-        c.prepare(function(){
-            try
-            {
-                c.showPDF(url, options, doCloseAsync);
-                successCallback({status: 1}); // 1 = shown
-            } catch (e)
-            {
-                c.cleanup();
-                errorCallback({status: 0, message: "cannot init frame", error: e});
+                errorCallback({status: 0, message: "missing arguments"});
+                return;
             }
-        })
 
+            params = params[0];
+
+            var url = params[Args.URL];
+            if (!url || typeof url !== "string")
+            {
+                errorCallback({status: 0, message: "missing argument url"});
+                return;
+            }
+
+            var contentType = params[Args.CONTENT_TYPE];
+            if (contentType !== PDF)
+            {
+                errorCallback({
+                    status: 0, message: "illegal content type "
+                        + contentType
+                });
+                return;
+            }
+
+
+            var options = params[Args.OPTIONS];
+
+            var currentWindow = window;
+
+            var c = _createContainer();
+            c.setCloseHandler(function ()
+            {
+                successCallback({status: 0}); // 0 = closed
+            });
+
+            c.setCloseOnPause(options && options.autoClose && options.autoClose.onPause);
+
+
+            function doCloseAsync()
+            {
+                currentWindow.setTimeout(function ()
+                {
+                    c.close();
+                }, 100);
+            }
+
+
+            c.prepare(function ()
+            {
+                try
+                {
+                    c.showPDF(url, options, doCloseAsync);
+                    successCallback({status: 1}); // 1 = shown
+                } catch (e)
+                {
+                    c.cleanup();
+                    errorCallback({status: 0, message: "cannot init frame", error: e});
+                }
+            })
+
+        } catch (e)
+        {
+            if (c)
+                c.cleanup();
+            errorCallback({status: 0, message: "cannot init frame", error: e});
+        }
     },
     appPaused: function (successCallback, errorCallback)
     {
@@ -273,7 +363,7 @@ cordova.commandProxy.add("SitewaertsDocumentViewer", {
     },
     close: function (successCallback, errorCallback)
     {
-        var c = _getContainer(false);
+        var c = _getCurrentContainer();
         try
         {
             if (c)
@@ -298,7 +388,7 @@ document.addEventListener("deviceready", function ()
 {
     document.addEventListener("pause", function ()
     {
-        var c = _getContainer(false);
+        var c = _getCurrentContainer();
         try
         {
             if (c)
@@ -311,7 +401,7 @@ document.addEventListener("deviceready", function ()
 
     document.addEventListener("resume", function ()
     {
-        var c = _getContainer(false);
+        var c = _getCurrentContainer();
         try
         {
             if (c)
