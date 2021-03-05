@@ -85,7 +85,7 @@
         //     }
         // }
         //
-        return true;
+        //return true;
     };
 
     // var webUIApp = (Windows
@@ -564,6 +564,12 @@
         function ($q, $timeout, $interval, $window, pdfViewer, ViewCtrlBase)
         {
 
+            /**
+             *
+             * @param {angular.IScope} $scope
+             * @param opts
+             * @constructor
+             */
             function ViewCtrlPagesBase($scope, opts)
             {
                 var ctrl = this;
@@ -857,8 +863,7 @@
                             {
                                 try
                                 {
-                                    if (generator.canceled || _generator
-                                        !== generator)
+                                    if (generator.canceled || _generator !== generator || _closeRequested)
                                         return;
 
                                     _dirty = false;
@@ -868,23 +873,32 @@
 
                                     $scope.$evalAsync(function ()
                                     {
-                                        if (generator.canceled)
+                                        if (generator.canceled || _closeRequested)
                                             return;
 
+                                        page.setImageSrc(
+                                                URL.createObjectURL(
+                                                        srcObject,
+                                                        {oneTimeOnly: false}),
+                                                URL.revokeObjectURL
+                                        );
                                         // page.setImageSrc(
                                         //         URL.createObjectURL(
                                         //                 srcObject,
                                         //                 {oneTimeOnly: false}),
-                                        //         URL.revokeObjectURL
+                                        //         function ()
+                                        //         {
+                                        //             // url will be revoked when iframe is closed
+                                        //         }
                                         // );
-                                        page.setImageSrc(
-                                            URL.createObjectURL(
-                                                srcObject,
-                                                {oneTimeOnly: true}),
-                                            function ()
-                                            {
-                                            }
-                                        );
+                                        // page.setImageSrc(
+                                        //     URL.createObjectURL(
+                                        //         srcObject,
+                                        //         {oneTimeOnly: true}),
+                                        //     function ()
+                                        //     {
+                                        //     }
+                                        // );
                                     });
                                 } catch (e)
                                 {
@@ -894,8 +908,7 @@
                             applyError: function (error)
                             {
 
-                                if (generator.canceled || _generator
-                                    !== generator)
+                                if (generator.canceled || _generator !== generator || _closeRequested)
                                     return;
 
                                 window.console.error(error);
@@ -924,14 +937,16 @@
                         // force async exec
                         $scope.$applyAsync(function ()
                         {
-                            if (generator.canceled)
+                            if (_closeRequested)
+                                generator.cancel();
+                            if (generator.canceled || _closeRequested)
                                 return;
 
                             // if (webUIApp)
                             //     webUIApp.addEventListener("suspending",
                             //             _onSuspending);
-                            _unregisterOnSuspending = $scope.$on(
-                                "app.suspending", _onSuspending);
+                            _unregisterOnSuspending = $scope.$on("app.suspending", _onSuspending);
+                            _unregisterOnSuspending = $scope.$on("closing", _onSuspending);
 
                             generator.promise = pdfLibrary.loadPage(
                                 page.pageIndex,
@@ -1809,430 +1824,461 @@
         });
 
 
-    module.factory('pdfViewer', function ($rootScope, $q, log)
-    {
-        var EVENTS = {
-            LOADING_PDF: 'pdf.loading',
-            SHOW_PDF: 'pdf.loaded',
-            ERROR: 'pdf.error'
-        };
-
-        function _cleanupUri(uri)
+    module.factory('pdfViewer',
+        /**
+         *
+         * @param {angular.IScope} $rootScope
+         * @param {angular.IQService} $q
+         * @param log
+         * @return {{}}
+         */
+        function ($rootScope, $q, log)
         {
-            if (!uri || uri.length <= 0)
-                return null;
-
-            // remove double slashes
-            uri = uri.replace(/([^\/:])\/\/([^\/])/g, '$1/$2');
-
-            // ms-appx-web --> ms-appx
-            uri = uri.replace(/^ms-appx-web:\/\//, 'ms-appx://');
-
-            return uri;
-
-        }
-
-
-        var pdfUri;
-        var pdfOptions;
-        var closeHandler;
-        var service = {};
-
-        function _showPdf(args)
-        {
-            pdfUri = args.pdfUri;
-            pdfOptions = args.pdfOptions;
-            closeHandler = args.closeHandler;
-
-            service.doc = {
-                title: pdfOptions.title,
-                file: {}
+            var EVENTS = {
+                LOADING_PDF: 'pdf.loading',
+                SHOW_PDF: 'pdf.loaded',
+                ERROR: 'pdf.error'
             };
 
-            if (!pdfUri)
+            function _cleanupUri(uri)
             {
-                $rootScope.$broadcast(EVENTS.ERROR,
-                    {message: "no file specified"});
-                return;
+                if (!uri || uri.length <= 0)
+                    return null;
+
+                // remove double slashes
+                uri = uri.replace(/([^\/:])\/\/([^\/])/g, '$1/$2');
+
+                // ms-appx-web --> ms-appx
+                uri = uri.replace(/^ms-appx-web:\/\//, 'ms-appx://');
+
+                return uri;
+
             }
 
-            pdfUri = _cleanupUri(pdfUri);
 
-            service.doc.file.uri = pdfUri;
-            $rootScope.$broadcast(EVENTS.LOADING_PDF);
+            var pdfUri;
+            var pdfOptions;
+            var closeHandler;
+            var service = {};
 
-            function _onError(error)
+            function _showPdf(args)
             {
-                if (_closeRequested)
+                pdfUri = args.pdfUri;
+                pdfOptions = args.pdfOptions;
+                closeHandler = args.closeHandler;
+
+                service.doc = {
+                    title: pdfOptions.title,
+                    file: {}
+                };
+
+                if (!pdfUri)
+                {
+                    $rootScope.$broadcast(EVENTS.ERROR,
+                        {message: "no file specified"});
                     return;
-                window.console.error(pdfUri, error);
-                service.doc.error = error;
-                $rootScope.$broadcast(EVENTS.ERROR);
-            }
+                }
 
-            loadFile(pdfUri)
-                .then(function (file)
+                pdfUri = _cleanupUri(pdfUri);
+
+                service.doc.file.uri = pdfUri;
+                $rootScope.$broadcast(EVENTS.LOADING_PDF);
+
+                function _onError(error)
                 {
                     if (_closeRequested)
                         return;
-                    return $q.all([loadPDF(file), loadPDFOutline(pdfUri)]);
-                })
-                .done(function ()
+                    window.console.error(pdfUri, error);
+                    service.doc.error = error;
+                    $rootScope.$broadcast(EVENTS.ERROR);
+                }
+
+                loadFile(pdfUri)
+                    .then(function (file)
+                    {
+                        if (_closeRequested)
+                            return;
+                        return $q.all([loadPDF(file), loadPDFOutline(pdfUri)]);
+                    })
+                    .done(function ()
+                    {
+                        if (_closeRequested)
+                            return;
+                        $rootScope.$broadcast(EVENTS.SHOW_PDF);
+                    }, _onError);
+
+                function loadFile(fileUri)
                 {
-                    if (_closeRequested)
-                        return;
-                    $rootScope.$broadcast(EVENTS.SHOW_PDF);
-                }, _onError);
-
-            function loadFile(fileUri)
-            {
-                var uri = new Windows.Foundation.Uri(fileUri);
-                return Windows.Storage.StorageFile.getFileFromApplicationUriAsync(uri)
-                    .then(
-                        function (file)
-                        {
-                            if(_closeRequested)
-                                return;
-                            // Updating details of file currently loaded
-                            service.doc.file.loaded = file;
-                            $rootScope.$broadcast(EVENTS.LOADING_PDF);
-
-                            return file;
-                        }
-                    );
-
-            }
-
-            function loadPDF(file)
-            {
-                // Loading PDf file from the assets
-
-                // TODO: Password protected file? user should provide a password to open the file
-
-                return pdfLibrary.loadPDF(file).then(
-                    function (pdfDocument)
-                    {
-                        if (_closeRequested)
-                            return;
-
-                        if (!pdfDocument)
-                            throw new Error(
-                                {message: "pdf file cannot be loaded"});
-
-                        // Updating details of file currently loaded
-                        service.doc.file.pdf = pdfDocument;
-                        $rootScope.$broadcast(EVENTS.LOADING_PDF);
-
-                        return getCleanTemp().then(function ()
-                        {
-                            return pdfDocument
-                        });
-                    });
-
-            }
-
-            function loadPDFOutline(fileUri)
-            {
-                // TODO: Password protected file? user should provide a password to open the file
-
-                PDFJS.disableWorker = true;
-                PDFJS.workerSrc = 'js/pdfjs-dist/pdf.worker.js';
-
-                return $q(function (resolve, reject)
-                {
-
-
-                    function onError(error)
-                    {
-                        if (_closeRequested)
-                            return;
-
-                        log.info("cannot load outline for pdf", fileUri,
-                            error);
-                        service.doc.outline = null;
-                        resolve();
-                    }
-
-                    function onSuccess(pdf, outline)
-                    {
-                        if (_closeRequested)
-                            return;
-
-                        /* raw outline is structured like this:
-                         *[
-                         *  {
-                         *   title: string,
-                         *   bold: boolean,
-                         *   italic: boolean,
-                         *   color: rgb Uint8Array,
-                         *   dest: dest obj,
-                         *   url: string,
-                         *   items: array of more items like this
-                         *  },
-                         *  ...
-                         * ]
-                         * */
-
-                        function convertItems(items)
-                        {
-                            if (!items || items.length <= 0)
-                                return;
-
-                            items.forEach(function (item)
+                    var uri = new Windows.Foundation.Uri(fileUri);
+                    return Windows.Storage.StorageFile.getFileFromApplicationUriAsync(uri)
+                        .then(
+                            function (file)
                             {
-                                getPageIndex(item).then(
-                                    function (pageIndex)
-                                    {
-                                        if (pageIndex != null)
-                                            item.pageIndex = pageIndex;
-                                        else
-                                            delete item.pageIndex;
-                                    },
-                                    function (error)
-                                    {
-                                        log.error(
-                                            "cannot determine page index for outline item",
-                                            item, error);
-                                        delete item.pageIndex;
-                                    }
-                                );
-                                convertItems(item.items);
-                            });
-                        }
+                                if (_closeRequested)
+                                    return;
+                                // Updating details of file currently loaded
+                                service.doc.file.loaded = file;
+                                $rootScope.$broadcast(EVENTS.LOADING_PDF);
 
-                        function getPageIndex(item)
-                        {
-                            return $q(function (resolve, reject)
-                            {
-                                var dest = item.dest;
-                                var destProm;
-                                if (typeof dest === 'string')
-                                    destProm = pdf.getDestination(dest);
-                                else
-                                    destProm = Promise.resolve(dest);
-
-                                destProm.then(function (destination)
-                                {
-                                    if (!(destination instanceof Array))
-                                    {
-                                        reject(destination);
-                                        return; // invalid destination
-                                    }
-
-                                    var destRef = destination[0];
-
-                                    pdf.getPageIndex(destRef).then(
-                                        function (pageIndex)
-                                        {
-                                            resolve(pageIndex);
-                                        }, reject);
-                                }, reject);
-                            });
-                        }
-
-                        if (outline && outline.length > 0)
-                        {
-                            outline = angular.copy(outline);
-                            convertItems(outline);
-                            service.doc.outline = outline;
-                        }
-                        else
-                        {
-                            outline = null;
-                            delete service.doc.outline;
-                        }
-
-                        //$rootScope.$broadcast(EVENTS.LOADING_PDF);
-                        resolve();
-                    }
-
-                    PDFJS.getDocument(fileUri).then(
-                        /**
-                         *
-                         * @param {PDFDocumentProxy} pdf
-                         */
-                        function (pdf)
-                        {
-                            if (!_closeRequested)
-                            {
-                                _addCloseable(function ()
-                                {
-                                    pdf.cleanup();
-                                    pdf.destroy();
-                                })
+                                return file;
                             }
+                        );
 
+                }
+
+                function loadPDF(file)
+                {
+                    // Loading PDf file from the assets
+
+                    // TODO: Password protected file? user should provide a password to open the file
+
+                    return pdfLibrary.loadPDF(file).then(
+                        function (pdfDocument)
+                        {
                             if (_closeRequested)
                                 return;
 
-                            pdf.getOutline().then(function (outline)
+                            if (!pdfDocument)
+                                throw new Error(
+                                    {message: "pdf file cannot be loaded"});
+
+                            // Updating details of file currently loaded
+                            service.doc.file.pdf = pdfDocument;
+                            $rootScope.$broadcast(EVENTS.LOADING_PDF);
+
+                            return getCleanTemp().then(function ()
                             {
-                                onSuccess(pdf, outline);
-                            }, onError);
-                        }, onError);
-                });
-            }
-        }
-
-        function _prepareClose(callback)
-        {
-            _closeRequested = true;
-            WinJS.Promise.join(_closeables.map(function (closeable)
-            {
-                try
-                {
-                    if (closeable)
-                        return WinJS.Promise.wrap(closeable()).done(function(){},function (e)
-                        {
-                            console.error("pdfviewer.js: cannot close a closeable", e, closeable);
+                                return pdfDocument
+                            });
                         });
-                    return WinJS.Promise.wrap();
-                } catch (e)
-                {
-                    console.error("pdfviewer.js: cannot close a closeable", e, closeable);
+
                 }
-            })).done(function(){
-                callback();
-            }, function (e)
-            {
-                console.error("pdfviewer.js: cannot close all closeables", e);
-                callback();
 
-            });
-        }
+                function loadPDFOutline(fileUri)
+                {
+                    // TODO: Password protected file? user should provide a password to open the file
 
-        _setHandler({
-            showPDF: function (args)
-            {
-                _showPdf(args);
-            },
-            prepareClose: function (callback)
-            {
-                _prepareClose(callback);
-            },
-            appSuspend: function ()
-            {
-                $rootScope.$broadcast("app.suspend");
-            },
-            appResume: function ()
-            {
-                $rootScope.$broadcast("app.resume");
+                    PDFJS.disableWorker = true;
+                    PDFJS.workerSrc = 'js/pdfjs-dist/pdf.worker.js';
+
+                    return $q(function (resolve, reject)
+                    {
+
+
+                        function onError(error)
+                        {
+                            if (_closeRequested)
+                                return;
+
+                            log.info("cannot load outline for pdf", fileUri,
+                                error);
+                            service.doc.outline = null;
+                            resolve();
+                        }
+
+                        function onSuccess(pdf, outline)
+                        {
+                            if (_closeRequested)
+                                return;
+
+                            /* raw outline is structured like this:
+                             *[
+                             *  {
+                             *   title: string,
+                             *   bold: boolean,
+                             *   italic: boolean,
+                             *   color: rgb Uint8Array,
+                             *   dest: dest obj,
+                             *   url: string,
+                             *   items: array of more items like this
+                             *  },
+                             *  ...
+                             * ]
+                             * */
+
+                            function convertItems(items)
+                            {
+                                if (!items || items.length <= 0)
+                                    return;
+
+                                items.forEach(function (item)
+                                {
+                                    getPageIndex(item).then(
+                                        function (pageIndex)
+                                        {
+                                            if (pageIndex != null)
+                                                item.pageIndex = pageIndex;
+                                            else
+                                                delete item.pageIndex;
+                                        },
+                                        function (error)
+                                        {
+                                            log.error(
+                                                "cannot determine page index for outline item",
+                                                item, error);
+                                            delete item.pageIndex;
+                                        }
+                                    );
+                                    convertItems(item.items);
+                                });
+                            }
+
+                            function getPageIndex(item)
+                            {
+                                return $q(function (resolve, reject)
+                                {
+                                    var dest = item.dest;
+                                    var destProm;
+                                    if (typeof dest === 'string')
+                                        destProm = pdf.getDestination(dest);
+                                    else
+                                        destProm = Promise.resolve(dest);
+
+                                    destProm.then(function (destination)
+                                    {
+                                        if (!(destination instanceof Array))
+                                        {
+                                            reject(destination);
+                                            return; // invalid destination
+                                        }
+
+                                        var destRef = destination[0];
+
+                                        pdf.getPageIndex(destRef).then(
+                                            function (pageIndex)
+                                            {
+                                                resolve(pageIndex);
+                                            }, reject);
+                                    }, reject);
+                                });
+                            }
+
+                            if (outline && outline.length > 0)
+                            {
+                                outline = angular.copy(outline);
+                                convertItems(outline);
+                                service.doc.outline = outline;
+                            }
+                            else
+                            {
+                                outline = null;
+                                delete service.doc.outline;
+                            }
+
+                            //$rootScope.$broadcast(EVENTS.LOADING_PDF);
+                            resolve();
+                        }
+
+                        PDFJS.getDocument(fileUri).then(
+                            /**
+                             *
+                             * @param {PDFDocumentProxy} pdf
+                             */
+                            function (pdf)
+                            {
+                                if (!_closeRequested)
+                                {
+                                    _addCloseable(function ()
+                                    {
+                                        pdf.cleanup();
+                                        pdf.destroy();
+                                    })
+                                }
+
+                                var _outlineReady = new WinJS.Promise(function (resolve, reject)
+                                {
+                                    if (_closeRequested)
+                                        return;
+
+                                    _addCloseable(function ()
+                                    {
+                                        return _outlineReady;
+                                    })
+
+                                    console.log("outline pending")
+                                    pdf.getOutline().then(function (outline)
+                                        {
+                                            console.log("outline ready")
+                                            resolve();
+                                            onSuccess(pdf, outline);
+                                        }, function (error)
+                                        {
+                                            console.log("outline ready", error)
+                                            resolve();
+                                            onError(error)
+                                        }
+                                    );
+                                })
+
+                            }, onError);
+                    });
+                }
             }
+
+            function _prepareClose(callback)
+            {
+                _closeRequested = true;
+                $rootScope.$broadcast("closing");
+                WinJS.Promise.join(_closeables.map(function (closeable)
+                {
+                    try
+                    {
+                        if (closeable)
+                            return WinJS.Promise.wrap(closeable()).done(function ()
+                            {
+                            }, function (e)
+                            {
+                                console.error("pdfviewer.js: cannot close a closeable", e, closeable);
+                            });
+                        return WinJS.Promise.wrap();
+                    } catch (e)
+                    {
+                        console.error("pdfviewer.js: cannot close a closeable", e, closeable);
+                    }
+                })).done(function ()
+                {
+                    WinJS.Application.stop();
+                    setTimeout(callback, 5000); // wait for pdfjs worker cleanup
+               }, function (e)
+                {
+                    console.error("pdfviewer.js: cannot close all closeables", e);
+                    WinJS.Application.stop();
+                    setTimeout(callback, 5000);
+                });
+            }
+
+            _setHandler({
+                showPDF: function (args)
+                {
+                    _showPdf(args);
+                },
+                prepareClose: function (callback)
+                {
+                    _prepareClose(callback);
+                },
+                appSuspend: function ()
+                {
+                    $rootScope.$broadcast("app.suspend");
+                },
+                appResume: function ()
+                {
+                    $rootScope.$broadcast("app.resume");
+                }
+            });
+
+
+            function getCleanTemp()
+            {
+                // clear/create temp folder
+                return WinJS.Application.temp.folder.createFolderAsync(
+                    "pdfViewer",
+                    Windows.Storage.CreationCollisionOption.replaceExisting
+                );
+            }
+
+            service.getCleanTemp = getCleanTemp;
+
+            function getTemp()
+            {
+                // clear/create temp folder
+                return WinJS.Application.temp.folder.createFolderAsync(
+                    "pdfViewer",
+                    Windows.Storage.CreationCollisionOption.openIfExists
+                );
+            }
+
+            service.getTemp = getTemp;
+
+
+            service.close = function ()
+            {
+                closeHandler();
+            };
+
+            service.onPDFLoading = function (handler)
+            {
+                function _handler()
+                {
+                    $rootScope.$applyAsync(handler);
+                }
+
+                if (pdfUri)
+                    _handler();
+                return $rootScope.$on(EVENTS.LOADING_PDF, _handler);
+            };
+
+            service.onPDFLoaded = function (handler)
+            {
+                function _handler()
+                {
+                    $rootScope.$applyAsync(handler);
+                }
+
+                if (service.isPDFLoaded())
+                    _handler();
+                return $rootScope.$on(EVENTS.SHOW_PDF, _handler);
+            };
+
+            service.isPDFLoaded = function ()
+            {
+                return service.doc && service.doc.file && service.doc.file.pdf;
+            };
+
+            service.waitForPDF = function ()
+            {
+                if (service.isPDFLoaded())
+                    return $q.when();
+                return $q(function (resolve, reject)
+                {
+                    var removeLoaded = service.onPDFLoaded(function notify()
+                    {
+                        cleanup();
+                        resolve();
+                    });
+
+                    var removeError = service.onPDFError(function notify()
+                    {
+                        cleanup();
+                        reject();
+                    });
+
+
+                    function cleanup()
+                    {
+                        // if(removeLoaded)
+                        removeLoaded();
+                        // if(removeError)
+                        removeError();
+                    }
+
+                });
+            };
+
+
+            service.onPDFError = function (handler)
+            {
+                function _handler()
+                {
+                    $rootScope.$applyAsync(handler);
+                }
+
+                return $rootScope.$on(EVENTS.ERROR, _handler);
+            };
+
+            var _focusedPageIndex = 0;
+
+            service.setFocusedPageIndex = function (idx)
+            {
+                _focusedPageIndex = idx;
+            };
+
+            service.getFocusedPageIndex = function ()
+            {
+                return _focusedPageIndex;
+            };
+
+            return service;
         });
-
-
-        function getCleanTemp()
-        {
-            // clear/create temp folder
-            return WinJS.Application.temp.folder.createFolderAsync(
-                "pdfViewer",
-                Windows.Storage.CreationCollisionOption.replaceExisting
-            );
-        }
-
-        service.getCleanTemp = getCleanTemp;
-
-        function getTemp()
-        {
-            // clear/create temp folder
-            return WinJS.Application.temp.folder.createFolderAsync(
-                "pdfViewer",
-                Windows.Storage.CreationCollisionOption.openIfExists
-            );
-        }
-
-        service.getTemp = getTemp;
-
-
-        service.close = function ()
-        {
-            closeHandler();
-        };
-
-        service.onPDFLoading = function (handler)
-        {
-            function _handler()
-            {
-                $rootScope.$applyAsync(handler);
-            }
-
-            if (pdfUri)
-                _handler();
-            return $rootScope.$on(EVENTS.LOADING_PDF, _handler);
-        };
-
-        service.onPDFLoaded = function (handler)
-        {
-            function _handler()
-            {
-                $rootScope.$applyAsync(handler);
-            }
-
-            if (service.isPDFLoaded())
-                _handler();
-            return $rootScope.$on(EVENTS.SHOW_PDF, _handler);
-        };
-
-        service.isPDFLoaded = function ()
-        {
-            return service.doc && service.doc.file && service.doc.file.pdf;
-        };
-
-        service.waitForPDF = function ()
-        {
-            if (service.isPDFLoaded())
-                return $q.when();
-            return $q(function (resolve, reject)
-            {
-                var removeLoaded = service.onPDFLoaded(function notify()
-                {
-                    cleanup();
-                    resolve();
-                });
-
-                var removeError = service.onPDFError(function notify()
-                {
-                    cleanup();
-                    reject();
-                });
-
-
-                function cleanup()
-                {
-                    // if(removeLoaded)
-                    removeLoaded();
-                    // if(removeError)
-                    removeError();
-                }
-
-            });
-        };
-
-
-        service.onPDFError = function (handler)
-        {
-            function _handler()
-            {
-                $rootScope.$applyAsync(handler);
-            }
-
-            return $rootScope.$on(EVENTS.ERROR, _handler);
-        };
-
-        var _focusedPageIndex = 0;
-
-        service.setFocusedPageIndex = function (idx)
-        {
-            _focusedPageIndex = idx;
-        };
-
-        service.getFocusedPageIndex = function ()
-        {
-            return _focusedPageIndex;
-        };
-
-        return service;
-    });
 
 
     // =========================================================================

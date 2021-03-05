@@ -71,6 +71,8 @@ pdfLibrary = {
                             Windows.Storage.CreationCollisionOption.replaceExisting)
                             .then(function (filePtr)
                             {
+                                if (_canceled)
+                                    return errorDispatch('canceled');
                                 // created new file
                                 // return the stream
                                 _filePointer = filePtr;
@@ -87,6 +89,9 @@ pdfLibrary = {
                             })
                             .done(function (result)
                             {
+                                if (_canceled)
+                                    return errorDispatch('canceled');
+
                                 completeDispatch(result);
                             }, function (error)
                             {
@@ -100,8 +105,12 @@ pdfLibrary = {
                 try
                 {
 
+                    if (_canceled)
+                        return errorDispatch('canceled');
                     tempFolder.getFileAsync(filename).then(function (filePtr)
                     {
+                        if (_canceled)
+                            return errorDispatch('canceled');
                         // file already exists: reuse it
                         // return no stream (not needed)
                         _filePointer = filePtr;
@@ -118,7 +127,7 @@ pdfLibrary = {
                     // may happen  on file not found (only in VS debugger ??)
                     // see https://social.msdn.microsoft.com/Forums/en-US/d650d547-c054-497d-82b0-3ed6fbe9af28/storagefoldergetfileasync-throws-exception-when-file-doesnt-exist-in-win8-rp?forum=winappswithhtml5
                     if (_canceled)
-                        return errorDispatch(error);
+                        return errorDispatch(e);
                     createFile();
                 }
 
@@ -178,8 +187,7 @@ pdfLibrary = {
                 if (_canceled)
                     return _cancel();
 
-                pdfPage.renderToStreamAsync(imageStream,
-                        pdfPageRenderingOptions)
+                pdfPage.renderToStreamAsync(imageStream, pdfPageRenderingOptions)
                         .then(imageStream.flushAsync.bind(imageStream))
                         .then(function ()
                         {
@@ -230,6 +238,9 @@ pdfLibrary = {
                 out = _getOutputInfo();
                 out.done(function (outputInfo)
                 {
+                    if (_canceled)
+                        return errorDispatch('canceled');
+
                     out = null;
 
                     if (!outputInfo.write && outputInfo.filePointer)
@@ -245,6 +256,8 @@ pdfLibrary = {
                     render = _renderOutput(outputInfo).done(
                             function (result)
                             {
+                                if (_canceled)
+                                    return errorDispatch('canceled');
                                 render = null;
                                 completeDispatch(result);
                             },
