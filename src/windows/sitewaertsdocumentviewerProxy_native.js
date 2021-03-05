@@ -932,9 +932,12 @@ function _createContainerIFrameReusable(url, callback)
                     function doClose()
                     {
                         delete containers[viewerId];
-                        console.info(_info + ': cleanup: removing from dom');
-                        viewer.remove();
-                        viewer = null;
+                        if(viewer)
+                        {
+                            console.info(_info + ': cleanup: removing from dom');
+                            viewer.remove();
+                            viewer = null;
+                        }
                     }
                 }, 2 * 60 * 1000);
         }
