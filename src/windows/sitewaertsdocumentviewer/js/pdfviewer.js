@@ -2138,12 +2138,12 @@
                 })).done(function ()
                 {
                     WinJS.Application.stop();
-                    setTimeout(callback, 5000); // wait for pdfjs worker cleanup
+                    setTimeout(callback, 15000); // wait for pdfjs worker cleanup
                }, function (e)
                 {
                     console.error("pdfviewer.js: cannot close all closeables", e);
                     WinJS.Application.stop();
-                    setTimeout(callback, 5000);
+                    setTimeout(callback, 15000);
                 });
             }
 
