@@ -1,0 +1,30 @@
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>Document Viewer</title>
+    <meta id="viewPortId" name="viewport"
+          content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1"/>
+    <meta http-equiv="Content-Security-Policy"
+          content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; child-src 'self' gap: blob:; img-src 'self' blob:;">
+
+    <script>
+        window.onerror = function (msg, url, line, col, error) {
+            window.console.error('intermediate.html: global error',
+                {msg: msg, url: url, line: line, col: col, error: error});
+            return true;
+        };
+    </script>
+    <style>
+        html, body, iframe{
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+    </style>
+
+</head>
+<body>
+<iframe id="intermediate"  src="./empty.html" onerror="window.onerror"></iframe>
+</body>
+</html>

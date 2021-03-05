@@ -38,5 +38,7 @@
     }
   },
   "devDependencies": {
+    "@types/pdfjs-dist": "^2.1.7",
+    "@types/winjs": "^4.4.0"
   }
 }
