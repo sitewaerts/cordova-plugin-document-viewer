@@ -38,6 +38,8 @@
     }
   },
   "devDependencies": {
+    "@types/angular": "^1.8.1",
+    "@types/angularjs": "^1.5.14-alpha",
     "@types/pdfjs-dist": "^2.1.7",
     "@types/winjs": "^4.4.0"
   }
