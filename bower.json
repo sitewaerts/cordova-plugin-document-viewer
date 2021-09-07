@@ -5,8 +5,7 @@
     "jquery" : "latest",
     "winjs": "latest",
     "angular-winjs": "latest",
-    "angular": "<1.5",
-    "pdfjs-dist": "latest"
+    "angular": "<1.5"
   },
   "private": true
 }

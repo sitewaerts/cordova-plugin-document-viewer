@@ -191,7 +191,7 @@
         <asset src="src/common/js/winjs" target="sitewaertsdocumentviewer/js/winjs" />
         <asset src="src/common/js/angular" target="sitewaertsdocumentviewer/js/angular" />
         <asset src="src/common/js/angular-winjs/js" target="sitewaertsdocumentviewer/js/angular-winjs" />
-        <asset src="src/common/js/pdfjs-dist/build" target="sitewaertsdocumentviewer/js/pdfjs-dist" />
+        <asset src="src/common/js/pdfjs-dist/legacy/build" target="sitewaertsdocumentviewer/js/pdfjs-dist" />
         <asset src="src/common/js/jquery/dist" target="sitewaertsdocumentviewer/js/jquery" />
     </platform>
 

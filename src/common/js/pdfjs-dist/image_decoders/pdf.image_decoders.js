@@ -19,4 +19,8766 @@
  * @licend The above is the entire license notice for the
  * Javascript code in this page
  */
-!function webpackUniversalModuleDefinition(t,r){"object"==typeof exports&&"object"==typeof module?module.exports=r():"function"==typeof define&&define.amd?define("pdfjs-dist/image_decoders/pdf.image_decoders",[],r):"object"==typeof exports?exports["pdfjs-dist/image_decoders/pdf.image_decoders"]=r():t["pdfjs-dist/image_decoders/pdf.image_decoders"]=t.pdfjsImageDecoders=r()}(this,(function(){return(()=>{var t=[,(t,r,i)=>{"use strict";Object.defineProperty(r,"__esModule",{value:!0});r.arrayByteLength=arrayByteLength;r.arraysToBytes=function arraysToBytes(t){var r=t.length;if(1===r&&t[0]instanceof Uint8Array)return t[0];for(var i=0,o=0;o<r;o++)i+=arrayByteLength(t[o]);for(var a=0,c=new Uint8Array(i),u=0;u<r;u++){var l=t[u];l instanceof Uint8Array||(l="string"==typeof l?stringToBytes(l):new Uint8Array(l));var h=l.byteLength;c.set(l,a);a+=h}return c};r.assert=assert;r.bytesToString=function bytesToString(t){assert(null!==t&&"object"===_typeof(t)&&void 0!==t.length,"Invalid argument for bytesToString");var r=t.length,i=8192;if(r<i)return String.fromCharCode.apply(null,t);for(var o=[],a=0;a<r;a+=i){var c=Math.min(a+i,r),u=t.subarray(a,c);o.push(String.fromCharCode.apply(null,u))}return o.join("")};r.createObjectURL=function createObjectURL(t){var r=arguments.length>1&&void 0!==arguments[1]?arguments[1]:"",i=arguments.length>2&&void 0!==arguments[2]&&arguments[2];if(URL.createObjectURL&&!i)return URL.createObjectURL(new Blob([t],{type:r}));for(var o="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",a="data:".concat(r,";base64,"),c=0,u=t.length;c<u;c+=3){var l=255&t[c],h=255&t[c+1],p=255&t[c+2],d=l>>2,m=(3&l)<<4|h>>4,g=c+1<u?(15&h)<<2|p>>6:64,y=c+2<u?63&p:64;a+=o[d]+o[m]+o[g]+o[y]}return a};r.createPromiseCapability=function createPromiseCapability(){var t=Object.create(null),r=!1;Object.defineProperty(t,"settled",{get:function get(){return r}});t.promise=new Promise((function(i,o){t.resolve=function(t){r=!0;i(t)};t.reject=function(t){r=!0;o(t)}}));return t};r.createValidAbsoluteUrl=function createValidAbsoluteUrl(t,r){if(!t)return null;try{var i=r?new URL(t,r):new URL(t);if(function _isValidProtocol(t){if(!t)return!1;switch(t.protocol){case"http:":case"https:":case"ftp:":case"mailto:":case"tel:":return!0;default:return!1}}(i))return i}catch(t){}return null};r.escapeString=function escapeString(t){return t.replace(/([()\\\n\r])/g,(function(t){return"\n"===t?"\\n":"\r"===t?"\\r":"\\".concat(t)}))};r.getModificationDate=function getModificationDate(){var t=arguments.length>0&&void 0!==arguments[0]?arguments[0]:new Date,r=[t.getUTCFullYear().toString(),(t.getUTCMonth()+1).toString().padStart(2,"0"),t.getUTCDate().toString().padStart(2,"0"),t.getUTCHours().toString().padStart(2,"0"),t.getUTCMinutes().toString().padStart(2,"0"),t.getUTCSeconds().toString().padStart(2,"0")];return r.join("")};r.getVerbosityLevel=function getVerbosityLevel(){return a};r.info=function info(t){a>=o.INFOS&&console.log("Info: ".concat(t))};r.isArrayBuffer=function isArrayBuffer(t){return"object"===_typeof(t)&&null!==t&&void 0!==t.byteLength};r.isArrayEqual=function isArrayEqual(t,r){if(t.length!==r.length)return!1;for(var i=0,o=t.length;i<o;i++)if(t[i]!==r[i])return!1;return!0};r.isAscii=function isAscii(t){return/^[\x00-\x7F]*$/.test(t)};r.isBool=function isBool(t){return"boolean"==typeof t};r.isNum=function isNum(t){return"number"==typeof t};r.isSameOrigin=function isSameOrigin(t,r){var i;try{if(!(i=new URL(t)).origin||"null"===i.origin)return!1}catch(t){return!1}var o=new URL(r,i);return i.origin===o.origin};r.isString=function isString(t){return"string"==typeof t};r.objectFromMap=function objectFromMap(t){var r,i=Object.create(null),o=function _createForOfIteratorHelper(t,r){var i;if("undefined"==typeof Symbol||null==t[Symbol.iterator]){if(Array.isArray(t)||(i=_unsupportedIterableToArray(t))||r&&t&&"number"==typeof t.length){i&&(t=i);var o=0,a=function F(){};return{s:a,n:function n(){return o>=t.length?{done:!0}:{done:!1,value:t[o++]}},e:function e(t){throw t},f:a}}throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}var c,u=!0,l=!1;return{s:function s(){i=t[Symbol.iterator]()},n:function n(){var t=i.next();u=t.done;return t},e:function e(t){l=!0;c=t},f:function f(){try{u||null==i.return||i.return()}finally{if(l)throw c}}}}(t);try{for(o.s();!(r=o.n()).done;){var a=(l=r.value,h=2,function _arrayWithHoles(t){if(Array.isArray(t))return t}(l)||function _iterableToArrayLimit(t,r){if("undefined"==typeof Symbol||!(Symbol.iterator in Object(t)))return;var i=[],o=!0,a=!1,c=void 0;try{for(var u,l=t[Symbol.iterator]();!(o=(u=l.next()).done);o=!0){i.push(u.value);if(r&&i.length===r)break}}catch(t){a=!0;c=t}finally{try{o||null==l.return||l.return()}finally{if(a)throw c}}return i}(l,h)||_unsupportedIterableToArray(l,h)||function _nonIterableRest(){throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}()),c=a[0],u=a[1];i[c]=u}}catch(t){o.e(t)}finally{o.f()}var l,h;return i};r.objectSize=function objectSize(t){return Object.keys(t).length};r.removeNullCharacters=function removeNullCharacters(t){if("string"!=typeof t){warn("The argument for removeNullCharacters must be a string.");return t}return t.replace(y,"")};r.setVerbosityLevel=function setVerbosityLevel(t){Number.isInteger(t)&&(a=t)};r.shadow=shadow;r.string32=function string32(t){return String.fromCharCode(t>>24&255,t>>16&255,t>>8&255,255&t)};r.stringToBytes=stringToBytes;r.stringToPDFString=function stringToPDFString(t){var r=t.length,i=[];if("þ"===t[0]&&"ÿ"===t[1])for(var o=2;o<r;o+=2)i.push(String.fromCharCode(t.charCodeAt(o)<<8|t.charCodeAt(o+1)));else if("ÿ"===t[0]&&"þ"===t[1])for(var a=2;a<r;a+=2)i.push(String.fromCharCode(t.charCodeAt(a+1)<<8|t.charCodeAt(a)));else for(var c=0;c<r;++c){var u=_[t.charCodeAt(c)];i.push(u?String.fromCharCode(u):t.charAt(c))}return i.join("")};r.stringToUTF16BEString=function stringToUTF16BEString(t){for(var r=["þÿ"],i=0,o=t.length;i<o;i++){var a=t.charCodeAt(i);r.push(String.fromCharCode(a>>8&255));r.push(String.fromCharCode(255&a))}return r.join("")};r.stringToUTF8String=function stringToUTF8String(t){return decodeURIComponent(escape(t))};r.unreachable=unreachable;r.utf8StringToString=function utf8StringToString(t){return unescape(encodeURIComponent(t))};r.warn=warn;r.VerbosityLevel=r.Util=r.UNSUPPORTED_FEATURES=r.UnknownErrorException=r.UnexpectedResponseException=r.TextRenderingMode=r.StreamType=r.PermissionFlag=r.PasswordResponses=r.PasswordException=r.PageActionEventType=r.OPS=r.MissingPDFException=r.IsLittleEndianCached=r.IsEvalSupportedCached=r.InvalidPDFException=r.ImageKind=r.IDENTITY_MATRIX=r.FormatError=r.FontType=r.FONT_IDENTITY_MATRIX=r.DocumentActionEventType=r.CMapCompressionType=r.BaseException=r.AnnotationType=r.AnnotationStateModelType=r.AnnotationReviewState=r.AnnotationReplyType=r.AnnotationMarkedState=r.AnnotationFlag=r.AnnotationFieldFlag=r.AnnotationBorderStyleType=r.AnnotationActionEventType=r.AbortException=void 0;i(2);function _defineProperties(t,r){for(var i=0;i<r.length;i++){var o=r[i];o.enumerable=o.enumerable||!1;o.configurable=!0;"value"in o&&(o.writable=!0);Object.defineProperty(t,o.key,o)}}function _unsupportedIterableToArray(t,r){if(t){if("string"==typeof t)return _arrayLikeToArray(t,r);var i=Object.prototype.toString.call(t).slice(8,-1);"Object"===i&&t.constructor&&(i=t.constructor.name);return"Map"===i||"Set"===i?Array.from(t):"Arguments"===i||/^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(i)?_arrayLikeToArray(t,r):void 0}}function _arrayLikeToArray(t,r){(null==r||r>t.length)&&(r=t.length);for(var i=0,o=new Array(r);i<r;i++)o[i]=t[i];return o}function _typeof(t){return(_typeof="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function _typeof(t){return typeof t}:function _typeof(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t})(t)}function _classCallCheck(t,r){if(!(t instanceof r))throw new TypeError("Cannot call a class as a function")}function _inherits(t,r){if("function"!=typeof r&&null!==r)throw new TypeError("Super expression must either be null or a function");t.prototype=Object.create(r&&r.prototype,{constructor:{value:t,writable:!0,configurable:!0}});r&&_setPrototypeOf(t,r)}function _setPrototypeOf(t,r){return(_setPrototypeOf=Object.setPrototypeOf||function _setPrototypeOf(t,r){t.__proto__=r;return t})(t,r)}function _createSuper(t){var r=function _isNativeReflectConstruct(){if("undefined"==typeof Reflect||!Reflect.construct)return!1;if(Reflect.construct.sham)return!1;if("function"==typeof Proxy)return!0;try{Boolean.prototype.valueOf.call(Reflect.construct(Boolean,[],(function(){})));return!0}catch(t){return!1}}();return function _createSuperInternal(){var i,o=_getPrototypeOf(t);if(r){var a=_getPrototypeOf(this).constructor;i=Reflect.construct(o,arguments,a)}else i=o.apply(this,arguments);return _possibleConstructorReturn(this,i)}}function _possibleConstructorReturn(t,r){return!r||"object"!==_typeof(r)&&"function"!=typeof r?function _assertThisInitialized(t){if(void 0===t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return t}(t):r}function _getPrototypeOf(t){return(_getPrototypeOf=Object.setPrototypeOf?Object.getPrototypeOf:function _getPrototypeOf(t){return t.__proto__||Object.getPrototypeOf(t)})(t)}r.IDENTITY_MATRIX=[1,0,0,1,0,0];r.FONT_IDENTITY_MATRIX=[.001,0,0,.001,0,0];r.PermissionFlag={PRINT:4,MODIFY_CONTENTS:8,COPY:16,MODIFY_ANNOTATIONS:32,FILL_INTERACTIVE_FORMS:256,COPY_FOR_ACCESSIBILITY:512,ASSEMBLE:1024,PRINT_HIGH_QUALITY:2048};r.TextRenderingMode={FILL:0,STROKE:1,FILL_STROKE:2,INVISIBLE:3,FILL_ADD_TO_PATH:4,STROKE_ADD_TO_PATH:5,FILL_STROKE_ADD_TO_PATH:6,ADD_TO_PATH:7,FILL_STROKE_MASK:3,ADD_TO_PATH_FLAG:4};r.ImageKind={GRAYSCALE_1BPP:1,RGB_24BPP:2,RGBA_32BPP:3};r.AnnotationType={TEXT:1,LINK:2,FREETEXT:3,LINE:4,SQUARE:5,CIRCLE:6,POLYGON:7,POLYLINE:8,HIGHLIGHT:9,UNDERLINE:10,SQUIGGLY:11,STRIKEOUT:12,STAMP:13,CARET:14,INK:15,POPUP:16,FILEATTACHMENT:17,SOUND:18,MOVIE:19,WIDGET:20,SCREEN:21,PRINTERMARK:22,TRAPNET:23,WATERMARK:24,THREED:25,REDACT:26};r.AnnotationStateModelType={MARKED:"Marked",REVIEW:"Review"};r.AnnotationMarkedState={MARKED:"Marked",UNMARKED:"Unmarked"};r.AnnotationReviewState={ACCEPTED:"Accepted",REJECTED:"Rejected",CANCELLED:"Cancelled",COMPLETED:"Completed",NONE:"None"};r.AnnotationReplyType={GROUP:"Group",REPLY:"R"};r.AnnotationFlag={INVISIBLE:1,HIDDEN:2,PRINT:4,NOZOOM:8,NOROTATE:16,NOVIEW:32,READONLY:64,LOCKED:128,TOGGLENOVIEW:256,LOCKEDCONTENTS:512};r.AnnotationFieldFlag={READONLY:1,REQUIRED:2,NOEXPORT:4,MULTILINE:4096,PASSWORD:8192,NOTOGGLETOOFF:16384,RADIO:32768,PUSHBUTTON:65536,COMBO:131072,EDIT:262144,SORT:524288,FILESELECT:1048576,MULTISELECT:2097152,DONOTSPELLCHECK:4194304,DONOTSCROLL:8388608,COMB:16777216,RICHTEXT:33554432,RADIOSINUNISON:33554432,COMMITONSELCHANGE:67108864};r.AnnotationBorderStyleType={SOLID:1,DASHED:2,BEVELED:3,INSET:4,UNDERLINE:5};r.AnnotationActionEventType={E:"Mouse Enter",X:"Mouse Exit",D:"Mouse Down",U:"Mouse Up",Fo:"Focus",Bl:"Blur",PO:"PageOpen",PC:"PageClose",PV:"PageVisible",PI:"PageInvisible",K:"Keystroke",F:"Format",V:"Validate",C:"Calculate"};r.DocumentActionEventType={WC:"WillClose",WS:"WillSave",DS:"DidSave",WP:"WillPrint",DP:"DidPrint"};r.PageActionEventType={O:"PageOpen",C:"PageClose"};r.StreamType={UNKNOWN:"UNKNOWN",FLATE:"FLATE",LZW:"LZW",DCT:"DCT",JPX:"JPX",JBIG:"JBIG",A85:"A85",AHX:"AHX",CCF:"CCF",RLX:"RLX"};r.FontType={UNKNOWN:"UNKNOWN",TYPE1:"TYPE1",TYPE1C:"TYPE1C",CIDFONTTYPE0:"CIDFONTTYPE0",CIDFONTTYPE0C:"CIDFONTTYPE0C",TRUETYPE:"TRUETYPE",CIDFONTTYPE2:"CIDFONTTYPE2",TYPE3:"TYPE3",OPENTYPE:"OPENTYPE",TYPE0:"TYPE0",MMTYPE1:"MMTYPE1"};var o={ERRORS:0,WARNINGS:1,INFOS:5};r.VerbosityLevel=o;r.CMapCompressionType={NONE:0,BINARY:1,STREAM:2};r.OPS={dependency:1,setLineWidth:2,setLineCap:3,setLineJoin:4,setMiterLimit:5,setDash:6,setRenderingIntent:7,setFlatness:8,setGState:9,save:10,restore:11,transform:12,moveTo:13,lineTo:14,curveTo:15,curveTo2:16,curveTo3:17,closePath:18,rectangle:19,stroke:20,closeStroke:21,fill:22,eoFill:23,fillStroke:24,eoFillStroke:25,closeFillStroke:26,closeEOFillStroke:27,endPath:28,clip:29,eoClip:30,beginText:31,endText:32,setCharSpacing:33,setWordSpacing:34,setHScale:35,setLeading:36,setFont:37,setTextRenderingMode:38,setTextRise:39,moveText:40,setLeadingMoveText:41,setTextMatrix:42,nextLine:43,showText:44,showSpacedText:45,nextLineShowText:46,nextLineSetSpacingShowText:47,setCharWidth:48,setCharWidthAndBounds:49,setStrokeColorSpace:50,setFillColorSpace:51,setStrokeColor:52,setStrokeColorN:53,setFillColor:54,setFillColorN:55,setStrokeGray:56,setFillGray:57,setStrokeRGBColor:58,setFillRGBColor:59,setStrokeCMYKColor:60,setFillCMYKColor:61,shadingFill:62,beginInlineImage:63,beginImageData:64,endInlineImage:65,paintXObject:66,markPoint:67,markPointProps:68,beginMarkedContent:69,beginMarkedContentProps:70,endMarkedContent:71,beginCompat:72,endCompat:73,paintFormXObjectBegin:74,paintFormXObjectEnd:75,beginGroup:76,endGroup:77,beginAnnotations:78,endAnnotations:79,beginAnnotation:80,endAnnotation:81,paintJpegXObject:82,paintImageMaskXObject:83,paintImageMaskXObjectGroup:84,paintImageXObject:85,paintInlineImageXObject:86,paintInlineImageXObjectGroup:87,paintImageXObjectRepeat:88,paintImageMaskXObjectRepeat:89,paintSolidColorImageMask:90,constructPath:91};r.UNSUPPORTED_FEATURES={unknown:"unknown",forms:"forms",javaScript:"javaScript",smask:"smask",shadingPattern:"shadingPattern",font:"font",errorTilingPattern:"errorTilingPattern",errorExtGState:"errorExtGState",errorXObject:"errorXObject",errorFontLoadType3:"errorFontLoadType3",errorFontState:"errorFontState",errorFontMissing:"errorFontMissing",errorFontTranslate:"errorFontTranslate",errorColorSpace:"errorColorSpace",errorOperatorList:"errorOperatorList",errorFontToUnicode:"errorFontToUnicode",errorFontLoadNative:"errorFontLoadNative",errorFontGetPath:"errorFontGetPath",errorMarkedContent:"errorMarkedContent"};r.PasswordResponses={NEED_PASSWORD:1,INCORRECT_PASSWORD:2};var a=o.WARNINGS;function warn(t){a>=o.WARNINGS&&console.log("Warning: ".concat(t))}function unreachable(t){throw new Error(t)}function assert(t,r){t||unreachable(r)}function shadow(t,r,i){Object.defineProperty(t,r,{value:i,enumerable:!0,configurable:!0,writable:!1});return i}var c=function BaseExceptionClosure(){function BaseException(t){this.constructor===BaseException&&unreachable("Cannot initialize BaseException.");this.message=t;this.name=this.constructor.name}BaseException.prototype=new Error;BaseException.constructor=BaseException;return BaseException}();r.BaseException=c;var u=function(t){_inherits(PasswordException,t);var r=_createSuper(PasswordException);function PasswordException(t,i){var o;_classCallCheck(this,PasswordException);(o=r.call(this,t)).code=i;return o}return PasswordException}(c);r.PasswordException=u;var l=function(t){_inherits(UnknownErrorException,t);var r=_createSuper(UnknownErrorException);function UnknownErrorException(t,i){var o;_classCallCheck(this,UnknownErrorException);(o=r.call(this,t)).details=i;return o}return UnknownErrorException}(c);r.UnknownErrorException=l;var h=function(t){_inherits(InvalidPDFException,t);var r=_createSuper(InvalidPDFException);function InvalidPDFException(){_classCallCheck(this,InvalidPDFException);return r.apply(this,arguments)}return InvalidPDFException}(c);r.InvalidPDFException=h;var p=function(t){_inherits(MissingPDFException,t);var r=_createSuper(MissingPDFException);function MissingPDFException(){_classCallCheck(this,MissingPDFException);return r.apply(this,arguments)}return MissingPDFException}(c);r.MissingPDFException=p;var d=function(t){_inherits(UnexpectedResponseException,t);var r=_createSuper(UnexpectedResponseException);function UnexpectedResponseException(t,i){var o;_classCallCheck(this,UnexpectedResponseException);(o=r.call(this,t)).status=i;return o}return UnexpectedResponseException}(c);r.UnexpectedResponseException=d;var m=function(t){_inherits(FormatError,t);var r=_createSuper(FormatError);function FormatError(){_classCallCheck(this,FormatError);return r.apply(this,arguments)}return FormatError}(c);r.FormatError=m;var g=function(t){_inherits(AbortException,t);var r=_createSuper(AbortException);function AbortException(){_classCallCheck(this,AbortException);return r.apply(this,arguments)}return AbortException}(c);r.AbortException=g;var y=/\x00/g;function stringToBytes(t){assert("string"==typeof t,"Invalid argument for stringToBytes");for(var r=t.length,i=new Uint8Array(r),o=0;o<r;++o)i[o]=255&t.charCodeAt(o);return i}function arrayByteLength(t){if(void 0!==t.length)return t.length;assert(void 0!==t.byteLength,"arrayByteLength - invalid argument.");return t.byteLength}var v={get value(){return shadow(this,"value",function isLittleEndian(){var t=new Uint8Array(4);t[0]=1;return 1===new Uint32Array(t.buffer,0,1)[0]}())}};r.IsLittleEndianCached=v;var b={get value(){return shadow(this,"value",function isEvalSupported(){try{new Function("");return!0}catch(t){return!1}}())}};r.IsEvalSupportedCached=b;var x=function _toConsumableArray(t){return function _arrayWithoutHoles(t){if(Array.isArray(t))return _arrayLikeToArray(t)}(t)||function _iterableToArray(t){if("undefined"!=typeof Symbol&&Symbol.iterator in Object(t))return Array.from(t)}(t)||_unsupportedIterableToArray(t)||function _nonIterableSpread(){throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}()}(Array(256).keys()).map((function(t){return t.toString(16).padStart(2,"0")})),w=function(){function Util(){_classCallCheck(this,Util)}!function _createClass(t,r,i){r&&_defineProperties(t.prototype,r);i&&_defineProperties(t,i);return t}(Util,null,[{key:"makeHexColor",value:function makeHexColor(t,r,i){return"#".concat(x[t]).concat(x[r]).concat(x[i])}},{key:"transform",value:function transform(t,r){return[t[0]*r[0]+t[2]*r[1],t[1]*r[0]+t[3]*r[1],t[0]*r[2]+t[2]*r[3],t[1]*r[2]+t[3]*r[3],t[0]*r[4]+t[2]*r[5]+t[4],t[1]*r[4]+t[3]*r[5]+t[5]]}},{key:"applyTransform",value:function applyTransform(t,r){return[t[0]*r[0]+t[1]*r[2]+r[4],t[0]*r[1]+t[1]*r[3]+r[5]]}},{key:"applyInverseTransform",value:function applyInverseTransform(t,r){var i=r[0]*r[3]-r[1]*r[2];return[(t[0]*r[3]-t[1]*r[2]+r[2]*r[5]-r[4]*r[3])/i,(-t[0]*r[1]+t[1]*r[0]+r[4]*r[1]-r[5]*r[0])/i]}},{key:"getAxialAlignedBoundingBox",value:function getAxialAlignedBoundingBox(t,r){var i=Util.applyTransform(t,r),o=Util.applyTransform(t.slice(2,4),r),a=Util.applyTransform([t[0],t[3]],r),c=Util.applyTransform([t[2],t[1]],r);return[Math.min(i[0],o[0],a[0],c[0]),Math.min(i[1],o[1],a[1],c[1]),Math.max(i[0],o[0],a[0],c[0]),Math.max(i[1],o[1],a[1],c[1])]}},{key:"inverseTransform",value:function inverseTransform(t){var r=t[0]*t[3]-t[1]*t[2];return[t[3]/r,-t[1]/r,-t[2]/r,t[0]/r,(t[2]*t[5]-t[4]*t[3])/r,(t[4]*t[1]-t[5]*t[0])/r]}},{key:"apply3dTransform",value:function apply3dTransform(t,r){return[t[0]*r[0]+t[1]*r[1]+t[2]*r[2],t[3]*r[0]+t[4]*r[1]+t[5]*r[2],t[6]*r[0]+t[7]*r[1]+t[8]*r[2]]}},{key:"singularValueDecompose2dScale",value:function singularValueDecompose2dScale(t){var r=[t[0],t[2],t[1],t[3]],i=t[0]*r[0]+t[1]*r[2],o=t[0]*r[1]+t[1]*r[3],a=t[2]*r[0]+t[3]*r[2],c=t[2]*r[1]+t[3]*r[3],u=(i+c)/2,l=Math.sqrt(Math.pow(i+c,2)-4*(i*c-a*o))/2,h=u+l||1,p=u-l||1;return[Math.sqrt(h),Math.sqrt(p)]}},{key:"normalizeRect",value:function normalizeRect(t){var r=t.slice(0);if(t[0]>t[2]){r[0]=t[2];r[2]=t[0]}if(t[1]>t[3]){r[1]=t[3];r[3]=t[1]}return r}},{key:"intersect",value:function intersect(t,r){function compare(t,r){return t-r}var i=[t[0],t[2],r[0],r[2]].sort(compare),o=[t[1],t[3],r[1],r[3]].sort(compare),a=[];t=Util.normalizeRect(t);r=Util.normalizeRect(r);if(!(i[0]===t[0]&&i[1]===r[0]||i[0]===r[0]&&i[1]===t[0]))return null;a[0]=i[1];a[2]=i[2];if(!(o[0]===t[1]&&o[1]===r[1]||o[0]===r[1]&&o[1]===t[1]))return null;a[1]=o[1];a[3]=o[2];return a}}]);return Util}();r.Util=w;var _=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,728,711,710,729,733,731,730,732,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,8226,8224,8225,8230,8212,8211,402,8260,8249,8250,8722,8240,8222,8220,8221,8216,8217,8218,8482,64257,64258,321,338,352,376,381,305,322,339,353,382,0,8364]},(t,r,i)=>{"use strict";var o=i(3);if("undefined"==typeof globalThis||!globalThis._pdfjsCompatibilityChecked){"undefined"!=typeof globalThis&&globalThis.Math===Math||(globalThis=i(4));globalThis._pdfjsCompatibilityChecked=!0;!function checkNodeBtoa(){!globalThis.btoa&&o.isNodeJS&&(globalThis.btoa=function(t){return Buffer.from(t,"binary").toString("base64")})}();!function checkNodeAtob(){!globalThis.atob&&o.isNodeJS&&(globalThis.atob=function(t){return Buffer.from(t,"base64").toString("binary")})}();!function checkObjectFromEntries(){Object.fromEntries||i(49)}();!function checkStringPadStart(){String.prototype.padStart||i(82)}();!function checkStringPadEnd(){String.prototype.padEnd||i(88)}();!function checkObjectValues(){Object.values||(Object.values=i(90))}();!function checkObjectEntries(){Object.entries||(Object.entries=i(93))}()}},(t,r)=>{"use strict";Object.defineProperty(r,"__esModule",{value:!0});r.isNodeJS=void 0;function _typeof(t){return(_typeof="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function _typeof(t){return typeof t}:function _typeof(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t})(t)}var i=!("object"!==("undefined"==typeof process?"undefined":_typeof(process))||process+""!="[object process]"||process.versions.nw||process.versions.electron&&process.type&&"browser"!==process.type);r.isNodeJS=i},(t,r,i)=>{i(5);t.exports=i(7)},(t,r,i)=>{i(6)({global:!0},{globalThis:i(7)})},(t,r,i)=>{var o=i(7),a=i(8).f,c=i(22),u=i(25),l=i(26),h=i(36),p=i(48);t.exports=function(t,r){var i,d,m,g,y,v=t.target,b=t.global,x=t.stat;if(i=b?o:x?o[v]||l(v,{}):(o[v]||{}).prototype)for(d in r){g=r[d];m=t.noTargetGet?(y=a(i,d))&&y.value:i[d];if(!p(b?d:v+(x?".":"#")+d,t.forced)&&void 0!==m){if(typeof g==typeof m)continue;h(g,m)}(t.sham||m&&m.sham)&&c(g,"sham",!0);u(i,d,g,t)}}},t=>{var check=function(t){return t&&t.Math==Math&&t};t.exports=check("object"==typeof globalThis&&globalThis)||check("object"==typeof window&&window)||check("object"==typeof self&&self)||check("object"==typeof global&&global)||function(){return this}()||Function("return this")()},(t,r,i)=>{var o=i(9),a=i(11),c=i(12),u=i(13),l=i(17),h=i(19),p=i(20),d=Object.getOwnPropertyDescriptor;r.f=o?d:function getOwnPropertyDescriptor(t,r){t=u(t);r=l(r,!0);if(p)try{return d(t,r)}catch(t){}if(h(t,r))return c(!a.f.call(t,r),t[r])}},(t,r,i)=>{var o=i(10);t.exports=!o((function(){return 7!=Object.defineProperty({},1,{get:function(){return 7}})[1]}))},t=>{t.exports=function(t){try{return!!t()}catch(t){return!0}}},(t,r)=>{"use strict";var i={}.propertyIsEnumerable,o=Object.getOwnPropertyDescriptor,a=o&&!i.call({1:2},1);r.f=a?function propertyIsEnumerable(t){var r=o(this,t);return!!r&&r.enumerable}:i},t=>{t.exports=function(t,r){return{enumerable:!(1&t),configurable:!(2&t),writable:!(4&t),value:r}}},(t,r,i)=>{var o=i(14),a=i(16);t.exports=function(t){return o(a(t))}},(t,r,i)=>{var o=i(10),a=i(15),c="".split;t.exports=o((function(){return!Object("z").propertyIsEnumerable(0)}))?function(t){return"String"==a(t)?c.call(t,""):Object(t)}:Object},t=>{var r={}.toString;t.exports=function(t){return r.call(t).slice(8,-1)}},t=>{t.exports=function(t){if(null==t)throw TypeError("Can't call method on "+t);return t}},(t,r,i)=>{var o=i(18);t.exports=function(t,r){if(!o(t))return t;var i,a;if(r&&"function"==typeof(i=t.toString)&&!o(a=i.call(t)))return a;if("function"==typeof(i=t.valueOf)&&!o(a=i.call(t)))return a;if(!r&&"function"==typeof(i=t.toString)&&!o(a=i.call(t)))return a;throw TypeError("Can't convert object to primitive value")}},t=>{t.exports=function(t){return"object"==typeof t?null!==t:"function"==typeof t}},t=>{var r={}.hasOwnProperty;t.exports=function(t,i){return r.call(t,i)}},(t,r,i)=>{var o=i(9),a=i(10),c=i(21);t.exports=!o&&!a((function(){return 7!=Object.defineProperty(c("div"),"a",{get:function(){return 7}}).a}))},(t,r,i)=>{var o=i(7),a=i(18),c=o.document,u=a(c)&&a(c.createElement);t.exports=function(t){return u?c.createElement(t):{}}},(t,r,i)=>{var o=i(9),a=i(23),c=i(12);t.exports=o?function(t,r,i){return a.f(t,r,c(1,i))}:function(t,r,i){t[r]=i;return t}},(t,r,i)=>{var o=i(9),a=i(20),c=i(24),u=i(17),l=Object.defineProperty;r.f=o?l:function defineProperty(t,r,i){c(t);r=u(r,!0);c(i);if(a)try{return l(t,r,i)}catch(t){}if("get"in i||"set"in i)throw TypeError("Accessors not supported");"value"in i&&(t[r]=i.value);return t}},(t,r,i)=>{var o=i(18);t.exports=function(t){if(!o(t))throw TypeError(String(t)+" is not an object");return t}},(t,r,i)=>{var o=i(7),a=i(22),c=i(19),u=i(26),l=i(27),h=i(29),p=h.get,d=h.enforce,m=String(String).split("String");(t.exports=function(t,r,i,l){var h,p=!!l&&!!l.unsafe,g=!!l&&!!l.enumerable,y=!!l&&!!l.noTargetGet;if("function"==typeof i){"string"!=typeof r||c(i,"name")||a(i,"name",r);(h=d(i)).source||(h.source=m.join("string"==typeof r?r:""))}if(t!==o){p?!y&&t[r]&&(g=!0):delete t[r];g?t[r]=i:a(t,r,i)}else g?t[r]=i:u(r,i)})(Function.prototype,"toString",(function toString(){return"function"==typeof this&&p(this).source||l(this)}))},(t,r,i)=>{var o=i(7),a=i(22);t.exports=function(t,r){try{a(o,t,r)}catch(i){o[t]=r}return r}},(t,r,i)=>{var o=i(28),a=Function.toString;"function"!=typeof o.inspectSource&&(o.inspectSource=function(t){return a.call(t)});t.exports=o.inspectSource},(t,r,i)=>{var o=i(7),a=i(26),c="__core-js_shared__",u=o[c]||a(c,{});t.exports=u},(t,r,i)=>{var o,a,c,u=i(30),l=i(7),h=i(18),p=i(22),d=i(19),m=i(28),g=i(31),y=i(35),v=l.WeakMap;if(u){var b=m.state||(m.state=new v),x=b.get,w=b.has,_=b.set;o=function(t,r){r.facade=t;_.call(b,t,r);return r};a=function(t){return x.call(b,t)||{}};c=function(t){return w.call(b,t)}}else{var S=g("state");y[S]=!0;o=function(t,r){r.facade=t;p(t,S,r);return r};a=function(t){return d(t,S)?t[S]:{}};c=function(t){return d(t,S)}}t.exports={set:o,get:a,has:c,enforce:function(t){return c(t)?a(t):o(t,{})},getterFor:function(t){return function(r){var i;if(!h(r)||(i=a(r)).type!==t)throw TypeError("Incompatible receiver, "+t+" required");return i}}}},(t,r,i)=>{var o=i(7),a=i(27),c=o.WeakMap;t.exports="function"==typeof c&&/native code/.test(a(c))},(t,r,i)=>{var o=i(32),a=i(34),c=o("keys");t.exports=function(t){return c[t]||(c[t]=a(t))}},(t,r,i)=>{var o=i(33),a=i(28);(t.exports=function(t,r){return a[t]||(a[t]=void 0!==r?r:{})})("versions",[]).push({version:"3.9.1",mode:o?"pure":"global",copyright:"© 2021 Denis Pushkarev (zloirock.ru)"})},t=>{t.exports=!1},t=>{var r=0,i=Math.random();t.exports=function(t){return"Symbol("+String(void 0===t?"":t)+")_"+(++r+i).toString(36)}},t=>{t.exports={}},(t,r,i)=>{var o=i(19),a=i(37),c=i(8),u=i(23);t.exports=function(t,r){for(var i=a(r),l=u.f,h=c.f,p=0;p<i.length;p++){var d=i[p];o(t,d)||l(t,d,h(r,d))}}},(t,r,i)=>{var o=i(38),a=i(40),c=i(47),u=i(24);t.exports=o("Reflect","ownKeys")||function ownKeys(t){var r=a.f(u(t)),i=c.f;return i?r.concat(i(t)):r}},(t,r,i)=>{var o=i(39),a=i(7),aFunction=function(t){return"function"==typeof t?t:void 0};t.exports=function(t,r){return arguments.length<2?aFunction(o[t])||aFunction(a[t]):o[t]&&o[t][r]||a[t]&&a[t][r]}},(t,r,i)=>{var o=i(7);t.exports=o},(t,r,i)=>{var o=i(41),a=i(46).concat("length","prototype");r.f=Object.getOwnPropertyNames||function getOwnPropertyNames(t){return o(t,a)}},(t,r,i)=>{var o=i(19),a=i(13),c=i(42).indexOf,u=i(35);t.exports=function(t,r){var i,l=a(t),h=0,p=[];for(i in l)!o(u,i)&&o(l,i)&&p.push(i);for(;r.length>h;)o(l,i=r[h++])&&(~c(p,i)||p.push(i));return p}},(t,r,i)=>{var o=i(13),a=i(43),c=i(45),createMethod=function(t){return function(r,i,u){var l,h=o(r),p=a(h.length),d=c(u,p);if(t&&i!=i){for(;p>d;)if((l=h[d++])!=l)return!0}else for(;p>d;d++)if((t||d in h)&&h[d]===i)return t||d||0;return!t&&-1}};t.exports={includes:createMethod(!0),indexOf:createMethod(!1)}},(t,r,i)=>{var o=i(44),a=Math.min;t.exports=function(t){return t>0?a(o(t),9007199254740991):0}},t=>{var r=Math.ceil,i=Math.floor;t.exports=function(t){return isNaN(t=+t)?0:(t>0?i:r)(t)}},(t,r,i)=>{var o=i(44),a=Math.max,c=Math.min;t.exports=function(t,r){var i=o(t);return i<0?a(i+r,0):c(i,r)}},t=>{t.exports=["constructor","hasOwnProperty","isPrototypeOf","propertyIsEnumerable","toLocaleString","toString","valueOf"]},(t,r)=>{r.f=Object.getOwnPropertySymbols},(t,r,i)=>{var o=i(10),a=/#|\.prototype\./,isForced=function(t,r){var i=u[c(t)];return i==h||i!=l&&("function"==typeof r?o(r):!!r)},c=isForced.normalize=function(t){return String(t).replace(a,".").toLowerCase()},u=isForced.data={},l=isForced.NATIVE="N",h=isForced.POLYFILL="P";t.exports=isForced},(t,r,i)=>{i(50);i(72);var o=i(39);t.exports=o.Object.fromEntries},(t,r,i)=>{"use strict";var o=i(13),a=i(51),c=i(62),u=i(29),l=i(63),h="Array Iterator",p=u.set,d=u.getterFor(h);t.exports=l(Array,"Array",(function(t,r){p(this,{type:h,target:o(t),index:0,kind:r})}),(function(){var t=d(this),r=t.target,i=t.kind,o=t.index++;if(!r||o>=r.length){t.target=void 0;return{value:void 0,done:!0}}return"keys"==i?{value:o,done:!1}:"values"==i?{value:r[o],done:!1}:{value:[o,r[o]],done:!1}}),"values");c.Arguments=c.Array;a("keys");a("values");a("entries")},(t,r,i)=>{var o=i(52),a=i(58),c=i(23),u=o("unscopables"),l=Array.prototype;null==l[u]&&c.f(l,u,{configurable:!0,value:a(null)});t.exports=function(t){l[u][t]=!0}},(t,r,i)=>{var o=i(7),a=i(32),c=i(19),u=i(34),l=i(53),h=i(57),p=a("wks"),d=o.Symbol,m=h?d:d&&d.withoutSetter||u;t.exports=function(t){c(p,t)&&(l||"string"==typeof p[t])||(l&&c(d,t)?p[t]=d[t]:p[t]=m("Symbol."+t));return p[t]}},(t,r,i)=>{var o=i(54),a=i(55),c=i(10);t.exports=!!Object.getOwnPropertySymbols&&!c((function(){return!Symbol.sham&&(o?38===a:a>37&&a<41)}))},(t,r,i)=>{var o=i(15),a=i(7);t.exports="process"==o(a.process)},(t,r,i)=>{var o,a,c=i(7),u=i(56),l=c.process,h=l&&l.versions,p=h&&h.v8;p?a=(o=p.split("."))[0]+o[1]:u&&(!(o=u.match(/Edge\/(\d+)/))||o[1]>=74)&&(o=u.match(/Chrome\/(\d+)/))&&(a=o[1]);t.exports=a&&+a},(t,r,i)=>{var o=i(38);t.exports=o("navigator","userAgent")||""},(t,r,i)=>{var o=i(53);t.exports=o&&!Symbol.sham&&"symbol"==typeof Symbol.iterator},(t,r,i)=>{var o,a=i(24),c=i(59),u=i(46),l=i(35),h=i(61),p=i(21),d=i(31),m=d("IE_PROTO"),EmptyConstructor=function(){},scriptTag=function(t){return"<script>"+t+"</"+"script>"},NullProtoObject=function(){try{o=document.domain&&new ActiveXObject("htmlfile")}catch(t){}NullProtoObject=o?function(t){t.write(scriptTag(""));t.close();var r=t.parentWindow.Object;t=null;return r}(o):function(){var t,r=p("iframe");r.style.display="none";h.appendChild(r);r.src=String("javascript:");(t=r.contentWindow.document).open();t.write(scriptTag("document.F=Object"));t.close();return t.F}();for(var t=u.length;t--;)delete NullProtoObject.prototype[u[t]];return NullProtoObject()};l[m]=!0;t.exports=Object.create||function create(t,r){var i;if(null!==t){EmptyConstructor.prototype=a(t);i=new EmptyConstructor;EmptyConstructor.prototype=null;i[m]=t}else i=NullProtoObject();return void 0===r?i:c(i,r)}},(t,r,i)=>{var o=i(9),a=i(23),c=i(24),u=i(60);t.exports=o?Object.defineProperties:function defineProperties(t,r){c(t);for(var i,o=u(r),l=o.length,h=0;l>h;)a.f(t,i=o[h++],r[i]);return t}},(t,r,i)=>{var o=i(41),a=i(46);t.exports=Object.keys||function keys(t){return o(t,a)}},(t,r,i)=>{var o=i(38);t.exports=o("document","documentElement")},t=>{t.exports={}},(t,r,i)=>{"use strict";var o=i(6),a=i(64),c=i(66),u=i(70),l=i(69),h=i(22),p=i(25),d=i(52),m=i(33),g=i(62),y=i(65),v=y.IteratorPrototype,b=y.BUGGY_SAFARI_ITERATORS,x=d("iterator"),w="keys",_="values",S="entries",returnThis=function(){return this};t.exports=function(t,r,i,d,y,C,T){a(i,r,d);var P,I,k,getIterationMethod=function(t){if(t===y&&B)return B;if(!b&&t in A)return A[t];switch(t){case w:return function keys(){return new i(this,t)};case _:return function values(){return new i(this,t)};case S:return function entries(){return new i(this,t)}}return function(){return new i(this)}},O=r+" Iterator",E=!1,A=t.prototype,R=A[x]||A["@@iterator"]||y&&A[y],B=!b&&R||getIterationMethod(y),D="Array"==r&&A.entries||R;if(D){P=c(D.call(new t));if(v!==Object.prototype&&P.next){m||c(P)===v||(u?u(P,v):"function"!=typeof P[x]&&h(P,x,returnThis));l(P,O,!0,!0);m&&(g[O]=returnThis)}}if(y==_&&R&&R.name!==_){E=!0;B=function values(){return R.call(this)}}m&&!T||A[x]===B||h(A,x,B);g[r]=B;if(y){I={values:getIterationMethod(_),keys:C?B:getIterationMethod(w),entries:getIterationMethod(S)};if(T)for(k in I)(b||E||!(k in A))&&p(A,k,I[k]);else o({target:r,proto:!0,forced:b||E},I)}return I}},(t,r,i)=>{"use strict";var o=i(65).IteratorPrototype,a=i(58),c=i(12),u=i(69),l=i(62),returnThis=function(){return this};t.exports=function(t,r,i){var h=r+" Iterator";t.prototype=a(o,{next:c(1,i)});u(t,h,!1,!0);l[h]=returnThis;return t}},(t,r,i)=>{"use strict";var o,a,c,u=i(10),l=i(66),h=i(22),p=i(19),d=i(52),m=i(33),g=d("iterator"),y=!1;[].keys&&("next"in(c=[].keys())?(a=l(l(c)))!==Object.prototype&&(o=a):y=!0);var v=null==o||u((function(){var t={};return o[g].call(t)!==t}));v&&(o={});m&&!v||p(o,g)||h(o,g,(function(){return this}));t.exports={IteratorPrototype:o,BUGGY_SAFARI_ITERATORS:y}},(t,r,i)=>{var o=i(19),a=i(67),c=i(31),u=i(68),l=c("IE_PROTO"),h=Object.prototype;t.exports=u?Object.getPrototypeOf:function(t){t=a(t);return o(t,l)?t[l]:"function"==typeof t.constructor&&t instanceof t.constructor?t.constructor.prototype:t instanceof Object?h:null}},(t,r,i)=>{var o=i(16);t.exports=function(t){return Object(o(t))}},(t,r,i)=>{var o=i(10);t.exports=!o((function(){function F(){}F.prototype.constructor=null;return Object.getPrototypeOf(new F)!==F.prototype}))},(t,r,i)=>{var o=i(23).f,a=i(19),c=i(52)("toStringTag");t.exports=function(t,r,i){t&&!a(t=i?t:t.prototype,c)&&o(t,c,{configurable:!0,value:r})}},(t,r,i)=>{var o=i(24),a=i(71);t.exports=Object.setPrototypeOf||("__proto__"in{}?function(){var t,r=!1,i={};try{(t=Object.getOwnPropertyDescriptor(Object.prototype,"__proto__").set).call(i,[]);r=i instanceof Array}catch(t){}return function setPrototypeOf(i,c){o(i);a(c);r?t.call(i,c):i.__proto__=c;return i}}():void 0)},(t,r,i)=>{var o=i(18);t.exports=function(t){if(!o(t)&&null!==t)throw TypeError("Can't set "+String(t)+" as a prototype");return t}},(t,r,i)=>{var o=i(6),a=i(73),c=i(81);o({target:"Object",stat:!0},{fromEntries:function fromEntries(t){var r={};a(t,(function(t,i){c(r,t,i)}),{AS_ENTRIES:!0});return r}})},(t,r,i)=>{var o=i(24),a=i(74),c=i(43),u=i(75),l=i(77),h=i(80),Result=function(t,r){this.stopped=t;this.result=r};t.exports=function(t,r,i){var p,d,m,g,y,v,b,x=i&&i.that,w=!(!i||!i.AS_ENTRIES),_=!(!i||!i.IS_ITERATOR),S=!(!i||!i.INTERRUPTED),C=u(r,x,1+w+S),stop=function(t){p&&h(p);return new Result(!0,t)},callFn=function(t){if(w){o(t);return S?C(t[0],t[1],stop):C(t[0],t[1])}return S?C(t,stop):C(t)};if(_)p=t;else{if("function"!=typeof(d=l(t)))throw TypeError("Target is not iterable");if(a(d)){for(m=0,g=c(t.length);g>m;m++)if((y=callFn(t[m]))&&y instanceof Result)return y;return new Result(!1)}p=d.call(t)}v=p.next;for(;!(b=v.call(p)).done;){try{y=callFn(b.value)}catch(t){h(p);throw t}if("object"==typeof y&&y&&y instanceof Result)return y}return new Result(!1)}},(t,r,i)=>{var o=i(52),a=i(62),c=o("iterator"),u=Array.prototype;t.exports=function(t){return void 0!==t&&(a.Array===t||u[c]===t)}},(t,r,i)=>{var o=i(76);t.exports=function(t,r,i){o(t);if(void 0===r)return t;switch(i){case 0:return function(){return t.call(r)};case 1:return function(i){return t.call(r,i)};case 2:return function(i,o){return t.call(r,i,o)};case 3:return function(i,o,a){return t.call(r,i,o,a)}}return function(){return t.apply(r,arguments)}}},t=>{t.exports=function(t){if("function"!=typeof t)throw TypeError(String(t)+" is not a function");return t}},(t,r,i)=>{var o=i(78),a=i(62),c=i(52)("iterator");t.exports=function(t){if(null!=t)return t[c]||t["@@iterator"]||a[o(t)]}},(t,r,i)=>{var o=i(79),a=i(15),c=i(52)("toStringTag"),u="Arguments"==a(function(){return arguments}());t.exports=o?a:function(t){var r,i,o;return void 0===t?"Undefined":null===t?"Null":"string"==typeof(i=function(t,r){try{return t[r]}catch(t){}}(r=Object(t),c))?i:u?a(r):"Object"==(o=a(r))&&"function"==typeof r.callee?"Arguments":o}},(t,r,i)=>{var o={};o[i(52)("toStringTag")]="z";t.exports="[object z]"===String(o)},(t,r,i)=>{var o=i(24);t.exports=function(t){var r=t.return;if(void 0!==r)return o(r.call(t)).value}},(t,r,i)=>{"use strict";var o=i(17),a=i(23),c=i(12);t.exports=function(t,r,i){var u=o(r);u in t?a.f(t,u,c(0,i)):t[u]=i}},(t,r,i)=>{i(83);var o=i(87);t.exports=o("String","padStart")},(t,r,i)=>{"use strict";var o=i(6),a=i(84).start;o({target:"String",proto:!0,forced:i(86)},{padStart:function padStart(t){return a(this,t,arguments.length>1?arguments[1]:void 0)}})},(t,r,i)=>{var o=i(43),a=i(85),c=i(16),u=Math.ceil,createMethod=function(t){return function(r,i,l){var h,p,d=String(c(r)),m=d.length,g=void 0===l?" ":String(l),y=o(i);if(y<=m||""==g)return d;h=y-m;(p=a.call(g,u(h/g.length))).length>h&&(p=p.slice(0,h));return t?d+p:p+d}};t.exports={start:createMethod(!1),end:createMethod(!0)}},(t,r,i)=>{"use strict";var o=i(44),a=i(16);t.exports="".repeat||function repeat(t){var r=String(a(this)),i="",c=o(t);if(c<0||c==1/0)throw RangeError("Wrong number of repetitions");for(;c>0;(c>>>=1)&&(r+=r))1&c&&(i+=r);return i}},(t,r,i)=>{var o=i(56);t.exports=/Version\/10\.\d+(\.\d+)?( Mobile\/\w+)? Safari\//.test(o)},(t,r,i)=>{var o=i(7),a=i(75),c=Function.call;t.exports=function(t,r,i){return a(c,o[t].prototype[r],i)}},(t,r,i)=>{i(89);var o=i(87);t.exports=o("String","padEnd")},(t,r,i)=>{"use strict";var o=i(6),a=i(84).end;o({target:"String",proto:!0,forced:i(86)},{padEnd:function padEnd(t){return a(this,t,arguments.length>1?arguments[1]:void 0)}})},(t,r,i)=>{i(91);var o=i(39);t.exports=o.Object.values},(t,r,i)=>{var o=i(6),a=i(92).values;o({target:"Object",stat:!0},{values:function values(t){return a(t)}})},(t,r,i)=>{var o=i(9),a=i(60),c=i(13),u=i(11).f,createMethod=function(t){return function(r){for(var i,l=c(r),h=a(l),p=h.length,d=0,m=[];p>d;){i=h[d++];o&&!u.call(l,i)||m.push(t?[i,l[i]]:l[i])}return m}};t.exports={entries:createMethod(!0),values:createMethod(!1)}},(t,r,i)=>{i(94);var o=i(39);t.exports=o.Object.entries},(t,r,i)=>{var o=i(6),a=i(92).entries;o({target:"Object",stat:!0},{entries:function entries(t){return a(t)}})},(t,r,i)=>{"use strict";function _typeof(t){return(_typeof="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function _typeof(t){return typeof t}:function _typeof(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t})(t)}Object.defineProperty(r,"__esModule",{value:!0});r.Jbig2Image=void 0;var o=i(1),a=i(96),c=i(100),u=i(101);function _setPrototypeOf(t,r){return(_setPrototypeOf=Object.setPrototypeOf||function _setPrototypeOf(t,r){t.__proto__=r;return t})(t,r)}function _createSuper(t){var r=function _isNativeReflectConstruct(){if("undefined"==typeof Reflect||!Reflect.construct)return!1;if(Reflect.construct.sham)return!1;if("function"==typeof Proxy)return!0;try{Boolean.prototype.valueOf.call(Reflect.construct(Boolean,[],(function(){})));return!0}catch(t){return!1}}();return function _createSuperInternal(){var i,o=_getPrototypeOf(t);if(r){var a=_getPrototypeOf(this).constructor;i=Reflect.construct(o,arguments,a)}else i=o.apply(this,arguments);return _possibleConstructorReturn(this,i)}}function _possibleConstructorReturn(t,r){return!r||"object"!==_typeof(r)&&"function"!=typeof r?function _assertThisInitialized(t){if(void 0===t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return t}(t):r}function _getPrototypeOf(t){return(_getPrototypeOf=Object.setPrototypeOf?Object.getPrototypeOf:function _getPrototypeOf(t){return t.__proto__||Object.getPrototypeOf(t)})(t)}var l=function(t){!function _inherits(t,r){if("function"!=typeof r&&null!==r)throw new TypeError("Super expression must either be null or a function");t.prototype=Object.create(r&&r.prototype,{constructor:{value:t,writable:!0,configurable:!0}});r&&_setPrototypeOf(t,r)}(Jbig2Error,t);var r=_createSuper(Jbig2Error);function Jbig2Error(t){!function _classCallCheck(t,r){if(!(t instanceof r))throw new TypeError("Cannot call a class as a function")}(this,Jbig2Error);return r.call(this,"JBIG2 error: ".concat(t))}return Jbig2Error}(o.BaseException),h=function Jbig2ImageClosure(){function ContextCache(){}ContextCache.prototype={getContexts:function getContexts(t){return t in this?this[t]:this[t]=new Int8Array(65536)}};function DecodingContext(t,r,i){this.data=t;this.start=r;this.end=i}DecodingContext.prototype={get decoder(){var t=new c.ArithmeticDecoder(this.data,this.start,this.end);return(0,o.shadow)(this,"decoder",t)},get contextCache(){var t=new ContextCache;return(0,o.shadow)(this,"contextCache",t)}};function decodeInteger(t,r,i){var o=t.getContexts(r),a=1;function readBits(t){for(var r=0,c=0;c<t;c++){var u=i.readBit(o,a);a=a<256?a<<1|u:511&(a<<1|u)|256;r=r<<1|u}return r>>>0}var c=readBits(1),u=readBits(1)?readBits(1)?readBits(1)?readBits(1)?readBits(1)?readBits(32)+4436:readBits(12)+340:readBits(8)+84:readBits(6)+20:readBits(4)+4:readBits(2);return 0===c?u:u>0?-u:null}function decodeIAID(t,r,i){for(var o=t.getContexts("IAID"),a=1,c=0;c<i;c++){a=a<<1|r.readBit(o,a)}return i<31?a&(1<<i)-1:2147483647&a}var t=["SymbolDictionary",null,null,null,"IntermediateTextRegion",null,"ImmediateTextRegion","ImmediateLosslessTextRegion",null,null,null,null,null,null,null,null,"PatternDictionary",null,null,null,"IntermediateHalftoneRegion",null,"ImmediateHalftoneRegion","ImmediateLosslessHalftoneRegion",null,null,null,null,null,null,null,null,null,null,null,null,"IntermediateGenericRegion",null,"ImmediateGenericRegion","ImmediateLosslessGenericRegion","IntermediateGenericRefinementRegion",null,"ImmediateGenericRefinementRegion","ImmediateLosslessGenericRefinementRegion",null,null,null,null,"PageInformation","EndOfPage","EndOfStripe","EndOfFile","Profiles","Tables",null,null,null,null,null,null,null,null,"Extension"],r=[[{x:-1,y:-2},{x:0,y:-2},{x:1,y:-2},{x:-2,y:-1},{x:-1,y:-1},{x:0,y:-1},{x:1,y:-1},{x:2,y:-1},{x:-4,y:0},{x:-3,y:0},{x:-2,y:0},{x:-1,y:0}],[{x:-1,y:-2},{x:0,y:-2},{x:1,y:-2},{x:2,y:-2},{x:-2,y:-1},{x:-1,y:-1},{x:0,y:-1},{x:1,y:-1},{x:2,y:-1},{x:-3,y:0},{x:-2,y:0},{x:-1,y:0}],[{x:-1,y:-2},{x:0,y:-2},{x:1,y:-2},{x:-2,y:-1},{x:-1,y:-1},{x:0,y:-1},{x:1,y:-1},{x:-2,y:0},{x:-1,y:0}],[{x:-3,y:-1},{x:-2,y:-1},{x:-1,y:-1},{x:0,y:-1},{x:1,y:-1},{x:-4,y:0},{x:-3,y:0},{x:-2,y:0},{x:-1,y:0}]],i=[{coding:[{x:0,y:-1},{x:1,y:-1},{x:-1,y:0}],reference:[{x:0,y:-1},{x:1,y:-1},{x:-1,y:0},{x:0,y:0},{x:1,y:0},{x:-1,y:1},{x:0,y:1},{x:1,y:1}]},{coding:[{x:-1,y:-1},{x:0,y:-1},{x:1,y:-1},{x:-1,y:0}],reference:[{x:0,y:-1},{x:-1,y:0},{x:0,y:0},{x:1,y:0},{x:0,y:1},{x:1,y:1}]}],h=[39717,1941,229,405],p=[32,8];function decodeBitmap(t,i,o,a,c,u,l,p){if(t){return decodeMMRBitmap(new Reader(p.data,p.start,p.end),i,o,!1)}if(0===a&&!u&&!c&&4===l.length&&3===l[0].x&&-1===l[0].y&&-3===l[1].x&&-1===l[1].y&&2===l[2].x&&-2===l[2].y&&-2===l[3].x&&-2===l[3].y)return function decodeBitmapTemplate0(t,r,i){var o,a,c,u,l,h,p,d=i.decoder,m=i.contextCache.getContexts("GB"),g=[];for(a=0;a<r;a++){l=g[a]=new Uint8Array(t);h=a<1?l:g[a-1];o=(p=a<2?l:g[a-2])[0]<<13|p[1]<<12|p[2]<<11|h[0]<<7|h[1]<<6|h[2]<<5|h[3]<<4;for(c=0;c<t;c++){l[c]=u=d.readBit(m,o);o=(31735&o)<<1|(c+3<t?p[c+3]<<11:0)|(c+4<t?h[c+4]<<4:0)|u}}return g}(i,o,p);var d=!!u,m=r[a].concat(l);m.sort((function(t,r){return t.y-r.y||t.x-r.x}));var g,y,v=m.length,b=new Int8Array(v),x=new Int8Array(v),w=[],_=0,S=0,C=0,T=0;for(y=0;y<v;y++){b[y]=m[y].x;x[y]=m[y].y;S=Math.min(S,m[y].x);C=Math.max(C,m[y].x);T=Math.min(T,m[y].y);y<v-1&&m[y].y===m[y+1].y&&m[y].x===m[y+1].x-1?_|=1<<v-1-y:w.push(y)}var P=w.length,I=new Int8Array(P),k=new Int8Array(P),O=new Uint16Array(P);for(g=0;g<P;g++){y=w[g];I[g]=m[y].x;k[g]=m[y].y;O[g]=1<<v-1-y}for(var E,A,R,B,D,L=-S,M=-T,U=i-C,j=h[a],N=new Uint8Array(i),H=[],z=p.decoder,X=p.contextCache.getContexts("GB"),G=0,Y=0,q=0;q<o;q++){if(c){if(G^=z.readBit(X,j)){H.push(N);continue}}N=new Uint8Array(N);H.push(N);for(E=0;E<i;E++)if(d&&u[q][E])N[E]=0;else{if(E>=L&&E<U&&q>=M){Y=Y<<1&_;for(y=0;y<P;y++){A=q+k[y];R=E+I[y];(B=H[A][R])&&(Y|=B=O[y])}}else{Y=0;D=v-1;for(y=0;y<v;y++,D--)(R=E+b[y])>=0&&R<i&&(A=q+x[y])>=0&&(B=H[A][R])&&(Y|=B<<D)}var J=z.readBit(X,Y);N[E]=J}}return H}function decodeRefinement(t,r,o,a,c,u,h,d,m){var g=i[o].coding;0===o&&(g=g.concat([d[0]]));var y,v=g.length,b=new Int32Array(v),x=new Int32Array(v);for(y=0;y<v;y++){b[y]=g[y].x;x[y]=g[y].y}var w=i[o].reference;0===o&&(w=w.concat([d[1]]));var _=w.length,S=new Int32Array(_),C=new Int32Array(_);for(y=0;y<_;y++){S[y]=w[y].x;C[y]=w[y].y}for(var T=a[0].length,P=a.length,I=p[o],k=[],O=m.decoder,E=m.contextCache.getContexts("GR"),A=0,R=0;R<r;R++){if(h){if(A^=O.readBit(E,I))throw new l("prediction is not supported")}var B=new Uint8Array(t);k.push(B);for(var D=0;D<t;D++){var L,M,U=0;for(y=0;y<v;y++){L=R+x[y];M=D+b[y];L<0||M<0||M>=t?U<<=1:U=U<<1|k[L][M]}for(y=0;y<_;y++){L=R+C[y]-u;M=D+S[y]-c;L<0||L>=P||M<0||M>=T?U<<=1:U=U<<1|a[L][M]}var j=O.readBit(E,U);B[D]=j}}return k}function decodeTextRegion(t,r,i,o,a,c,u,h,p,d,m,g,y,v,b,x,w,_,S){if(t&&r)throw new l("refinement with Huffman is not supported");var C,T,P=[];for(C=0;C<o;C++){T=new Uint8Array(i);if(a)for(var I=0;I<i;I++)T[I]=a;P.push(T)}var k=w.decoder,O=w.contextCache,E=t?-v.tableDeltaT.decode(S):-decodeInteger(O,"IADT",k),A=0;C=0;for(;C<c;){E+=t?v.tableDeltaT.decode(S):decodeInteger(O,"IADT",k);for(var R=A+=t?v.tableFirstS.decode(S):decodeInteger(O,"IAFS",k);;){var B=0;u>1&&(B=t?S.readBits(_):decodeInteger(O,"IAIT",k));var D=u*E+B,L=t?v.symbolIDTable.decode(S):decodeIAID(O,k,p),M=r&&(t?S.readBit():decodeInteger(O,"IARI",k)),U=h[L],j=U[0].length,N=U.length;if(M){var H=decodeInteger(O,"IARDW",k),z=decodeInteger(O,"IARDH",k);U=decodeRefinement(j+=H,N+=z,b,U,(H>>1)+decodeInteger(O,"IARDX",k),(z>>1)+decodeInteger(O,"IARDY",k),!1,x,w)}var X,G,Y,q=D-(1&g?0:N-1),J=R-(2&g?j-1:0);if(d){for(X=0;X<N;X++)if(T=P[J+X]){Y=U[X];var W=Math.min(i-q,j);switch(y){case 0:for(G=0;G<W;G++)T[q+G]|=Y[G];break;case 2:for(G=0;G<W;G++)T[q+G]^=Y[G];break;default:throw new l("operator ".concat(y," is not supported"))}}R+=N-1}else{for(G=0;G<N;G++)if(T=P[q+G]){Y=U[G];switch(y){case 0:for(X=0;X<j;X++)T[J+X]|=Y[X];break;case 2:for(X=0;X<j;X++)T[J+X]^=Y[X];break;default:throw new l("operator ".concat(y," is not supported"))}}R+=j-1}C++;var V=t?v.tableDeltaS.decode(S):decodeInteger(O,"IADS",k);if(null===V)break;R+=V+m}}return P}function readSegmentHeader(r,i){var o={};o.number=(0,a.readUint32)(r,i);var c=r[i+4],u=63&c;if(!t[u])throw new l("invalid segment type: "+u);o.type=u;o.typeName=t[u];o.deferredNonRetain=!!(128&c);var h=!!(64&c),p=r[i+5],m=p>>5&7,g=[31&p],y=i+6;if(7===p){m=536870911&(0,a.readUint32)(r,y-1);y+=3;var v=m+7>>3;g[0]=r[y++];for(;--v>0;)g.push(r[y++])}else if(5===p||6===p)throw new l("invalid referred-to flags");o.retainBits=g;var b=4;o.number<=256?b=1:o.number<=65536&&(b=2);var x,w,_=[];for(x=0;x<m;x++){var S=void 0;S=1===b?r[y]:2===b?(0,a.readUint16)(r,y):(0,a.readUint32)(r,y);_.push(S);y+=b}o.referredTo=_;if(h){o.pageAssociation=(0,a.readUint32)(r,y);y+=4}else o.pageAssociation=r[y++];o.length=(0,a.readUint32)(r,y);y+=4;if(4294967295===o.length){if(38!==u)throw new l("invalid unknown segment length");var C=readRegionSegmentInformation(r,y),T=!!(1&r[y+d]),P=new Uint8Array(6);if(!T){P[0]=255;P[1]=172}P[2]=C.height>>>24&255;P[3]=C.height>>16&255;P[4]=C.height>>8&255;P[5]=255&C.height;for(x=y,w=r.length;x<w;x++){for(var I=0;I<6&&P[I]===r[x+I];)I++;if(6===I){o.length=x+6;break}}if(4294967295===o.length)throw new l("segment end was not found")}o.headerEnd=y;return o}function readSegments(t,r,i,o){for(var a=[],c=i;c<o;){var u=readSegmentHeader(r,c);c=u.headerEnd;var l={header:u,data:r};if(!t.randomAccess){l.start=c;c+=u.length;l.end=c}a.push(l);if(51===u.type)break}if(t.randomAccess)for(var h=0,p=a.length;h<p;h++){a[h].start=c;c+=a[h].header.length;a[h].end=c}return a}function readRegionSegmentInformation(t,r){return{width:(0,a.readUint32)(t,r),height:(0,a.readUint32)(t,r+4),x:(0,a.readUint32)(t,r+8),y:(0,a.readUint32)(t,r+12),combinationOperator:7&t[r+16]}}var d=17;function processSegment(t,r){var i,o,c,u,h=t.header,p=t.data,m=t.start,g=t.end;switch(h.type){case 0:var y={},v=(0,a.readUint16)(p,m);y.huffman=!!(1&v);y.refinement=!!(2&v);y.huffmanDHSelector=v>>2&3;y.huffmanDWSelector=v>>4&3;y.bitmapSizeSelector=v>>6&1;y.aggregationInstancesSelector=v>>7&1;y.bitmapCodingContextUsed=!!(256&v);y.bitmapCodingContextRetained=!!(512&v);y.template=v>>10&3;y.refinementTemplate=v>>12&1;m+=2;if(!y.huffman){u=0===y.template?4:1;o=[];for(c=0;c<u;c++){o.push({x:(0,a.readInt8)(p,m),y:(0,a.readInt8)(p,m+1)});m+=2}y.at=o}if(y.refinement&&!y.refinementTemplate){o=[];for(c=0;c<2;c++){o.push({x:(0,a.readInt8)(p,m),y:(0,a.readInt8)(p,m+1)});m+=2}y.refinementAt=o}y.numberOfExportedSymbols=(0,a.readUint32)(p,m);m+=4;y.numberOfNewSymbols=(0,a.readUint32)(p,m);m+=4;i=[y,h.number,h.referredTo,p,m,g];break;case 6:case 7:var b={};b.info=readRegionSegmentInformation(p,m);m+=d;var x=(0,a.readUint16)(p,m);m+=2;b.huffman=!!(1&x);b.refinement=!!(2&x);b.logStripSize=x>>2&3;b.stripSize=1<<b.logStripSize;b.referenceCorner=x>>4&3;b.transposed=!!(64&x);b.combinationOperator=x>>7&3;b.defaultPixelValue=x>>9&1;b.dsOffset=x<<17>>27;b.refinementTemplate=x>>15&1;if(b.huffman){var w=(0,a.readUint16)(p,m);m+=2;b.huffmanFS=3&w;b.huffmanDS=w>>2&3;b.huffmanDT=w>>4&3;b.huffmanRefinementDW=w>>6&3;b.huffmanRefinementDH=w>>8&3;b.huffmanRefinementDX=w>>10&3;b.huffmanRefinementDY=w>>12&3;b.huffmanRefinementSizeSelector=!!(16384&w)}if(b.refinement&&!b.refinementTemplate){o=[];for(c=0;c<2;c++){o.push({x:(0,a.readInt8)(p,m),y:(0,a.readInt8)(p,m+1)});m+=2}b.refinementAt=o}b.numberOfSymbolInstances=(0,a.readUint32)(p,m);m+=4;i=[b,h.referredTo,p,m,g];break;case 16:var _={},S=p[m++];_.mmr=!!(1&S);_.template=S>>1&3;_.patternWidth=p[m++];_.patternHeight=p[m++];_.maxPatternIndex=(0,a.readUint32)(p,m);m+=4;i=[_,h.number,p,m,g];break;case 22:case 23:var C={};C.info=readRegionSegmentInformation(p,m);m+=d;var T=p[m++];C.mmr=!!(1&T);C.template=T>>1&3;C.enableSkip=!!(8&T);C.combinationOperator=T>>4&7;C.defaultPixelValue=T>>7&1;C.gridWidth=(0,a.readUint32)(p,m);m+=4;C.gridHeight=(0,a.readUint32)(p,m);m+=4;C.gridOffsetX=4294967295&(0,a.readUint32)(p,m);m+=4;C.gridOffsetY=4294967295&(0,a.readUint32)(p,m);m+=4;C.gridVectorX=(0,a.readUint16)(p,m);m+=2;C.gridVectorY=(0,a.readUint16)(p,m);m+=2;i=[C,h.referredTo,p,m,g];break;case 38:case 39:var P={};P.info=readRegionSegmentInformation(p,m);m+=d;var I=p[m++];P.mmr=!!(1&I);P.template=I>>1&3;P.prediction=!!(8&I);if(!P.mmr){u=0===P.template?4:1;o=[];for(c=0;c<u;c++){o.push({x:(0,a.readInt8)(p,m),y:(0,a.readInt8)(p,m+1)});m+=2}P.at=o}i=[P,p,m,g];break;case 48:var k={width:(0,a.readUint32)(p,m),height:(0,a.readUint32)(p,m+4),resolutionX:(0,a.readUint32)(p,m+8),resolutionY:(0,a.readUint32)(p,m+12)};4294967295===k.height&&delete k.height;var O=p[m+16];(0,a.readUint16)(p,m+17);k.lossless=!!(1&O);k.refinement=!!(2&O);k.defaultPixelValue=O>>2&1;k.combinationOperator=O>>3&3;k.requiresBuffer=!!(32&O);k.combinationOperatorOverride=!!(64&O);i=[k];break;case 49:case 50:case 51:break;case 53:i=[h.number,p,m,g];break;case 62:break;default:throw new l("segment type ".concat(h.typeName,"(").concat(h.type,")")+" is not implemented")}var E="on"+h.typeName;E in r&&r[E].apply(r,i)}function processSegments(t,r){for(var i=0,o=t.length;i<o;i++)processSegment(t[i],r)}function SimpleSegmentVisitor(){}SimpleSegmentVisitor.prototype={onPageInformation:function SimpleSegmentVisitor_onPageInformation(t){this.currentPageInfo=t;var r=t.width+7>>3,i=new Uint8ClampedArray(r*t.height);if(t.defaultPixelValue)for(var o=0,a=i.length;o<a;o++)i[o]=255;this.buffer=i},drawBitmap:function SimpleSegmentVisitor_drawBitmap(t,r){var i,o,a,c,u=this.currentPageInfo,h=t.width,p=t.height,d=u.width+7>>3,m=u.combinationOperatorOverride?t.combinationOperator:u.combinationOperator,g=this.buffer,y=128>>(7&t.x),v=t.y*d+(t.x>>3);switch(m){case 0:for(i=0;i<p;i++){a=y;c=v;for(o=0;o<h;o++){r[i][o]&&(g[c]|=a);if(!(a>>=1)){a=128;c++}}v+=d}break;case 2:for(i=0;i<p;i++){a=y;c=v;for(o=0;o<h;o++){r[i][o]&&(g[c]^=a);if(!(a>>=1)){a=128;c++}}v+=d}break;default:throw new l("operator ".concat(m," is not supported"))}},onImmediateGenericRegion:function SimpleSegmentVisitor_onImmediateGenericRegion(t,r,i,o){var a=t.info,c=new DecodingContext(r,i,o),u=decodeBitmap(t.mmr,a.width,a.height,t.template,t.prediction,null,t.at,c);this.drawBitmap(a,u)},onImmediateLosslessGenericRegion:function SimpleSegmentVisitor_onImmediateLosslessGenericRegion(){this.onImmediateGenericRegion.apply(this,arguments)},onSymbolDictionary:function SimpleSegmentVisitor_onSymbolDictionary(t,r,i,o,c,u){var h,p;if(t.huffman){h=function getSymbolDictionaryHuffmanTables(t,r,i){var o,a,c,u,h=0;switch(t.huffmanDHSelector){case 0:case 1:o=getStandardTable(t.huffmanDHSelector+4);break;case 3:o=getCustomHuffmanTable(h,r,i);h++;break;default:throw new l("invalid Huffman DH selector")}switch(t.huffmanDWSelector){case 0:case 1:a=getStandardTable(t.huffmanDWSelector+2);break;case 3:a=getCustomHuffmanTable(h,r,i);h++;break;default:throw new l("invalid Huffman DW selector")}if(t.bitmapSizeSelector){c=getCustomHuffmanTable(h,r,i);h++}else c=getStandardTable(1);u=t.aggregationInstancesSelector?getCustomHuffmanTable(h,r,i):getStandardTable(1);return{tableDeltaHeight:o,tableDeltaWidth:a,tableBitmapSize:c,tableAggregateInstances:u}}(t,i,this.customTables);p=new Reader(o,c,u)}var d=this.symbols;d||(this.symbols=d={});for(var m=[],g=0,y=i.length;g<y;g++){var v=d[i[g]];v&&(m=m.concat(v))}var b=new DecodingContext(o,c,u);d[r]=function decodeSymbolDictionary(t,r,i,o,c,u,h,p,d,m,g,y){if(t&&r)throw new l("symbol refinement with Huffman is not supported");var v,b,x=[],w=0,_=(0,a.log2)(i.length+o),S=g.decoder,C=g.contextCache;if(t){v=getStandardTable(1);b=[];_=Math.max(_,1)}for(;x.length<o;){w+=t?u.tableDeltaHeight.decode(y):decodeInteger(C,"IADH",S);for(var T=0,P=0,I=t?b.length:0;;){var k,O=t?u.tableDeltaWidth.decode(y):decodeInteger(C,"IADW",S);if(null===O)break;P+=T+=O;if(r){var E=decodeInteger(C,"IAAI",S);if(E>1)k=decodeTextRegion(t,r,T,w,0,E,1,i.concat(x),_,0,0,1,0,u,d,m,g,0,y);else{var A=decodeIAID(C,S,_),R=decodeInteger(C,"IARDX",S),B=decodeInteger(C,"IARDY",S);k=decodeRefinement(T,w,d,A<i.length?i[A]:x[A-i.length],R,B,!1,m,g)}x.push(k)}else if(t)b.push(T);else{k=decodeBitmap(!1,T,w,h,!1,null,p,g);x.push(k)}}if(t&&!r){var D=u.tableBitmapSize.decode(y);y.byteAlign();var L=void 0;if(0===D)L=readUncompressedBitmap(y,P,w);else{var M=y.end,U=y.position+D;y.end=U;L=decodeMMRBitmap(y,P,w,!1);y.end=M;y.position=U}var j=b.length;if(I===j-1)x.push(L);else{var N=void 0,H=void 0,z=0,X=void 0,G=void 0;for(N=I;N<j;N++){X=z+b[N];G=[];for(H=0;H<w;H++)G.push(L[H].subarray(z,X));x.push(G);z=X}}}}for(var Y=[],q=[],J=!1,W=i.length+o;q.length<W;){for(var V=t?v.decode(y):decodeInteger(C,"IAEX",S);V--;)q.push(J);J=!J}for(var K=0,Q=i.length;K<Q;K++)q[K]&&Y.push(i[K]);for(var Z=0;Z<o;K++,Z++)q[K]&&Y.push(x[Z]);return Y}(t.huffman,t.refinement,m,t.numberOfNewSymbols,t.numberOfExportedSymbols,h,t.template,t.at,t.refinementTemplate,t.refinementAt,b,p)},onImmediateTextRegion:function SimpleSegmentVisitor_onImmediateTextRegion(t,r,i,o,c){for(var u,h,p=t.info,d=this.symbols,m=[],g=0,y=r.length;g<y;g++){var v=d[r[g]];v&&(m=m.concat(v))}var b=(0,a.log2)(m.length);if(t.huffman){h=new Reader(i,o,c);u=function getTextRegionHuffmanTables(t,r,i,o,a){for(var c=[],u=0;u<=34;u++){var h=a.readBits(4);c.push(new HuffmanLine([u,h,0,0]))}var p=new HuffmanTable(c,!1);c.length=0;for(var d=0;d<o;){var m=p.decode(a);if(m>=32){var g=void 0,y=void 0,v=void 0;switch(m){case 32:if(0===d)throw new l("no previous value in symbol ID table");y=a.readBits(2)+3;g=c[d-1].prefixLength;break;case 33:y=a.readBits(3)+3;g=0;break;case 34:y=a.readBits(7)+11;g=0;break;default:throw new l("invalid code length in symbol ID table")}for(v=0;v<y;v++){c.push(new HuffmanLine([d,g,0,0]));d++}}else{c.push(new HuffmanLine([d,m,0,0]));d++}}a.byteAlign();var b,x,w,_=new HuffmanTable(c,!1),S=0;switch(t.huffmanFS){case 0:case 1:b=getStandardTable(t.huffmanFS+6);break;case 3:b=getCustomHuffmanTable(S,r,i);S++;break;default:throw new l("invalid Huffman FS selector")}switch(t.huffmanDS){case 0:case 1:case 2:x=getStandardTable(t.huffmanDS+8);break;case 3:x=getCustomHuffmanTable(S,r,i);S++;break;default:throw new l("invalid Huffman DS selector")}switch(t.huffmanDT){case 0:case 1:case 2:w=getStandardTable(t.huffmanDT+11);break;case 3:w=getCustomHuffmanTable(S,r,i);S++;break;default:throw new l("invalid Huffman DT selector")}if(t.refinement)throw new l("refinement with Huffman is not supported");return{symbolIDTable:_,tableFirstS:b,tableDeltaS:x,tableDeltaT:w}}(t,r,this.customTables,m.length,h)}var x=new DecodingContext(i,o,c),w=decodeTextRegion(t.huffman,t.refinement,p.width,p.height,t.defaultPixelValue,t.numberOfSymbolInstances,t.stripSize,m,b,t.transposed,t.dsOffset,t.referenceCorner,t.combinationOperator,u,t.refinementTemplate,t.refinementAt,x,t.logStripSize,h);this.drawBitmap(p,w)},onImmediateLosslessTextRegion:function SimpleSegmentVisitor_onImmediateLosslessTextRegion(){this.onImmediateTextRegion.apply(this,arguments)},onPatternDictionary:function onPatternDictionary(t,r,i,o,a){var c=this.patterns;c||(this.patterns=c={});var u=new DecodingContext(i,o,a);c[r]=function decodePatternDictionary(t,r,i,o,a,c){var u=[];if(!t){u.push({x:-r,y:0});if(0===a){u.push({x:-3,y:-1});u.push({x:2,y:-2});u.push({x:-2,y:-2})}}for(var l=decodeBitmap(t,(o+1)*r,i,a,!1,null,u,c),h=[],p=0;p<=o;p++){for(var d=[],m=r*p,g=m+r,y=0;y<i;y++)d.push(l[y].subarray(m,g));h.push(d)}return h}(t.mmr,t.patternWidth,t.patternHeight,t.maxPatternIndex,t.template,u)},onImmediateHalftoneRegion:function onImmediateHalftoneRegion(t,r,i,o,c){var u=this.patterns[r[0]],h=t.info,p=new DecodingContext(i,o,c),d=function decodeHalftoneRegion(t,r,i,o,c,u,h,p,d,m,g,y,v,b,x){if(h)throw new l("skip is not supported");if(0!==p)throw new l("operator "+p+" is not supported in halftone region");var w,_,S,C=[];for(w=0;w<c;w++){S=new Uint8Array(o);if(u)for(_=0;_<o;_++)S[_]=u;C.push(S)}var T=r.length,P=r[0],I=P[0].length,k=P.length,O=(0,a.log2)(T),E=[];if(!t){E.push({x:i<=1?3:2,y:-1});if(0===i){E.push({x:-3,y:-1});E.push({x:2,y:-2});E.push({x:-2,y:-2})}}var A,R,B,D,L,M,U,j,N,H,z,X=[];t&&(A=new Reader(x.data,x.start,x.end));for(w=O-1;w>=0;w--){R=t?decodeMMRBitmap(A,d,m,!0):decodeBitmap(!1,d,m,i,!1,null,E,x);X[w]=R}for(B=0;B<m;B++)for(D=0;D<d;D++){L=0;M=0;for(_=O-1;_>=0;_--)M|=(L=X[_][B][D]^L)<<_;U=r[M];N=y+B*v-D*b>>8;if((j=g+B*b+D*v>>8)>=0&&j+I<=o&&N>=0&&N+k<=c)for(w=0;w<k;w++){z=C[N+w];H=U[w];for(_=0;_<I;_++)z[j+_]|=H[_]}else{var G=void 0,Y=void 0;for(w=0;w<k;w++)if(!((Y=N+w)<0||Y>=c)){z=C[Y];H=U[w];for(_=0;_<I;_++)(G=j+_)>=0&&G<o&&(z[G]|=H[_])}}}return C}(t.mmr,u,t.template,h.width,h.height,t.defaultPixelValue,t.enableSkip,t.combinationOperator,t.gridWidth,t.gridHeight,t.gridOffsetX,t.gridOffsetY,t.gridVectorX,t.gridVectorY,p);this.drawBitmap(h,d)},onImmediateLosslessHalftoneRegion:function onImmediateLosslessHalftoneRegion(){this.onImmediateHalftoneRegion.apply(this,arguments)},onTables:function onTables(t,r,i,o){var c=this.customTables;c||(this.customTables=c={});c[t]=function decodeTablesSegment(t,r,i){var o,c,u=t[r],l=4294967295&(0,a.readUint32)(t,r+1),h=4294967295&(0,a.readUint32)(t,r+5),p=new Reader(t,r+9,i),d=1+(u>>1&7),m=1+(u>>4&7),g=[],y=l;do{o=p.readBits(d);c=p.readBits(m);g.push(new HuffmanLine([y,o,c,0]));y+=1<<c}while(y<h);o=p.readBits(d);g.push(new HuffmanLine([l-1,o,32,0,"lower"]));o=p.readBits(d);g.push(new HuffmanLine([h,o,32,0]));if(1&u){o=p.readBits(d);g.push(new HuffmanLine([o,0]))}return new HuffmanTable(g,!1)}(r,i,o)}};function HuffmanLine(t){if(2===t.length){this.isOOB=!0;this.rangeLow=0;this.prefixLength=t[0];this.rangeLength=0;this.prefixCode=t[1];this.isLowerRange=!1}else{this.isOOB=!1;this.rangeLow=t[0];this.prefixLength=t[1];this.rangeLength=t[2];this.prefixCode=t[3];this.isLowerRange="lower"===t[4]}}function HuffmanTreeNode(t){this.children=[];if(t){this.isLeaf=!0;this.rangeLength=t.rangeLength;this.rangeLow=t.rangeLow;this.isLowerRange=t.isLowerRange;this.isOOB=t.isOOB}else this.isLeaf=!1}HuffmanTreeNode.prototype={buildTree:function buildTree(t,r){var i=t.prefixCode>>r&1;if(r<=0)this.children[i]=new HuffmanTreeNode(t);else{var o=this.children[i];o||(this.children[i]=o=new HuffmanTreeNode(null));o.buildTree(t,r-1)}},decodeNode:function decodeNode(t){if(this.isLeaf){if(this.isOOB)return null;var r=t.readBits(this.rangeLength);return this.rangeLow+(this.isLowerRange?-r:r)}var i=this.children[t.readBit()];if(!i)throw new l("invalid Huffman data");return i.decodeNode(t)}};function HuffmanTable(t,r){r||this.assignPrefixCodes(t);this.rootNode=new HuffmanTreeNode(null);for(var i=0,o=t.length;i<o;i++){var a=t[i];a.prefixLength>0&&this.rootNode.buildTree(a,a.prefixLength-1)}}HuffmanTable.prototype={decode:function decode(t){return this.rootNode.decodeNode(t)},assignPrefixCodes:function assignPrefixCodes(t){for(var r=t.length,i=0,o=0;o<r;o++)i=Math.max(i,t[o].prefixLength);for(var a=new Uint32Array(i+1),c=0;c<r;c++)a[t[c].prefixLength]++;var u,l,h,p=1,d=0;a[0]=0;for(;p<=i;){u=d=d+a[p-1]<<1;l=0;for(;l<r;){if((h=t[l]).prefixLength===p){h.prefixCode=u;u++}l++}p++}}};var m={};function getStandardTable(t){var r,i=m[t];if(i)return i;switch(t){case 1:r=[[0,1,4,0],[16,2,8,2],[272,3,16,6],[65808,3,32,7]];break;case 2:r=[[0,1,0,0],[1,2,0,2],[2,3,0,6],[3,4,3,14],[11,5,6,30],[75,6,32,62],[6,63]];break;case 3:r=[[-256,8,8,254],[0,1,0,0],[1,2,0,2],[2,3,0,6],[3,4,3,14],[11,5,6,30],[-257,8,32,255,"lower"],[75,7,32,126],[6,62]];break;case 4:r=[[1,1,0,0],[2,2,0,2],[3,3,0,6],[4,4,3,14],[12,5,6,30],[76,5,32,31]];break;case 5:r=[[-255,7,8,126],[1,1,0,0],[2,2,0,2],[3,3,0,6],[4,4,3,14],[12,5,6,30],[-256,7,32,127,"lower"],[76,6,32,62]];break;case 6:r=[[-2048,5,10,28],[-1024,4,9,8],[-512,4,8,9],[-256,4,7,10],[-128,5,6,29],[-64,5,5,30],[-32,4,5,11],[0,2,7,0],[128,3,7,2],[256,3,8,3],[512,4,9,12],[1024,4,10,13],[-2049,6,32,62,"lower"],[2048,6,32,63]];break;case 7:r=[[-1024,4,9,8],[-512,3,8,0],[-256,4,7,9],[-128,5,6,26],[-64,5,5,27],[-32,4,5,10],[0,4,5,11],[32,5,5,28],[64,5,6,29],[128,4,7,12],[256,3,8,1],[512,3,9,2],[1024,3,10,3],[-1025,5,32,30,"lower"],[2048,5,32,31]];break;case 8:r=[[-15,8,3,252],[-7,9,1,508],[-5,8,1,253],[-3,9,0,509],[-2,7,0,124],[-1,4,0,10],[0,2,1,0],[2,5,0,26],[3,6,0,58],[4,3,4,4],[20,6,1,59],[22,4,4,11],[38,4,5,12],[70,5,6,27],[134,5,7,28],[262,6,7,60],[390,7,8,125],[646,6,10,61],[-16,9,32,510,"lower"],[1670,9,32,511],[2,1]];break;case 9:r=[[-31,8,4,252],[-15,9,2,508],[-11,8,2,253],[-7,9,1,509],[-5,7,1,124],[-3,4,1,10],[-1,3,1,2],[1,3,1,3],[3,5,1,26],[5,6,1,58],[7,3,5,4],[39,6,2,59],[43,4,5,11],[75,4,6,12],[139,5,7,27],[267,5,8,28],[523,6,8,60],[779,7,9,125],[1291,6,11,61],[-32,9,32,510,"lower"],[3339,9,32,511],[2,0]];break;case 10:r=[[-21,7,4,122],[-5,8,0,252],[-4,7,0,123],[-3,5,0,24],[-2,2,2,0],[2,5,0,25],[3,6,0,54],[4,7,0,124],[5,8,0,253],[6,2,6,1],[70,5,5,26],[102,6,5,55],[134,6,6,56],[198,6,7,57],[326,6,8,58],[582,6,9,59],[1094,6,10,60],[2118,7,11,125],[-22,8,32,254,"lower"],[4166,8,32,255],[2,2]];break;case 11:r=[[1,1,0,0],[2,2,1,2],[4,4,0,12],[5,4,1,13],[7,5,1,28],[9,5,2,29],[13,6,2,60],[17,7,2,122],[21,7,3,123],[29,7,4,124],[45,7,5,125],[77,7,6,126],[141,7,32,127]];break;case 12:r=[[1,1,0,0],[2,2,0,2],[3,3,1,6],[5,5,0,28],[6,5,1,29],[8,6,1,60],[10,7,0,122],[11,7,1,123],[13,7,2,124],[17,7,3,125],[25,7,4,126],[41,8,5,254],[73,8,32,255]];break;case 13:r=[[1,1,0,0],[2,3,0,4],[3,4,0,12],[4,5,0,28],[5,4,1,13],[7,3,3,5],[15,6,1,58],[17,6,2,59],[21,6,3,60],[29,6,4,61],[45,6,5,62],[77,7,6,126],[141,7,32,127]];break;case 14:r=[[-2,3,0,4],[-1,3,0,5],[0,1,0,0],[1,3,0,6],[2,3,0,7]];break;case 15:r=[[-24,7,4,124],[-8,6,2,60],[-4,5,1,28],[-2,4,0,12],[-1,3,0,4],[0,1,0,0],[1,3,0,5],[2,4,0,13],[3,5,1,29],[5,6,2,61],[9,7,4,125],[-25,7,32,126,"lower"],[25,7,32,127]];break;default:throw new l("standard table B.".concat(t," does not exist"))}for(var o=0,a=r.length;o<a;o++)r[o]=new HuffmanLine(r[o]);i=new HuffmanTable(r,!0);m[t]=i;return i}function Reader(t,r,i){this.data=t;this.start=r;this.end=i;this.position=r;this.shift=-1;this.currentByte=0}Reader.prototype={readBit:function readBit(){if(this.shift<0){if(this.position>=this.end)throw new l("end of data while reading bit");this.currentByte=this.data[this.position++];this.shift=7}var t=this.currentByte>>this.shift&1;this.shift--;return t},readBits:function readBits(t){var r,i=0;for(r=t-1;r>=0;r--)i|=this.readBit()<<r;return i},byteAlign:function byteAlign(){this.shift=-1},next:function next(){return this.position>=this.end?-1:this.data[this.position++]}};function getCustomHuffmanTable(t,r,i){for(var o=0,a=0,c=r.length;a<c;a++){var u=i[r[a]];if(u){if(t===o)return u;o++}}throw new l("can't find custom Huffman table")}function readUncompressedBitmap(t,r,i){for(var o=[],a=0;a<i;a++){var c=new Uint8Array(r);o.push(c);for(var u=0;u<r;u++)c[u]=t.readBit();t.byteAlign()}return o}function decodeMMRBitmap(t,r,i,o){for(var a,c={K:-1,Columns:r,Rows:i,BlackIs1:!0,EndOfBlock:o},l=new u.CCITTFaxDecoder(t,c),h=[],p=!1,d=0;d<i;d++){var m=new Uint8Array(r);h.push(m);for(var g=-1,y=0;y<r;y++){if(g<0){if(-1===(a=l.readNextChar())){a=0;p=!0}g=7}m[y]=a>>g&1;g--}}if(o&&!p)for(var v=0;v<5&&-1!==l.readNextChar();v++);return h}function Jbig2Image(){}Jbig2Image.prototype={parseChunks:function parseChunks(t){return function parseJbig2Chunks(t){for(var r=new SimpleSegmentVisitor,i=0,o=t.length;i<o;i++){var a=t[i];processSegments(readSegments({},a.data,a.start,a.end),r)}return r.buffer}(t)},parse:function parse(t){var r=function parseJbig2(t){var r=t.length,i=0;if(151!==t[i]||74!==t[i+1]||66!==t[i+2]||50!==t[i+3]||13!==t[i+4]||10!==t[i+5]||26!==t[i+6]||10!==t[i+7])throw new l("parseJbig2 - invalid header.");var o=Object.create(null);i+=8;var c=t[i++];o.randomAccess=!(1&c);if(!(2&c)){o.numberOfPages=(0,a.readUint32)(t,i);i+=4}var u=readSegments(o,t,i,r),h=new SimpleSegmentVisitor;processSegments(u,h);for(var p=h.currentPageInfo,d=p.width,m=p.height,g=h.buffer,y=new Uint8ClampedArray(d*m),v=0,b=0,x=0;x<m;x++)for(var w=0,_=void 0,S=0;S<d;S++){if(!w){w=128;_=g[b++]}y[v++]=_&w?0:255;w>>=1}return{imgData:y,width:d,height:m}}(t),i=r.imgData,o=r.width,c=r.height;this.width=o;this.height=c;return i}};return Jbig2Image}();r.Jbig2Image=h},(t,r,i)=>{"use strict";function _typeof(t){return(_typeof="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function _typeof(t){return typeof t}:function _typeof(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t})(t)}Object.defineProperty(r,"__esModule",{value:!0});r.collectActions=function collectActions(t,r,i){var c=Object.create(null);if(r.has("AA")){var u,l=r.get("AA"),h=_createForOfIteratorHelper(l.getKeys());try{for(h.s();!(u=h.n()).done;){var p=u.value,d=i[p];if(d){var m=l.getRaw(p),g=new a.RefSet,y=[];_collectJS(m,t,y,g);y.length>0&&(c[d]=y)}}}catch(t){h.e(t)}finally{h.f()}}if(r.has("A")){var v=r.get("A"),b=new a.RefSet,x=[];_collectJS(v,t,x,b);x.length>0&&(c.Action=x)}return(0,o.objectSize)(c)>0?c:null};r.encodeToXmlString=function encodeToXmlString(t){for(var r=[],i=0,o=0,a=t.length;o<a;o++){var c=t.codePointAt(o);if(32<=c&&c<=126){var u=p[c];if(u){i<o&&r.push(t.substring(i,o));r.push(u);i=o+1}}else{i<o&&r.push(t.substring(i,o));r.push("&#x".concat(c.toString(16).toUpperCase(),";"));c>55295&&(c<57344||c>65533)&&o++;i=o+1}}if(0===r.length)return t;i<t.length&&r.push(t.substring(i,t.length));return r.join("")};r.escapePDFName=function escapePDFName(t){for(var r=[],i=0,o=0,a=t.length;o<a;o++){var c=t.charCodeAt(o);if(c<33||c>126||35===c||40===c||41===c||60===c||62===c||91===c||93===c||123===c||125===c||47===c||37===c){i<o&&r.push(t.substring(i,o));r.push("#".concat(c.toString(16)));i=o+1}}if(0===r.length)return t;i<t.length&&r.push(t.substring(i,t.length));return r.join("")};r.getArrayLookupTableFactory=function getArrayLookupTableFactory(t){var r;return function(){if(t){var i=t();t=null;r=Object.create(null);for(var o=0,a=i.length;o<a;o+=2)r[i[o]]=i[o+1];i=null}return r}};r.getInheritableProperty=function getInheritableProperty(t){var r,i=t.dict,o=t.key,c=t.getArray,u=void 0!==c&&c,l=t.stopWhenFound,h=void 0===l||l,p=new a.RefSet;for(;i instanceof a.Dict&&(!i.objId||!p.has(i.objId));){i.objId&&p.put(i.objId);var d=u?i.getArray(o):i.get(o);if(void 0!==d){if(h)return d;r||(r=[]);r.push(d)}i=i.get("Parent")}return r};r.getLookupTableFactory=function getLookupTableFactory(t){var r;return function(){if(t){r=Object.create(null);t(r);t=null}return r}};r.isWhiteSpace=function isWhiteSpace(t){return 32===t||9===t||13===t||10===t};r.log2=function log2(t){if(t<=0)return 0;return Math.ceil(Math.log2(t))};r.parseXFAPath=function parseXFAPath(t){var r=/(.+)\[([0-9]+)\]$/;return t.split(".").map((function(t){var i=t.match(r);return i?{name:i[1],pos:parseInt(i[2],10)}:{name:t,pos:0}}))};r.readInt8=function readInt8(t,r){return t[r]<<24>>24};r.readUint16=function readUint16(t,r){return t[r]<<8|t[r+1]};r.readUint32=function readUint32(t,r){return(t[r]<<24|t[r+1]<<16|t[r+2]<<8|t[r+3])>>>0};r.toRomanNumerals=function toRomanNumerals(t){var r=arguments.length>1&&void 0!==arguments[1]&&arguments[1];(0,o.assert)(Number.isInteger(t)&&t>0,"The number should be a positive integer.");var i,a=[];for(;t>=1e3;){t-=1e3;a.push("M")}i=t/100|0;t%=100;a.push(h[i]);i=t/10|0;t%=10;a.push(h[10+i]);a.push(h[20+t]);var c=a.join("");return r?c.toLowerCase():c};r.XRefParseException=r.XRefEntryException=r.MissingDataException=void 0;var o=i(1),a=i(97);function _createForOfIteratorHelper(t,r){var i;if("undefined"==typeof Symbol||null==t[Symbol.iterator]){if(Array.isArray(t)||(i=function _unsupportedIterableToArray(t,r){if(!t)return;if("string"==typeof t)return _arrayLikeToArray(t,r);var i=Object.prototype.toString.call(t).slice(8,-1);"Object"===i&&t.constructor&&(i=t.constructor.name);if("Map"===i||"Set"===i)return Array.from(t);if("Arguments"===i||/^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(i))return _arrayLikeToArray(t,r)}(t))||r&&t&&"number"==typeof t.length){i&&(t=i);var o=0,a=function F(){};return{s:a,n:function n(){return o>=t.length?{done:!0}:{done:!1,value:t[o++]}},e:function e(t){throw t},f:a}}throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}var c,u=!0,l=!1;return{s:function s(){i=t[Symbol.iterator]()},n:function n(){var t=i.next();u=t.done;return t},e:function e(t){l=!0;c=t},f:function f(){try{u||null==i.return||i.return()}finally{if(l)throw c}}}}function _arrayLikeToArray(t,r){(null==r||r>t.length)&&(r=t.length);for(var i=0,o=new Array(r);i<r;i++)o[i]=t[i];return o}function _classCallCheck(t,r){if(!(t instanceof r))throw new TypeError("Cannot call a class as a function")}function _inherits(t,r){if("function"!=typeof r&&null!==r)throw new TypeError("Super expression must either be null or a function");t.prototype=Object.create(r&&r.prototype,{constructor:{value:t,writable:!0,configurable:!0}});r&&_setPrototypeOf(t,r)}function _setPrototypeOf(t,r){return(_setPrototypeOf=Object.setPrototypeOf||function _setPrototypeOf(t,r){t.__proto__=r;return t})(t,r)}function _createSuper(t){var r=function _isNativeReflectConstruct(){if("undefined"==typeof Reflect||!Reflect.construct)return!1;if(Reflect.construct.sham)return!1;if("function"==typeof Proxy)return!0;try{Boolean.prototype.valueOf.call(Reflect.construct(Boolean,[],(function(){})));return!0}catch(t){return!1}}();return function _createSuperInternal(){var i,o=_getPrototypeOf(t);if(r){var a=_getPrototypeOf(this).constructor;i=Reflect.construct(o,arguments,a)}else i=o.apply(this,arguments);return _possibleConstructorReturn(this,i)}}function _possibleConstructorReturn(t,r){return!r||"object"!==_typeof(r)&&"function"!=typeof r?function _assertThisInitialized(t){if(void 0===t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return t}(t):r}function _getPrototypeOf(t){return(_getPrototypeOf=Object.setPrototypeOf?Object.getPrototypeOf:function _getPrototypeOf(t){return t.__proto__||Object.getPrototypeOf(t)})(t)}var c=function(t){_inherits(MissingDataException,t);var r=_createSuper(MissingDataException);function MissingDataException(t,i){var o;_classCallCheck(this,MissingDataException);(o=r.call(this,"Missing data [".concat(t,", ").concat(i,")"))).begin=t;o.end=i;return o}return MissingDataException}(o.BaseException);r.MissingDataException=c;var u=function(t){_inherits(XRefEntryException,t);var r=_createSuper(XRefEntryException);function XRefEntryException(){_classCallCheck(this,XRefEntryException);return r.apply(this,arguments)}return XRefEntryException}(o.BaseException);r.XRefEntryException=u;var l=function(t){_inherits(XRefParseException,t);var r=_createSuper(XRefParseException);function XRefParseException(){_classCallCheck(this,XRefParseException);return r.apply(this,arguments)}return XRefParseException}(o.BaseException);r.XRefParseException=l;var h=["","C","CC","CCC","CD","D","DC","DCC","DCCC","CM","","X","XX","XXX","XL","L","LX","LXX","LXXX","XC","","I","II","III","IV","V","VI","VII","VIII","IX"];function _collectJS(t,r,i,c){if(t){var u=null;if((0,a.isRef)(t)){if(c.has(t))return;u=t;c.put(u);t=r.fetch(t)}if(Array.isArray(t)){var l,h=_createForOfIteratorHelper(t);try{for(h.s();!(l=h.n()).done;){_collectJS(l.value,r,i,c)}}catch(t){h.e(t)}finally{h.f()}}else if(t instanceof a.Dict){if((0,a.isName)(t.get("S"),"JavaScript")&&t.has("JS")){var p,d=t.get("JS");p=(0,a.isStream)(d)?(0,o.bytesToString)(d.getBytes()):d;(p=(0,o.stringToPDFString)(p))&&i.push(p)}_collectJS(t.getRaw("Next"),r,i,c)}u&&c.remove(u)}}var p={60:"&lt;",62:"&gt;",38:"&amp;",34:"&quot;",39:"&apos;"}},(t,r,i)=>{"use strict";Object.defineProperty(r,"__esModule",{value:!0});r.clearPrimitiveCaches=function clearPrimitiveCaches(){l._clearCache();u._clearCache();p._clearCache()};r.isCmd=function isCmd(t,r){return t instanceof l&&(void 0===r||t.cmd===r)};r.isDict=function isDict(t,r){return t instanceof h&&(void 0===r||isName(t.get("Type"),r))};r.isEOF=function isEOF(t){return t===c};r.isName=isName;r.isRef=function isRef(t){return t instanceof p};r.isRefsEqual=function isRefsEqual(t,r){return t.num===r.num&&t.gen===r.gen};r.isStream=function isStream(t){return"object"===_typeof(t)&&null!==t&&void 0!==t.getBytes};r.RefSetCache=r.RefSet=r.Ref=r.Name=r.EOF=r.Dict=r.Cmd=void 0;var o=function _interopRequireDefault(t){return t&&t.__esModule?t:{default:t}}(i(98)),a=i(1);function _typeof(t){return(_typeof="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function _typeof(t){return typeof t}:function _typeof(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t})(t)}function _classCallCheck(t,r){if(!(t instanceof r))throw new TypeError("Cannot call a class as a function")}function _defineProperties(t,r){for(var i=0;i<r.length;i++){var o=r[i];o.enumerable=o.enumerable||!1;o.configurable=!0;"value"in o&&(o.writable=!0);Object.defineProperty(t,o.key,o)}}function _createClass(t,r,i){r&&_defineProperties(t.prototype,r);i&&_defineProperties(t,i);return t}function _slicedToArray(t,r){return function _arrayWithHoles(t){if(Array.isArray(t))return t}(t)||function _iterableToArrayLimit(t,r){if("undefined"==typeof Symbol||!(Symbol.iterator in Object(t)))return;var i=[],o=!0,a=!1,c=void 0;try{for(var u,l=t[Symbol.iterator]();!(o=(u=l.next()).done);o=!0){i.push(u.value);if(r&&i.length===r)break}}catch(t){a=!0;c=t}finally{try{o||null==l.return||l.return()}finally{if(a)throw c}}return i}(t,r)||_unsupportedIterableToArray(t,r)||function _nonIterableRest(){throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}()}function _createForOfIteratorHelper(t,r){var i;if("undefined"==typeof Symbol||null==t[Symbol.iterator]){if(Array.isArray(t)||(i=_unsupportedIterableToArray(t))||r&&t&&"number"==typeof t.length){i&&(t=i);var o=0,a=function F(){};return{s:a,n:function n(){return o>=t.length?{done:!0}:{done:!1,value:t[o++]}},e:function e(t){throw t},f:a}}throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}var c,u=!0,l=!1;return{s:function s(){i=t[Symbol.iterator]()},n:function n(){var t=i.next();u=t.done;return t},e:function e(t){l=!0;c=t},f:function f(){try{u||null==i.return||i.return()}finally{if(l)throw c}}}}function _unsupportedIterableToArray(t,r){if(t){if("string"==typeof t)return _arrayLikeToArray(t,r);var i=Object.prototype.toString.call(t).slice(8,-1);"Object"===i&&t.constructor&&(i=t.constructor.name);return"Map"===i||"Set"===i?Array.from(t):"Arguments"===i||/^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(i)?_arrayLikeToArray(t,r):void 0}}function _arrayLikeToArray(t,r){(null==r||r>t.length)&&(r=t.length);for(var i=0,o=new Array(r);i<r;i++)o[i]=t[i];return o}function asyncGeneratorStep(t,r,i,o,a,c,u){try{var l=t[c](u),h=l.value}catch(t){i(t);return}l.done?r(h):Promise.resolve(h).then(o,a)}var c={};r.EOF=c;var u=function NameClosure(){var t=Object.create(null);function Name(t){this.name=t}Name.prototype={};Name.get=function Name_get(r){var i=t[r];return i||(t[r]=new Name(r))};Name._clearCache=function(){t=Object.create(null)};return Name}();r.Name=u;var l=function CmdClosure(){var t=Object.create(null);function Cmd(t){this.cmd=t}Cmd.prototype={};Cmd.get=function Cmd_get(r){var i=t[r];return i||(t[r]=new Cmd(r))};Cmd._clearCache=function(){t=Object.create(null)};return Cmd}();r.Cmd=l;var h=function DictClosure(){var t=function nonSerializableClosure(){return t};function Dict(r){this._map=Object.create(null);this.xref=r;this.objId=null;this.suppressEncryption=!1;this.__nonSerializable__=t}Dict.prototype={assignXref:function Dict_assignXref(t){this.xref=t},get size(){return Object.keys(this._map).length},get:function get(t,r,i){var o=this._map[t];void 0===o&&void 0!==r&&void 0===(o=this._map[r])&&void 0!==i&&(o=this._map[i]);return o instanceof p&&this.xref?this.xref.fetch(o,this.suppressEncryption):o},getAsync:function getAsync(t,r,i){var a=this;return function _asyncToGenerator(t){return function(){var r=this,i=arguments;return new Promise((function(o,a){var c=t.apply(r,i);function _next(t){asyncGeneratorStep(c,o,a,_next,_throw,"next",t)}function _throw(t){asyncGeneratorStep(c,o,a,_next,_throw,"throw",t)}_next(void 0)}))}}(o.default.mark((function _callee(){var c;return o.default.wrap((function _callee$(o){for(;;)switch(o.prev=o.next){case 0:void 0===(c=a._map[t])&&void 0!==r&&void 0===(c=a._map[r])&&void 0!==i&&(c=a._map[i]);if(!(c instanceof p&&a.xref)){o.next=4;break}return o.abrupt("return",a.xref.fetchAsync(c,a.suppressEncryption));case 4:return o.abrupt("return",c);case 5:case"end":return o.stop()}}),_callee)})))()},getArray:function getArray(t,r,i){var o=this.get(t,r,i);if(!Array.isArray(o)||!this.xref)return o;for(var a=0,c=(o=o.slice()).length;a<c;a++)o[a]instanceof p&&(o[a]=this.xref.fetch(o[a],this.suppressEncryption));return o},getRaw:function Dict_getRaw(t){return this._map[t]},getKeys:function Dict_getKeys(){return Object.keys(this._map)},getRawValues:function Dict_getRawValues(){return Object.values(this._map)},set:function Dict_set(t,r){this._map[t]=r},has:function Dict_has(t){return void 0!==this._map[t]},forEach:function Dict_forEach(t){for(var r in this._map)t(r,this.get(r))}};Dict.empty=function(){var t=new Dict(null);t.set=function(t,r){(0,a.unreachable)("Should not call `set` on the empty dictionary.")};return t}();Dict.merge=function(t){var r=t.xref,i=t.dictArray,o=t.mergeSubDicts,a=void 0!==o&&o,c=new Dict(r);if(!a){var u,l=_createForOfIteratorHelper(i);try{for(l.s();!(u=l.n()).done;){var h=u.value;if(h instanceof Dict)for(var p=0,d=Object.entries(h._map);p<d.length;p++){var m=_slicedToArray(d[p],2),g=m[0],y=m[1];void 0===c._map[g]&&(c._map[g]=y)}}}catch(t){l.e(t)}finally{l.f()}return c.size>0?c:Dict.empty}var v,b=new Map,x=_createForOfIteratorHelper(i);try{for(x.s();!(v=x.n()).done;){var w=v.value;if(w instanceof Dict)for(var _=0,S=Object.entries(w._map);_<S.length;_++){var C=_slicedToArray(S[_],2),T=C[0],P=C[1],I=b.get(T);if(void 0===I){I=[];b.set(T,I)}I.push(P)}}}catch(t){x.e(t)}finally{x.f()}var k,O=_createForOfIteratorHelper(b);try{for(O.s();!(k=O.n()).done;){var E=_slicedToArray(k.value,2),A=E[0],R=E[1];if(1!==R.length&&R[0]instanceof Dict){var B,D=new Dict(r),L=_createForOfIteratorHelper(R);try{for(L.s();!(B=L.n()).done;){var M=B.value;if(M instanceof Dict)for(var U=0,j=Object.entries(M._map);U<j.length;U++){var N=_slicedToArray(j[U],2),H=N[0],z=N[1];void 0===D._map[H]&&(D._map[H]=z)}}}catch(t){L.e(t)}finally{L.f()}D.size>0&&(c._map[A]=D)}else c._map[A]=R[0]}}catch(t){O.e(t)}finally{O.f()}b.clear();return c.size>0?c:Dict.empty};return Dict}();r.Dict=h;var p=function RefClosure(){var t=Object.create(null);function Ref(t,r){this.num=t;this.gen=r}Ref.prototype={toString:function Ref_toString(){return 0===this.gen?"".concat(this.num,"R"):"".concat(this.num,"R").concat(this.gen)}};Ref.get=function(r,i){var o=0===i?"".concat(r,"R"):"".concat(r,"R").concat(i),a=t[o];return a||(t[o]=new Ref(r,i))};Ref._clearCache=function(){t=Object.create(null)};return Ref}();r.Ref=p;var d=function(){function RefSet(){var t=arguments.length>0&&void 0!==arguments[0]?arguments[0]:null;_classCallCheck(this,RefSet);this._set=new Set(t&&t._set)}_createClass(RefSet,[{key:"has",value:function has(t){return this._set.has(t.toString())}},{key:"put",value:function put(t){this._set.add(t.toString())}},{key:"remove",value:function remove(t){this._set.delete(t.toString())}},{key:"forEach",value:function forEach(t){var r,i=_createForOfIteratorHelper(this._set.values());try{for(i.s();!(r=i.n()).done;){t(r.value)}}catch(t){i.e(t)}finally{i.f()}}},{key:"clear",value:function clear(){this._set.clear()}}]);return RefSet}();r.RefSet=d;var m=function(){function RefSetCache(){_classCallCheck(this,RefSetCache);this._map=new Map}_createClass(RefSetCache,[{key:"size",get:function get(){return this._map.size}},{key:"get",value:function get(t){return this._map.get(t.toString())}},{key:"has",value:function has(t){return this._map.has(t.toString())}},{key:"put",value:function put(t,r){this._map.set(t.toString(),r)}},{key:"putAlias",value:function putAlias(t,r){this._map.set(t.toString(),this.get(r))}},{key:"forEach",value:function forEach(t){var r,i=_createForOfIteratorHelper(this._map.values());try{for(i.s();!(r=i.n()).done;){t(r.value)}}catch(t){i.e(t)}finally{i.f()}}},{key:"clear",value:function clear(){this._map.clear()}}]);return RefSetCache}();r.RefSetCache=m;function isName(t,r){return t instanceof u&&(void 0===r||t.name===r)}},(t,r,i)=>{"use strict";t.exports=i(99)},(t,r,i)=>{"use strict";function _typeof(t){return(_typeof="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function _typeof(t){return typeof t}:function _typeof(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t})(t)}var o=function(t){var r,i=Object.prototype,o=i.hasOwnProperty,a="function"==typeof Symbol?Symbol:{},c=a.iterator||"@@iterator",u=a.asyncIterator||"@@asyncIterator",l=a.toStringTag||"@@toStringTag";function define(t,r,i){Object.defineProperty(t,r,{value:i,enumerable:!0,configurable:!0,writable:!0});return t[r]}try{define({},"")}catch(t){define=function define(t,r,i){return t[r]=i}}function wrap(t,r,i,o){var a=r&&r.prototype instanceof Generator?r:Generator,c=Object.create(a.prototype),u=new Context(o||[]);c._invoke=function makeInvokeMethod(t,r,i){var o=h;return function invoke(a,c){if(o===d)throw new Error("Generator is already running");if(o===m){if("throw"===a)throw c;return doneResult()}i.method=a;i.arg=c;for(;;){var u=i.delegate;if(u){var l=maybeInvokeDelegate(u,i);if(l){if(l===g)continue;return l}}if("next"===i.method)i.sent=i._sent=i.arg;else if("throw"===i.method){if(o===h){o=m;throw i.arg}i.dispatchException(i.arg)}else"return"===i.method&&i.abrupt("return",i.arg);o=d;var y=tryCatch(t,r,i);if("normal"===y.type){o=i.done?m:p;if(y.arg===g)continue;return{value:y.arg,done:i.done}}if("throw"===y.type){o=m;i.method="throw";i.arg=y.arg}}}}(t,i,u);return c}t.wrap=wrap;function tryCatch(t,r,i){try{return{type:"normal",arg:t.call(r,i)}}catch(t){return{type:"throw",arg:t}}}var h="suspendedStart",p="suspendedYield",d="executing",m="completed",g={};function Generator(){}function GeneratorFunction(){}function GeneratorFunctionPrototype(){}var y={};y[c]=function(){return this};var v=Object.getPrototypeOf,b=v&&v(v(values([])));b&&b!==i&&o.call(b,c)&&(y=b);var x=GeneratorFunctionPrototype.prototype=Generator.prototype=Object.create(y);GeneratorFunction.prototype=x.constructor=GeneratorFunctionPrototype;GeneratorFunctionPrototype.constructor=GeneratorFunction;GeneratorFunction.displayName=define(GeneratorFunctionPrototype,l,"GeneratorFunction");function defineIteratorMethods(t){["next","throw","return"].forEach((function(r){define(t,r,(function(t){return this._invoke(r,t)}))}))}t.isGeneratorFunction=function(t){var r="function"==typeof t&&t.constructor;return!!r&&(r===GeneratorFunction||"GeneratorFunction"===(r.displayName||r.name))};t.mark=function(t){if(Object.setPrototypeOf)Object.setPrototypeOf(t,GeneratorFunctionPrototype);else{t.__proto__=GeneratorFunctionPrototype;define(t,l,"GeneratorFunction")}t.prototype=Object.create(x);return t};t.awrap=function(t){return{__await:t}};function AsyncIterator(t,r){function invoke(i,a,c,u){var l=tryCatch(t[i],t,a);if("throw"!==l.type){var h=l.arg,p=h.value;return p&&"object"===_typeof(p)&&o.call(p,"__await")?r.resolve(p.__await).then((function(t){invoke("next",t,c,u)}),(function(t){invoke("throw",t,c,u)})):r.resolve(p).then((function(t){h.value=t;c(h)}),(function(t){return invoke("throw",t,c,u)}))}u(l.arg)}var i;this._invoke=function enqueue(t,o){function callInvokeWithMethodAndArg(){return new r((function(r,i){invoke(t,o,r,i)}))}return i=i?i.then(callInvokeWithMethodAndArg,callInvokeWithMethodAndArg):callInvokeWithMethodAndArg()}}defineIteratorMethods(AsyncIterator.prototype);AsyncIterator.prototype[u]=function(){return this};t.AsyncIterator=AsyncIterator;t.async=function(r,i,o,a,c){void 0===c&&(c=Promise);var u=new AsyncIterator(wrap(r,i,o,a),c);return t.isGeneratorFunction(i)?u:u.next().then((function(t){return t.done?t.value:u.next()}))};function maybeInvokeDelegate(t,i){var o=t.iterator[i.method];if(o===r){i.delegate=null;if("throw"===i.method){if(t.iterator.return){i.method="return";i.arg=r;maybeInvokeDelegate(t,i);if("throw"===i.method)return g}i.method="throw";i.arg=new TypeError("The iterator does not provide a 'throw' method")}return g}var a=tryCatch(o,t.iterator,i.arg);if("throw"===a.type){i.method="throw";i.arg=a.arg;i.delegate=null;return g}var c=a.arg;if(!c){i.method="throw";i.arg=new TypeError("iterator result is not an object");i.delegate=null;return g}if(!c.done)return c;i[t.resultName]=c.value;i.next=t.nextLoc;if("return"!==i.method){i.method="next";i.arg=r}i.delegate=null;return g}defineIteratorMethods(x);define(x,l,"Generator");x[c]=function(){return this};x.toString=function(){return"[object Generator]"};function pushTryEntry(t){var r={tryLoc:t[0]};1 in t&&(r.catchLoc=t[1]);if(2 in t){r.finallyLoc=t[2];r.afterLoc=t[3]}this.tryEntries.push(r)}function resetTryEntry(t){var r=t.completion||{};r.type="normal";delete r.arg;t.completion=r}function Context(t){this.tryEntries=[{tryLoc:"root"}];t.forEach(pushTryEntry,this);this.reset(!0)}t.keys=function(t){var r=[];for(var i in t)r.push(i);r.reverse();return function next(){for(;r.length;){var i=r.pop();if(i in t){next.value=i;next.done=!1;return next}}next.done=!0;return next}};function values(t){if(t){var i=t[c];if(i)return i.call(t);if("function"==typeof t.next)return t;if(!isNaN(t.length)){var a=-1,u=function next(){for(;++a<t.length;)if(o.call(t,a)){next.value=t[a];next.done=!1;return next}next.value=r;next.done=!0;return next};return u.next=u}}return{next:doneResult}}t.values=values;function doneResult(){return{value:r,done:!0}}Context.prototype={constructor:Context,reset:function reset(t){this.prev=0;this.next=0;this.sent=this._sent=r;this.done=!1;this.delegate=null;this.method="next";this.arg=r;this.tryEntries.forEach(resetTryEntry);if(!t)for(var i in this)"t"===i.charAt(0)&&o.call(this,i)&&!isNaN(+i.slice(1))&&(this[i]=r)},stop:function stop(){this.done=!0;var t=this.tryEntries[0].completion;if("throw"===t.type)throw t.arg;return this.rval},dispatchException:function dispatchException(t){if(this.done)throw t;var i=this;function handle(o,a){u.type="throw";u.arg=t;i.next=o;if(a){i.method="next";i.arg=r}return!!a}for(var a=this.tryEntries.length-1;a>=0;--a){var c=this.tryEntries[a],u=c.completion;if("root"===c.tryLoc)return handle("end");if(c.tryLoc<=this.prev){var l=o.call(c,"catchLoc"),h=o.call(c,"finallyLoc");if(l&&h){if(this.prev<c.catchLoc)return handle(c.catchLoc,!0);if(this.prev<c.finallyLoc)return handle(c.finallyLoc)}else if(l){if(this.prev<c.catchLoc)return handle(c.catchLoc,!0)}else{if(!h)throw new Error("try statement without catch or finally");if(this.prev<c.finallyLoc)return handle(c.finallyLoc)}}}},abrupt:function abrupt(t,r){for(var i=this.tryEntries.length-1;i>=0;--i){var a=this.tryEntries[i];if(a.tryLoc<=this.prev&&o.call(a,"finallyLoc")&&this.prev<a.finallyLoc){var c=a;break}}c&&("break"===t||"continue"===t)&&c.tryLoc<=r&&r<=c.finallyLoc&&(c=null);var u=c?c.completion:{};u.type=t;u.arg=r;if(c){this.method="next";this.next=c.finallyLoc;return g}return this.complete(u)},complete:function complete(t,r){if("throw"===t.type)throw t.arg;if("break"===t.type||"continue"===t.type)this.next=t.arg;else if("return"===t.type){this.rval=this.arg=t.arg;this.method="return";this.next="end"}else"normal"===t.type&&r&&(this.next=r);return g},finish:function finish(t){for(var r=this.tryEntries.length-1;r>=0;--r){var i=this.tryEntries[r];if(i.finallyLoc===t){this.complete(i.completion,i.afterLoc);resetTryEntry(i);return g}}},catch:function _catch(t){for(var r=this.tryEntries.length-1;r>=0;--r){var i=this.tryEntries[r];if(i.tryLoc===t){var o=i.completion;if("throw"===o.type){var a=o.arg;resetTryEntry(i)}return a}}throw new Error("illegal catch attempt")},delegateYield:function delegateYield(t,i,o){this.delegate={iterator:values(t),resultName:i,nextLoc:o};"next"===this.method&&(this.arg=r);return g}};return t}("object"===_typeof(t=i.nmd(t))?t.exports:{});try{regeneratorRuntime=o}catch(t){Function("r","regeneratorRuntime = r")(o)}},(t,r)=>{"use strict";Object.defineProperty(r,"__esModule",{value:!0});r.ArithmeticDecoder=void 0;function _defineProperties(t,r){for(var i=0;i<r.length;i++){var o=r[i];o.enumerable=o.enumerable||!1;o.configurable=!0;"value"in o&&(o.writable=!0);Object.defineProperty(t,o.key,o)}}var i=[{qe:22017,nmps:1,nlps:1,switchFlag:1},{qe:13313,nmps:2,nlps:6,switchFlag:0},{qe:6145,nmps:3,nlps:9,switchFlag:0},{qe:2753,nmps:4,nlps:12,switchFlag:0},{qe:1313,nmps:5,nlps:29,switchFlag:0},{qe:545,nmps:38,nlps:33,switchFlag:0},{qe:22017,nmps:7,nlps:6,switchFlag:1},{qe:21505,nmps:8,nlps:14,switchFlag:0},{qe:18433,nmps:9,nlps:14,switchFlag:0},{qe:14337,nmps:10,nlps:14,switchFlag:0},{qe:12289,nmps:11,nlps:17,switchFlag:0},{qe:9217,nmps:12,nlps:18,switchFlag:0},{qe:7169,nmps:13,nlps:20,switchFlag:0},{qe:5633,nmps:29,nlps:21,switchFlag:0},{qe:22017,nmps:15,nlps:14,switchFlag:1},{qe:21505,nmps:16,nlps:14,switchFlag:0},{qe:20737,nmps:17,nlps:15,switchFlag:0},{qe:18433,nmps:18,nlps:16,switchFlag:0},{qe:14337,nmps:19,nlps:17,switchFlag:0},{qe:13313,nmps:20,nlps:18,switchFlag:0},{qe:12289,nmps:21,nlps:19,switchFlag:0},{qe:10241,nmps:22,nlps:19,switchFlag:0},{qe:9217,nmps:23,nlps:20,switchFlag:0},{qe:8705,nmps:24,nlps:21,switchFlag:0},{qe:7169,nmps:25,nlps:22,switchFlag:0},{qe:6145,nmps:26,nlps:23,switchFlag:0},{qe:5633,nmps:27,nlps:24,switchFlag:0},{qe:5121,nmps:28,nlps:25,switchFlag:0},{qe:4609,nmps:29,nlps:26,switchFlag:0},{qe:4353,nmps:30,nlps:27,switchFlag:0},{qe:2753,nmps:31,nlps:28,switchFlag:0},{qe:2497,nmps:32,nlps:29,switchFlag:0},{qe:2209,nmps:33,nlps:30,switchFlag:0},{qe:1313,nmps:34,nlps:31,switchFlag:0},{qe:1089,nmps:35,nlps:32,switchFlag:0},{qe:673,nmps:36,nlps:33,switchFlag:0},{qe:545,nmps:37,nlps:34,switchFlag:0},{qe:321,nmps:38,nlps:35,switchFlag:0},{qe:273,nmps:39,nlps:36,switchFlag:0},{qe:133,nmps:40,nlps:37,switchFlag:0},{qe:73,nmps:41,nlps:38,switchFlag:0},{qe:37,nmps:42,nlps:39,switchFlag:0},{qe:21,nmps:43,nlps:40,switchFlag:0},{qe:9,nmps:44,nlps:41,switchFlag:0},{qe:5,nmps:45,nlps:42,switchFlag:0},{qe:1,nmps:45,nlps:43,switchFlag:0},{qe:22017,nmps:46,nlps:46,switchFlag:0}],o=function(){function ArithmeticDecoder(t,r,i){!function _classCallCheck(t,r){if(!(t instanceof r))throw new TypeError("Cannot call a class as a function")}(this,ArithmeticDecoder);this.data=t;this.bp=r;this.dataEnd=i;this.chigh=t[r];this.clow=0;this.byteIn();this.chigh=this.chigh<<7&65535|this.clow>>9&127;this.clow=this.clow<<7&65535;this.ct-=7;this.a=32768}!function _createClass(t,r,i){r&&_defineProperties(t.prototype,r);i&&_defineProperties(t,i);return t}(ArithmeticDecoder,[{key:"byteIn",value:function byteIn(){var t=this.data,r=this.bp;if(255===t[r])if(t[r+1]>143){this.clow+=65280;this.ct=8}else{r++;this.clow+=t[r]<<9;this.ct=7;this.bp=r}else{r++;this.clow+=r<this.dataEnd?t[r]<<8:65280;this.ct=8;this.bp=r}if(this.clow>65535){this.chigh+=this.clow>>16;this.clow&=65535}}},{key:"readBit",value:function readBit(t,r){var o,a=t[r]>>1,c=1&t[r],u=i[a],l=u.qe,h=this.a-l;if(this.chigh<l)if(h<l){h=l;o=c;a=u.nmps}else{h=l;o=1^c;1===u.switchFlag&&(c=o);a=u.nlps}else{this.chigh-=l;if(0!=(32768&h)){this.a=h;return c}if(h<l){o=1^c;1===u.switchFlag&&(c=o);a=u.nlps}else{o=c;a=u.nmps}}do{0===this.ct&&this.byteIn();h<<=1;this.chigh=this.chigh<<1&65535|this.clow>>15&1;this.clow=this.clow<<1&65535;this.ct--}while(0==(32768&h));this.a=h;t[r]=a<<1|c;return o}}]);return ArithmeticDecoder}();r.ArithmeticDecoder=o},(t,r,i)=>{"use strict";Object.defineProperty(r,"__esModule",{value:!0});r.CCITTFaxDecoder=void 0;var o=i(1),a=function CCITTFaxDecoder(){var t=-1,r=[[-1,-1],[-1,-1],[7,8],[7,7],[6,6],[6,6],[6,5],[6,5],[4,0],[4,0],[4,0],[4,0],[4,0],[4,0],[4,0],[4,0],[3,1],[3,1],[3,1],[3,1],[3,1],[3,1],[3,1],[3,1],[3,1],[3,1],[3,1],[3,1],[3,1],[3,1],[3,1],[3,1],[3,4],[3,4],[3,4],[3,4],[3,4],[3,4],[3,4],[3,4],[3,4],[3,4],[3,4],[3,4],[3,4],[3,4],[3,4],[3,4],[3,3],[3,3],[3,3],[3,3],[3,3],[3,3],[3,3],[3,3],[3,3],[3,3],[3,3],[3,3],[3,3],[3,3],[3,3],[3,3],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2],[1,2]],i=[[-1,-1],[12,-2],[-1,-1],[-1,-1],[-1,-1],[-1,-1],[-1,-1],[-1,-1],[-1,-1],[-1,-1],[-1,-1],[-1,-1],[-1,-1],[-1,-1],[-1,-1],[-1,-1],[11,1792],[11,1792],[12,1984],[12,2048],[12,2112],[12,2176],[12,2240],[12,2304],[11,1856],[11,1856],[11,1920],[11,1920],[12,2368],[12,2432],[12,2496],[12,2560]],a=[[-1,-1],[-1,-1],[-1,-1],[-1,-1],[8,29],[8,29],[8,30],[8,30],[8,45],[8,45],[8,46],[8,46],[7,22],[7,22],[7,22],[7,22],[7,23],[7,23],[7,23],[7,23],[8,47],[8,47],[8,48],[8,48],[6,13],[6,13],[6,13],[6,13],[6,13],[6,13],[6,13],[6,13],[7,20],[7,20],[7,20],[7,20],[8,33],[8,33],[8,34],[8,34],[8,35],[8,35],[8,36],[8,36],[8,37],[8,37],[8,38],[8,38],[7,19],[7,19],[7,19],[7,19],[8,31],[8,31],[8,32],[8,32],[6,1],[6,1],[6,1],[6,1],[6,1],[6,1],[6,1],[6,1],[6,12],[6,12],[6,12],[6,12],[6,12],[6,12],[6,12],[6,12],[8,53],[8,53],[8,54],[8,54],[7,26],[7,26],[7,26],[7,26],[8,39],[8,39],[8,40],[8,40],[8,41],[8,41],[8,42],[8,42],[8,43],[8,43],[8,44],[8,44],[7,21],[7,21],[7,21],[7,21],[7,28],[7,28],[7,28],[7,28],[8,61],[8,61],[8,62],[8,62],[8,63],[8,63],[8,0],[8,0],[8,320],[8,320],[8,384],[8,384],[5,10],[5,10],[5,10],[5,10],[5,10],[5,10],[5,10],[5,10],[5,10],[5,10],[5,10],[5,10],[5,10],[5,10],[5,10],[5,10],[5,11],[5,11],[5,11],[5,11],[5,11],[5,11],[5,11],[5,11],[5,11],[5,11],[5,11],[5,11],[5,11],[5,11],[5,11],[5,11],[7,27],[7,27],[7,27],[7,27],[8,59],[8,59],[8,60],[8,60],[9,1472],[9,1536],[9,1600],[9,1728],[7,18],[7,18],[7,18],[7,18],[7,24],[7,24],[7,24],[7,24],[8,49],[8,49],[8,50],[8,50],[8,51],[8,51],[8,52],[8,52],[7,25],[7,25],[7,25],[7,25],[8,55],[8,55],[8,56],[8,56],[8,57],[8,57],[8,58],[8,58],[6,192],[6,192],[6,192],[6,192],[6,192],[6,192],[6,192],[6,192],[6,1664],[6,1664],[6,1664],[6,1664],[6,1664],[6,1664],[6,1664],[6,1664],[8,448],[8,448],[8,512],[8,512],[9,704],[9,768],[8,640],[8,640],[8,576],[8,576],[9,832],[9,896],[9,960],[9,1024],[9,1088],[9,1152],[9,1216],[9,1280],[9,1344],[9,1408],[7,256],[7,256],[7,256],[7,256],[4,2],[4,2],[4,2],[4,2],[4,2],[4,2],[4,2],[4,2],[4,2],[4,2],[4,2],[4,2],[4,2],[4,2],[4,2],[4,2],[4,2],[4,2],[4,2],[4,2],[4,2],[4,2],[4,2],[4,2],[4,2],[4,2],[4,2],[4,2],[4,2],[4,2],[4,2],[4,2],[4,3],[4,3],[4,3],[4,3],[4,3],[4,3],[4,3],[4,3],[4,3],[4,3],[4,3],[4,3],[4,3],[4,3],[4,3],[4,3],[4,3],[4,3],[4,3],[4,3],[4,3],[4,3],[4,3],[4,3],[4,3],[4,3],[4,3],[4,3],[4,3],[4,3],[4,3],[4,3],[5,128],[5,128],[5,128],[5,128],[5,128],[5,128],[5,128],[5,128],[5,128],[5,128],[5,128],[5,128],[5,128],[5,128],[5,128],[5,128],[5,8],[5,8],[5,8],[5,8],[5,8],[5,8],[5,8],[5,8],[5,8],[5,8],[5,8],[5,8],[5,8],[5,8],[5,8],[5,8],[5,9],[5,9],[5,9],[5,9],[5,9],[5,9],[5,9],[5,9],[5,9],[5,9],[5,9],[5,9],[5,9],[5,9],[5,9],[5,9],[6,16],[6,16],[6,16],[6,16],[6,16],[6,16],[6,16],[6,16],[6,17],[6,17],[6,17],[6,17],[6,17],[6,17],[6,17],[6,17],[4,4],[4,4],[4,4],[4,4],[4,4],[4,4],[4,4],[4,4],[4,4],[4,4],[4,4],[4,4],[4,4],[4,4],[4,4],[4,4],[4,4],[4,4],[4,4],[4,4],[4,4],[4,4],[4,4],[4,4],[4,4],[4,4],[4,4],[4,4],[4,4],[4,4],[4,4],[4,4],[4,5],[4,5],[4,5],[4,5],[4,5],[4,5],[4,5],[4,5],[4,5],[4,5],[4,5],[4,5],[4,5],[4,5],[4,5],[4,5],[4,5],[4,5],[4,5],[4,5],[4,5],[4,5],[4,5],[4,5],[4,5],[4,5],[4,5],[4,5],[4,5],[4,5],[4,5],[4,5],[6,14],[6,14],[6,14],[6,14],[6,14],[6,14],[6,14],[6,14],[6,15],[6,15],[6,15],[6,15],[6,15],[6,15],[6,15],[6,15],[5,64],[5,64],[5,64],[5,64],[5,64],[5,64],[5,64],[5,64],[5,64],[5,64],[5,64],[5,64],[5,64],[5,64],[5,64],[5,64],[4,6],[4,6],[4,6],[4,6],[4,6],[4,6],[4,6],[4,6],[4,6],[4,6],[4,6],[4,6],[4,6],[4,6],[4,6],[4,6],[4,6],[4,6],[4,6],[4,6],[4,6],[4,6],[4,6],[4,6],[4,6],[4,6],[4,6],[4,6],[4,6],[4,6],[4,6],[4,6],[4,7],[4,7],[4,7],[4,7],[4,7],[4,7],[4,7],[4,7],[4,7],[4,7],[4,7],[4,7],[4,7],[4,7],[4,7],[4,7],[4,7],[4,7],[4,7],[4,7],[4,7],[4,7],[4,7],[4,7],[4,7],[4,7],[4,7],[4,7],[4,7],[4,7],[4,7],[4,7]],c=[[-1,-1],[-1,-1],[12,-2],[12,-2],[-1,-1],[-1,-1],[-1,-1],[-1,-1],[-1,-1],[-1,-1],[-1,-1],[-1,-1],[-1,-1],[-1,-1],[-1,-1],[-1,-1],[-1,-1],[-1,-1],[-1,-1],[-1,-1],[-1,-1],[-1,-1],[-1,-1],[-1,-1],[-1,-1],[-1,-1],[-1,-1],[-1,-1],[-1,-1],[-1,-1],[-1,-1],[-1,-1],[11,1792],[11,1792],[11,1792],[11,1792],[12,1984],[12,1984],[12,2048],[12,2048],[12,2112],[12,2112],[12,2176],[12,2176],[12,2240],[12,2240],[12,2304],[12,2304],[11,1856],[11,1856],[11,1856],[11,1856],[11,1920],[11,1920],[11,1920],[11,1920],[12,2368],[12,2368],[12,2432],[12,2432],[12,2496],[12,2496],[12,2560],[12,2560],[10,18],[10,18],[10,18],[10,18],[10,18],[10,18],[10,18],[10,18],[12,52],[12,52],[13,640],[13,704],[13,768],[13,832],[12,55],[12,55],[12,56],[12,56],[13,1280],[13,1344],[13,1408],[13,1472],[12,59],[12,59],[12,60],[12,60],[13,1536],[13,1600],[11,24],[11,24],[11,24],[11,24],[11,25],[11,25],[11,25],[11,25],[13,1664],[13,1728],[12,320],[12,320],[12,384],[12,384],[12,448],[12,448],[13,512],[13,576],[12,53],[12,53],[12,54],[12,54],[13,896],[13,960],[13,1024],[13,1088],[13,1152],[13,1216],[10,64],[10,64],[10,64],[10,64],[10,64],[10,64],[10,64],[10,64]],u=[[8,13],[8,13],[8,13],[8,13],[8,13],[8,13],[8,13],[8,13],[8,13],[8,13],[8,13],[8,13],[8,13],[8,13],[8,13],[8,13],[11,23],[11,23],[12,50],[12,51],[12,44],[12,45],[12,46],[12,47],[12,57],[12,58],[12,61],[12,256],[10,16],[10,16],[10,16],[10,16],[10,17],[10,17],[10,17],[10,17],[12,48],[12,49],[12,62],[12,63],[12,30],[12,31],[12,32],[12,33],[12,40],[12,41],[11,22],[11,22],[8,14],[8,14],[8,14],[8,14],[8,14],[8,14],[8,14],[8,14],[8,14],[8,14],[8,14],[8,14],[8,14],[8,14],[8,14],[8,14],[7,10],[7,10],[7,10],[7,10],[7,10],[7,10],[7,10],[7,10],[7,10],[7,10],[7,10],[7,10],[7,10],[7,10],[7,10],[7,10],[7,10],[7,10],[7,10],[7,10],[7,10],[7,10],[7,10],[7,10],[7,10],[7,10],[7,10],[7,10],[7,10],[7,10],[7,10],[7,10],[7,11],[7,11],[7,11],[7,11],[7,11],[7,11],[7,11],[7,11],[7,11],[7,11],[7,11],[7,11],[7,11],[7,11],[7,11],[7,11],[7,11],[7,11],[7,11],[7,11],[7,11],[7,11],[7,11],[7,11],[7,11],[7,11],[7,11],[7,11],[7,11],[7,11],[7,11],[7,11],[9,15],[9,15],[9,15],[9,15],[9,15],[9,15],[9,15],[9,15],[12,128],[12,192],[12,26],[12,27],[12,28],[12,29],[11,19],[11,19],[11,20],[11,20],[12,34],[12,35],[12,36],[12,37],[12,38],[12,39],[11,21],[11,21],[12,42],[12,43],[10,0],[10,0],[10,0],[10,0],[7,12],[7,12],[7,12],[7,12],[7,12],[7,12],[7,12],[7,12],[7,12],[7,12],[7,12],[7,12],[7,12],[7,12],[7,12],[7,12],[7,12],[7,12],[7,12],[7,12],[7,12],[7,12],[7,12],[7,12],[7,12],[7,12],[7,12],[7,12],[7,12],[7,12],[7,12],[7,12]],l=[[-1,-1],[-1,-1],[-1,-1],[-1,-1],[6,9],[6,8],[5,7],[5,7],[4,6],[4,6],[4,6],[4,6],[4,5],[4,5],[4,5],[4,5],[3,1],[3,1],[3,1],[3,1],[3,1],[3,1],[3,1],[3,1],[3,4],[3,4],[3,4],[3,4],[3,4],[3,4],[3,4],[3,4],[2,3],[2,3],[2,3],[2,3],[2,3],[2,3],[2,3],[2,3],[2,3],[2,3],[2,3],[2,3],[2,3],[2,3],[2,3],[2,3],[2,2],[2,2],[2,2],[2,2],[2,2],[2,2],[2,2],[2,2],[2,2],[2,2],[2,2],[2,2],[2,2],[2,2],[2,2],[2,2]];function CCITTFaxDecoder(t){var r=arguments.length>1&&void 0!==arguments[1]?arguments[1]:{};if(!t||"function"!=typeof t.next)throw new Error('CCITTFaxDecoder - invalid "source" parameter.');this.source=t;this.eof=!1;this.encoding=r.K||0;this.eoline=r.EndOfLine||!1;this.byteAlign=r.EncodedByteAlign||!1;this.columns=r.Columns||1728;this.rows=r.Rows||0;var i,o=r.EndOfBlock;null==o&&(o=!0);this.eoblock=o;this.black=r.BlackIs1||!1;this.codingLine=new Uint32Array(this.columns+1);this.refLine=new Uint32Array(this.columns+2);this.codingLine[0]=this.columns;this.codingPos=0;this.row=0;this.nextLine2D=this.encoding<0;this.inputBits=0;this.inputBuf=0;this.outputBits=0;this.rowsDone=!1;for(;0===(i=this._lookBits(12));)this._eatBits(1);1===i&&this._eatBits(12);if(this.encoding>0){this.nextLine2D=!this._lookBits(1);this._eatBits(1)}}CCITTFaxDecoder.prototype={readNextChar:function readNextChar(){if(this.eof)return-1;var r,i,a,c,u,l=this.refLine,h=this.codingLine,p=this.columns;if(0===this.outputBits){this.rowsDone&&(this.eof=!0);if(this.eof)return-1;this.err=!1;var d,m,g;if(this.nextLine2D){for(c=0;h[c]<p;++c)l[c]=h[c];l[c++]=p;l[c]=p;h[0]=0;this.codingPos=0;r=0;i=0;for(;h[this.codingPos]<p;)switch(d=this._getTwoDimCode()){case 0:this._addPixels(l[r+1],i);l[r+1]<p&&(r+=2);break;case 1:d=m=0;if(i){do{d+=g=this._getBlackCode()}while(g>=64);do{m+=g=this._getWhiteCode()}while(g>=64)}else{do{d+=g=this._getWhiteCode()}while(g>=64);do{m+=g=this._getBlackCode()}while(g>=64)}this._addPixels(h[this.codingPos]+d,i);h[this.codingPos]<p&&this._addPixels(h[this.codingPos]+m,1^i);for(;l[r]<=h[this.codingPos]&&l[r]<p;)r+=2;break;case 7:this._addPixels(l[r]+3,i);i^=1;if(h[this.codingPos]<p){++r;for(;l[r]<=h[this.codingPos]&&l[r]<p;)r+=2}break;case 5:this._addPixels(l[r]+2,i);i^=1;if(h[this.codingPos]<p){++r;for(;l[r]<=h[this.codingPos]&&l[r]<p;)r+=2}break;case 3:this._addPixels(l[r]+1,i);i^=1;if(h[this.codingPos]<p){++r;for(;l[r]<=h[this.codingPos]&&l[r]<p;)r+=2}break;case 2:this._addPixels(l[r],i);i^=1;if(h[this.codingPos]<p){++r;for(;l[r]<=h[this.codingPos]&&l[r]<p;)r+=2}break;case 8:this._addPixelsNeg(l[r]-3,i);i^=1;if(h[this.codingPos]<p){r>0?--r:++r;for(;l[r]<=h[this.codingPos]&&l[r]<p;)r+=2}break;case 6:this._addPixelsNeg(l[r]-2,i);i^=1;if(h[this.codingPos]<p){r>0?--r:++r;for(;l[r]<=h[this.codingPos]&&l[r]<p;)r+=2}break;case 4:this._addPixelsNeg(l[r]-1,i);i^=1;if(h[this.codingPos]<p){r>0?--r:++r;for(;l[r]<=h[this.codingPos]&&l[r]<p;)r+=2}break;case t:this._addPixels(p,0);this.eof=!0;break;default:(0,o.info)("bad 2d code");this._addPixels(p,0);this.err=!0}}else{h[0]=0;this.codingPos=0;i=0;for(;h[this.codingPos]<p;){d=0;if(i)do{d+=g=this._getBlackCode()}while(g>=64);else do{d+=g=this._getWhiteCode()}while(g>=64);this._addPixels(h[this.codingPos]+d,i);i^=1}}var y=!1;this.byteAlign&&(this.inputBits&=-8);if(this.eoblock||this.row!==this.rows-1){d=this._lookBits(12);if(this.eoline)for(;d!==t&&1!==d;){this._eatBits(1);d=this._lookBits(12)}else for(;0===d;){this._eatBits(1);d=this._lookBits(12)}if(1===d){this._eatBits(12);y=!0}else d===t&&(this.eof=!0)}else this.rowsDone=!0;if(!this.eof&&this.encoding>0&&!this.rowsDone){this.nextLine2D=!this._lookBits(1);this._eatBits(1)}if(this.eoblock&&y&&this.byteAlign){if(1===(d=this._lookBits(12))){this._eatBits(12);if(this.encoding>0){this._lookBits(1);this._eatBits(1)}if(this.encoding>=0)for(c=0;c<4;++c){1!==(d=this._lookBits(12))&&(0,o.info)("bad rtc code: "+d);this._eatBits(12);if(this.encoding>0){this._lookBits(1);this._eatBits(1)}}this.eof=!0}}else if(this.err&&this.eoline){for(;;){if((d=this._lookBits(13))===t){this.eof=!0;return-1}if(d>>1==1)break;this._eatBits(1)}this._eatBits(12);if(this.encoding>0){this._eatBits(1);this.nextLine2D=!(1&d)}}h[0]>0?this.outputBits=h[this.codingPos=0]:this.outputBits=h[this.codingPos=1];this.row++}if(this.outputBits>=8){u=1&this.codingPos?0:255;this.outputBits-=8;if(0===this.outputBits&&h[this.codingPos]<p){this.codingPos++;this.outputBits=h[this.codingPos]-h[this.codingPos-1]}}else{a=8;u=0;do{if(this.outputBits>a){u<<=a;1&this.codingPos||(u|=255>>8-a);this.outputBits-=a;a=0}else{u<<=this.outputBits;1&this.codingPos||(u|=255>>8-this.outputBits);a-=this.outputBits;this.outputBits=0;if(h[this.codingPos]<p){this.codingPos++;this.outputBits=h[this.codingPos]-h[this.codingPos-1]}else if(a>0){u<<=a;a=0}}}while(a)}this.black&&(u^=255);return u},_addPixels:function _addPixels(t,r){var i=this.codingLine,a=this.codingPos;if(t>i[a]){if(t>this.columns){(0,o.info)("row is wrong length");this.err=!0;t=this.columns}1&a^r&&++a;i[a]=t}this.codingPos=a},_addPixelsNeg:function _addPixelsNeg(t,r){var i=this.codingLine,a=this.codingPos;if(t>i[a]){if(t>this.columns){(0,o.info)("row is wrong length");this.err=!0;t=this.columns}1&a^r&&++a;i[a]=t}else if(t<i[a]){if(t<0){(0,o.info)("invalid code");this.err=!0;t=0}for(;a>0&&t<i[a-1];)--a;i[a]=t}this.codingPos=a},_findTableCode:function _findTableCode(r,i,o,a){for(var c=a||0,u=r;u<=i;++u){var l=this._lookBits(u);if(l===t)return[!0,1,!1];u<i&&(l<<=i-u);if(!c||l>=c){var h=o[l-c];if(h[0]===u){this._eatBits(u);return[!0,h[1],!0]}}}return[!1,0,!1]},_getTwoDimCode:function _getTwoDimCode(){var i,a=0;if(this.eoblock){a=this._lookBits(7);if((i=r[a])&&i[0]>0){this._eatBits(i[0]);return i[1]}}else{var c=this._findTableCode(1,7,r);if(c[0]&&c[2])return c[1]}(0,o.info)("Bad two dim code");return t},_getWhiteCode:function _getWhiteCode(){var r,c=0;if(this.eoblock){if((c=this._lookBits(12))===t)return 1;if((r=c>>5==0?i[c]:a[c>>3])[0]>0){this._eatBits(r[0]);return r[1]}}else{var u=this._findTableCode(1,9,a);if(u[0])return u[1];if((u=this._findTableCode(11,12,i))[0])return u[1]}(0,o.info)("bad white code");this._eatBits(1);return 1},_getBlackCode:function _getBlackCode(){var r,i;if(this.eoblock){if((r=this._lookBits(13))===t)return 1;if((i=r>>7==0?c[r]:r>>9==0&&r>>7!=0?u[(r>>1)-64]:l[r>>7])[0]>0){this._eatBits(i[0]);return i[1]}}else{var a=this._findTableCode(2,6,l);if(a[0])return a[1];if((a=this._findTableCode(7,12,u,64))[0])return a[1];if((a=this._findTableCode(10,13,c))[0])return a[1]}(0,o.info)("bad black code");this._eatBits(1);return 1},_lookBits:function _lookBits(r){for(var i;this.inputBits<r;){if(-1===(i=this.source.next()))return 0===this.inputBits?t:this.inputBuf<<r-this.inputBits&65535>>16-r;this.inputBuf=this.inputBuf<<8|i;this.inputBits+=8}return this.inputBuf>>this.inputBits-r&65535>>16-r},_eatBits:function _eatBits(t){(this.inputBits-=t)<0&&(this.inputBits=0)}};return CCITTFaxDecoder}();r.CCITTFaxDecoder=a},(t,r,i)=>{"use strict";Object.defineProperty(r,"__esModule",{value:!0});r.JpegImage=void 0;var o=i(1),a=i(96);function _typeof(t){return(_typeof="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function _typeof(t){return typeof t}:function _typeof(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t})(t)}function _classCallCheck(t,r){if(!(t instanceof r))throw new TypeError("Cannot call a class as a function")}function _inherits(t,r){if("function"!=typeof r&&null!==r)throw new TypeError("Super expression must either be null or a function");t.prototype=Object.create(r&&r.prototype,{constructor:{value:t,writable:!0,configurable:!0}});r&&_setPrototypeOf(t,r)}function _setPrototypeOf(t,r){return(_setPrototypeOf=Object.setPrototypeOf||function _setPrototypeOf(t,r){t.__proto__=r;return t})(t,r)}function _createSuper(t){var r=function _isNativeReflectConstruct(){if("undefined"==typeof Reflect||!Reflect.construct)return!1;if(Reflect.construct.sham)return!1;if("function"==typeof Proxy)return!0;try{Boolean.prototype.valueOf.call(Reflect.construct(Boolean,[],(function(){})));return!0}catch(t){return!1}}();return function _createSuperInternal(){var i,o=_getPrototypeOf(t);if(r){var a=_getPrototypeOf(this).constructor;i=Reflect.construct(o,arguments,a)}else i=o.apply(this,arguments);return _possibleConstructorReturn(this,i)}}function _possibleConstructorReturn(t,r){return!r||"object"!==_typeof(r)&&"function"!=typeof r?function _assertThisInitialized(t){if(void 0===t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return t}(t):r}function _getPrototypeOf(t){return(_getPrototypeOf=Object.setPrototypeOf?Object.getPrototypeOf:function _getPrototypeOf(t){return t.__proto__||Object.getPrototypeOf(t)})(t)}var c=function(t){_inherits(JpegError,t);var r=_createSuper(JpegError);function JpegError(t){_classCallCheck(this,JpegError);return r.call(this,"JPEG error: ".concat(t))}return JpegError}(o.BaseException),u=function(t){_inherits(DNLMarkerError,t);var r=_createSuper(DNLMarkerError);function DNLMarkerError(t,i){var o;_classCallCheck(this,DNLMarkerError);(o=r.call(this,t)).scanLines=i;return o}return DNLMarkerError}(o.BaseException),l=function(t){_inherits(EOIMarkerError,t);var r=_createSuper(EOIMarkerError);function EOIMarkerError(){_classCallCheck(this,EOIMarkerError);return r.apply(this,arguments)}return EOIMarkerError}(o.BaseException),h=function JpegImageClosure(){var t=new Uint8Array([0,1,8,16,9,2,3,10,17,24,32,25,18,11,4,5,12,19,26,33,40,48,41,34,27,20,13,6,7,14,21,28,35,42,49,56,57,50,43,36,29,22,15,23,30,37,44,51,58,59,52,45,38,31,39,46,53,60,61,54,47,55,62,63]),r=4017,i=799,h=3406,p=2276,d=1567,m=3784,g=5793,y=2896;function JpegImage(){var t=arguments.length>0&&void 0!==arguments[0]?arguments[0]:{},r=t.decodeTransform,i=void 0===r?null:r,o=t.colorTransform,a=void 0===o?-1:o;this._decodeTransform=i;this._colorTransform=a}function buildHuffmanTable(t,r){for(var i,o,a=0,c=[],u=16;u>0&&!t[u-1];)u--;c.push({children:[],index:0});var l,h=c[0];for(i=0;i<u;i++){for(o=0;o<t[i];o++){(h=c.pop()).children[h.index]=r[a];for(;h.index>0;)h=c.pop();h.index++;c.push(h);for(;c.length<=i;){c.push(l={children:[],index:0});h.children[h.index]=l.children;h=l}a++}if(i+1<u){c.push(l={children:[],index:0});h.children[h.index]=l.children;h=l}}return c[0].children}function getBlockBufferOffset(t,r,i){return 64*((t.blocksPerLine+1)*r+i)}function decodeScan(r,i,h,p,d,m,g,y,v){var b=arguments.length>9&&void 0!==arguments[9]&&arguments[9],x=h.mcusPerLine,w=h.progressive,_=i,S=0,C=0;function readBit(){if(C>0){C--;return S>>C&1}if(255===(S=r[i++])){var t=r[i++];if(t){if(220===t&&b){i+=2;var o=(0,a.readUint16)(r,i);i+=2;if(o>0&&o!==h.scanLines)throw new u("Found DNL marker (0xFFDC) while parsing scan data",o)}else if(217===t){if(b){var p=k*(8===h.precision?8:0);if(p>0&&Math.round(h.scanLines/p)>=10)throw new u("Found EOI marker (0xFFD9) while parsing scan data, possibly caused by incorrect `scanLines` parameter",p)}throw new l("Found EOI marker (0xFFD9) while parsing scan data")}throw new c("unexpected marker ".concat((S<<8|t).toString(16)))}}C=7;return S>>>7}function decodeHuffman(t){for(var r=t;;){switch(_typeof(r=r[readBit()])){case"number":return r;case"object":continue}throw new c("invalid huffman sequence")}}function receive(t){for(var r=0;t>0;){r=r<<1|readBit();t--}return r}function receiveAndExtend(t){if(1===t)return 1===readBit()?1:-1;var r=receive(t);return r>=1<<t-1?r:r+(-1<<t)+1}function decodeBaseline(r,i){var o=decodeHuffman(r.huffmanTableDC),a=0===o?0:receiveAndExtend(o);r.blockData[i]=r.pred+=a;for(var c=1;c<64;){var u=decodeHuffman(r.huffmanTableAC),l=15&u,h=u>>4;if(0!==l){var p=t[c+=h];r.blockData[i+p]=receiveAndExtend(l);c++}else{if(h<15)break;c+=16}}}function decodeDCFirst(t,r){var i=decodeHuffman(t.huffmanTableDC),o=0===i?0:receiveAndExtend(i)<<v;t.blockData[r]=t.pred+=o}function decodeDCSuccessive(t,r){t.blockData[r]|=readBit()<<v}var T=0;function decodeACFirst(r,i){if(T>0)T--;else for(var o=m,a=g;o<=a;){var c=decodeHuffman(r.huffmanTableAC),u=15&c,l=c>>4;if(0!==u){var h=t[o+=l];r.blockData[i+h]=receiveAndExtend(u)*(1<<v);o++}else{if(l<15){T=receive(l)+(1<<l)-1;break}o+=16}}}var P,I=0;function decodeACSuccessive(r,i){for(var o,a,u=m,l=g,h=0;u<=l;){var p=i+t[u],d=r.blockData[p]<0?-1:1;switch(I){case 0:h=(a=decodeHuffman(r.huffmanTableAC))>>4;if(0===(o=15&a))if(h<15){T=receive(h)+(1<<h);I=4}else{h=16;I=1}else{if(1!==o)throw new c("invalid ACn encoding");P=receiveAndExtend(o);I=h?2:3}continue;case 1:case 2:r.blockData[p]?r.blockData[p]+=d*(readBit()<<v):0===--h&&(I=2===I?3:0);break;case 3:if(r.blockData[p])r.blockData[p]+=d*(readBit()<<v);else{r.blockData[p]=P<<v;I=0}break;case 4:r.blockData[p]&&(r.blockData[p]+=d*(readBit()<<v))}u++}4===I&&0===--T&&(I=0)}var k=0;function decodeMcu(t,r,i,o,a){var c=i%x;k=(i/x|0)*t.v+o;var u=c*t.h+a;r(t,getBlockBufferOffset(t,k,u))}function decodeBlock(t,r,i){k=i/t.blocksPerLine|0;var o=i%t.blocksPerLine;r(t,getBlockBufferOffset(t,k,o))}var O,E,A,R,B,D,L=p.length;D=w?0===m?0===y?decodeDCFirst:decodeDCSuccessive:0===y?decodeACFirst:decodeACSuccessive:decodeBaseline;var M,U,j,N,H=0;U=1===L?p[0].blocksPerLine*p[0].blocksPerColumn:x*h.mcusPerColumn;for(;H<=U;){var z=d?Math.min(U-H,d):U;if(z>0){for(E=0;E<L;E++)p[E].pred=0;T=0;if(1===L){O=p[0];for(B=0;B<z;B++){decodeBlock(O,D,H);H++}}else for(B=0;B<z;B++){for(E=0;E<L;E++){j=(O=p[E]).h;N=O.v;for(A=0;A<N;A++)for(R=0;R<j;R++)decodeMcu(O,D,H,A,R)}H++}}C=0;if(!(M=findNextFileMarker(r,i)))break;if(M.invalid){var X=z>0?"unexpected":"excessive";(0,o.warn)("decodeScan - ".concat(X," MCU data, current marker is: ").concat(M.invalid));i=M.offset}if(!(M.marker>=65488&&M.marker<=65495))break;i+=2}return i-_}function quantizeAndInverse(t,o,a){var u,l,v,b,x,w,_,S,C,T,P,I,k,O,E,A,R,B=t.quantizationTable,D=t.blockData;if(!B)throw new c("missing required Quantization Table.");for(var L=0;L<64;L+=8){C=D[o+L];T=D[o+L+1];P=D[o+L+2];I=D[o+L+3];k=D[o+L+4];O=D[o+L+5];E=D[o+L+6];A=D[o+L+7];C*=B[L];if(0!=(T|P|I|k|O|E|A)){T*=B[L+1];P*=B[L+2];I*=B[L+3];k*=B[L+4];O*=B[L+5];E*=B[L+6];A*=B[L+7];l=(u=(u=g*C+128>>8)+(l=g*k+128>>8)+1>>1)-l;R=(v=P)*m+(b=E)*d+128>>8;v=v*d-b*m+128>>8;_=(x=(x=y*(T-A)+128>>8)+(_=O<<4)+1>>1)-_;w=(S=(S=y*(T+A)+128>>8)+(w=I<<4)+1>>1)-w;b=(u=u+(b=R)+1>>1)-b;v=(l=l+v+1>>1)-v;R=x*p+S*h+2048>>12;x=x*h-S*p+2048>>12;S=R;R=w*i+_*r+2048>>12;w=w*r-_*i+2048>>12;_=R;a[L]=u+S;a[L+7]=u-S;a[L+1]=l+_;a[L+6]=l-_;a[L+2]=v+w;a[L+5]=v-w;a[L+3]=b+x;a[L+4]=b-x}else{R=g*C+512>>10;a[L]=R;a[L+1]=R;a[L+2]=R;a[L+3]=R;a[L+4]=R;a[L+5]=R;a[L+6]=R;a[L+7]=R}}for(var M=0;M<8;++M){C=a[M];if(0!=((T=a[M+8])|(P=a[M+16])|(I=a[M+24])|(k=a[M+32])|(O=a[M+40])|(E=a[M+48])|(A=a[M+56]))){l=(u=4112+((u=g*C+2048>>12)+(l=g*k+2048>>12)+1>>1))-l;R=(v=P)*m+(b=E)*d+2048>>12;v=v*d-b*m+2048>>12;b=R;_=(x=(x=y*(T-A)+2048>>12)+(_=O)+1>>1)-_;w=(S=(S=y*(T+A)+2048>>12)+(w=I)+1>>1)-w;R=x*p+S*h+2048>>12;x=x*h-S*p+2048>>12;S=R;R=w*i+_*r+2048>>12;w=w*r-_*i+2048>>12;(C=(u=u+b+1>>1)+S)<16?C=0:C>=4080?C=255:C>>=4;(T=(l=l+v+1>>1)+(_=R))<16?T=0:T>=4080?T=255:T>>=4;(P=(v=l-v)+w)<16?P=0:P>=4080?P=255:P>>=4;(I=(b=u-b)+x)<16?I=0:I>=4080?I=255:I>>=4;(k=b-x)<16?k=0:k>=4080?k=255:k>>=4;(O=v-w)<16?O=0:O>=4080?O=255:O>>=4;(E=l-_)<16?E=0:E>=4080?E=255:E>>=4;(A=u-S)<16?A=0:A>=4080?A=255:A>>=4;D[o+M]=C;D[o+M+8]=T;D[o+M+16]=P;D[o+M+24]=I;D[o+M+32]=k;D[o+M+40]=O;D[o+M+48]=E;D[o+M+56]=A}else{R=(R=g*C+8192>>14)<-2040?0:R>=2024?255:R+2056>>4;D[o+M]=R;D[o+M+8]=R;D[o+M+16]=R;D[o+M+24]=R;D[o+M+32]=R;D[o+M+40]=R;D[o+M+48]=R;D[o+M+56]=R}}}function buildComponentData(t,r){for(var i=r.blocksPerLine,o=r.blocksPerColumn,a=new Int16Array(64),c=0;c<o;c++)for(var u=0;u<i;u++){quantizeAndInverse(r,getBlockBufferOffset(r,c,u),a)}return r.blockData}function findNextFileMarker(t,r){var i=arguments.length>2&&void 0!==arguments[2]?arguments[2]:r,o=t.length-1,c=i<r?i:r;if(r>=o)return null;var u=(0,a.readUint16)(t,r);if(u>=65472&&u<=65534)return{invalid:null,marker:u,offset:r};for(var l=(0,a.readUint16)(t,c);!(l>=65472&&l<=65534);){if(++c>=o)return null;l=(0,a.readUint16)(t,c)}return{invalid:u.toString(16),marker:l,offset:c}}JpegImage.prototype={parse:function parse(r){var i=arguments.length>1&&void 0!==arguments[1]?arguments[1]:{},h=i.dnlScanLines,p=void 0===h?null:h;function readDataBlock(){var t=(0,a.readUint16)(r,g),i=(g+=2)+t-2,c=findNextFileMarker(r,i,g);if(c&&c.invalid){(0,o.warn)("readDataBlock - incorrect length, current marker is: "+c.invalid);i=c.offset}var u=r.subarray(g,i);g+=u.length;return u}function prepareComponents(t){for(var r=Math.ceil(t.samplesPerLine/8/t.maxH),i=Math.ceil(t.scanLines/8/t.maxV),o=0;o<t.components.length;o++){J=t.components[o];var a=Math.ceil(Math.ceil(t.samplesPerLine/8)*J.h/t.maxH),c=Math.ceil(Math.ceil(t.scanLines/8)*J.v/t.maxV),u=r*J.h,l=64*(i*J.v)*(u+1);J.blockData=new Int16Array(l);J.blocksPerLine=a;J.blocksPerColumn=c}t.mcusPerLine=r;t.mcusPerColumn=i}var d,m,g=0,y=null,v=null,b=0,x=[],w=[],_=[],S=(0,a.readUint16)(r,g);g+=2;if(65496!==S)throw new c("SOI not found");S=(0,a.readUint16)(r,g);g+=2;e:for(;65497!==S;){var C,T,P;switch(S){case 65504:case 65505:case 65506:case 65507:case 65508:case 65509:case 65510:case 65511:case 65512:case 65513:case 65514:case 65515:case 65516:case 65517:case 65518:case 65519:case 65534:var I=readDataBlock();65504===S&&74===I[0]&&70===I[1]&&73===I[2]&&70===I[3]&&0===I[4]&&(y={version:{major:I[5],minor:I[6]},densityUnits:I[7],xDensity:I[8]<<8|I[9],yDensity:I[10]<<8|I[11],thumbWidth:I[12],thumbHeight:I[13],thumbData:I.subarray(14,14+3*I[12]*I[13])});65518===S&&65===I[0]&&100===I[1]&&111===I[2]&&98===I[3]&&101===I[4]&&(v={version:I[5]<<8|I[6],flags0:I[7]<<8|I[8],flags1:I[9]<<8|I[10],transformCode:I[11]});break;case 65499:for(var k=(0,a.readUint16)(r,g),O=k+(g+=2)-2;g<O;){var E=r[g++],A=new Uint16Array(64);if(E>>4==0)for(T=0;T<64;T++)A[t[T]]=r[g++];else{if(E>>4!=1)throw new c("DQT - invalid table spec");for(T=0;T<64;T++){A[t[T]]=(0,a.readUint16)(r,g);g+=2}}x[15&E]=A}break;case 65472:case 65473:case 65474:if(d)throw new c("Only single frame JPEGs supported");g+=2;(d={}).extended=65473===S;d.progressive=65474===S;d.precision=r[g++];var R=(0,a.readUint16)(r,g);g+=2;d.scanLines=p||R;d.samplesPerLine=(0,a.readUint16)(r,g);g+=2;d.components=[];d.componentIds={};var B,D=r[g++],L=0,M=0;for(C=0;C<D;C++){B=r[g];var U=r[g+1]>>4,j=15&r[g+1];L<U&&(L=U);M<j&&(M=j);var N=r[g+2];P=d.components.push({h:U,v:j,quantizationId:N,quantizationTable:null});d.componentIds[B]=P-1;g+=3}d.maxH=L;d.maxV=M;prepareComponents(d);break;case 65476:var H=(0,a.readUint16)(r,g);g+=2;for(C=2;C<H;){var z=r[g++],X=new Uint8Array(16),G=0;for(T=0;T<16;T++,g++)G+=X[T]=r[g];var Y=new Uint8Array(G);for(T=0;T<G;T++,g++)Y[T]=r[g];C+=17+G;(z>>4==0?_:w)[15&z]=buildHuffmanTable(X,Y)}break;case 65501:g+=2;m=(0,a.readUint16)(r,g);g+=2;break;case 65498:var q=1==++b&&!p;g+=2;var J,W=r[g++],V=[];for(C=0;C<W;C++){var K=r[g++],Q=d.componentIds[K];(J=d.components[Q]).index=K;var Z=r[g++];J.huffmanTableDC=_[Z>>4];J.huffmanTableAC=w[15&Z];V.push(J)}var $=r[g++],ee=r[g++],te=r[g++];try{var re=decodeScan(r,g,d,V,m,$,ee,te>>4,15&te,q);g+=re}catch(t){if(t instanceof u){(0,o.warn)("".concat(t.message," -- attempting to re-parse the JPEG image."));return this.parse(r,{dnlScanLines:t.scanLines})}if(t instanceof l){(0,o.warn)("".concat(t.message," -- ignoring the rest of the image data."));break e}throw t}break;case 65500:g+=4;break;case 65535:255!==r[g]&&g--;break;default:var ne=findNextFileMarker(r,g-2,g-3);if(ne&&ne.invalid){(0,o.warn)("JpegImage.parse - unexpected data, current marker is: "+ne.invalid);g=ne.offset;break}if(!ne||g>=r.length-1){(0,o.warn)("JpegImage.parse - reached the end of the image data without finding an EOI marker (0xFFD9).");break e}throw new c("JpegImage.parse - unknown marker: "+S.toString(16))}S=(0,a.readUint16)(r,g);g+=2}this.width=d.samplesPerLine;this.height=d.scanLines;this.jfif=y;this.adobe=v;this.components=[];for(C=0;C<d.components.length;C++){var ie=x[(J=d.components[C]).quantizationId];ie&&(J.quantizationTable=ie);this.components.push({index:J.index,output:buildComponentData(0,J),scaleX:J.h/d.maxH,scaleY:J.v/d.maxV,blocksPerLine:J.blocksPerLine,blocksPerColumn:J.blocksPerColumn})}this.numComponents=this.components.length},_getLinearizedBlockData:function _getLinearizedBlockData(t,r){var i,o,a,c,u,l,h,p,d,m,g,y,v=arguments.length>2&&void 0!==arguments[2]&&arguments[2],b=this.width/t,x=this.height/r,w=0,_=this.components.length,S=t*r*_,C=new Uint8ClampedArray(S),T=new Uint32Array(t),P=4294967288;for(h=0;h<_;h++){o=(i=this.components[h]).scaleX*b;a=i.scaleY*x;w=h;g=i.output;c=i.blocksPerLine+1<<3;if(o!==y){for(u=0;u<t;u++){p=0|u*o;T[u]=(p&P)<<3|7&p}y=o}for(l=0;l<r;l++){m=c*((p=0|l*a)&P)|(7&p)<<3;for(u=0;u<t;u++){C[w]=g[m+T[u]];w+=_}}}var I=this._decodeTransform;v||4!==_||I||(I=new Int32Array([-256,255,-256,255,-256,255,-256,255]));if(I)for(h=0;h<S;)for(p=0,d=0;p<_;p++,h++,d+=2)C[h]=(C[h]*I[d]>>8)+I[d+1];return C},get _isColorConversionNeeded(){return this.adobe?!!this.adobe.transformCode:3===this.numComponents?0!==this._colorTransform&&(82!==this.components[0].index||71!==this.components[1].index||66!==this.components[2].index):1===this._colorTransform},_convertYccToRgb:function convertYccToRgb(t){for(var r,i,o,a=0,c=t.length;a<c;a+=3){r=t[a];i=t[a+1];o=t[a+2];t[a]=r-179.456+1.402*o;t[a+1]=r+135.459-.344*i-.714*o;t[a+2]=r-226.816+1.772*i}return t},_convertYcckToRgb:function convertYcckToRgb(t){for(var r,i,o,a,c=0,u=0,l=t.length;u<l;u+=4){r=t[u];i=t[u+1];o=t[u+2];a=t[u+3];t[c++]=i*(-660635669420364e-19*i+.000437130475926232*o-54080610064599e-18*r+.00048449797120281*a-.154362151871126)-122.67195406894+o*(-.000957964378445773*o+.000817076911346625*r-.00477271405408747*a+1.53380253221734)+r*(.000961250184130688*r-.00266257332283933*a+.48357088451265)+a*(-.000336197177618394*a+.484791561490776);t[c++]=107.268039397724+i*(219927104525741e-19*i-.000640992018297945*o+.000659397001245577*r+.000426105652938837*a-.176491792462875)+o*(-.000778269941513683*o+.00130872261408275*r+.000770482631801132*a-.151051492775562)+r*(.00126935368114843*r-.00265090189010898*a+.25802910206845)+a*(-.000318913117588328*a-.213742400323665);t[c++]=i*(-.000570115196973677*i-263409051004589e-19*o+.0020741088115012*r-.00288260236853442*a+.814272968359295)-20.810012546947+o*(-153496057440975e-19*o-.000132689043961446*r+.000560833691242812*a-.195152027534049)+r*(.00174418132927582*r-.00255243321439347*a+.116935020465145)+a*(-.000343531996510555*a+.24165260232407)}return t.subarray(0,c)},_convertYcckToCmyk:function convertYcckToCmyk(t){for(var r,i,o,a=0,c=t.length;a<c;a+=4){r=t[a];i=t[a+1];o=t[a+2];t[a]=434.456-r-1.402*o;t[a+1]=119.541-r+.344*i+.714*o;t[a+2]=481.816-r-1.772*i}return t},_convertCmykToRgb:function convertCmykToRgb(t){for(var r,i,o,a,c=0,u=0,l=t.length;u<l;u+=4){r=t[u];i=t[u+1];o=t[u+2];a=t[u+3];t[c++]=255+r*(-6747147073602441e-20*r+.0008379262121013727*i+.0002894718188643294*o+.003264231057537806*a-1.1185611867203937)+i*(26374107616089405e-21*i-8626949158638572e-20*o-.0002748769067499491*a-.02155688794978967)+o*(-3878099212869363e-20*o-.0003267808279485286*a+.0686742238595345)-a*(.0003361971776183937*a+.7430659151342254);t[c++]=255+r*(.00013596372813588848*r+.000924537132573585*i+.00010567359618683593*o+.0004791864687436512*a-.3109689587515875)+i*(-.00023545346108370344*i+.0002702845253534714*o+.0020200308977307156*a-.7488052167015494)+o*(6834815998235662e-20*o+.00015168452363460973*a-.09751927774728933)-a*(.0003189131175883281*a+.7364883807733168);t[c++]=255+r*(13598650411385307e-21*r+.00012423956175490851*i+.0004751985097583589*o-36729317476630422e-22*a-.05562186980264034)+i*(.00016141380598724676*i+.0009692239130725186*o+.0007782692450036253*a-.44015232367526463)+o*(5.068882914068769e-7*o+.0017778369011375071*a-.7591454649749609)-a*(.0003435319965105553*a+.7063770186160144)}return t.subarray(0,c)},getData:function getData(t){var r=t.width,i=t.height,o=t.forceRGB,a=void 0!==o&&o,u=t.isSourcePDF,l=void 0!==u&&u;if(this.numComponents>4)throw new c("Unsupported color mode");var h=this._getLinearizedBlockData(r,i,l);if(1===this.numComponents&&a){for(var p=h.length,d=new Uint8ClampedArray(3*p),m=0,g=0;g<p;g++){var y=h[g];d[m++]=y;d[m++]=y;d[m++]=y}return d}if(3===this.numComponents&&this._isColorConversionNeeded)return this._convertYccToRgb(h);if(4===this.numComponents){if(this._isColorConversionNeeded)return a?this._convertYcckToRgb(h):this._convertYcckToCmyk(h);if(a)return this._convertCmykToRgb(h)}return h}};return JpegImage}();r.JpegImage=h},(t,r,i)=>{"use strict";function _typeof(t){return(_typeof="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function _typeof(t){return typeof t}:function _typeof(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t})(t)}Object.defineProperty(r,"__esModule",{value:!0});r.JpxImage=void 0;var o=i(1),a=i(96),c=i(100);function _setPrototypeOf(t,r){return(_setPrototypeOf=Object.setPrototypeOf||function _setPrototypeOf(t,r){t.__proto__=r;return t})(t,r)}function _createSuper(t){var r=function _isNativeReflectConstruct(){if("undefined"==typeof Reflect||!Reflect.construct)return!1;if(Reflect.construct.sham)return!1;if("function"==typeof Proxy)return!0;try{Boolean.prototype.valueOf.call(Reflect.construct(Boolean,[],(function(){})));return!0}catch(t){return!1}}();return function _createSuperInternal(){var i,o=_getPrototypeOf(t);if(r){var a=_getPrototypeOf(this).constructor;i=Reflect.construct(o,arguments,a)}else i=o.apply(this,arguments);return _possibleConstructorReturn(this,i)}}function _possibleConstructorReturn(t,r){return!r||"object"!==_typeof(r)&&"function"!=typeof r?function _assertThisInitialized(t){if(void 0===t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return t}(t):r}function _getPrototypeOf(t){return(_getPrototypeOf=Object.setPrototypeOf?Object.getPrototypeOf:function _getPrototypeOf(t){return t.__proto__||Object.getPrototypeOf(t)})(t)}var u=function(t){!function _inherits(t,r){if("function"!=typeof r&&null!==r)throw new TypeError("Super expression must either be null or a function");t.prototype=Object.create(r&&r.prototype,{constructor:{value:t,writable:!0,configurable:!0}});r&&_setPrototypeOf(t,r)}(JpxError,t);var r=_createSuper(JpxError);function JpxError(t){!function _classCallCheck(t,r){if(!(t instanceof r))throw new TypeError("Cannot call a class as a function")}(this,JpxError);return r.call(this,"JPX error: ".concat(t))}return JpxError}(o.BaseException),l=function JpxImageClosure(){var t={LL:0,LH:1,HL:1,HH:2};function JpxImage(){this.failOnCorruptedImage=!1}JpxImage.prototype={parse:function JpxImage_parse(t){if(65359!==(0,a.readUint16)(t,0))for(var r=0,i=t.length;r<i;){var c=8,l=(0,a.readUint32)(t,r),h=(0,a.readUint32)(t,r+4);r+=c;if(1===l){l=4294967296*(0,a.readUint32)(t,r)+(0,a.readUint32)(t,r+4);r+=8;c+=8}0===l&&(l=i-r+c);if(l<c)throw new u("Invalid box field size");var p=l-c,d=!0;switch(h){case 1785737832:d=!1;break;case 1668246642:var m=t[r];if(1===m){var g=(0,a.readUint32)(t,r+3);switch(g){case 16:case 17:case 18:break;default:(0,o.warn)("Unknown colorspace "+g)}}else 2===m&&(0,o.info)("ICC profile not supported");break;case 1785737827:this.parseCodestream(t,r,r+p);break;case 1783636e3:218793738!==(0,a.readUint32)(t,r)&&(0,o.warn)("Invalid JP2 signature");break;case 1783634458:case 1718909296:case 1920099697:case 1919251232:case 1768449138:break;default:var y=String.fromCharCode(h>>24&255,h>>16&255,h>>8&255,255&h);(0,o.warn)("Unsupported header type "+h+" ("+y+")")}d&&(r+=p)}else this.parseCodestream(t,0,t.length)},parseImageProperties:function JpxImage_parseImageProperties(t){for(var r=t.getByte();r>=0;){if(65361===(r<<8|(r=t.getByte()))){t.skip(4);var i=t.getInt32()>>>0,o=t.getInt32()>>>0,a=t.getInt32()>>>0,c=t.getInt32()>>>0;t.skip(16);var l=t.getUint16();this.width=i-a;this.height=o-c;this.componentsCount=l;this.bitsPerComponent=8;return}}throw new u("No size marker found in JPX stream")},parseCodestream:function JpxImage_parseCodestream(t,r,i){var c={},l=!1;try{for(var h=r;h+1<i;){var p=(0,a.readUint16)(t,h);h+=2;var d,m,g,y,v,b,x=0;switch(p){case 65359:c.mainHeader=!0;break;case 65497:break;case 65361:x=(0,a.readUint16)(t,h);var w={};w.Xsiz=(0,a.readUint32)(t,h+4);w.Ysiz=(0,a.readUint32)(t,h+8);w.XOsiz=(0,a.readUint32)(t,h+12);w.YOsiz=(0,a.readUint32)(t,h+16);w.XTsiz=(0,a.readUint32)(t,h+20);w.YTsiz=(0,a.readUint32)(t,h+24);w.XTOsiz=(0,a.readUint32)(t,h+28);w.YTOsiz=(0,a.readUint32)(t,h+32);var _=(0,a.readUint16)(t,h+36);w.Csiz=_;var S=[];d=h+38;for(var C=0;C<_;C++){var T={precision:1+(127&t[d]),isSigned:!!(128&t[d]),XRsiz:t[d+1],YRsiz:t[d+2]};d+=3;calculateComponentDimensions(T,w);S.push(T)}c.SIZ=w;c.components=S;calculateTileGrids(c,S);c.QCC=[];c.COC=[];break;case 65372:x=(0,a.readUint16)(t,h);var P={};d=h+2;switch(31&(m=t[d++])){case 0:y=8;v=!0;break;case 1:y=16;v=!1;break;case 2:y=16;v=!0;break;default:throw new Error("Invalid SQcd value "+m)}P.noQuantization=8===y;P.scalarExpounded=v;P.guardBits=m>>5;g=[];for(;d<x+h;){var I={};if(8===y){I.epsilon=t[d++]>>3;I.mu=0}else{I.epsilon=t[d]>>3;I.mu=(7&t[d])<<8|t[d+1];d+=2}g.push(I)}P.SPqcds=g;if(c.mainHeader)c.QCD=P;else{c.currentTile.QCD=P;c.currentTile.QCC=[]}break;case 65373:x=(0,a.readUint16)(t,h);var k,O={};d=h+2;if(c.SIZ.Csiz<257)k=t[d++];else{k=(0,a.readUint16)(t,d);d+=2}switch(31&(m=t[d++])){case 0:y=8;v=!0;break;case 1:y=16;v=!1;break;case 2:y=16;v=!0;break;default:throw new Error("Invalid SQcd value "+m)}O.noQuantization=8===y;O.scalarExpounded=v;O.guardBits=m>>5;g=[];for(;d<x+h;){I={};if(8===y){I.epsilon=t[d++]>>3;I.mu=0}else{I.epsilon=t[d]>>3;I.mu=(7&t[d])<<8|t[d+1];d+=2}g.push(I)}O.SPqcds=g;c.mainHeader?c.QCC[k]=O:c.currentTile.QCC[k]=O;break;case 65362:x=(0,a.readUint16)(t,h);var E={};d=h+2;var A=t[d++];E.entropyCoderWithCustomPrecincts=!!(1&A);E.sopMarkerUsed=!!(2&A);E.ephMarkerUsed=!!(4&A);E.progressionOrder=t[d++];E.layersCount=(0,a.readUint16)(t,d);d+=2;E.multipleComponentTransform=t[d++];E.decompositionLevelsCount=t[d++];E.xcb=2+(15&t[d++]);E.ycb=2+(15&t[d++]);var R=t[d++];E.selectiveArithmeticCodingBypass=!!(1&R);E.resetContextProbabilities=!!(2&R);E.terminationOnEachCodingPass=!!(4&R);E.verticallyStripe=!!(8&R);E.predictableTermination=!!(16&R);E.segmentationSymbolUsed=!!(32&R);E.reversibleTransformation=t[d++];if(E.entropyCoderWithCustomPrecincts){for(var B=[];d<x+h;){var D=t[d++];B.push({PPx:15&D,PPy:D>>4})}E.precinctsSizes=B}var L=[];E.selectiveArithmeticCodingBypass&&L.push("selectiveArithmeticCodingBypass");E.resetContextProbabilities&&L.push("resetContextProbabilities");E.terminationOnEachCodingPass&&L.push("terminationOnEachCodingPass");E.verticallyStripe&&L.push("verticallyStripe");E.predictableTermination&&L.push("predictableTermination");if(L.length>0){l=!0;(0,o.warn)("JPX: Unsupported COD options (".concat(L.join(", "),")."))}if(c.mainHeader)c.COD=E;else{c.currentTile.COD=E;c.currentTile.COC=[]}break;case 65424:x=(0,a.readUint16)(t,h);(b={}).index=(0,a.readUint16)(t,h+2);b.length=(0,a.readUint32)(t,h+4);b.dataEnd=b.length+h-2;b.partIndex=t[h+8];b.partsCount=t[h+9];c.mainHeader=!1;if(0===b.partIndex){b.COD=c.COD;b.COC=c.COC.slice(0);b.QCD=c.QCD;b.QCC=c.QCC.slice(0)}c.currentTile=b;break;case 65427:if(0===(b=c.currentTile).partIndex){initializeTile(c,b.index);buildPackets(c)}parseTilePackets(c,t,h,x=b.dataEnd-h);break;case 65363:(0,o.warn)("JPX: Codestream code 0xFF53 (COC) is not implemented.");case 65365:case 65367:case 65368:case 65380:x=(0,a.readUint16)(t,h);break;default:throw new Error("Unknown codestream code: "+p.toString(16))}h+=x}}catch(t){if(l||this.failOnCorruptedImage)throw new u(t.message);(0,o.warn)('JPX: Trying to recover from: "'.concat(t.message,'".'))}this.tiles=function transformComponents(t){for(var r=t.SIZ,i=t.components,o=r.Csiz,a=[],c=0,u=t.tiles.length;c<u;c++){var l,h=t.tiles[c],p=[];for(l=0;l<o;l++)p[l]=transformTile(t,h,l);var d,m,g,y,v,b,x,w=p[0],_=new Uint8ClampedArray(w.items.length*o),S={left:w.left,top:w.top,width:w.width,height:w.height,items:_},C=0;if(h.codingStyleDefaultParameters.multipleComponentTransform){var T=4===o,P=p[0].items,I=p[1].items,k=p[2].items,O=T?p[3].items:null;m=.5+(128<<(d=i[0].precision-8));var E=h.components[0],A=o-3;y=P.length;if(E.codingStyleParameters.reversibleTransformation)for(g=0;g<y;g++,C+=A){v=P[g]+m;b=I[g];var R=v-((x=k[g])+b>>2);_[C++]=R+x>>d;_[C++]=R>>d;_[C++]=R+b>>d}else for(g=0;g<y;g++,C+=A){v=P[g]+m;b=I[g];x=k[g];_[C++]=v+1.402*x>>d;_[C++]=v-.34413*b-.71414*x>>d;_[C++]=v+1.772*b>>d}if(T)for(g=0,C=3;g<y;g++,C+=4)_[C]=O[g]+m>>d}else for(l=0;l<o;l++){var B=p[l].items;m=.5+(128<<(d=i[l].precision-8));for(C=l,g=0,y=B.length;g<y;g++){_[C]=B[g]+m>>d;C+=o}}a.push(S)}return a}(c);this.width=c.SIZ.Xsiz-c.SIZ.XOsiz;this.height=c.SIZ.Ysiz-c.SIZ.YOsiz;this.componentsCount=c.SIZ.Csiz}};function calculateComponentDimensions(t,r){t.x0=Math.ceil(r.XOsiz/t.XRsiz);t.x1=Math.ceil(r.Xsiz/t.XRsiz);t.y0=Math.ceil(r.YOsiz/t.YRsiz);t.y1=Math.ceil(r.Ysiz/t.YRsiz);t.width=t.x1-t.x0;t.height=t.y1-t.y0}function calculateTileGrids(t,r){for(var i,o=t.SIZ,a=[],c=Math.ceil((o.Xsiz-o.XTOsiz)/o.XTsiz),u=Math.ceil((o.Ysiz-o.YTOsiz)/o.YTsiz),l=0;l<u;l++)for(var h=0;h<c;h++){(i={}).tx0=Math.max(o.XTOsiz+h*o.XTsiz,o.XOsiz);i.ty0=Math.max(o.YTOsiz+l*o.YTsiz,o.YOsiz);i.tx1=Math.min(o.XTOsiz+(h+1)*o.XTsiz,o.Xsiz);i.ty1=Math.min(o.YTOsiz+(l+1)*o.YTsiz,o.Ysiz);i.width=i.tx1-i.tx0;i.height=i.ty1-i.ty0;i.components=[];a.push(i)}t.tiles=a;for(var p=0,d=o.Csiz;p<d;p++)for(var m=r[p],g=0,y=a.length;g<y;g++){var v={};i=a[g];v.tcx0=Math.ceil(i.tx0/m.XRsiz);v.tcy0=Math.ceil(i.ty0/m.YRsiz);v.tcx1=Math.ceil(i.tx1/m.XRsiz);v.tcy1=Math.ceil(i.ty1/m.YRsiz);v.width=v.tcx1-v.tcx0;v.height=v.tcy1-v.tcy0;i.components[p]=v}}function getBlocksDimensions(t,r,i){var o=r.codingStyleParameters,a={};if(o.entropyCoderWithCustomPrecincts){a.PPx=o.precinctsSizes[i].PPx;a.PPy=o.precinctsSizes[i].PPy}else{a.PPx=15;a.PPy=15}a.xcb_=i>0?Math.min(o.xcb,a.PPx-1):Math.min(o.xcb,a.PPx);a.ycb_=i>0?Math.min(o.ycb,a.PPy-1):Math.min(o.ycb,a.PPy);return a}function buildPrecincts(t,r,i){var o=1<<i.PPx,a=1<<i.PPy,c=0===r.resLevel,u=1<<i.PPx+(c?0:-1),l=1<<i.PPy+(c?0:-1),h=r.trx1>r.trx0?Math.ceil(r.trx1/o)-Math.floor(r.trx0/o):0,p=r.try1>r.try0?Math.ceil(r.try1/a)-Math.floor(r.try0/a):0,d=h*p;r.precinctParameters={precinctWidth:o,precinctHeight:a,numprecinctswide:h,numprecinctshigh:p,numprecincts:d,precinctWidthInSubband:u,precinctHeightInSubband:l}}function buildCodeblocks(t,r,i){var o,a,c,u,l=i.xcb_,h=i.ycb_,p=1<<l,d=1<<h,m=r.tbx0>>l,g=r.tby0>>h,y=r.tbx1+p-1>>l,v=r.tby1+d-1>>h,b=r.resolution.precinctParameters,x=[],w=[];for(a=g;a<v;a++)for(o=m;o<y;o++){(c={cbx:o,cby:a,tbx0:p*o,tby0:d*a,tbx1:p*(o+1),tby1:d*(a+1)}).tbx0_=Math.max(r.tbx0,c.tbx0);c.tby0_=Math.max(r.tby0,c.tby0);c.tbx1_=Math.min(r.tbx1,c.tbx1);c.tby1_=Math.min(r.tby1,c.tby1);u=Math.floor((c.tbx0_-r.tbx0)/b.precinctWidthInSubband)+Math.floor((c.tby0_-r.tby0)/b.precinctHeightInSubband)*b.numprecinctswide;c.precinctNumber=u;c.subbandType=r.type;c.Lblock=3;if(!(c.tbx1_<=c.tbx0_||c.tby1_<=c.tby0_)){x.push(c);var _=w[u];if(void 0!==_){o<_.cbxMin?_.cbxMin=o:o>_.cbxMax&&(_.cbxMax=o);a<_.cbyMin?_.cbxMin=a:a>_.cbyMax&&(_.cbyMax=a)}else w[u]=_={cbxMin:o,cbyMin:a,cbxMax:o,cbyMax:a};c.precinct=_}}r.codeblockParameters={codeblockWidth:l,codeblockHeight:h,numcodeblockwide:y-m+1,numcodeblockhigh:v-g+1};r.codeblocks=x;r.precincts=w}function createPacket(t,r,i){for(var o=[],a=t.subbands,c=0,u=a.length;c<u;c++)for(var l=a[c].codeblocks,h=0,p=l.length;h<p;h++){var d=l[h];d.precinctNumber===r&&o.push(d)}return{layerNumber:i,codeblocks:o}}function LayerResolutionComponentPositionIterator(t){for(var r=t.SIZ,i=t.currentTile.index,o=t.tiles[i],a=o.codingStyleDefaultParameters.layersCount,c=r.Csiz,l=0,h=0;h<c;h++)l=Math.max(l,o.components[h].codingStyleParameters.decompositionLevelsCount);var p=0,d=0,m=0,g=0;this.nextPacket=function JpxImage_nextPacket(){for(;p<a;p++){for(;d<=l;d++){for(;m<c;m++){var t=o.components[m];if(!(d>t.codingStyleParameters.decompositionLevelsCount)){for(var r=t.resolutions[d],i=r.precinctParameters.numprecincts;g<i;){var h=createPacket(r,g,p);g++;return h}g=0}}m=0}d=0}throw new u("Out of packets")}}function ResolutionLayerComponentPositionIterator(t){for(var r=t.SIZ,i=t.currentTile.index,o=t.tiles[i],a=o.codingStyleDefaultParameters.layersCount,c=r.Csiz,l=0,h=0;h<c;h++)l=Math.max(l,o.components[h].codingStyleParameters.decompositionLevelsCount);var p=0,d=0,m=0,g=0;this.nextPacket=function JpxImage_nextPacket(){for(;p<=l;p++){for(;d<a;d++){for(;m<c;m++){var t=o.components[m];if(!(p>t.codingStyleParameters.decompositionLevelsCount)){for(var r=t.resolutions[p],i=r.precinctParameters.numprecincts;g<i;){var h=createPacket(r,g,d);g++;return h}g=0}}m=0}d=0}throw new u("Out of packets")}}function ResolutionPositionComponentLayerIterator(t){var r,i,o,a,c=t.SIZ,l=t.currentTile.index,h=t.tiles[l],p=h.codingStyleDefaultParameters.layersCount,d=c.Csiz,m=0;for(o=0;o<d;o++){var g=h.components[o];m=Math.max(m,g.codingStyleParameters.decompositionLevelsCount)}var y=new Int32Array(m+1);for(i=0;i<=m;++i){var v=0;for(o=0;o<d;++o){var b=h.components[o].resolutions;i<b.length&&(v=Math.max(v,b[i].precinctParameters.numprecincts))}y[i]=v}r=0;i=0;o=0;a=0;this.nextPacket=function JpxImage_nextPacket(){for(;i<=m;i++){for(;a<y[i];a++){for(;o<d;o++){var t=h.components[o];if(!(i>t.codingStyleParameters.decompositionLevelsCount)){var c=t.resolutions[i],l=c.precinctParameters.numprecincts;if(!(a>=l)){for(;r<p;){var g=createPacket(c,a,r);r++;return g}r=0}}}o=0}a=0}throw new u("Out of packets")}}function PositionComponentResolutionLayerIterator(t){var r=t.SIZ,i=t.currentTile.index,o=t.tiles[i],a=o.codingStyleDefaultParameters.layersCount,c=r.Csiz,l=getPrecinctSizesInImageScale(o),h=l,p=0,d=0,m=0,g=0,y=0;this.nextPacket=function JpxImage_nextPacket(){for(;y<h.maxNumHigh;y++){for(;g<h.maxNumWide;g++){for(;m<c;m++){for(var t=o.components[m],r=t.codingStyleParameters.decompositionLevelsCount;d<=r;d++){var i=t.resolutions[d],v=l.components[m].resolutions[d],b=getPrecinctIndexIfExist(g,y,v,h,i);if(null!==b){for(;p<a;){var x=createPacket(i,b,p);p++;return x}p=0}}d=0}m=0}g=0}throw new u("Out of packets")}}function ComponentPositionResolutionLayerIterator(t){var r=t.SIZ,i=t.currentTile.index,o=t.tiles[i],a=o.codingStyleDefaultParameters.layersCount,c=r.Csiz,l=getPrecinctSizesInImageScale(o),h=0,p=0,d=0,m=0,g=0;this.nextPacket=function JpxImage_nextPacket(){for(;d<c;++d){for(var t=o.components[d],r=l.components[d],i=t.codingStyleParameters.decompositionLevelsCount;g<r.maxNumHigh;g++){for(;m<r.maxNumWide;m++){for(;p<=i;p++){var y=t.resolutions[p],v=r.resolutions[p],b=getPrecinctIndexIfExist(m,g,v,r,y);if(null!==b){for(;h<a;){var x=createPacket(y,b,h);h++;return x}h=0}}p=0}m=0}g=0}throw new u("Out of packets")}}function getPrecinctIndexIfExist(t,r,i,o,a){var c=t*o.minWidth,u=r*o.minHeight;if(c%i.width!=0||u%i.height!=0)return null;var l=u/i.width*a.precinctParameters.numprecinctswide;return c/i.height+l}function getPrecinctSizesInImageScale(t){for(var r=t.components.length,i=Number.MAX_VALUE,o=Number.MAX_VALUE,a=0,c=0,u=new Array(r),l=0;l<r;l++){for(var h=t.components[l],p=h.codingStyleParameters.decompositionLevelsCount,d=new Array(p+1),m=Number.MAX_VALUE,g=Number.MAX_VALUE,y=0,v=0,b=1,x=p;x>=0;--x){var w=h.resolutions[x],_=b*w.precinctParameters.precinctWidth,S=b*w.precinctParameters.precinctHeight;m=Math.min(m,_);g=Math.min(g,S);y=Math.max(y,w.precinctParameters.numprecinctswide);v=Math.max(v,w.precinctParameters.numprecinctshigh);d[x]={width:_,height:S};b<<=1}i=Math.min(i,m);o=Math.min(o,g);a=Math.max(a,y);c=Math.max(c,v);u[l]={resolutions:d,minWidth:m,minHeight:g,maxNumWide:y,maxNumHigh:v}}return{components:u,minWidth:i,minHeight:o,maxNumWide:a,maxNumHigh:c}}function buildPackets(t){for(var r=t.SIZ,i=t.currentTile.index,o=t.tiles[i],a=r.Csiz,c=0;c<a;c++){for(var l=o.components[c],h=l.codingStyleParameters.decompositionLevelsCount,p=[],d=[],m=0;m<=h;m++){var g,y=getBlocksDimensions(0,l,m),v={},b=1<<h-m;v.trx0=Math.ceil(l.tcx0/b);v.try0=Math.ceil(l.tcy0/b);v.trx1=Math.ceil(l.tcx1/b);v.try1=Math.ceil(l.tcy1/b);v.resLevel=m;buildPrecincts(0,v,y);p.push(v);if(0===m){(g={}).type="LL";g.tbx0=Math.ceil(l.tcx0/b);g.tby0=Math.ceil(l.tcy0/b);g.tbx1=Math.ceil(l.tcx1/b);g.tby1=Math.ceil(l.tcy1/b);g.resolution=v;buildCodeblocks(0,g,y);d.push(g);v.subbands=[g]}else{var x=1<<h-m+1,w=[];(g={}).type="HL";g.tbx0=Math.ceil(l.tcx0/x-.5);g.tby0=Math.ceil(l.tcy0/x);g.tbx1=Math.ceil(l.tcx1/x-.5);g.tby1=Math.ceil(l.tcy1/x);g.resolution=v;buildCodeblocks(0,g,y);d.push(g);w.push(g);(g={}).type="LH";g.tbx0=Math.ceil(l.tcx0/x);g.tby0=Math.ceil(l.tcy0/x-.5);g.tbx1=Math.ceil(l.tcx1/x);g.tby1=Math.ceil(l.tcy1/x-.5);g.resolution=v;buildCodeblocks(0,g,y);d.push(g);w.push(g);(g={}).type="HH";g.tbx0=Math.ceil(l.tcx0/x-.5);g.tby0=Math.ceil(l.tcy0/x-.5);g.tbx1=Math.ceil(l.tcx1/x-.5);g.tby1=Math.ceil(l.tcy1/x-.5);g.resolution=v;buildCodeblocks(0,g,y);d.push(g);w.push(g);v.subbands=w}}l.resolutions=p;l.subbands=d}var _=o.codingStyleDefaultParameters.progressionOrder;switch(_){case 0:o.packetsIterator=new LayerResolutionComponentPositionIterator(t);break;case 1:o.packetsIterator=new ResolutionLayerComponentPositionIterator(t);break;case 2:o.packetsIterator=new ResolutionPositionComponentLayerIterator(t);break;case 3:o.packetsIterator=new PositionComponentResolutionLayerIterator(t);break;case 4:o.packetsIterator=new ComponentPositionResolutionLayerIterator(t);break;default:throw new u("Unsupported progression order ".concat(_))}}function parseTilePackets(t,o,c,u){var l,h=0,p=0,d=!1;function readBits(t){for(;p<t;){var r=o[c+h];h++;if(d){l=l<<7|r;p+=7;d=!1}else{l=l<<8|r;p+=8}255===r&&(d=!0)}return l>>>(p-=t)&(1<<t)-1}function skipMarkerIfEqual(t){if(255===o[c+h-1]&&o[c+h]===t){skipBytes(1);return!0}if(255===o[c+h]&&o[c+h+1]===t){skipBytes(2);return!0}return!1}function skipBytes(t){h+=t}function alignToByte(){p=0;if(d){h++;d=!1}}function readCodingpasses(){if(0===readBits(1))return 1;if(0===readBits(1))return 2;var t=readBits(2);return t<3?t+3:(t=readBits(5))<31?t+6:(t=readBits(7))+37}for(var m=t.currentTile.index,g=t.tiles[m],y=t.COD.sopMarkerUsed,v=t.COD.ephMarkerUsed,b=g.packetsIterator;h<u;){alignToByte();y&&skipMarkerIfEqual(145)&&skipBytes(4);var x=b.nextPacket();if(readBits(1)){for(var w,_=x.layerNumber,S=[],C=0,T=x.codeblocks.length;C<T;C++){var P=(w=x.codeblocks[C]).precinct,I=w.cbx-P.cbxMin,k=w.cby-P.cbyMin,O=!1,E=!1;if(void 0!==w.included)O=!!readBits(1);else{var A,R;if(void 0!==(P=w.precinct).inclusionTree)A=P.inclusionTree;else{var B=P.cbxMax-P.cbxMin+1,D=P.cbyMax-P.cbyMin+1;A=new i(B,D,_);R=new r(B,D);P.inclusionTree=A;P.zeroBitPlanesTree=R}if(A.reset(I,k,_))for(;;){if(!readBits(1)){A.incrementValue(_);break}if(!A.nextLevel()){w.included=!0;O=E=!0;break}}}if(O){if(E){(R=P.zeroBitPlanesTree).reset(I,k);for(;;)if(readBits(1)){if(!R.nextLevel())break}else R.incrementValue();w.zeroBitPlanes=R.value}for(var L=readCodingpasses();readBits(1);)w.Lblock++;var M=(0,a.log2)(L),U=readBits((L<1<<M?M-1:M)+w.Lblock);S.push({codeblock:w,codingpasses:L,dataLength:U})}}alignToByte();v&&skipMarkerIfEqual(146);for(;S.length>0;){var j=S.shift();void 0===(w=j.codeblock).data&&(w.data=[]);w.data.push({data:o,start:c+h,end:c+h+j.dataLength,codingpasses:j.codingpasses});h+=j.dataLength}}}return h}function copyCoefficients(t,r,i,o,a,u,h,p){for(var d=o.tbx0,m=o.tby0,g=o.tbx1-o.tbx0,y=o.codeblocks,v="H"===o.type.charAt(0)?1:0,b="H"===o.type.charAt(1)?r:0,x=0,w=y.length;x<w;++x){var _=y[x],S=_.tbx1_-_.tbx0_,C=_.tby1_-_.tby0_;if(0!==S&&0!==C&&void 0!==_.data){var T,P;T=new l(S,C,_.subbandType,_.zeroBitPlanes,u);P=2;var I,k,O,E=_.data,A=0,R=0;for(I=0,k=E.length;I<k;I++){A+=(O=E[I]).end-O.start;R+=O.codingpasses}var B=new Uint8Array(A),D=0;for(I=0,k=E.length;I<k;I++){var L=(O=E[I]).data.subarray(O.start,O.end);B.set(L,D);D+=L.length}var M=new c.ArithmeticDecoder(B,0,A);T.setDecoder(M);for(I=0;I<R;I++){switch(P){case 0:T.runSignificancePropagationPass();break;case 1:T.runMagnitudeRefinementPass();break;case 2:T.runCleanupPass();p&&T.checkSegmentationSymbol()}P=(P+1)%3}var U,j,N,H=_.tbx0_-d+(_.tby0_-m)*g,z=T.coefficentsSign,X=T.coefficentsMagnitude,G=T.bitsDecoded,Y=h?0:.5;D=0;var q="LL"!==o.type;for(I=0;I<C;I++){var J=2*(H/g|0)*(r-g)+v+b;for(U=0;U<S;U++){if(0!==(j=X[D])){j=(j+Y)*a;0!==z[D]&&(j=-j);N=G[D];var W=q?J+(H<<1):H;t[W]=h&&N>=u?j:j*(1<<u-N)}H++;D++}H+=g-S}}}}function transformTile(r,i,o){for(var a=i.components[o],c=a.codingStyleParameters,u=a.quantizationParameters,l=c.decompositionLevelsCount,h=u.SPqcds,m=u.scalarExpounded,g=u.guardBits,y=c.segmentationSymbolUsed,v=r.components[o].precision,b=c.reversibleTransformation,x=b?new d:new p,w=[],_=0,S=0;S<=l;S++){for(var C=a.resolutions[S],T=C.trx1-C.trx0,P=C.try1-C.try0,I=new Float32Array(T*P),k=0,O=C.subbands.length;k<O;k++){var E,A;if(m){E=h[_].mu;A=h[_].epsilon;_++}else{E=h[0].mu;A=h[0].epsilon+(S>0?1-S:0)}var R=C.subbands[k],B=t[R.type];copyCoefficients(I,T,0,R,b?1:Math.pow(2,v+B-A)*(1+E/2048),g+A-1,b,y)}w.push({width:T,height:P,items:I})}var D=x.calculate(w,a.tcx0,a.tcy0);return{left:a.tcx0,top:a.tcy0,width:D.width,height:D.height,items:D.items}}function initializeTile(t,r){for(var i=t.SIZ.Csiz,o=t.tiles[r],a=0;a<i;a++){var c=o.components[a],u=void 0!==t.currentTile.QCC[a]?t.currentTile.QCC[a]:t.currentTile.QCD;c.quantizationParameters=u;var l=void 0!==t.currentTile.COC[a]?t.currentTile.COC[a]:t.currentTile.COD;c.codingStyleParameters=l}o.codingStyleDefaultParameters=t.currentTile.COD}var r=function TagTreeClosure(){function TagTree(t,r){var i=(0,a.log2)(Math.max(t,r))+1;this.levels=[];for(var o=0;o<i;o++){var c={width:t,height:r,items:[]};this.levels.push(c);t=Math.ceil(t/2);r=Math.ceil(r/2)}}TagTree.prototype={reset:function TagTree_reset(t,r){for(var i,o=0,a=0;o<this.levels.length;){var c=t+r*(i=this.levels[o]).width;if(void 0!==i.items[c]){a=i.items[c];break}i.index=c;t>>=1;r>>=1;o++}o--;(i=this.levels[o]).items[i.index]=a;this.currentLevel=o;delete this.value},incrementValue:function TagTree_incrementValue(){var t=this.levels[this.currentLevel];t.items[t.index]++},nextLevel:function TagTree_nextLevel(){var t=this.currentLevel,r=this.levels[t],i=r.items[r.index];if(--t<0){this.value=i;return!1}this.currentLevel=t;(r=this.levels[t]).items[r.index]=i;return!0}};return TagTree}(),i=function InclusionTreeClosure(){function InclusionTree(t,r,i){var o=(0,a.log2)(Math.max(t,r))+1;this.levels=[];for(var c=0;c<o;c++){for(var u=new Uint8Array(t*r),l=0,h=u.length;l<h;l++)u[l]=i;var p={width:t,height:r,items:u};this.levels.push(p);t=Math.ceil(t/2);r=Math.ceil(r/2)}}InclusionTree.prototype={reset:function InclusionTree_reset(t,r,i){for(var o=0;o<this.levels.length;){var a=this.levels[o],c=t+r*a.width;a.index=c;var u=a.items[c];if(255===u)break;if(u>i){this.currentLevel=o;this.propagateValues();return!1}t>>=1;r>>=1;o++}this.currentLevel=o-1;return!0},incrementValue:function InclusionTree_incrementValue(t){var r=this.levels[this.currentLevel];r.items[r.index]=t+1;this.propagateValues()},propagateValues:function InclusionTree_propagateValues(){for(var t=this.currentLevel,r=this.levels[t],i=r.items[r.index];--t>=0;)(r=this.levels[t]).items[r.index]=i},nextLevel:function InclusionTree_nextLevel(){var t=this.currentLevel,r=this.levels[t],i=r.items[r.index];r.items[r.index]=255;if(--t<0)return!1;this.currentLevel=t;(r=this.levels[t]).items[r.index]=i;return!0}};return InclusionTree}(),l=function BitModelClosure(){var t=17,r=new Uint8Array([0,5,8,0,3,7,8,0,4,7,8,0,0,0,0,0,1,6,8,0,3,7,8,0,4,7,8,0,0,0,0,0,2,6,8,0,3,7,8,0,4,7,8,0,0,0,0,0,2,6,8,0,3,7,8,0,4,7,8,0,0,0,0,0,2,6,8,0,3,7,8,0,4,7,8]),i=new Uint8Array([0,3,4,0,5,7,7,0,8,8,8,0,0,0,0,0,1,3,4,0,6,7,7,0,8,8,8,0,0,0,0,0,2,3,4,0,6,7,7,0,8,8,8,0,0,0,0,0,2,3,4,0,6,7,7,0,8,8,8,0,0,0,0,0,2,3,4,0,6,7,7,0,8,8,8]),o=new Uint8Array([0,1,2,0,1,2,2,0,2,2,2,0,0,0,0,0,3,4,5,0,4,5,5,0,5,5,5,0,0,0,0,0,6,7,7,0,7,7,7,0,7,7,7,0,0,0,0,0,8,8,8,0,8,8,8,0,8,8,8,0,0,0,0,0,8,8,8,0,8,8,8,0,8,8,8]);function BitModel(t,a,c,u,l){this.width=t;this.height=a;var h;h="HH"===c?o:"HL"===c?i:r;this.contextLabelTable=h;var p,d=t*a;this.neighborsSignificance=new Uint8Array(d);this.coefficentsSign=new Uint8Array(d);p=l>14?new Uint32Array(d):l>6?new Uint16Array(d):new Uint8Array(d);this.coefficentsMagnitude=p;this.processingFlags=new Uint8Array(d);var m=new Uint8Array(d);if(0!==u)for(var g=0;g<d;g++)m[g]=u;this.bitsDecoded=m;this.reset()}BitModel.prototype={setDecoder:function BitModel_setDecoder(t){this.decoder=t},reset:function BitModel_reset(){this.contexts=new Int8Array(19);this.contexts[0]=8;this.contexts[17]=92;this.contexts[18]=6},setNeighborsSignificance:function BitModel_setNeighborsSignificance(t,r,i){var o,a=this.neighborsSignificance,c=this.width,u=this.height,l=r>0,h=r+1<c;if(t>0){o=i-c;l&&(a[o-1]+=16);h&&(a[o+1]+=16);a[o]+=4}if(t+1<u){o=i+c;l&&(a[o-1]+=16);h&&(a[o+1]+=16);a[o]+=4}l&&(a[i-1]+=1);h&&(a[i+1]+=1);a[i]|=128},runSignificancePropagationPass:function BitModel_runSignificancePropagationPass(){for(var t=this.decoder,r=this.width,i=this.height,o=this.coefficentsMagnitude,a=this.coefficentsSign,c=this.neighborsSignificance,u=this.processingFlags,l=this.contexts,h=this.contextLabelTable,p=this.bitsDecoded,d=0;d<i;d+=4)for(var m=0;m<r;m++)for(var g=d*r+m,y=0;y<4;y++,g+=r){var v=d+y;if(v>=i)break;u[g]&=-2;if(!o[g]&&c[g]){var b=h[c[g]];if(t.readBit(l,b)){var x=this.decodeSignBit(v,m,g);a[g]=x;o[g]=1;this.setNeighborsSignificance(v,m,g);u[g]|=2}p[g]++;u[g]|=1}}},decodeSignBit:function BitModel_decodeSignBit(t,r,i){var o,a,c,u,l,h,p=this.width,d=this.height,m=this.coefficentsMagnitude,g=this.coefficentsSign;u=r>0&&0!==m[i-1];if(r+1<p&&0!==m[i+1]){c=g[i+1];o=u?1-c-(a=g[i-1]):1-c-c}else o=u?1-(a=g[i-1])-a:0;var y=3*o;u=t>0&&0!==m[i-p];if(t+1<d&&0!==m[i+p]){c=g[i+p];o=u?1-c-(a=g[i-p])+y:1-c-c+y}else o=u?1-(a=g[i-p])-a+y:y;if(o>=0){l=9+o;h=this.decoder.readBit(this.contexts,l)}else{l=9-o;h=1^this.decoder.readBit(this.contexts,l)}return h},runMagnitudeRefinementPass:function BitModel_runMagnitudeRefinementPass(){for(var t,r=this.decoder,i=this.width,o=this.height,a=this.coefficentsMagnitude,c=this.neighborsSignificance,u=this.contexts,l=this.bitsDecoded,h=this.processingFlags,p=i*o,d=4*i,m=0;m<p;m=t){t=Math.min(p,m+d);for(var g=0;g<i;g++)for(var y=m+g;y<t;y+=i)if(a[y]&&0==(1&h[y])){var v=16;if(0!=(2&h[y])){h[y]^=2;v=0===(127&c[y])?15:14}var b=r.readBit(u,v);a[y]=a[y]<<1|b;l[y]++;h[y]|=1}}},runCleanupPass:function BitModel_runCleanupPass(){for(var r,i=this.decoder,o=this.width,a=this.height,c=this.neighborsSignificance,u=this.coefficentsMagnitude,l=this.coefficentsSign,h=this.contexts,p=this.contextLabelTable,d=this.bitsDecoded,m=this.processingFlags,g=o,y=2*o,v=3*o,b=0;b<a;b=r){r=Math.min(b+4,a);for(var x=b*o,w=b+3<a,_=0;_<o;_++){var S,C=x+_,T=0,P=C,I=b;if(w&&0===m[C]&&0===m[C+g]&&0===m[C+y]&&0===m[C+v]&&0===c[C]&&0===c[C+g]&&0===c[C+y]&&0===c[C+v]){if(!i.readBit(h,18)){d[C]++;d[C+g]++;d[C+y]++;d[C+v]++;continue}if(0!==(T=i.readBit(h,t)<<1|i.readBit(h,t))){I=b+T;P+=T*o}S=this.decodeSignBit(I,_,P);l[P]=S;u[P]=1;this.setNeighborsSignificance(I,_,P);m[P]|=2;P=C;for(var k=b;k<=I;k++,P+=o)d[P]++;T++}for(I=b+T;I<r;I++,P+=o)if(!u[P]&&0==(1&m[P])){var O=p[c[P]];if(1===i.readBit(h,O)){S=this.decodeSignBit(I,_,P);l[P]=S;u[P]=1;this.setNeighborsSignificance(I,_,P);m[P]|=2}d[P]++}}}},checkSegmentationSymbol:function BitModel_checkSegmentationSymbol(){var r=this.decoder,i=this.contexts;if(10!==(r.readBit(i,t)<<3|r.readBit(i,t)<<2|r.readBit(i,t)<<1|r.readBit(i,t)))throw new u("Invalid segmentation symbol")}};return BitModel}(),h=function TransformClosure(){function Transform(){}Transform.prototype.calculate=function transformCalculate(t,r,i){for(var o=t[0],a=1,c=t.length;a<c;a++)o=this.iterate(o,t[a],r,i);return o};Transform.prototype.extend=function extend(t,r,i){var o=r-1,a=r+1,c=r+i-2,u=r+i;t[o--]=t[a++];t[u++]=t[c--];t[o--]=t[a++];t[u++]=t[c--];t[o--]=t[a++];t[u++]=t[c--];t[o]=t[a];t[u]=t[c]};Transform.prototype.iterate=function Transform_iterate(t,r,i,o){var a,c,u,l,h,p,d=t.width,m=t.height,g=t.items,y=r.width,v=r.height,b=r.items;for(u=0,a=0;a<m;a++){l=2*a*y;for(c=0;c<d;c++,u++,l+=2)b[l]=g[u]}g=t.items=null;var x=new Float32Array(y+8);if(1===y){if(0!=(1&i))for(p=0,u=0;p<v;p++,u+=y)b[u]*=.5}else for(p=0,u=0;p<v;p++,u+=y){x.set(b.subarray(u,u+y),4);this.extend(x,4,y);this.filter(x,4,y);b.set(x.subarray(4,4+y),u)}var w=16,_=[];for(a=0;a<w;a++)_.push(new Float32Array(v+8));var S,C=0;t=4+v;if(1===v){if(0!=(1&o))for(h=0;h<y;h++)b[h]*=.5}else for(h=0;h<y;h++){if(0===C){w=Math.min(y-h,w);for(u=h,l=4;l<t;u+=y,l++)for(S=0;S<w;S++)_[S][l]=b[u+S];C=w}var T=_[--C];this.extend(T,4,v);this.filter(T,4,v);if(0===C){u=h-w+1;for(l=4;l<t;u+=y,l++)for(S=0;S<w;S++)b[u+S]=_[S][l]}}return{width:y,height:v,items:b}};return Transform}(),p=function IrreversibleTransformClosure(){function IrreversibleTransform(){h.call(this)}IrreversibleTransform.prototype=Object.create(h.prototype);IrreversibleTransform.prototype.filter=function irreversibleTransformFilter(t,r,i){var o,a,c,u,l=i>>1,h=-1.586134342059924,p=-.052980118572961,d=.882911075530934,m=.443506852043971,g=1.230174104914001;o=(r|=0)-3;for(a=l+4;a--;o+=2)t[o]*=.8128930661159609;c=m*t[(o=r-2)-1];for(a=l+3;a--;o+=2){u=m*t[o+1];t[o]=g*t[o]-c-u;if(!a--)break;c=m*t[(o+=2)+1];t[o]=g*t[o]-c-u}c=d*t[(o=r-1)-1];for(a=l+2;a--;o+=2){u=d*t[o+1];t[o]-=c+u;if(!a--)break;c=d*t[(o+=2)+1];t[o]-=c+u}c=p*t[(o=r)-1];for(a=l+1;a--;o+=2){u=p*t[o+1];t[o]-=c+u;if(!a--)break;c=p*t[(o+=2)+1];t[o]-=c+u}if(0!==l){c=h*t[(o=r+1)-1];for(a=l;a--;o+=2){u=h*t[o+1];t[o]-=c+u;if(!a--)break;c=h*t[(o+=2)+1];t[o]-=c+u}}};return IrreversibleTransform}(),d=function ReversibleTransformClosure(){function ReversibleTransform(){h.call(this)}ReversibleTransform.prototype=Object.create(h.prototype);ReversibleTransform.prototype.filter=function reversibleTransformFilter(t,r,i){var o,a,c=i>>1;for(o=r|=0,a=c+1;a--;o+=2)t[o]-=t[o-1]+t[o+1]+2>>2;for(o=r+1,a=c;a--;o+=2)t[o]+=t[o-1]+t[o+1]>>1};return ReversibleTransform}();return JpxImage}();r.JpxImage=l}],r={};function __w_pdfjs_require__(i){var o=r[i];if(void 0!==o)return o.exports;var a=r[i]={id:i,loaded:!1,exports:{}};t[i](a,a.exports,__w_pdfjs_require__);a.loaded=!0;return a.exports}__w_pdfjs_require__.nmd=t=>{t.paths=[];t.children||(t.children=[]);return t};var i={};(()=>{"use strict";var t=i;Object.defineProperty(t,"__esModule",{value:!0});Object.defineProperty(t,"getVerbosityLevel",{enumerable:!0,get:function get(){return r.getVerbosityLevel}});Object.defineProperty(t,"setVerbosityLevel",{enumerable:!0,get:function get(){return r.setVerbosityLevel}});Object.defineProperty(t,"Jbig2mage",{enumerable:!0,get:function get(){return o.Jbig2mage}});Object.defineProperty(t,"JpegImage",{enumerable:!0,get:function get(){return a.JpegImage}});Object.defineProperty(t,"JpxImage",{enumerable:!0,get:function get(){return c.JpxImage}});var r=__w_pdfjs_require__(1),o=__w_pdfjs_require__(95),a=__w_pdfjs_require__(102),c=__w_pdfjs_require__(103)})();return i})()}));
+
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory();
+	else if(typeof define === 'function' && define.amd)
+		define("pdfjs-dist/image_decoders/pdf.image_decoders", [], factory);
+	else if(typeof exports === 'object')
+		exports["pdfjs-dist/image_decoders/pdf.image_decoders"] = factory();
+	else
+		root["pdfjs-dist/image_decoders/pdf.image_decoders"] = root.pdfjsImageDecoders = factory();
+})(this, function() {
+return /******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
+/******/ 	var __webpack_modules__ = ([
+/* 0 */,
+/* 1 */
+/***/ ((__unused_webpack_module, exports, __w_pdfjs_require__) => {
+
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.arrayByteLength = arrayByteLength;
+exports.arraysToBytes = arraysToBytes;
+exports.assert = assert;
+exports.bytesToString = bytesToString;
+exports.createObjectURL = createObjectURL;
+exports.createPromiseCapability = createPromiseCapability;
+exports.createValidAbsoluteUrl = createValidAbsoluteUrl;
+exports.escapeString = escapeString;
+exports.getModificationDate = getModificationDate;
+exports.getVerbosityLevel = getVerbosityLevel;
+exports.info = info;
+exports.isArrayBuffer = isArrayBuffer;
+exports.isArrayEqual = isArrayEqual;
+exports.isAscii = isAscii;
+exports.isBool = isBool;
+exports.isNum = isNum;
+exports.isSameOrigin = isSameOrigin;
+exports.isString = isString;
+exports.objectFromMap = objectFromMap;
+exports.objectSize = objectSize;
+exports.removeNullCharacters = removeNullCharacters;
+exports.setVerbosityLevel = setVerbosityLevel;
+exports.shadow = shadow;
+exports.string32 = string32;
+exports.stringToBytes = stringToBytes;
+exports.stringToPDFString = stringToPDFString;
+exports.stringToUTF16BEString = stringToUTF16BEString;
+exports.stringToUTF8String = stringToUTF8String;
+exports.unreachable = unreachable;
+exports.utf8StringToString = utf8StringToString;
+exports.warn = warn;
+exports.VerbosityLevel = exports.Util = exports.UNSUPPORTED_FEATURES = exports.UnknownErrorException = exports.UnexpectedResponseException = exports.TextRenderingMode = exports.StreamType = exports.PermissionFlag = exports.PasswordResponses = exports.PasswordException = exports.PageActionEventType = exports.OPS = exports.MissingPDFException = exports.IsLittleEndianCached = exports.IsEvalSupportedCached = exports.InvalidPDFException = exports.ImageKind = exports.IDENTITY_MATRIX = exports.FormatError = exports.FontType = exports.FONT_IDENTITY_MATRIX = exports.DocumentActionEventType = exports.CMapCompressionType = exports.BaseException = exports.AnnotationType = exports.AnnotationStateModelType = exports.AnnotationReviewState = exports.AnnotationReplyType = exports.AnnotationMarkedState = exports.AnnotationFlag = exports.AnnotationFieldFlag = exports.AnnotationBorderStyleType = exports.AnnotationActionEventType = exports.AbortException = void 0;
+
+__w_pdfjs_require__(2);
+
+const IDENTITY_MATRIX = [1, 0, 0, 1, 0, 0];
+exports.IDENTITY_MATRIX = IDENTITY_MATRIX;
+const FONT_IDENTITY_MATRIX = [0.001, 0, 0, 0.001, 0, 0];
+exports.FONT_IDENTITY_MATRIX = FONT_IDENTITY_MATRIX;
+const PermissionFlag = {
+  PRINT: 0x04,
+  MODIFY_CONTENTS: 0x08,
+  COPY: 0x10,
+  MODIFY_ANNOTATIONS: 0x20,
+  FILL_INTERACTIVE_FORMS: 0x100,
+  COPY_FOR_ACCESSIBILITY: 0x200,
+  ASSEMBLE: 0x400,
+  PRINT_HIGH_QUALITY: 0x800
+};
+exports.PermissionFlag = PermissionFlag;
+const TextRenderingMode = {
+  FILL: 0,
+  STROKE: 1,
+  FILL_STROKE: 2,
+  INVISIBLE: 3,
+  FILL_ADD_TO_PATH: 4,
+  STROKE_ADD_TO_PATH: 5,
+  FILL_STROKE_ADD_TO_PATH: 6,
+  ADD_TO_PATH: 7,
+  FILL_STROKE_MASK: 3,
+  ADD_TO_PATH_FLAG: 4
+};
+exports.TextRenderingMode = TextRenderingMode;
+const ImageKind = {
+  GRAYSCALE_1BPP: 1,
+  RGB_24BPP: 2,
+  RGBA_32BPP: 3
+};
+exports.ImageKind = ImageKind;
+const AnnotationType = {
+  TEXT: 1,
+  LINK: 2,
+  FREETEXT: 3,
+  LINE: 4,
+  SQUARE: 5,
+  CIRCLE: 6,
+  POLYGON: 7,
+  POLYLINE: 8,
+  HIGHLIGHT: 9,
+  UNDERLINE: 10,
+  SQUIGGLY: 11,
+  STRIKEOUT: 12,
+  STAMP: 13,
+  CARET: 14,
+  INK: 15,
+  POPUP: 16,
+  FILEATTACHMENT: 17,
+  SOUND: 18,
+  MOVIE: 19,
+  WIDGET: 20,
+  SCREEN: 21,
+  PRINTERMARK: 22,
+  TRAPNET: 23,
+  WATERMARK: 24,
+  THREED: 25,
+  REDACT: 26
+};
+exports.AnnotationType = AnnotationType;
+const AnnotationStateModelType = {
+  MARKED: "Marked",
+  REVIEW: "Review"
+};
+exports.AnnotationStateModelType = AnnotationStateModelType;
+const AnnotationMarkedState = {
+  MARKED: "Marked",
+  UNMARKED: "Unmarked"
+};
+exports.AnnotationMarkedState = AnnotationMarkedState;
+const AnnotationReviewState = {
+  ACCEPTED: "Accepted",
+  REJECTED: "Rejected",
+  CANCELLED: "Cancelled",
+  COMPLETED: "Completed",
+  NONE: "None"
+};
+exports.AnnotationReviewState = AnnotationReviewState;
+const AnnotationReplyType = {
+  GROUP: "Group",
+  REPLY: "R"
+};
+exports.AnnotationReplyType = AnnotationReplyType;
+const AnnotationFlag = {
+  INVISIBLE: 0x01,
+  HIDDEN: 0x02,
+  PRINT: 0x04,
+  NOZOOM: 0x08,
+  NOROTATE: 0x10,
+  NOVIEW: 0x20,
+  READONLY: 0x40,
+  LOCKED: 0x80,
+  TOGGLENOVIEW: 0x100,
+  LOCKEDCONTENTS: 0x200
+};
+exports.AnnotationFlag = AnnotationFlag;
+const AnnotationFieldFlag = {
+  READONLY: 0x0000001,
+  REQUIRED: 0x0000002,
+  NOEXPORT: 0x0000004,
+  MULTILINE: 0x0001000,
+  PASSWORD: 0x0002000,
+  NOTOGGLETOOFF: 0x0004000,
+  RADIO: 0x0008000,
+  PUSHBUTTON: 0x0010000,
+  COMBO: 0x0020000,
+  EDIT: 0x0040000,
+  SORT: 0x0080000,
+  FILESELECT: 0x0100000,
+  MULTISELECT: 0x0200000,
+  DONOTSPELLCHECK: 0x0400000,
+  DONOTSCROLL: 0x0800000,
+  COMB: 0x1000000,
+  RICHTEXT: 0x2000000,
+  RADIOSINUNISON: 0x2000000,
+  COMMITONSELCHANGE: 0x4000000
+};
+exports.AnnotationFieldFlag = AnnotationFieldFlag;
+const AnnotationBorderStyleType = {
+  SOLID: 1,
+  DASHED: 2,
+  BEVELED: 3,
+  INSET: 4,
+  UNDERLINE: 5
+};
+exports.AnnotationBorderStyleType = AnnotationBorderStyleType;
+const AnnotationActionEventType = {
+  E: "Mouse Enter",
+  X: "Mouse Exit",
+  D: "Mouse Down",
+  U: "Mouse Up",
+  Fo: "Focus",
+  Bl: "Blur",
+  PO: "PageOpen",
+  PC: "PageClose",
+  PV: "PageVisible",
+  PI: "PageInvisible",
+  K: "Keystroke",
+  F: "Format",
+  V: "Validate",
+  C: "Calculate"
+};
+exports.AnnotationActionEventType = AnnotationActionEventType;
+const DocumentActionEventType = {
+  WC: "WillClose",
+  WS: "WillSave",
+  DS: "DidSave",
+  WP: "WillPrint",
+  DP: "DidPrint"
+};
+exports.DocumentActionEventType = DocumentActionEventType;
+const PageActionEventType = {
+  O: "PageOpen",
+  C: "PageClose"
+};
+exports.PageActionEventType = PageActionEventType;
+const StreamType = {
+  UNKNOWN: "UNKNOWN",
+  FLATE: "FLATE",
+  LZW: "LZW",
+  DCT: "DCT",
+  JPX: "JPX",
+  JBIG: "JBIG",
+  A85: "A85",
+  AHX: "AHX",
+  CCF: "CCF",
+  RLX: "RLX"
+};
+exports.StreamType = StreamType;
+const FontType = {
+  UNKNOWN: "UNKNOWN",
+  TYPE1: "TYPE1",
+  TYPE1C: "TYPE1C",
+  CIDFONTTYPE0: "CIDFONTTYPE0",
+  CIDFONTTYPE0C: "CIDFONTTYPE0C",
+  TRUETYPE: "TRUETYPE",
+  CIDFONTTYPE2: "CIDFONTTYPE2",
+  TYPE3: "TYPE3",
+  OPENTYPE: "OPENTYPE",
+  TYPE0: "TYPE0",
+  MMTYPE1: "MMTYPE1"
+};
+exports.FontType = FontType;
+const VerbosityLevel = {
+  ERRORS: 0,
+  WARNINGS: 1,
+  INFOS: 5
+};
+exports.VerbosityLevel = VerbosityLevel;
+const CMapCompressionType = {
+  NONE: 0,
+  BINARY: 1,
+  STREAM: 2
+};
+exports.CMapCompressionType = CMapCompressionType;
+const OPS = {
+  dependency: 1,
+  setLineWidth: 2,
+  setLineCap: 3,
+  setLineJoin: 4,
+  setMiterLimit: 5,
+  setDash: 6,
+  setRenderingIntent: 7,
+  setFlatness: 8,
+  setGState: 9,
+  save: 10,
+  restore: 11,
+  transform: 12,
+  moveTo: 13,
+  lineTo: 14,
+  curveTo: 15,
+  curveTo2: 16,
+  curveTo3: 17,
+  closePath: 18,
+  rectangle: 19,
+  stroke: 20,
+  closeStroke: 21,
+  fill: 22,
+  eoFill: 23,
+  fillStroke: 24,
+  eoFillStroke: 25,
+  closeFillStroke: 26,
+  closeEOFillStroke: 27,
+  endPath: 28,
+  clip: 29,
+  eoClip: 30,
+  beginText: 31,
+  endText: 32,
+  setCharSpacing: 33,
+  setWordSpacing: 34,
+  setHScale: 35,
+  setLeading: 36,
+  setFont: 37,
+  setTextRenderingMode: 38,
+  setTextRise: 39,
+  moveText: 40,
+  setLeadingMoveText: 41,
+  setTextMatrix: 42,
+  nextLine: 43,
+  showText: 44,
+  showSpacedText: 45,
+  nextLineShowText: 46,
+  nextLineSetSpacingShowText: 47,
+  setCharWidth: 48,
+  setCharWidthAndBounds: 49,
+  setStrokeColorSpace: 50,
+  setFillColorSpace: 51,
+  setStrokeColor: 52,
+  setStrokeColorN: 53,
+  setFillColor: 54,
+  setFillColorN: 55,
+  setStrokeGray: 56,
+  setFillGray: 57,
+  setStrokeRGBColor: 58,
+  setFillRGBColor: 59,
+  setStrokeCMYKColor: 60,
+  setFillCMYKColor: 61,
+  shadingFill: 62,
+  beginInlineImage: 63,
+  beginImageData: 64,
+  endInlineImage: 65,
+  paintXObject: 66,
+  markPoint: 67,
+  markPointProps: 68,
+  beginMarkedContent: 69,
+  beginMarkedContentProps: 70,
+  endMarkedContent: 71,
+  beginCompat: 72,
+  endCompat: 73,
+  paintFormXObjectBegin: 74,
+  paintFormXObjectEnd: 75,
+  beginGroup: 76,
+  endGroup: 77,
+  beginAnnotations: 78,
+  endAnnotations: 79,
+  beginAnnotation: 80,
+  endAnnotation: 81,
+  paintJpegXObject: 82,
+  paintImageMaskXObject: 83,
+  paintImageMaskXObjectGroup: 84,
+  paintImageXObject: 85,
+  paintInlineImageXObject: 86,
+  paintInlineImageXObjectGroup: 87,
+  paintImageXObjectRepeat: 88,
+  paintImageMaskXObjectRepeat: 89,
+  paintSolidColorImageMask: 90,
+  constructPath: 91
+};
+exports.OPS = OPS;
+const UNSUPPORTED_FEATURES = {
+  unknown: "unknown",
+  forms: "forms",
+  javaScript: "javaScript",
+  signatures: "signatures",
+  smask: "smask",
+  shadingPattern: "shadingPattern",
+  font: "font",
+  errorTilingPattern: "errorTilingPattern",
+  errorExtGState: "errorExtGState",
+  errorXObject: "errorXObject",
+  errorFontLoadType3: "errorFontLoadType3",
+  errorFontState: "errorFontState",
+  errorFontMissing: "errorFontMissing",
+  errorFontTranslate: "errorFontTranslate",
+  errorColorSpace: "errorColorSpace",
+  errorOperatorList: "errorOperatorList",
+  errorFontToUnicode: "errorFontToUnicode",
+  errorFontLoadNative: "errorFontLoadNative",
+  errorFontBuildPath: "errorFontBuildPath",
+  errorFontGetPath: "errorFontGetPath",
+  errorMarkedContent: "errorMarkedContent"
+};
+exports.UNSUPPORTED_FEATURES = UNSUPPORTED_FEATURES;
+const PasswordResponses = {
+  NEED_PASSWORD: 1,
+  INCORRECT_PASSWORD: 2
+};
+exports.PasswordResponses = PasswordResponses;
+let verbosity = VerbosityLevel.WARNINGS;
+
+function setVerbosityLevel(level) {
+  if (Number.isInteger(level)) {
+    verbosity = level;
+  }
+}
+
+function getVerbosityLevel() {
+  return verbosity;
+}
+
+function info(msg) {
+  if (verbosity >= VerbosityLevel.INFOS) {
+    console.log(`Info: ${msg}`);
+  }
+}
+
+function warn(msg) {
+  if (verbosity >= VerbosityLevel.WARNINGS) {
+    console.log(`Warning: ${msg}`);
+  }
+}
+
+function unreachable(msg) {
+  throw new Error(msg);
+}
+
+function assert(cond, msg) {
+  if (!cond) {
+    unreachable(msg);
+  }
+}
+
+function isSameOrigin(baseUrl, otherUrl) {
+  let base;
+
+  try {
+    base = new URL(baseUrl);
+
+    if (!base.origin || base.origin === "null") {
+      return false;
+    }
+  } catch (e) {
+    return false;
+  }
+
+  const other = new URL(otherUrl, base);
+  return base.origin === other.origin;
+}
+
+function _isValidProtocol(url) {
+  if (!url) {
+    return false;
+  }
+
+  switch (url.protocol) {
+    case "http:":
+    case "https:":
+    case "ftp:":
+    case "mailto:":
+    case "tel:":
+      return true;
+
+    default:
+      return false;
+  }
+}
+
+function createValidAbsoluteUrl(url, baseUrl) {
+  if (!url) {
+    return null;
+  }
+
+  try {
+    const absoluteUrl = baseUrl ? new URL(url, baseUrl) : new URL(url);
+
+    if (_isValidProtocol(absoluteUrl)) {
+      return absoluteUrl;
+    }
+  } catch (ex) {}
+
+  return null;
+}
+
+function shadow(obj, prop, value) {
+  Object.defineProperty(obj, prop, {
+    value,
+    enumerable: true,
+    configurable: true,
+    writable: false
+  });
+  return value;
+}
+
+const BaseException = function BaseExceptionClosure() {
+  function BaseException(message) {
+    if (this.constructor === BaseException) {
+      unreachable("Cannot initialize BaseException.");
+    }
+
+    this.message = message;
+    this.name = this.constructor.name;
+  }
+
+  BaseException.prototype = new Error();
+  BaseException.constructor = BaseException;
+  return BaseException;
+}();
+
+exports.BaseException = BaseException;
+
+class PasswordException extends BaseException {
+  constructor(msg, code) {
+    super(msg);
+    this.code = code;
+  }
+
+}
+
+exports.PasswordException = PasswordException;
+
+class UnknownErrorException extends BaseException {
+  constructor(msg, details) {
+    super(msg);
+    this.details = details;
+  }
+
+}
+
+exports.UnknownErrorException = UnknownErrorException;
+
+class InvalidPDFException extends BaseException {}
+
+exports.InvalidPDFException = InvalidPDFException;
+
+class MissingPDFException extends BaseException {}
+
+exports.MissingPDFException = MissingPDFException;
+
+class UnexpectedResponseException extends BaseException {
+  constructor(msg, status) {
+    super(msg);
+    this.status = status;
+  }
+
+}
+
+exports.UnexpectedResponseException = UnexpectedResponseException;
+
+class FormatError extends BaseException {}
+
+exports.FormatError = FormatError;
+
+class AbortException extends BaseException {}
+
+exports.AbortException = AbortException;
+const NullCharactersRegExp = /\x00/g;
+
+function removeNullCharacters(str) {
+  if (typeof str !== "string") {
+    warn("The argument for removeNullCharacters must be a string.");
+    return str;
+  }
+
+  return str.replace(NullCharactersRegExp, "");
+}
+
+function bytesToString(bytes) {
+  assert(bytes !== null && typeof bytes === "object" && bytes.length !== undefined, "Invalid argument for bytesToString");
+  const length = bytes.length;
+  const MAX_ARGUMENT_COUNT = 8192;
+
+  if (length < MAX_ARGUMENT_COUNT) {
+    return String.fromCharCode.apply(null, bytes);
+  }
+
+  const strBuf = [];
+
+  for (let i = 0; i < length; i += MAX_ARGUMENT_COUNT) {
+    const chunkEnd = Math.min(i + MAX_ARGUMENT_COUNT, length);
+    const chunk = bytes.subarray(i, chunkEnd);
+    strBuf.push(String.fromCharCode.apply(null, chunk));
+  }
+
+  return strBuf.join("");
+}
+
+function stringToBytes(str) {
+  assert(typeof str === "string", "Invalid argument for stringToBytes");
+  const length = str.length;
+  const bytes = new Uint8Array(length);
+
+  for (let i = 0; i < length; ++i) {
+    bytes[i] = str.charCodeAt(i) & 0xff;
+  }
+
+  return bytes;
+}
+
+function arrayByteLength(arr) {
+  if (arr.length !== undefined) {
+    return arr.length;
+  }
+
+  assert(arr.byteLength !== undefined, "arrayByteLength - invalid argument.");
+  return arr.byteLength;
+}
+
+function arraysToBytes(arr) {
+  const length = arr.length;
+
+  if (length === 1 && arr[0] instanceof Uint8Array) {
+    return arr[0];
+  }
+
+  let resultLength = 0;
+
+  for (let i = 0; i < length; i++) {
+    resultLength += arrayByteLength(arr[i]);
+  }
+
+  let pos = 0;
+  const data = new Uint8Array(resultLength);
+
+  for (let i = 0; i < length; i++) {
+    let item = arr[i];
+
+    if (!(item instanceof Uint8Array)) {
+      if (typeof item === "string") {
+        item = stringToBytes(item);
+      } else {
+        item = new Uint8Array(item);
+      }
+    }
+
+    const itemLength = item.byteLength;
+    data.set(item, pos);
+    pos += itemLength;
+  }
+
+  return data;
+}
+
+function string32(value) {
+  return String.fromCharCode(value >> 24 & 0xff, value >> 16 & 0xff, value >> 8 & 0xff, value & 0xff);
+}
+
+function objectSize(obj) {
+  return Object.keys(obj).length;
+}
+
+function objectFromMap(map) {
+  const obj = Object.create(null);
+
+  for (const [key, value] of map) {
+    obj[key] = value;
+  }
+
+  return obj;
+}
+
+function isLittleEndian() {
+  const buffer8 = new Uint8Array(4);
+  buffer8[0] = 1;
+  const view32 = new Uint32Array(buffer8.buffer, 0, 1);
+  return view32[0] === 1;
+}
+
+const IsLittleEndianCached = {
+  get value() {
+    return shadow(this, "value", isLittleEndian());
+  }
+
+};
+exports.IsLittleEndianCached = IsLittleEndianCached;
+
+function isEvalSupported() {
+  try {
+    new Function("");
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+const IsEvalSupportedCached = {
+  get value() {
+    return shadow(this, "value", isEvalSupported());
+  }
+
+};
+exports.IsEvalSupportedCached = IsEvalSupportedCached;
+const hexNumbers = [...Array(256).keys()].map(n => n.toString(16).padStart(2, "0"));
+
+class Util {
+  static makeHexColor(r, g, b) {
+    return `#${hexNumbers[r]}${hexNumbers[g]}${hexNumbers[b]}`;
+  }
+
+  static transform(m1, m2) {
+    return [m1[0] * m2[0] + m1[2] * m2[1], m1[1] * m2[0] + m1[3] * m2[1], m1[0] * m2[2] + m1[2] * m2[3], m1[1] * m2[2] + m1[3] * m2[3], m1[0] * m2[4] + m1[2] * m2[5] + m1[4], m1[1] * m2[4] + m1[3] * m2[5] + m1[5]];
+  }
+
+  static applyTransform(p, m) {
+    const xt = p[0] * m[0] + p[1] * m[2] + m[4];
+    const yt = p[0] * m[1] + p[1] * m[3] + m[5];
+    return [xt, yt];
+  }
+
+  static applyInverseTransform(p, m) {
+    const d = m[0] * m[3] - m[1] * m[2];
+    const xt = (p[0] * m[3] - p[1] * m[2] + m[2] * m[5] - m[4] * m[3]) / d;
+    const yt = (-p[0] * m[1] + p[1] * m[0] + m[4] * m[1] - m[5] * m[0]) / d;
+    return [xt, yt];
+  }
+
+  static getAxialAlignedBoundingBox(r, m) {
+    const p1 = Util.applyTransform(r, m);
+    const p2 = Util.applyTransform(r.slice(2, 4), m);
+    const p3 = Util.applyTransform([r[0], r[3]], m);
+    const p4 = Util.applyTransform([r[2], r[1]], m);
+    return [Math.min(p1[0], p2[0], p3[0], p4[0]), Math.min(p1[1], p2[1], p3[1], p4[1]), Math.max(p1[0], p2[0], p3[0], p4[0]), Math.max(p1[1], p2[1], p3[1], p4[1])];
+  }
+
+  static inverseTransform(m) {
+    const d = m[0] * m[3] - m[1] * m[2];
+    return [m[3] / d, -m[1] / d, -m[2] / d, m[0] / d, (m[2] * m[5] - m[4] * m[3]) / d, (m[4] * m[1] - m[5] * m[0]) / d];
+  }
+
+  static apply3dTransform(m, v) {
+    return [m[0] * v[0] + m[1] * v[1] + m[2] * v[2], m[3] * v[0] + m[4] * v[1] + m[5] * v[2], m[6] * v[0] + m[7] * v[1] + m[8] * v[2]];
+  }
+
+  static singularValueDecompose2dScale(m) {
+    const transpose = [m[0], m[2], m[1], m[3]];
+    const a = m[0] * transpose[0] + m[1] * transpose[2];
+    const b = m[0] * transpose[1] + m[1] * transpose[3];
+    const c = m[2] * transpose[0] + m[3] * transpose[2];
+    const d = m[2] * transpose[1] + m[3] * transpose[3];
+    const first = (a + d) / 2;
+    const second = Math.sqrt((a + d) ** 2 - 4 * (a * d - c * b)) / 2;
+    const sx = first + second || 1;
+    const sy = first - second || 1;
+    return [Math.sqrt(sx), Math.sqrt(sy)];
+  }
+
+  static normalizeRect(rect) {
+    const r = rect.slice(0);
+
+    if (rect[0] > rect[2]) {
+      r[0] = rect[2];
+      r[2] = rect[0];
+    }
+
+    if (rect[1] > rect[3]) {
+      r[1] = rect[3];
+      r[3] = rect[1];
+    }
+
+    return r;
+  }
+
+  static intersect(rect1, rect2) {
+    function compare(a, b) {
+      return a - b;
+    }
+
+    const orderedX = [rect1[0], rect1[2], rect2[0], rect2[2]].sort(compare);
+    const orderedY = [rect1[1], rect1[3], rect2[1], rect2[3]].sort(compare);
+    const result = [];
+    rect1 = Util.normalizeRect(rect1);
+    rect2 = Util.normalizeRect(rect2);
+
+    if (orderedX[0] === rect1[0] && orderedX[1] === rect2[0] || orderedX[0] === rect2[0] && orderedX[1] === rect1[0]) {
+      result[0] = orderedX[1];
+      result[2] = orderedX[2];
+    } else {
+      return null;
+    }
+
+    if (orderedY[0] === rect1[1] && orderedY[1] === rect2[1] || orderedY[0] === rect2[1] && orderedY[1] === rect1[1]) {
+      result[1] = orderedY[1];
+      result[3] = orderedY[2];
+    } else {
+      return null;
+    }
+
+    return result;
+  }
+
+}
+
+exports.Util = Util;
+const PDFStringTranslateTable = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x2d8, 0x2c7, 0x2c6, 0x2d9, 0x2dd, 0x2db, 0x2da, 0x2dc, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x2022, 0x2020, 0x2021, 0x2026, 0x2014, 0x2013, 0x192, 0x2044, 0x2039, 0x203a, 0x2212, 0x2030, 0x201e, 0x201c, 0x201d, 0x2018, 0x2019, 0x201a, 0x2122, 0xfb01, 0xfb02, 0x141, 0x152, 0x160, 0x178, 0x17d, 0x131, 0x142, 0x153, 0x161, 0x17e, 0, 0x20ac];
+
+function stringToPDFString(str) {
+  const length = str.length,
+        strBuf = [];
+
+  if (str[0] === "\xFE" && str[1] === "\xFF") {
+    for (let i = 2; i < length; i += 2) {
+      strBuf.push(String.fromCharCode(str.charCodeAt(i) << 8 | str.charCodeAt(i + 1)));
+    }
+  } else if (str[0] === "\xFF" && str[1] === "\xFE") {
+    for (let i = 2; i < length; i += 2) {
+      strBuf.push(String.fromCharCode(str.charCodeAt(i + 1) << 8 | str.charCodeAt(i)));
+    }
+  } else {
+    for (let i = 0; i < length; ++i) {
+      const code = PDFStringTranslateTable[str.charCodeAt(i)];
+      strBuf.push(code ? String.fromCharCode(code) : str.charAt(i));
+    }
+  }
+
+  return strBuf.join("");
+}
+
+function escapeString(str) {
+  return str.replace(/([()\\\n\r])/g, match => {
+    if (match === "\n") {
+      return "\\n";
+    } else if (match === "\r") {
+      return "\\r";
+    }
+
+    return `\\${match}`;
+  });
+}
+
+function isAscii(str) {
+  return /^[\x00-\x7F]*$/.test(str);
+}
+
+function stringToUTF16BEString(str) {
+  const buf = ["\xFE\xFF"];
+
+  for (let i = 0, ii = str.length; i < ii; i++) {
+    const char = str.charCodeAt(i);
+    buf.push(String.fromCharCode(char >> 8 & 0xff), String.fromCharCode(char & 0xff));
+  }
+
+  return buf.join("");
+}
+
+function stringToUTF8String(str) {
+  return decodeURIComponent(escape(str));
+}
+
+function utf8StringToString(str) {
+  return unescape(encodeURIComponent(str));
+}
+
+function isBool(v) {
+  return typeof v === "boolean";
+}
+
+function isNum(v) {
+  return typeof v === "number";
+}
+
+function isString(v) {
+  return typeof v === "string";
+}
+
+function isArrayBuffer(v) {
+  return typeof v === "object" && v !== null && v.byteLength !== undefined;
+}
+
+function isArrayEqual(arr1, arr2) {
+  if (arr1.length !== arr2.length) {
+    return false;
+  }
+
+  for (let i = 0, ii = arr1.length; i < ii; i++) {
+    if (arr1[i] !== arr2[i]) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+function getModificationDate(date = new Date()) {
+  const buffer = [date.getUTCFullYear().toString(), (date.getUTCMonth() + 1).toString().padStart(2, "0"), date.getUTCDate().toString().padStart(2, "0"), date.getUTCHours().toString().padStart(2, "0"), date.getUTCMinutes().toString().padStart(2, "0"), date.getUTCSeconds().toString().padStart(2, "0")];
+  return buffer.join("");
+}
+
+function createPromiseCapability() {
+  const capability = Object.create(null);
+  let isSettled = false;
+  Object.defineProperty(capability, "settled", {
+    get() {
+      return isSettled;
+    }
+
+  });
+  capability.promise = new Promise(function (resolve, reject) {
+    capability.resolve = function (data) {
+      isSettled = true;
+      resolve(data);
+    };
+
+    capability.reject = function (reason) {
+      isSettled = true;
+      reject(reason);
+    };
+  });
+  return capability;
+}
+
+function createObjectURL(data, contentType = "", forceDataSchema = false) {
+  if (URL.createObjectURL && !forceDataSchema) {
+    return URL.createObjectURL(new Blob([data], {
+      type: contentType
+    }));
+  }
+
+  const digits = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+  let buffer = `data:${contentType};base64,`;
+
+  for (let i = 0, ii = data.length; i < ii; i += 3) {
+    const b1 = data[i] & 0xff;
+    const b2 = data[i + 1] & 0xff;
+    const b3 = data[i + 2] & 0xff;
+    const d1 = b1 >> 2,
+          d2 = (b1 & 3) << 4 | b2 >> 4;
+    const d3 = i + 1 < ii ? (b2 & 0xf) << 2 | b3 >> 6 : 64;
+    const d4 = i + 2 < ii ? b3 & 0x3f : 64;
+    buffer += digits[d1] + digits[d2] + digits[d3] + digits[d4];
+  }
+
+  return buffer;
+}
+
+/***/ }),
+/* 2 */
+/***/ ((__unused_webpack_module, __unused_webpack_exports, __w_pdfjs_require__) => {
+
+
+
+var _is_node = __w_pdfjs_require__(3);
+
+;
+
+/***/ }),
+/* 3 */
+/***/ ((__unused_webpack_module, exports) => {
+
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.isNodeJS = void 0;
+const isNodeJS = typeof process === "object" && process + "" === "[object process]" && !process.versions.nw && !(process.versions.electron && process.type && process.type !== "browser");
+exports.isNodeJS = isNodeJS;
+
+/***/ }),
+/* 4 */
+/***/ ((__unused_webpack_module, exports, __w_pdfjs_require__) => {
+
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.Jbig2Image = void 0;
+
+var _util = __w_pdfjs_require__(1);
+
+var _core_utils = __w_pdfjs_require__(5);
+
+var _arithmetic_decoder = __w_pdfjs_require__(8);
+
+var _ccitt = __w_pdfjs_require__(9);
+
+class Jbig2Error extends _util.BaseException {
+  constructor(msg) {
+    super(`JBIG2 error: ${msg}`);
+  }
+
+}
+
+class ContextCache {
+  getContexts(id) {
+    if (id in this) {
+      return this[id];
+    }
+
+    return this[id] = new Int8Array(1 << 16);
+  }
+
+}
+
+class DecodingContext {
+  constructor(data, start, end) {
+    this.data = data;
+    this.start = start;
+    this.end = end;
+  }
+
+  get decoder() {
+    const decoder = new _arithmetic_decoder.ArithmeticDecoder(this.data, this.start, this.end);
+    return (0, _util.shadow)(this, "decoder", decoder);
+  }
+
+  get contextCache() {
+    const cache = new ContextCache();
+    return (0, _util.shadow)(this, "contextCache", cache);
+  }
+
+}
+
+function decodeInteger(contextCache, procedure, decoder) {
+  const contexts = contextCache.getContexts(procedure);
+  let prev = 1;
+
+  function readBits(length) {
+    let v = 0;
+
+    for (let i = 0; i < length; i++) {
+      const bit = decoder.readBit(contexts, prev);
+      prev = prev < 256 ? prev << 1 | bit : (prev << 1 | bit) & 511 | 256;
+      v = v << 1 | bit;
+    }
+
+    return v >>> 0;
+  }
+
+  const sign = readBits(1);
+  const value = readBits(1) ? readBits(1) ? readBits(1) ? readBits(1) ? readBits(1) ? readBits(32) + 4436 : readBits(12) + 340 : readBits(8) + 84 : readBits(6) + 20 : readBits(4) + 4 : readBits(2);
+
+  if (sign === 0) {
+    return value;
+  } else if (value > 0) {
+    return -value;
+  }
+
+  return null;
+}
+
+function decodeIAID(contextCache, decoder, codeLength) {
+  const contexts = contextCache.getContexts("IAID");
+  let prev = 1;
+
+  for (let i = 0; i < codeLength; i++) {
+    const bit = decoder.readBit(contexts, prev);
+    prev = prev << 1 | bit;
+  }
+
+  if (codeLength < 31) {
+    return prev & (1 << codeLength) - 1;
+  }
+
+  return prev & 0x7fffffff;
+}
+
+const SegmentTypes = ["SymbolDictionary", null, null, null, "IntermediateTextRegion", null, "ImmediateTextRegion", "ImmediateLosslessTextRegion", null, null, null, null, null, null, null, null, "PatternDictionary", null, null, null, "IntermediateHalftoneRegion", null, "ImmediateHalftoneRegion", "ImmediateLosslessHalftoneRegion", null, null, null, null, null, null, null, null, null, null, null, null, "IntermediateGenericRegion", null, "ImmediateGenericRegion", "ImmediateLosslessGenericRegion", "IntermediateGenericRefinementRegion", null, "ImmediateGenericRefinementRegion", "ImmediateLosslessGenericRefinementRegion", null, null, null, null, "PageInformation", "EndOfPage", "EndOfStripe", "EndOfFile", "Profiles", "Tables", null, null, null, null, null, null, null, null, "Extension"];
+const CodingTemplates = [[{
+  x: -1,
+  y: -2
+}, {
+  x: 0,
+  y: -2
+}, {
+  x: 1,
+  y: -2
+}, {
+  x: -2,
+  y: -1
+}, {
+  x: -1,
+  y: -1
+}, {
+  x: 0,
+  y: -1
+}, {
+  x: 1,
+  y: -1
+}, {
+  x: 2,
+  y: -1
+}, {
+  x: -4,
+  y: 0
+}, {
+  x: -3,
+  y: 0
+}, {
+  x: -2,
+  y: 0
+}, {
+  x: -1,
+  y: 0
+}], [{
+  x: -1,
+  y: -2
+}, {
+  x: 0,
+  y: -2
+}, {
+  x: 1,
+  y: -2
+}, {
+  x: 2,
+  y: -2
+}, {
+  x: -2,
+  y: -1
+}, {
+  x: -1,
+  y: -1
+}, {
+  x: 0,
+  y: -1
+}, {
+  x: 1,
+  y: -1
+}, {
+  x: 2,
+  y: -1
+}, {
+  x: -3,
+  y: 0
+}, {
+  x: -2,
+  y: 0
+}, {
+  x: -1,
+  y: 0
+}], [{
+  x: -1,
+  y: -2
+}, {
+  x: 0,
+  y: -2
+}, {
+  x: 1,
+  y: -2
+}, {
+  x: -2,
+  y: -1
+}, {
+  x: -1,
+  y: -1
+}, {
+  x: 0,
+  y: -1
+}, {
+  x: 1,
+  y: -1
+}, {
+  x: -2,
+  y: 0
+}, {
+  x: -1,
+  y: 0
+}], [{
+  x: -3,
+  y: -1
+}, {
+  x: -2,
+  y: -1
+}, {
+  x: -1,
+  y: -1
+}, {
+  x: 0,
+  y: -1
+}, {
+  x: 1,
+  y: -1
+}, {
+  x: -4,
+  y: 0
+}, {
+  x: -3,
+  y: 0
+}, {
+  x: -2,
+  y: 0
+}, {
+  x: -1,
+  y: 0
+}]];
+const RefinementTemplates = [{
+  coding: [{
+    x: 0,
+    y: -1
+  }, {
+    x: 1,
+    y: -1
+  }, {
+    x: -1,
+    y: 0
+  }],
+  reference: [{
+    x: 0,
+    y: -1
+  }, {
+    x: 1,
+    y: -1
+  }, {
+    x: -1,
+    y: 0
+  }, {
+    x: 0,
+    y: 0
+  }, {
+    x: 1,
+    y: 0
+  }, {
+    x: -1,
+    y: 1
+  }, {
+    x: 0,
+    y: 1
+  }, {
+    x: 1,
+    y: 1
+  }]
+}, {
+  coding: [{
+    x: -1,
+    y: -1
+  }, {
+    x: 0,
+    y: -1
+  }, {
+    x: 1,
+    y: -1
+  }, {
+    x: -1,
+    y: 0
+  }],
+  reference: [{
+    x: 0,
+    y: -1
+  }, {
+    x: -1,
+    y: 0
+  }, {
+    x: 0,
+    y: 0
+  }, {
+    x: 1,
+    y: 0
+  }, {
+    x: 0,
+    y: 1
+  }, {
+    x: 1,
+    y: 1
+  }]
+}];
+const ReusedContexts = [0x9b25, 0x0795, 0x00e5, 0x0195];
+const RefinementReusedContexts = [0x0020, 0x0008];
+
+function decodeBitmapTemplate0(width, height, decodingContext) {
+  const decoder = decodingContext.decoder;
+  const contexts = decodingContext.contextCache.getContexts("GB");
+  const bitmap = [];
+  let contextLabel, i, j, pixel, row, row1, row2;
+  const OLD_PIXEL_MASK = 0x7bf7;
+
+  for (i = 0; i < height; i++) {
+    row = bitmap[i] = new Uint8Array(width);
+    row1 = i < 1 ? row : bitmap[i - 1];
+    row2 = i < 2 ? row : bitmap[i - 2];
+    contextLabel = row2[0] << 13 | row2[1] << 12 | row2[2] << 11 | row1[0] << 7 | row1[1] << 6 | row1[2] << 5 | row1[3] << 4;
+
+    for (j = 0; j < width; j++) {
+      row[j] = pixel = decoder.readBit(contexts, contextLabel);
+      contextLabel = (contextLabel & OLD_PIXEL_MASK) << 1 | (j + 3 < width ? row2[j + 3] << 11 : 0) | (j + 4 < width ? row1[j + 4] << 4 : 0) | pixel;
+    }
+  }
+
+  return bitmap;
+}
+
+function decodeBitmap(mmr, width, height, templateIndex, prediction, skip, at, decodingContext) {
+  if (mmr) {
+    const input = new Reader(decodingContext.data, decodingContext.start, decodingContext.end);
+    return decodeMMRBitmap(input, width, height, false);
+  }
+
+  if (templateIndex === 0 && !skip && !prediction && at.length === 4 && at[0].x === 3 && at[0].y === -1 && at[1].x === -3 && at[1].y === -1 && at[2].x === 2 && at[2].y === -2 && at[3].x === -2 && at[3].y === -2) {
+    return decodeBitmapTemplate0(width, height, decodingContext);
+  }
+
+  const useskip = !!skip;
+  const template = CodingTemplates[templateIndex].concat(at);
+  template.sort(function (a, b) {
+    return a.y - b.y || a.x - b.x;
+  });
+  const templateLength = template.length;
+  const templateX = new Int8Array(templateLength);
+  const templateY = new Int8Array(templateLength);
+  const changingTemplateEntries = [];
+  let reuseMask = 0,
+      minX = 0,
+      maxX = 0,
+      minY = 0;
+  let c, k;
+
+  for (k = 0; k < templateLength; k++) {
+    templateX[k] = template[k].x;
+    templateY[k] = template[k].y;
+    minX = Math.min(minX, template[k].x);
+    maxX = Math.max(maxX, template[k].x);
+    minY = Math.min(minY, template[k].y);
+
+    if (k < templateLength - 1 && template[k].y === template[k + 1].y && template[k].x === template[k + 1].x - 1) {
+      reuseMask |= 1 << templateLength - 1 - k;
+    } else {
+      changingTemplateEntries.push(k);
+    }
+  }
+
+  const changingEntriesLength = changingTemplateEntries.length;
+  const changingTemplateX = new Int8Array(changingEntriesLength);
+  const changingTemplateY = new Int8Array(changingEntriesLength);
+  const changingTemplateBit = new Uint16Array(changingEntriesLength);
+
+  for (c = 0; c < changingEntriesLength; c++) {
+    k = changingTemplateEntries[c];
+    changingTemplateX[c] = template[k].x;
+    changingTemplateY[c] = template[k].y;
+    changingTemplateBit[c] = 1 << templateLength - 1 - k;
+  }
+
+  const sbb_left = -minX;
+  const sbb_top = -minY;
+  const sbb_right = width - maxX;
+  const pseudoPixelContext = ReusedContexts[templateIndex];
+  let row = new Uint8Array(width);
+  const bitmap = [];
+  const decoder = decodingContext.decoder;
+  const contexts = decodingContext.contextCache.getContexts("GB");
+  let ltp = 0,
+      j,
+      i0,
+      j0,
+      contextLabel = 0,
+      bit,
+      shift;
+
+  for (let i = 0; i < height; i++) {
+    if (prediction) {
+      const sltp = decoder.readBit(contexts, pseudoPixelContext);
+      ltp ^= sltp;
+
+      if (ltp) {
+        bitmap.push(row);
+        continue;
+      }
+    }
+
+    row = new Uint8Array(row);
+    bitmap.push(row);
+
+    for (j = 0; j < width; j++) {
+      if (useskip && skip[i][j]) {
+        row[j] = 0;
+        continue;
+      }
+
+      if (j >= sbb_left && j < sbb_right && i >= sbb_top) {
+        contextLabel = contextLabel << 1 & reuseMask;
+
+        for (k = 0; k < changingEntriesLength; k++) {
+          i0 = i + changingTemplateY[k];
+          j0 = j + changingTemplateX[k];
+          bit = bitmap[i0][j0];
+
+          if (bit) {
+            bit = changingTemplateBit[k];
+            contextLabel |= bit;
+          }
+        }
+      } else {
+        contextLabel = 0;
+        shift = templateLength - 1;
+
+        for (k = 0; k < templateLength; k++, shift--) {
+          j0 = j + templateX[k];
+
+          if (j0 >= 0 && j0 < width) {
+            i0 = i + templateY[k];
+
+            if (i0 >= 0) {
+              bit = bitmap[i0][j0];
+
+              if (bit) {
+                contextLabel |= bit << shift;
+              }
+            }
+          }
+        }
+      }
+
+      const pixel = decoder.readBit(contexts, contextLabel);
+      row[j] = pixel;
+    }
+  }
+
+  return bitmap;
+}
+
+function decodeRefinement(width, height, templateIndex, referenceBitmap, offsetX, offsetY, prediction, at, decodingContext) {
+  let codingTemplate = RefinementTemplates[templateIndex].coding;
+
+  if (templateIndex === 0) {
+    codingTemplate = codingTemplate.concat([at[0]]);
+  }
+
+  const codingTemplateLength = codingTemplate.length;
+  const codingTemplateX = new Int32Array(codingTemplateLength);
+  const codingTemplateY = new Int32Array(codingTemplateLength);
+  let k;
+
+  for (k = 0; k < codingTemplateLength; k++) {
+    codingTemplateX[k] = codingTemplate[k].x;
+    codingTemplateY[k] = codingTemplate[k].y;
+  }
+
+  let referenceTemplate = RefinementTemplates[templateIndex].reference;
+
+  if (templateIndex === 0) {
+    referenceTemplate = referenceTemplate.concat([at[1]]);
+  }
+
+  const referenceTemplateLength = referenceTemplate.length;
+  const referenceTemplateX = new Int32Array(referenceTemplateLength);
+  const referenceTemplateY = new Int32Array(referenceTemplateLength);
+
+  for (k = 0; k < referenceTemplateLength; k++) {
+    referenceTemplateX[k] = referenceTemplate[k].x;
+    referenceTemplateY[k] = referenceTemplate[k].y;
+  }
+
+  const referenceWidth = referenceBitmap[0].length;
+  const referenceHeight = referenceBitmap.length;
+  const pseudoPixelContext = RefinementReusedContexts[templateIndex];
+  const bitmap = [];
+  const decoder = decodingContext.decoder;
+  const contexts = decodingContext.contextCache.getContexts("GR");
+  let ltp = 0;
+
+  for (let i = 0; i < height; i++) {
+    if (prediction) {
+      const sltp = decoder.readBit(contexts, pseudoPixelContext);
+      ltp ^= sltp;
+
+      if (ltp) {
+        throw new Jbig2Error("prediction is not supported");
+      }
+    }
+
+    const row = new Uint8Array(width);
+    bitmap.push(row);
+
+    for (let j = 0; j < width; j++) {
+      let i0, j0;
+      let contextLabel = 0;
+
+      for (k = 0; k < codingTemplateLength; k++) {
+        i0 = i + codingTemplateY[k];
+        j0 = j + codingTemplateX[k];
+
+        if (i0 < 0 || j0 < 0 || j0 >= width) {
+          contextLabel <<= 1;
+        } else {
+          contextLabel = contextLabel << 1 | bitmap[i0][j0];
+        }
+      }
+
+      for (k = 0; k < referenceTemplateLength; k++) {
+        i0 = i + referenceTemplateY[k] - offsetY;
+        j0 = j + referenceTemplateX[k] - offsetX;
+
+        if (i0 < 0 || i0 >= referenceHeight || j0 < 0 || j0 >= referenceWidth) {
+          contextLabel <<= 1;
+        } else {
+          contextLabel = contextLabel << 1 | referenceBitmap[i0][j0];
+        }
+      }
+
+      const pixel = decoder.readBit(contexts, contextLabel);
+      row[j] = pixel;
+    }
+  }
+
+  return bitmap;
+}
+
+function decodeSymbolDictionary(huffman, refinement, symbols, numberOfNewSymbols, numberOfExportedSymbols, huffmanTables, templateIndex, at, refinementTemplateIndex, refinementAt, decodingContext, huffmanInput) {
+  if (huffman && refinement) {
+    throw new Jbig2Error("symbol refinement with Huffman is not supported");
+  }
+
+  const newSymbols = [];
+  let currentHeight = 0;
+  let symbolCodeLength = (0, _core_utils.log2)(symbols.length + numberOfNewSymbols);
+  const decoder = decodingContext.decoder;
+  const contextCache = decodingContext.contextCache;
+  let tableB1, symbolWidths;
+
+  if (huffman) {
+    tableB1 = getStandardTable(1);
+    symbolWidths = [];
+    symbolCodeLength = Math.max(symbolCodeLength, 1);
+  }
+
+  while (newSymbols.length < numberOfNewSymbols) {
+    const deltaHeight = huffman ? huffmanTables.tableDeltaHeight.decode(huffmanInput) : decodeInteger(contextCache, "IADH", decoder);
+    currentHeight += deltaHeight;
+    let currentWidth = 0,
+        totalWidth = 0;
+    const firstSymbol = huffman ? symbolWidths.length : 0;
+
+    while (true) {
+      const deltaWidth = huffman ? huffmanTables.tableDeltaWidth.decode(huffmanInput) : decodeInteger(contextCache, "IADW", decoder);
+
+      if (deltaWidth === null) {
+        break;
+      }
+
+      currentWidth += deltaWidth;
+      totalWidth += currentWidth;
+      let bitmap;
+
+      if (refinement) {
+        const numberOfInstances = decodeInteger(contextCache, "IAAI", decoder);
+
+        if (numberOfInstances > 1) {
+          bitmap = decodeTextRegion(huffman, refinement, currentWidth, currentHeight, 0, numberOfInstances, 1, symbols.concat(newSymbols), symbolCodeLength, 0, 0, 1, 0, huffmanTables, refinementTemplateIndex, refinementAt, decodingContext, 0, huffmanInput);
+        } else {
+          const symbolId = decodeIAID(contextCache, decoder, symbolCodeLength);
+          const rdx = decodeInteger(contextCache, "IARDX", decoder);
+          const rdy = decodeInteger(contextCache, "IARDY", decoder);
+          const symbol = symbolId < symbols.length ? symbols[symbolId] : newSymbols[symbolId - symbols.length];
+          bitmap = decodeRefinement(currentWidth, currentHeight, refinementTemplateIndex, symbol, rdx, rdy, false, refinementAt, decodingContext);
+        }
+
+        newSymbols.push(bitmap);
+      } else if (huffman) {
+        symbolWidths.push(currentWidth);
+      } else {
+        bitmap = decodeBitmap(false, currentWidth, currentHeight, templateIndex, false, null, at, decodingContext);
+        newSymbols.push(bitmap);
+      }
+    }
+
+    if (huffman && !refinement) {
+      const bitmapSize = huffmanTables.tableBitmapSize.decode(huffmanInput);
+      huffmanInput.byteAlign();
+      let collectiveBitmap;
+
+      if (bitmapSize === 0) {
+        collectiveBitmap = readUncompressedBitmap(huffmanInput, totalWidth, currentHeight);
+      } else {
+        const originalEnd = huffmanInput.end;
+        const bitmapEnd = huffmanInput.position + bitmapSize;
+        huffmanInput.end = bitmapEnd;
+        collectiveBitmap = decodeMMRBitmap(huffmanInput, totalWidth, currentHeight, false);
+        huffmanInput.end = originalEnd;
+        huffmanInput.position = bitmapEnd;
+      }
+
+      const numberOfSymbolsDecoded = symbolWidths.length;
+
+      if (firstSymbol === numberOfSymbolsDecoded - 1) {
+        newSymbols.push(collectiveBitmap);
+      } else {
+        let i,
+            y,
+            xMin = 0,
+            xMax,
+            bitmapWidth,
+            symbolBitmap;
+
+        for (i = firstSymbol; i < numberOfSymbolsDecoded; i++) {
+          bitmapWidth = symbolWidths[i];
+          xMax = xMin + bitmapWidth;
+          symbolBitmap = [];
+
+          for (y = 0; y < currentHeight; y++) {
+            symbolBitmap.push(collectiveBitmap[y].subarray(xMin, xMax));
+          }
+
+          newSymbols.push(symbolBitmap);
+          xMin = xMax;
+        }
+      }
+    }
+  }
+
+  const exportedSymbols = [],
+        flags = [];
+  let currentFlag = false,
+      i,
+      ii;
+  const totalSymbolsLength = symbols.length + numberOfNewSymbols;
+
+  while (flags.length < totalSymbolsLength) {
+    let runLength = huffman ? tableB1.decode(huffmanInput) : decodeInteger(contextCache, "IAEX", decoder);
+
+    while (runLength--) {
+      flags.push(currentFlag);
+    }
+
+    currentFlag = !currentFlag;
+  }
+
+  for (i = 0, ii = symbols.length; i < ii; i++) {
+    if (flags[i]) {
+      exportedSymbols.push(symbols[i]);
+    }
+  }
+
+  for (let j = 0; j < numberOfNewSymbols; i++, j++) {
+    if (flags[i]) {
+      exportedSymbols.push(newSymbols[j]);
+    }
+  }
+
+  return exportedSymbols;
+}
+
+function decodeTextRegion(huffman, refinement, width, height, defaultPixelValue, numberOfSymbolInstances, stripSize, inputSymbols, symbolCodeLength, transposed, dsOffset, referenceCorner, combinationOperator, huffmanTables, refinementTemplateIndex, refinementAt, decodingContext, logStripSize, huffmanInput) {
+  if (huffman && refinement) {
+    throw new Jbig2Error("refinement with Huffman is not supported");
+  }
+
+  const bitmap = [];
+  let i, row;
+
+  for (i = 0; i < height; i++) {
+    row = new Uint8Array(width);
+
+    if (defaultPixelValue) {
+      for (let j = 0; j < width; j++) {
+        row[j] = defaultPixelValue;
+      }
+    }
+
+    bitmap.push(row);
+  }
+
+  const decoder = decodingContext.decoder;
+  const contextCache = decodingContext.contextCache;
+  let stripT = huffman ? -huffmanTables.tableDeltaT.decode(huffmanInput) : -decodeInteger(contextCache, "IADT", decoder);
+  let firstS = 0;
+  i = 0;
+
+  while (i < numberOfSymbolInstances) {
+    const deltaT = huffman ? huffmanTables.tableDeltaT.decode(huffmanInput) : decodeInteger(contextCache, "IADT", decoder);
+    stripT += deltaT;
+    const deltaFirstS = huffman ? huffmanTables.tableFirstS.decode(huffmanInput) : decodeInteger(contextCache, "IAFS", decoder);
+    firstS += deltaFirstS;
+    let currentS = firstS;
+
+    do {
+      let currentT = 0;
+
+      if (stripSize > 1) {
+        currentT = huffman ? huffmanInput.readBits(logStripSize) : decodeInteger(contextCache, "IAIT", decoder);
+      }
+
+      const t = stripSize * stripT + currentT;
+      const symbolId = huffman ? huffmanTables.symbolIDTable.decode(huffmanInput) : decodeIAID(contextCache, decoder, symbolCodeLength);
+      const applyRefinement = refinement && (huffman ? huffmanInput.readBit() : decodeInteger(contextCache, "IARI", decoder));
+      let symbolBitmap = inputSymbols[symbolId];
+      let symbolWidth = symbolBitmap[0].length;
+      let symbolHeight = symbolBitmap.length;
+
+      if (applyRefinement) {
+        const rdw = decodeInteger(contextCache, "IARDW", decoder);
+        const rdh = decodeInteger(contextCache, "IARDH", decoder);
+        const rdx = decodeInteger(contextCache, "IARDX", decoder);
+        const rdy = decodeInteger(contextCache, "IARDY", decoder);
+        symbolWidth += rdw;
+        symbolHeight += rdh;
+        symbolBitmap = decodeRefinement(symbolWidth, symbolHeight, refinementTemplateIndex, symbolBitmap, (rdw >> 1) + rdx, (rdh >> 1) + rdy, false, refinementAt, decodingContext);
+      }
+
+      const offsetT = t - (referenceCorner & 1 ? 0 : symbolHeight - 1);
+      const offsetS = currentS - (referenceCorner & 2 ? symbolWidth - 1 : 0);
+      let s2, t2, symbolRow;
+
+      if (transposed) {
+        for (s2 = 0; s2 < symbolHeight; s2++) {
+          row = bitmap[offsetS + s2];
+
+          if (!row) {
+            continue;
+          }
+
+          symbolRow = symbolBitmap[s2];
+          const maxWidth = Math.min(width - offsetT, symbolWidth);
+
+          switch (combinationOperator) {
+            case 0:
+              for (t2 = 0; t2 < maxWidth; t2++) {
+                row[offsetT + t2] |= symbolRow[t2];
+              }
+
+              break;
+
+            case 2:
+              for (t2 = 0; t2 < maxWidth; t2++) {
+                row[offsetT + t2] ^= symbolRow[t2];
+              }
+
+              break;
+
+            default:
+              throw new Jbig2Error(`operator ${combinationOperator} is not supported`);
+          }
+        }
+
+        currentS += symbolHeight - 1;
+      } else {
+        for (t2 = 0; t2 < symbolHeight; t2++) {
+          row = bitmap[offsetT + t2];
+
+          if (!row) {
+            continue;
+          }
+
+          symbolRow = symbolBitmap[t2];
+
+          switch (combinationOperator) {
+            case 0:
+              for (s2 = 0; s2 < symbolWidth; s2++) {
+                row[offsetS + s2] |= symbolRow[s2];
+              }
+
+              break;
+
+            case 2:
+              for (s2 = 0; s2 < symbolWidth; s2++) {
+                row[offsetS + s2] ^= symbolRow[s2];
+              }
+
+              break;
+
+            default:
+              throw new Jbig2Error(`operator ${combinationOperator} is not supported`);
+          }
+        }
+
+        currentS += symbolWidth - 1;
+      }
+
+      i++;
+      const deltaS = huffman ? huffmanTables.tableDeltaS.decode(huffmanInput) : decodeInteger(contextCache, "IADS", decoder);
+
+      if (deltaS === null) {
+        break;
+      }
+
+      currentS += deltaS + dsOffset;
+    } while (true);
+  }
+
+  return bitmap;
+}
+
+function decodePatternDictionary(mmr, patternWidth, patternHeight, maxPatternIndex, template, decodingContext) {
+  const at = [];
+
+  if (!mmr) {
+    at.push({
+      x: -patternWidth,
+      y: 0
+    });
+
+    if (template === 0) {
+      at.push({
+        x: -3,
+        y: -1
+      }, {
+        x: 2,
+        y: -2
+      }, {
+        x: -2,
+        y: -2
+      });
+    }
+  }
+
+  const collectiveWidth = (maxPatternIndex + 1) * patternWidth;
+  const collectiveBitmap = decodeBitmap(mmr, collectiveWidth, patternHeight, template, false, null, at, decodingContext);
+  const patterns = [];
+
+  for (let i = 0; i <= maxPatternIndex; i++) {
+    const patternBitmap = [];
+    const xMin = patternWidth * i;
+    const xMax = xMin + patternWidth;
+
+    for (let y = 0; y < patternHeight; y++) {
+      patternBitmap.push(collectiveBitmap[y].subarray(xMin, xMax));
+    }
+
+    patterns.push(patternBitmap);
+  }
+
+  return patterns;
+}
+
+function decodeHalftoneRegion(mmr, patterns, template, regionWidth, regionHeight, defaultPixelValue, enableSkip, combinationOperator, gridWidth, gridHeight, gridOffsetX, gridOffsetY, gridVectorX, gridVectorY, decodingContext) {
+  const skip = null;
+
+  if (enableSkip) {
+    throw new Jbig2Error("skip is not supported");
+  }
+
+  if (combinationOperator !== 0) {
+    throw new Jbig2Error(`operator "${combinationOperator}" is not supported in halftone region`);
+  }
+
+  const regionBitmap = [];
+  let i, j, row;
+
+  for (i = 0; i < regionHeight; i++) {
+    row = new Uint8Array(regionWidth);
+
+    if (defaultPixelValue) {
+      for (j = 0; j < regionWidth; j++) {
+        row[j] = defaultPixelValue;
+      }
+    }
+
+    regionBitmap.push(row);
+  }
+
+  const numberOfPatterns = patterns.length;
+  const pattern0 = patterns[0];
+  const patternWidth = pattern0[0].length,
+        patternHeight = pattern0.length;
+  const bitsPerValue = (0, _core_utils.log2)(numberOfPatterns);
+  const at = [];
+
+  if (!mmr) {
+    at.push({
+      x: template <= 1 ? 3 : 2,
+      y: -1
+    });
+
+    if (template === 0) {
+      at.push({
+        x: -3,
+        y: -1
+      }, {
+        x: 2,
+        y: -2
+      }, {
+        x: -2,
+        y: -2
+      });
+    }
+  }
+
+  const grayScaleBitPlanes = [];
+  let mmrInput, bitmap;
+
+  if (mmr) {
+    mmrInput = new Reader(decodingContext.data, decodingContext.start, decodingContext.end);
+  }
+
+  for (i = bitsPerValue - 1; i >= 0; i--) {
+    if (mmr) {
+      bitmap = decodeMMRBitmap(mmrInput, gridWidth, gridHeight, true);
+    } else {
+      bitmap = decodeBitmap(false, gridWidth, gridHeight, template, false, skip, at, decodingContext);
+    }
+
+    grayScaleBitPlanes[i] = bitmap;
+  }
+
+  let mg, ng, bit, patternIndex, patternBitmap, x, y, patternRow, regionRow;
+
+  for (mg = 0; mg < gridHeight; mg++) {
+    for (ng = 0; ng < gridWidth; ng++) {
+      bit = 0;
+      patternIndex = 0;
+
+      for (j = bitsPerValue - 1; j >= 0; j--) {
+        bit = grayScaleBitPlanes[j][mg][ng] ^ bit;
+        patternIndex |= bit << j;
+      }
+
+      patternBitmap = patterns[patternIndex];
+      x = gridOffsetX + mg * gridVectorY + ng * gridVectorX >> 8;
+      y = gridOffsetY + mg * gridVectorX - ng * gridVectorY >> 8;
+
+      if (x >= 0 && x + patternWidth <= regionWidth && y >= 0 && y + patternHeight <= regionHeight) {
+        for (i = 0; i < patternHeight; i++) {
+          regionRow = regionBitmap[y + i];
+          patternRow = patternBitmap[i];
+
+          for (j = 0; j < patternWidth; j++) {
+            regionRow[x + j] |= patternRow[j];
+          }
+        }
+      } else {
+        let regionX, regionY;
+
+        for (i = 0; i < patternHeight; i++) {
+          regionY = y + i;
+
+          if (regionY < 0 || regionY >= regionHeight) {
+            continue;
+          }
+
+          regionRow = regionBitmap[regionY];
+          patternRow = patternBitmap[i];
+
+          for (j = 0; j < patternWidth; j++) {
+            regionX = x + j;
+
+            if (regionX >= 0 && regionX < regionWidth) {
+              regionRow[regionX] |= patternRow[j];
+            }
+          }
+        }
+      }
+    }
+  }
+
+  return regionBitmap;
+}
+
+function readSegmentHeader(data, start) {
+  const segmentHeader = {};
+  segmentHeader.number = (0, _core_utils.readUint32)(data, start);
+  const flags = data[start + 4];
+  const segmentType = flags & 0x3f;
+
+  if (!SegmentTypes[segmentType]) {
+    throw new Jbig2Error("invalid segment type: " + segmentType);
+  }
+
+  segmentHeader.type = segmentType;
+  segmentHeader.typeName = SegmentTypes[segmentType];
+  segmentHeader.deferredNonRetain = !!(flags & 0x80);
+  const pageAssociationFieldSize = !!(flags & 0x40);
+  const referredFlags = data[start + 5];
+  let referredToCount = referredFlags >> 5 & 7;
+  const retainBits = [referredFlags & 31];
+  let position = start + 6;
+
+  if (referredFlags === 7) {
+    referredToCount = (0, _core_utils.readUint32)(data, position - 1) & 0x1fffffff;
+    position += 3;
+    let bytes = referredToCount + 7 >> 3;
+    retainBits[0] = data[position++];
+
+    while (--bytes > 0) {
+      retainBits.push(data[position++]);
+    }
+  } else if (referredFlags === 5 || referredFlags === 6) {
+    throw new Jbig2Error("invalid referred-to flags");
+  }
+
+  segmentHeader.retainBits = retainBits;
+  let referredToSegmentNumberSize = 4;
+
+  if (segmentHeader.number <= 256) {
+    referredToSegmentNumberSize = 1;
+  } else if (segmentHeader.number <= 65536) {
+    referredToSegmentNumberSize = 2;
+  }
+
+  const referredTo = [];
+  let i, ii;
+
+  for (i = 0; i < referredToCount; i++) {
+    let number;
+
+    if (referredToSegmentNumberSize === 1) {
+      number = data[position];
+    } else if (referredToSegmentNumberSize === 2) {
+      number = (0, _core_utils.readUint16)(data, position);
+    } else {
+      number = (0, _core_utils.readUint32)(data, position);
+    }
+
+    referredTo.push(number);
+    position += referredToSegmentNumberSize;
+  }
+
+  segmentHeader.referredTo = referredTo;
+
+  if (!pageAssociationFieldSize) {
+    segmentHeader.pageAssociation = data[position++];
+  } else {
+    segmentHeader.pageAssociation = (0, _core_utils.readUint32)(data, position);
+    position += 4;
+  }
+
+  segmentHeader.length = (0, _core_utils.readUint32)(data, position);
+  position += 4;
+
+  if (segmentHeader.length === 0xffffffff) {
+    if (segmentType === 38) {
+      const genericRegionInfo = readRegionSegmentInformation(data, position);
+      const genericRegionSegmentFlags = data[position + RegionSegmentInformationFieldLength];
+      const genericRegionMmr = !!(genericRegionSegmentFlags & 1);
+      const searchPatternLength = 6;
+      const searchPattern = new Uint8Array(searchPatternLength);
+
+      if (!genericRegionMmr) {
+        searchPattern[0] = 0xff;
+        searchPattern[1] = 0xac;
+      }
+
+      searchPattern[2] = genericRegionInfo.height >>> 24 & 0xff;
+      searchPattern[3] = genericRegionInfo.height >> 16 & 0xff;
+      searchPattern[4] = genericRegionInfo.height >> 8 & 0xff;
+      searchPattern[5] = genericRegionInfo.height & 0xff;
+
+      for (i = position, ii = data.length; i < ii; i++) {
+        let j = 0;
+
+        while (j < searchPatternLength && searchPattern[j] === data[i + j]) {
+          j++;
+        }
+
+        if (j === searchPatternLength) {
+          segmentHeader.length = i + searchPatternLength;
+          break;
+        }
+      }
+
+      if (segmentHeader.length === 0xffffffff) {
+        throw new Jbig2Error("segment end was not found");
+      }
+    } else {
+      throw new Jbig2Error("invalid unknown segment length");
+    }
+  }
+
+  segmentHeader.headerEnd = position;
+  return segmentHeader;
+}
+
+function readSegments(header, data, start, end) {
+  const segments = [];
+  let position = start;
+
+  while (position < end) {
+    const segmentHeader = readSegmentHeader(data, position);
+    position = segmentHeader.headerEnd;
+    const segment = {
+      header: segmentHeader,
+      data
+    };
+
+    if (!header.randomAccess) {
+      segment.start = position;
+      position += segmentHeader.length;
+      segment.end = position;
+    }
+
+    segments.push(segment);
+
+    if (segmentHeader.type === 51) {
+      break;
+    }
+  }
+
+  if (header.randomAccess) {
+    for (let i = 0, ii = segments.length; i < ii; i++) {
+      segments[i].start = position;
+      position += segments[i].header.length;
+      segments[i].end = position;
+    }
+  }
+
+  return segments;
+}
+
+function readRegionSegmentInformation(data, start) {
+  return {
+    width: (0, _core_utils.readUint32)(data, start),
+    height: (0, _core_utils.readUint32)(data, start + 4),
+    x: (0, _core_utils.readUint32)(data, start + 8),
+    y: (0, _core_utils.readUint32)(data, start + 12),
+    combinationOperator: data[start + 16] & 7
+  };
+}
+
+const RegionSegmentInformationFieldLength = 17;
+
+function processSegment(segment, visitor) {
+  const header = segment.header;
+  const data = segment.data,
+        end = segment.end;
+  let position = segment.start;
+  let args, at, i, atLength;
+
+  switch (header.type) {
+    case 0:
+      const dictionary = {};
+      const dictionaryFlags = (0, _core_utils.readUint16)(data, position);
+      dictionary.huffman = !!(dictionaryFlags & 1);
+      dictionary.refinement = !!(dictionaryFlags & 2);
+      dictionary.huffmanDHSelector = dictionaryFlags >> 2 & 3;
+      dictionary.huffmanDWSelector = dictionaryFlags >> 4 & 3;
+      dictionary.bitmapSizeSelector = dictionaryFlags >> 6 & 1;
+      dictionary.aggregationInstancesSelector = dictionaryFlags >> 7 & 1;
+      dictionary.bitmapCodingContextUsed = !!(dictionaryFlags & 256);
+      dictionary.bitmapCodingContextRetained = !!(dictionaryFlags & 512);
+      dictionary.template = dictionaryFlags >> 10 & 3;
+      dictionary.refinementTemplate = dictionaryFlags >> 12 & 1;
+      position += 2;
+
+      if (!dictionary.huffman) {
+        atLength = dictionary.template === 0 ? 4 : 1;
+        at = [];
+
+        for (i = 0; i < atLength; i++) {
+          at.push({
+            x: (0, _core_utils.readInt8)(data, position),
+            y: (0, _core_utils.readInt8)(data, position + 1)
+          });
+          position += 2;
+        }
+
+        dictionary.at = at;
+      }
+
+      if (dictionary.refinement && !dictionary.refinementTemplate) {
+        at = [];
+
+        for (i = 0; i < 2; i++) {
+          at.push({
+            x: (0, _core_utils.readInt8)(data, position),
+            y: (0, _core_utils.readInt8)(data, position + 1)
+          });
+          position += 2;
+        }
+
+        dictionary.refinementAt = at;
+      }
+
+      dictionary.numberOfExportedSymbols = (0, _core_utils.readUint32)(data, position);
+      position += 4;
+      dictionary.numberOfNewSymbols = (0, _core_utils.readUint32)(data, position);
+      position += 4;
+      args = [dictionary, header.number, header.referredTo, data, position, end];
+      break;
+
+    case 6:
+    case 7:
+      const textRegion = {};
+      textRegion.info = readRegionSegmentInformation(data, position);
+      position += RegionSegmentInformationFieldLength;
+      const textRegionSegmentFlags = (0, _core_utils.readUint16)(data, position);
+      position += 2;
+      textRegion.huffman = !!(textRegionSegmentFlags & 1);
+      textRegion.refinement = !!(textRegionSegmentFlags & 2);
+      textRegion.logStripSize = textRegionSegmentFlags >> 2 & 3;
+      textRegion.stripSize = 1 << textRegion.logStripSize;
+      textRegion.referenceCorner = textRegionSegmentFlags >> 4 & 3;
+      textRegion.transposed = !!(textRegionSegmentFlags & 64);
+      textRegion.combinationOperator = textRegionSegmentFlags >> 7 & 3;
+      textRegion.defaultPixelValue = textRegionSegmentFlags >> 9 & 1;
+      textRegion.dsOffset = textRegionSegmentFlags << 17 >> 27;
+      textRegion.refinementTemplate = textRegionSegmentFlags >> 15 & 1;
+
+      if (textRegion.huffman) {
+        const textRegionHuffmanFlags = (0, _core_utils.readUint16)(data, position);
+        position += 2;
+        textRegion.huffmanFS = textRegionHuffmanFlags & 3;
+        textRegion.huffmanDS = textRegionHuffmanFlags >> 2 & 3;
+        textRegion.huffmanDT = textRegionHuffmanFlags >> 4 & 3;
+        textRegion.huffmanRefinementDW = textRegionHuffmanFlags >> 6 & 3;
+        textRegion.huffmanRefinementDH = textRegionHuffmanFlags >> 8 & 3;
+        textRegion.huffmanRefinementDX = textRegionHuffmanFlags >> 10 & 3;
+        textRegion.huffmanRefinementDY = textRegionHuffmanFlags >> 12 & 3;
+        textRegion.huffmanRefinementSizeSelector = !!(textRegionHuffmanFlags & 0x4000);
+      }
+
+      if (textRegion.refinement && !textRegion.refinementTemplate) {
+        at = [];
+
+        for (i = 0; i < 2; i++) {
+          at.push({
+            x: (0, _core_utils.readInt8)(data, position),
+            y: (0, _core_utils.readInt8)(data, position + 1)
+          });
+          position += 2;
+        }
+
+        textRegion.refinementAt = at;
+      }
+
+      textRegion.numberOfSymbolInstances = (0, _core_utils.readUint32)(data, position);
+      position += 4;
+      args = [textRegion, header.referredTo, data, position, end];
+      break;
+
+    case 16:
+      const patternDictionary = {};
+      const patternDictionaryFlags = data[position++];
+      patternDictionary.mmr = !!(patternDictionaryFlags & 1);
+      patternDictionary.template = patternDictionaryFlags >> 1 & 3;
+      patternDictionary.patternWidth = data[position++];
+      patternDictionary.patternHeight = data[position++];
+      patternDictionary.maxPatternIndex = (0, _core_utils.readUint32)(data, position);
+      position += 4;
+      args = [patternDictionary, header.number, data, position, end];
+      break;
+
+    case 22:
+    case 23:
+      const halftoneRegion = {};
+      halftoneRegion.info = readRegionSegmentInformation(data, position);
+      position += RegionSegmentInformationFieldLength;
+      const halftoneRegionFlags = data[position++];
+      halftoneRegion.mmr = !!(halftoneRegionFlags & 1);
+      halftoneRegion.template = halftoneRegionFlags >> 1 & 3;
+      halftoneRegion.enableSkip = !!(halftoneRegionFlags & 8);
+      halftoneRegion.combinationOperator = halftoneRegionFlags >> 4 & 7;
+      halftoneRegion.defaultPixelValue = halftoneRegionFlags >> 7 & 1;
+      halftoneRegion.gridWidth = (0, _core_utils.readUint32)(data, position);
+      position += 4;
+      halftoneRegion.gridHeight = (0, _core_utils.readUint32)(data, position);
+      position += 4;
+      halftoneRegion.gridOffsetX = (0, _core_utils.readUint32)(data, position) & 0xffffffff;
+      position += 4;
+      halftoneRegion.gridOffsetY = (0, _core_utils.readUint32)(data, position) & 0xffffffff;
+      position += 4;
+      halftoneRegion.gridVectorX = (0, _core_utils.readUint16)(data, position);
+      position += 2;
+      halftoneRegion.gridVectorY = (0, _core_utils.readUint16)(data, position);
+      position += 2;
+      args = [halftoneRegion, header.referredTo, data, position, end];
+      break;
+
+    case 38:
+    case 39:
+      const genericRegion = {};
+      genericRegion.info = readRegionSegmentInformation(data, position);
+      position += RegionSegmentInformationFieldLength;
+      const genericRegionSegmentFlags = data[position++];
+      genericRegion.mmr = !!(genericRegionSegmentFlags & 1);
+      genericRegion.template = genericRegionSegmentFlags >> 1 & 3;
+      genericRegion.prediction = !!(genericRegionSegmentFlags & 8);
+
+      if (!genericRegion.mmr) {
+        atLength = genericRegion.template === 0 ? 4 : 1;
+        at = [];
+
+        for (i = 0; i < atLength; i++) {
+          at.push({
+            x: (0, _core_utils.readInt8)(data, position),
+            y: (0, _core_utils.readInt8)(data, position + 1)
+          });
+          position += 2;
+        }
+
+        genericRegion.at = at;
+      }
+
+      args = [genericRegion, data, position, end];
+      break;
+
+    case 48:
+      const pageInfo = {
+        width: (0, _core_utils.readUint32)(data, position),
+        height: (0, _core_utils.readUint32)(data, position + 4),
+        resolutionX: (0, _core_utils.readUint32)(data, position + 8),
+        resolutionY: (0, _core_utils.readUint32)(data, position + 12)
+      };
+
+      if (pageInfo.height === 0xffffffff) {
+        delete pageInfo.height;
+      }
+
+      const pageSegmentFlags = data[position + 16];
+      (0, _core_utils.readUint16)(data, position + 17);
+      pageInfo.lossless = !!(pageSegmentFlags & 1);
+      pageInfo.refinement = !!(pageSegmentFlags & 2);
+      pageInfo.defaultPixelValue = pageSegmentFlags >> 2 & 1;
+      pageInfo.combinationOperator = pageSegmentFlags >> 3 & 3;
+      pageInfo.requiresBuffer = !!(pageSegmentFlags & 32);
+      pageInfo.combinationOperatorOverride = !!(pageSegmentFlags & 64);
+      args = [pageInfo];
+      break;
+
+    case 49:
+      break;
+
+    case 50:
+      break;
+
+    case 51:
+      break;
+
+    case 53:
+      args = [header.number, data, position, end];
+      break;
+
+    case 62:
+      break;
+
+    default:
+      throw new Jbig2Error(`segment type ${header.typeName}(${header.type})` + " is not implemented");
+  }
+
+  const callbackName = "on" + header.typeName;
+
+  if (callbackName in visitor) {
+    visitor[callbackName].apply(visitor, args);
+  }
+}
+
+function processSegments(segments, visitor) {
+  for (let i = 0, ii = segments.length; i < ii; i++) {
+    processSegment(segments[i], visitor);
+  }
+}
+
+function parseJbig2Chunks(chunks) {
+  const visitor = new SimpleSegmentVisitor();
+
+  for (let i = 0, ii = chunks.length; i < ii; i++) {
+    const chunk = chunks[i];
+    const segments = readSegments({}, chunk.data, chunk.start, chunk.end);
+    processSegments(segments, visitor);
+  }
+
+  return visitor.buffer;
+}
+
+function parseJbig2(data) {
+  const end = data.length;
+  let position = 0;
+
+  if (data[position] !== 0x97 || data[position + 1] !== 0x4a || data[position + 2] !== 0x42 || data[position + 3] !== 0x32 || data[position + 4] !== 0x0d || data[position + 5] !== 0x0a || data[position + 6] !== 0x1a || data[position + 7] !== 0x0a) {
+    throw new Jbig2Error("parseJbig2 - invalid header.");
+  }
+
+  const header = Object.create(null);
+  position += 8;
+  const flags = data[position++];
+  header.randomAccess = !(flags & 1);
+
+  if (!(flags & 2)) {
+    header.numberOfPages = (0, _core_utils.readUint32)(data, position);
+    position += 4;
+  }
+
+  const segments = readSegments(header, data, position, end);
+  const visitor = new SimpleSegmentVisitor();
+  processSegments(segments, visitor);
+  const {
+    width,
+    height
+  } = visitor.currentPageInfo;
+  const bitPacked = visitor.buffer;
+  const imgData = new Uint8ClampedArray(width * height);
+  let q = 0,
+      k = 0;
+
+  for (let i = 0; i < height; i++) {
+    let mask = 0,
+        buffer;
+
+    for (let j = 0; j < width; j++) {
+      if (!mask) {
+        mask = 128;
+        buffer = bitPacked[k++];
+      }
+
+      imgData[q++] = buffer & mask ? 0 : 255;
+      mask >>= 1;
+    }
+  }
+
+  return {
+    imgData,
+    width,
+    height
+  };
+}
+
+class SimpleSegmentVisitor {
+  onPageInformation(info) {
+    this.currentPageInfo = info;
+    const rowSize = info.width + 7 >> 3;
+    const buffer = new Uint8ClampedArray(rowSize * info.height);
+
+    if (info.defaultPixelValue) {
+      for (let i = 0, ii = buffer.length; i < ii; i++) {
+        buffer[i] = 0xff;
+      }
+    }
+
+    this.buffer = buffer;
+  }
+
+  drawBitmap(regionInfo, bitmap) {
+    const pageInfo = this.currentPageInfo;
+    const width = regionInfo.width,
+          height = regionInfo.height;
+    const rowSize = pageInfo.width + 7 >> 3;
+    const combinationOperator = pageInfo.combinationOperatorOverride ? regionInfo.combinationOperator : pageInfo.combinationOperator;
+    const buffer = this.buffer;
+    const mask0 = 128 >> (regionInfo.x & 7);
+    let offset0 = regionInfo.y * rowSize + (regionInfo.x >> 3);
+    let i, j, mask, offset;
+
+    switch (combinationOperator) {
+      case 0:
+        for (i = 0; i < height; i++) {
+          mask = mask0;
+          offset = offset0;
+
+          for (j = 0; j < width; j++) {
+            if (bitmap[i][j]) {
+              buffer[offset] |= mask;
+            }
+
+            mask >>= 1;
+
+            if (!mask) {
+              mask = 128;
+              offset++;
+            }
+          }
+
+          offset0 += rowSize;
+        }
+
+        break;
+
+      case 2:
+        for (i = 0; i < height; i++) {
+          mask = mask0;
+          offset = offset0;
+
+          for (j = 0; j < width; j++) {
+            if (bitmap[i][j]) {
+              buffer[offset] ^= mask;
+            }
+
+            mask >>= 1;
+
+            if (!mask) {
+              mask = 128;
+              offset++;
+            }
+          }
+
+          offset0 += rowSize;
+        }
+
+        break;
+
+      default:
+        throw new Jbig2Error(`operator ${combinationOperator} is not supported`);
+    }
+  }
+
+  onImmediateGenericRegion(region, data, start, end) {
+    const regionInfo = region.info;
+    const decodingContext = new DecodingContext(data, start, end);
+    const bitmap = decodeBitmap(region.mmr, regionInfo.width, regionInfo.height, region.template, region.prediction, null, region.at, decodingContext);
+    this.drawBitmap(regionInfo, bitmap);
+  }
+
+  onImmediateLosslessGenericRegion() {
+    this.onImmediateGenericRegion.apply(this, arguments);
+  }
+
+  onSymbolDictionary(dictionary, currentSegment, referredSegments, data, start, end) {
+    let huffmanTables, huffmanInput;
+
+    if (dictionary.huffman) {
+      huffmanTables = getSymbolDictionaryHuffmanTables(dictionary, referredSegments, this.customTables);
+      huffmanInput = new Reader(data, start, end);
+    }
+
+    let symbols = this.symbols;
+
+    if (!symbols) {
+      this.symbols = symbols = {};
+    }
+
+    let inputSymbols = [];
+
+    for (let i = 0, ii = referredSegments.length; i < ii; i++) {
+      const referredSymbols = symbols[referredSegments[i]];
+
+      if (referredSymbols) {
+        inputSymbols = inputSymbols.concat(referredSymbols);
+      }
+    }
+
+    const decodingContext = new DecodingContext(data, start, end);
+    symbols[currentSegment] = decodeSymbolDictionary(dictionary.huffman, dictionary.refinement, inputSymbols, dictionary.numberOfNewSymbols, dictionary.numberOfExportedSymbols, huffmanTables, dictionary.template, dictionary.at, dictionary.refinementTemplate, dictionary.refinementAt, decodingContext, huffmanInput);
+  }
+
+  onImmediateTextRegion(region, referredSegments, data, start, end) {
+    const regionInfo = region.info;
+    let huffmanTables, huffmanInput;
+    const symbols = this.symbols;
+    let inputSymbols = [];
+
+    for (let i = 0, ii = referredSegments.length; i < ii; i++) {
+      const referredSymbols = symbols[referredSegments[i]];
+
+      if (referredSymbols) {
+        inputSymbols = inputSymbols.concat(referredSymbols);
+      }
+    }
+
+    const symbolCodeLength = (0, _core_utils.log2)(inputSymbols.length);
+
+    if (region.huffman) {
+      huffmanInput = new Reader(data, start, end);
+      huffmanTables = getTextRegionHuffmanTables(region, referredSegments, this.customTables, inputSymbols.length, huffmanInput);
+    }
+
+    const decodingContext = new DecodingContext(data, start, end);
+    const bitmap = decodeTextRegion(region.huffman, region.refinement, regionInfo.width, regionInfo.height, region.defaultPixelValue, region.numberOfSymbolInstances, region.stripSize, inputSymbols, symbolCodeLength, region.transposed, region.dsOffset, region.referenceCorner, region.combinationOperator, huffmanTables, region.refinementTemplate, region.refinementAt, decodingContext, region.logStripSize, huffmanInput);
+    this.drawBitmap(regionInfo, bitmap);
+  }
+
+  onImmediateLosslessTextRegion() {
+    this.onImmediateTextRegion.apply(this, arguments);
+  }
+
+  onPatternDictionary(dictionary, currentSegment, data, start, end) {
+    let patterns = this.patterns;
+
+    if (!patterns) {
+      this.patterns = patterns = {};
+    }
+
+    const decodingContext = new DecodingContext(data, start, end);
+    patterns[currentSegment] = decodePatternDictionary(dictionary.mmr, dictionary.patternWidth, dictionary.patternHeight, dictionary.maxPatternIndex, dictionary.template, decodingContext);
+  }
+
+  onImmediateHalftoneRegion(region, referredSegments, data, start, end) {
+    const patterns = this.patterns[referredSegments[0]];
+    const regionInfo = region.info;
+    const decodingContext = new DecodingContext(data, start, end);
+    const bitmap = decodeHalftoneRegion(region.mmr, patterns, region.template, regionInfo.width, regionInfo.height, region.defaultPixelValue, region.enableSkip, region.combinationOperator, region.gridWidth, region.gridHeight, region.gridOffsetX, region.gridOffsetY, region.gridVectorX, region.gridVectorY, decodingContext);
+    this.drawBitmap(regionInfo, bitmap);
+  }
+
+  onImmediateLosslessHalftoneRegion() {
+    this.onImmediateHalftoneRegion.apply(this, arguments);
+  }
+
+  onTables(currentSegment, data, start, end) {
+    let customTables = this.customTables;
+
+    if (!customTables) {
+      this.customTables = customTables = {};
+    }
+
+    customTables[currentSegment] = decodeTablesSegment(data, start, end);
+  }
+
+}
+
+class HuffmanLine {
+  constructor(lineData) {
+    if (lineData.length === 2) {
+      this.isOOB = true;
+      this.rangeLow = 0;
+      this.prefixLength = lineData[0];
+      this.rangeLength = 0;
+      this.prefixCode = lineData[1];
+      this.isLowerRange = false;
+    } else {
+      this.isOOB = false;
+      this.rangeLow = lineData[0];
+      this.prefixLength = lineData[1];
+      this.rangeLength = lineData[2];
+      this.prefixCode = lineData[3];
+      this.isLowerRange = lineData[4] === "lower";
+    }
+  }
+
+}
+
+class HuffmanTreeNode {
+  constructor(line) {
+    this.children = [];
+
+    if (line) {
+      this.isLeaf = true;
+      this.rangeLength = line.rangeLength;
+      this.rangeLow = line.rangeLow;
+      this.isLowerRange = line.isLowerRange;
+      this.isOOB = line.isOOB;
+    } else {
+      this.isLeaf = false;
+    }
+  }
+
+  buildTree(line, shift) {
+    const bit = line.prefixCode >> shift & 1;
+
+    if (shift <= 0) {
+      this.children[bit] = new HuffmanTreeNode(line);
+    } else {
+      let node = this.children[bit];
+
+      if (!node) {
+        this.children[bit] = node = new HuffmanTreeNode(null);
+      }
+
+      node.buildTree(line, shift - 1);
+    }
+  }
+
+  decodeNode(reader) {
+    if (this.isLeaf) {
+      if (this.isOOB) {
+        return null;
+      }
+
+      const htOffset = reader.readBits(this.rangeLength);
+      return this.rangeLow + (this.isLowerRange ? -htOffset : htOffset);
+    }
+
+    const node = this.children[reader.readBit()];
+
+    if (!node) {
+      throw new Jbig2Error("invalid Huffman data");
+    }
+
+    return node.decodeNode(reader);
+  }
+
+}
+
+class HuffmanTable {
+  constructor(lines, prefixCodesDone) {
+    if (!prefixCodesDone) {
+      this.assignPrefixCodes(lines);
+    }
+
+    this.rootNode = new HuffmanTreeNode(null);
+
+    for (let i = 0, ii = lines.length; i < ii; i++) {
+      const line = lines[i];
+
+      if (line.prefixLength > 0) {
+        this.rootNode.buildTree(line, line.prefixLength - 1);
+      }
+    }
+  }
+
+  decode(reader) {
+    return this.rootNode.decodeNode(reader);
+  }
+
+  assignPrefixCodes(lines) {
+    const linesLength = lines.length;
+    let prefixLengthMax = 0;
+
+    for (let i = 0; i < linesLength; i++) {
+      prefixLengthMax = Math.max(prefixLengthMax, lines[i].prefixLength);
+    }
+
+    const histogram = new Uint32Array(prefixLengthMax + 1);
+
+    for (let i = 0; i < linesLength; i++) {
+      histogram[lines[i].prefixLength]++;
+    }
+
+    let currentLength = 1,
+        firstCode = 0,
+        currentCode,
+        currentTemp,
+        line;
+    histogram[0] = 0;
+
+    while (currentLength <= prefixLengthMax) {
+      firstCode = firstCode + histogram[currentLength - 1] << 1;
+      currentCode = firstCode;
+      currentTemp = 0;
+
+      while (currentTemp < linesLength) {
+        line = lines[currentTemp];
+
+        if (line.prefixLength === currentLength) {
+          line.prefixCode = currentCode;
+          currentCode++;
+        }
+
+        currentTemp++;
+      }
+
+      currentLength++;
+    }
+  }
+
+}
+
+function decodeTablesSegment(data, start, end) {
+  const flags = data[start];
+  const lowestValue = (0, _core_utils.readUint32)(data, start + 1) & 0xffffffff;
+  const highestValue = (0, _core_utils.readUint32)(data, start + 5) & 0xffffffff;
+  const reader = new Reader(data, start + 9, end);
+  const prefixSizeBits = (flags >> 1 & 7) + 1;
+  const rangeSizeBits = (flags >> 4 & 7) + 1;
+  const lines = [];
+  let prefixLength,
+      rangeLength,
+      currentRangeLow = lowestValue;
+
+  do {
+    prefixLength = reader.readBits(prefixSizeBits);
+    rangeLength = reader.readBits(rangeSizeBits);
+    lines.push(new HuffmanLine([currentRangeLow, prefixLength, rangeLength, 0]));
+    currentRangeLow += 1 << rangeLength;
+  } while (currentRangeLow < highestValue);
+
+  prefixLength = reader.readBits(prefixSizeBits);
+  lines.push(new HuffmanLine([lowestValue - 1, prefixLength, 32, 0, "lower"]));
+  prefixLength = reader.readBits(prefixSizeBits);
+  lines.push(new HuffmanLine([highestValue, prefixLength, 32, 0]));
+
+  if (flags & 1) {
+    prefixLength = reader.readBits(prefixSizeBits);
+    lines.push(new HuffmanLine([prefixLength, 0]));
+  }
+
+  return new HuffmanTable(lines, false);
+}
+
+const standardTablesCache = {};
+
+function getStandardTable(number) {
+  let table = standardTablesCache[number];
+
+  if (table) {
+    return table;
+  }
+
+  let lines;
+
+  switch (number) {
+    case 1:
+      lines = [[0, 1, 4, 0x0], [16, 2, 8, 0x2], [272, 3, 16, 0x6], [65808, 3, 32, 0x7]];
+      break;
+
+    case 2:
+      lines = [[0, 1, 0, 0x0], [1, 2, 0, 0x2], [2, 3, 0, 0x6], [3, 4, 3, 0xe], [11, 5, 6, 0x1e], [75, 6, 32, 0x3e], [6, 0x3f]];
+      break;
+
+    case 3:
+      lines = [[-256, 8, 8, 0xfe], [0, 1, 0, 0x0], [1, 2, 0, 0x2], [2, 3, 0, 0x6], [3, 4, 3, 0xe], [11, 5, 6, 0x1e], [-257, 8, 32, 0xff, "lower"], [75, 7, 32, 0x7e], [6, 0x3e]];
+      break;
+
+    case 4:
+      lines = [[1, 1, 0, 0x0], [2, 2, 0, 0x2], [3, 3, 0, 0x6], [4, 4, 3, 0xe], [12, 5, 6, 0x1e], [76, 5, 32, 0x1f]];
+      break;
+
+    case 5:
+      lines = [[-255, 7, 8, 0x7e], [1, 1, 0, 0x0], [2, 2, 0, 0x2], [3, 3, 0, 0x6], [4, 4, 3, 0xe], [12, 5, 6, 0x1e], [-256, 7, 32, 0x7f, "lower"], [76, 6, 32, 0x3e]];
+      break;
+
+    case 6:
+      lines = [[-2048, 5, 10, 0x1c], [-1024, 4, 9, 0x8], [-512, 4, 8, 0x9], [-256, 4, 7, 0xa], [-128, 5, 6, 0x1d], [-64, 5, 5, 0x1e], [-32, 4, 5, 0xb], [0, 2, 7, 0x0], [128, 3, 7, 0x2], [256, 3, 8, 0x3], [512, 4, 9, 0xc], [1024, 4, 10, 0xd], [-2049, 6, 32, 0x3e, "lower"], [2048, 6, 32, 0x3f]];
+      break;
+
+    case 7:
+      lines = [[-1024, 4, 9, 0x8], [-512, 3, 8, 0x0], [-256, 4, 7, 0x9], [-128, 5, 6, 0x1a], [-64, 5, 5, 0x1b], [-32, 4, 5, 0xa], [0, 4, 5, 0xb], [32, 5, 5, 0x1c], [64, 5, 6, 0x1d], [128, 4, 7, 0xc], [256, 3, 8, 0x1], [512, 3, 9, 0x2], [1024, 3, 10, 0x3], [-1025, 5, 32, 0x1e, "lower"], [2048, 5, 32, 0x1f]];
+      break;
+
+    case 8:
+      lines = [[-15, 8, 3, 0xfc], [-7, 9, 1, 0x1fc], [-5, 8, 1, 0xfd], [-3, 9, 0, 0x1fd], [-2, 7, 0, 0x7c], [-1, 4, 0, 0xa], [0, 2, 1, 0x0], [2, 5, 0, 0x1a], [3, 6, 0, 0x3a], [4, 3, 4, 0x4], [20, 6, 1, 0x3b], [22, 4, 4, 0xb], [38, 4, 5, 0xc], [70, 5, 6, 0x1b], [134, 5, 7, 0x1c], [262, 6, 7, 0x3c], [390, 7, 8, 0x7d], [646, 6, 10, 0x3d], [-16, 9, 32, 0x1fe, "lower"], [1670, 9, 32, 0x1ff], [2, 0x1]];
+      break;
+
+    case 9:
+      lines = [[-31, 8, 4, 0xfc], [-15, 9, 2, 0x1fc], [-11, 8, 2, 0xfd], [-7, 9, 1, 0x1fd], [-5, 7, 1, 0x7c], [-3, 4, 1, 0xa], [-1, 3, 1, 0x2], [1, 3, 1, 0x3], [3, 5, 1, 0x1a], [5, 6, 1, 0x3a], [7, 3, 5, 0x4], [39, 6, 2, 0x3b], [43, 4, 5, 0xb], [75, 4, 6, 0xc], [139, 5, 7, 0x1b], [267, 5, 8, 0x1c], [523, 6, 8, 0x3c], [779, 7, 9, 0x7d], [1291, 6, 11, 0x3d], [-32, 9, 32, 0x1fe, "lower"], [3339, 9, 32, 0x1ff], [2, 0x0]];
+      break;
+
+    case 10:
+      lines = [[-21, 7, 4, 0x7a], [-5, 8, 0, 0xfc], [-4, 7, 0, 0x7b], [-3, 5, 0, 0x18], [-2, 2, 2, 0x0], [2, 5, 0, 0x19], [3, 6, 0, 0x36], [4, 7, 0, 0x7c], [5, 8, 0, 0xfd], [6, 2, 6, 0x1], [70, 5, 5, 0x1a], [102, 6, 5, 0x37], [134, 6, 6, 0x38], [198, 6, 7, 0x39], [326, 6, 8, 0x3a], [582, 6, 9, 0x3b], [1094, 6, 10, 0x3c], [2118, 7, 11, 0x7d], [-22, 8, 32, 0xfe, "lower"], [4166, 8, 32, 0xff], [2, 0x2]];
+      break;
+
+    case 11:
+      lines = [[1, 1, 0, 0x0], [2, 2, 1, 0x2], [4, 4, 0, 0xc], [5, 4, 1, 0xd], [7, 5, 1, 0x1c], [9, 5, 2, 0x1d], [13, 6, 2, 0x3c], [17, 7, 2, 0x7a], [21, 7, 3, 0x7b], [29, 7, 4, 0x7c], [45, 7, 5, 0x7d], [77, 7, 6, 0x7e], [141, 7, 32, 0x7f]];
+      break;
+
+    case 12:
+      lines = [[1, 1, 0, 0x0], [2, 2, 0, 0x2], [3, 3, 1, 0x6], [5, 5, 0, 0x1c], [6, 5, 1, 0x1d], [8, 6, 1, 0x3c], [10, 7, 0, 0x7a], [11, 7, 1, 0x7b], [13, 7, 2, 0x7c], [17, 7, 3, 0x7d], [25, 7, 4, 0x7e], [41, 8, 5, 0xfe], [73, 8, 32, 0xff]];
+      break;
+
+    case 13:
+      lines = [[1, 1, 0, 0x0], [2, 3, 0, 0x4], [3, 4, 0, 0xc], [4, 5, 0, 0x1c], [5, 4, 1, 0xd], [7, 3, 3, 0x5], [15, 6, 1, 0x3a], [17, 6, 2, 0x3b], [21, 6, 3, 0x3c], [29, 6, 4, 0x3d], [45, 6, 5, 0x3e], [77, 7, 6, 0x7e], [141, 7, 32, 0x7f]];
+      break;
+
+    case 14:
+      lines = [[-2, 3, 0, 0x4], [-1, 3, 0, 0x5], [0, 1, 0, 0x0], [1, 3, 0, 0x6], [2, 3, 0, 0x7]];
+      break;
+
+    case 15:
+      lines = [[-24, 7, 4, 0x7c], [-8, 6, 2, 0x3c], [-4, 5, 1, 0x1c], [-2, 4, 0, 0xc], [-1, 3, 0, 0x4], [0, 1, 0, 0x0], [1, 3, 0, 0x5], [2, 4, 0, 0xd], [3, 5, 1, 0x1d], [5, 6, 2, 0x3d], [9, 7, 4, 0x7d], [-25, 7, 32, 0x7e, "lower"], [25, 7, 32, 0x7f]];
+      break;
+
+    default:
+      throw new Jbig2Error(`standard table B.${number} does not exist`);
+  }
+
+  for (let i = 0, ii = lines.length; i < ii; i++) {
+    lines[i] = new HuffmanLine(lines[i]);
+  }
+
+  table = new HuffmanTable(lines, true);
+  standardTablesCache[number] = table;
+  return table;
+}
+
+class Reader {
+  constructor(data, start, end) {
+    this.data = data;
+    this.start = start;
+    this.end = end;
+    this.position = start;
+    this.shift = -1;
+    this.currentByte = 0;
+  }
+
+  readBit() {
+    if (this.shift < 0) {
+      if (this.position >= this.end) {
+        throw new Jbig2Error("end of data while reading bit");
+      }
+
+      this.currentByte = this.data[this.position++];
+      this.shift = 7;
+    }
+
+    const bit = this.currentByte >> this.shift & 1;
+    this.shift--;
+    return bit;
+  }
+
+  readBits(numBits) {
+    let result = 0,
+        i;
+
+    for (i = numBits - 1; i >= 0; i--) {
+      result |= this.readBit() << i;
+    }
+
+    return result;
+  }
+
+  byteAlign() {
+    this.shift = -1;
+  }
+
+  next() {
+    if (this.position >= this.end) {
+      return -1;
+    }
+
+    return this.data[this.position++];
+  }
+
+}
+
+function getCustomHuffmanTable(index, referredTo, customTables) {
+  let currentIndex = 0;
+
+  for (let i = 0, ii = referredTo.length; i < ii; i++) {
+    const table = customTables[referredTo[i]];
+
+    if (table) {
+      if (index === currentIndex) {
+        return table;
+      }
+
+      currentIndex++;
+    }
+  }
+
+  throw new Jbig2Error("can't find custom Huffman table");
+}
+
+function getTextRegionHuffmanTables(textRegion, referredTo, customTables, numberOfSymbols, reader) {
+  const codes = [];
+
+  for (let i = 0; i <= 34; i++) {
+    const codeLength = reader.readBits(4);
+    codes.push(new HuffmanLine([i, codeLength, 0, 0]));
+  }
+
+  const runCodesTable = new HuffmanTable(codes, false);
+  codes.length = 0;
+
+  for (let i = 0; i < numberOfSymbols;) {
+    const codeLength = runCodesTable.decode(reader);
+
+    if (codeLength >= 32) {
+      let repeatedLength, numberOfRepeats, j;
+
+      switch (codeLength) {
+        case 32:
+          if (i === 0) {
+            throw new Jbig2Error("no previous value in symbol ID table");
+          }
+
+          numberOfRepeats = reader.readBits(2) + 3;
+          repeatedLength = codes[i - 1].prefixLength;
+          break;
+
+        case 33:
+          numberOfRepeats = reader.readBits(3) + 3;
+          repeatedLength = 0;
+          break;
+
+        case 34:
+          numberOfRepeats = reader.readBits(7) + 11;
+          repeatedLength = 0;
+          break;
+
+        default:
+          throw new Jbig2Error("invalid code length in symbol ID table");
+      }
+
+      for (j = 0; j < numberOfRepeats; j++) {
+        codes.push(new HuffmanLine([i, repeatedLength, 0, 0]));
+        i++;
+      }
+    } else {
+      codes.push(new HuffmanLine([i, codeLength, 0, 0]));
+      i++;
+    }
+  }
+
+  reader.byteAlign();
+  const symbolIDTable = new HuffmanTable(codes, false);
+  let customIndex = 0,
+      tableFirstS,
+      tableDeltaS,
+      tableDeltaT;
+
+  switch (textRegion.huffmanFS) {
+    case 0:
+    case 1:
+      tableFirstS = getStandardTable(textRegion.huffmanFS + 6);
+      break;
+
+    case 3:
+      tableFirstS = getCustomHuffmanTable(customIndex, referredTo, customTables);
+      customIndex++;
+      break;
+
+    default:
+      throw new Jbig2Error("invalid Huffman FS selector");
+  }
+
+  switch (textRegion.huffmanDS) {
+    case 0:
+    case 1:
+    case 2:
+      tableDeltaS = getStandardTable(textRegion.huffmanDS + 8);
+      break;
+
+    case 3:
+      tableDeltaS = getCustomHuffmanTable(customIndex, referredTo, customTables);
+      customIndex++;
+      break;
+
+    default:
+      throw new Jbig2Error("invalid Huffman DS selector");
+  }
+
+  switch (textRegion.huffmanDT) {
+    case 0:
+    case 1:
+    case 2:
+      tableDeltaT = getStandardTable(textRegion.huffmanDT + 11);
+      break;
+
+    case 3:
+      tableDeltaT = getCustomHuffmanTable(customIndex, referredTo, customTables);
+      customIndex++;
+      break;
+
+    default:
+      throw new Jbig2Error("invalid Huffman DT selector");
+  }
+
+  if (textRegion.refinement) {
+    throw new Jbig2Error("refinement with Huffman is not supported");
+  }
+
+  return {
+    symbolIDTable,
+    tableFirstS,
+    tableDeltaS,
+    tableDeltaT
+  };
+}
+
+function getSymbolDictionaryHuffmanTables(dictionary, referredTo, customTables) {
+  let customIndex = 0,
+      tableDeltaHeight,
+      tableDeltaWidth;
+
+  switch (dictionary.huffmanDHSelector) {
+    case 0:
+    case 1:
+      tableDeltaHeight = getStandardTable(dictionary.huffmanDHSelector + 4);
+      break;
+
+    case 3:
+      tableDeltaHeight = getCustomHuffmanTable(customIndex, referredTo, customTables);
+      customIndex++;
+      break;
+
+    default:
+      throw new Jbig2Error("invalid Huffman DH selector");
+  }
+
+  switch (dictionary.huffmanDWSelector) {
+    case 0:
+    case 1:
+      tableDeltaWidth = getStandardTable(dictionary.huffmanDWSelector + 2);
+      break;
+
+    case 3:
+      tableDeltaWidth = getCustomHuffmanTable(customIndex, referredTo, customTables);
+      customIndex++;
+      break;
+
+    default:
+      throw new Jbig2Error("invalid Huffman DW selector");
+  }
+
+  let tableBitmapSize, tableAggregateInstances;
+
+  if (dictionary.bitmapSizeSelector) {
+    tableBitmapSize = getCustomHuffmanTable(customIndex, referredTo, customTables);
+    customIndex++;
+  } else {
+    tableBitmapSize = getStandardTable(1);
+  }
+
+  if (dictionary.aggregationInstancesSelector) {
+    tableAggregateInstances = getCustomHuffmanTable(customIndex, referredTo, customTables);
+  } else {
+    tableAggregateInstances = getStandardTable(1);
+  }
+
+  return {
+    tableDeltaHeight,
+    tableDeltaWidth,
+    tableBitmapSize,
+    tableAggregateInstances
+  };
+}
+
+function readUncompressedBitmap(reader, width, height) {
+  const bitmap = [];
+
+  for (let y = 0; y < height; y++) {
+    const row = new Uint8Array(width);
+    bitmap.push(row);
+
+    for (let x = 0; x < width; x++) {
+      row[x] = reader.readBit();
+    }
+
+    reader.byteAlign();
+  }
+
+  return bitmap;
+}
+
+function decodeMMRBitmap(input, width, height, endOfBlock) {
+  const params = {
+    K: -1,
+    Columns: width,
+    Rows: height,
+    BlackIs1: true,
+    EndOfBlock: endOfBlock
+  };
+  const decoder = new _ccitt.CCITTFaxDecoder(input, params);
+  const bitmap = [];
+  let currentByte,
+      eof = false;
+
+  for (let y = 0; y < height; y++) {
+    const row = new Uint8Array(width);
+    bitmap.push(row);
+    let shift = -1;
+
+    for (let x = 0; x < width; x++) {
+      if (shift < 0) {
+        currentByte = decoder.readNextChar();
+
+        if (currentByte === -1) {
+          currentByte = 0;
+          eof = true;
+        }
+
+        shift = 7;
+      }
+
+      row[x] = currentByte >> shift & 1;
+      shift--;
+    }
+  }
+
+  if (endOfBlock && !eof) {
+    const lookForEOFLimit = 5;
+
+    for (let i = 0; i < lookForEOFLimit; i++) {
+      if (decoder.readNextChar() === -1) {
+        break;
+      }
+    }
+  }
+
+  return bitmap;
+}
+
+class Jbig2Image {
+  parseChunks(chunks) {
+    return parseJbig2Chunks(chunks);
+  }
+
+  parse(data) {
+    const {
+      imgData,
+      width,
+      height
+    } = parseJbig2(data);
+    this.width = width;
+    this.height = height;
+    return imgData;
+  }
+
+}
+
+exports.Jbig2Image = Jbig2Image;
+
+/***/ }),
+/* 5 */
+/***/ ((__unused_webpack_module, exports, __w_pdfjs_require__) => {
+
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.collectActions = collectActions;
+exports.encodeToXmlString = encodeToXmlString;
+exports.escapePDFName = escapePDFName;
+exports.getArrayLookupTableFactory = getArrayLookupTableFactory;
+exports.getInheritableProperty = getInheritableProperty;
+exports.getLookupTableFactory = getLookupTableFactory;
+exports.isWhiteSpace = isWhiteSpace;
+exports.log2 = log2;
+exports.parseXFAPath = parseXFAPath;
+exports.readInt8 = readInt8;
+exports.readUint16 = readUint16;
+exports.readUint32 = readUint32;
+exports.toRomanNumerals = toRomanNumerals;
+exports.validateCSSFont = validateCSSFont;
+exports.XRefParseException = exports.XRefEntryException = exports.MissingDataException = void 0;
+
+var _util = __w_pdfjs_require__(1);
+
+var _primitives = __w_pdfjs_require__(6);
+
+function getLookupTableFactory(initializer) {
+  let lookup;
+  return function () {
+    if (initializer) {
+      lookup = Object.create(null);
+      initializer(lookup);
+      initializer = null;
+    }
+
+    return lookup;
+  };
+}
+
+function getArrayLookupTableFactory(initializer) {
+  let lookup;
+  return function () {
+    if (initializer) {
+      let arr = initializer();
+      initializer = null;
+      lookup = Object.create(null);
+
+      for (let i = 0, ii = arr.length; i < ii; i += 2) {
+        lookup[arr[i]] = arr[i + 1];
+      }
+
+      arr = null;
+    }
+
+    return lookup;
+  };
+}
+
+class MissingDataException extends _util.BaseException {
+  constructor(begin, end) {
+    super(`Missing data [${begin}, ${end})`);
+    this.begin = begin;
+    this.end = end;
+  }
+
+}
+
+exports.MissingDataException = MissingDataException;
+
+class XRefEntryException extends _util.BaseException {}
+
+exports.XRefEntryException = XRefEntryException;
+
+class XRefParseException extends _util.BaseException {}
+
+exports.XRefParseException = XRefParseException;
+
+function getInheritableProperty({
+  dict,
+  key,
+  getArray = false,
+  stopWhenFound = true
+}) {
+  let values;
+  const visited = new _primitives.RefSet();
+
+  while (dict instanceof _primitives.Dict && !(dict.objId && visited.has(dict.objId))) {
+    if (dict.objId) {
+      visited.put(dict.objId);
+    }
+
+    const value = getArray ? dict.getArray(key) : dict.get(key);
+
+    if (value !== undefined) {
+      if (stopWhenFound) {
+        return value;
+      }
+
+      if (!values) {
+        values = [];
+      }
+
+      values.push(value);
+    }
+
+    dict = dict.get("Parent");
+  }
+
+  return values;
+}
+
+const ROMAN_NUMBER_MAP = ["", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM", "", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC", "", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"];
+
+function toRomanNumerals(number, lowerCase = false) {
+  (0, _util.assert)(Number.isInteger(number) && number > 0, "The number should be a positive integer.");
+  const romanBuf = [];
+  let pos;
+
+  while (number >= 1000) {
+    number -= 1000;
+    romanBuf.push("M");
+  }
+
+  pos = number / 100 | 0;
+  number %= 100;
+  romanBuf.push(ROMAN_NUMBER_MAP[pos]);
+  pos = number / 10 | 0;
+  number %= 10;
+  romanBuf.push(ROMAN_NUMBER_MAP[10 + pos]);
+  romanBuf.push(ROMAN_NUMBER_MAP[20 + number]);
+  const romanStr = romanBuf.join("");
+  return lowerCase ? romanStr.toLowerCase() : romanStr;
+}
+
+function log2(x) {
+  if (x <= 0) {
+    return 0;
+  }
+
+  return Math.ceil(Math.log2(x));
+}
+
+function readInt8(data, offset) {
+  return data[offset] << 24 >> 24;
+}
+
+function readUint16(data, offset) {
+  return data[offset] << 8 | data[offset + 1];
+}
+
+function readUint32(data, offset) {
+  return (data[offset] << 24 | data[offset + 1] << 16 | data[offset + 2] << 8 | data[offset + 3]) >>> 0;
+}
+
+function isWhiteSpace(ch) {
+  return ch === 0x20 || ch === 0x09 || ch === 0x0d || ch === 0x0a;
+}
+
+function parseXFAPath(path) {
+  const positionPattern = /(.+)\[([0-9]+)\]$/;
+  return path.split(".").map(component => {
+    const m = component.match(positionPattern);
+
+    if (m) {
+      return {
+        name: m[1],
+        pos: parseInt(m[2], 10)
+      };
+    }
+
+    return {
+      name: component,
+      pos: 0
+    };
+  });
+}
+
+function escapePDFName(str) {
+  const buffer = [];
+  let start = 0;
+
+  for (let i = 0, ii = str.length; i < ii; i++) {
+    const char = str.charCodeAt(i);
+
+    if (char < 0x21 || char > 0x7e || char === 0x23 || char === 0x28 || char === 0x29 || char === 0x3c || char === 0x3e || char === 0x5b || char === 0x5d || char === 0x7b || char === 0x7d || char === 0x2f || char === 0x25) {
+      if (start < i) {
+        buffer.push(str.substring(start, i));
+      }
+
+      buffer.push(`#${char.toString(16)}`);
+      start = i + 1;
+    }
+  }
+
+  if (buffer.length === 0) {
+    return str;
+  }
+
+  if (start < str.length) {
+    buffer.push(str.substring(start, str.length));
+  }
+
+  return buffer.join("");
+}
+
+function _collectJS(entry, xref, list, parents) {
+  if (!entry) {
+    return;
+  }
+
+  let parent = null;
+
+  if ((0, _primitives.isRef)(entry)) {
+    if (parents.has(entry)) {
+      return;
+    }
+
+    parent = entry;
+    parents.put(parent);
+    entry = xref.fetch(entry);
+  }
+
+  if (Array.isArray(entry)) {
+    for (const element of entry) {
+      _collectJS(element, xref, list, parents);
+    }
+  } else if (entry instanceof _primitives.Dict) {
+    if ((0, _primitives.isName)(entry.get("S"), "JavaScript") && entry.has("JS")) {
+      const js = entry.get("JS");
+      let code;
+
+      if ((0, _primitives.isStream)(js)) {
+        code = js.getString();
+      } else {
+        code = js;
+      }
+
+      code = (0, _util.stringToPDFString)(code);
+
+      if (code) {
+        list.push(code);
+      }
+    }
+
+    _collectJS(entry.getRaw("Next"), xref, list, parents);
+  }
+
+  if (parent) {
+    parents.remove(parent);
+  }
+}
+
+function collectActions(xref, dict, eventType) {
+  const actions = Object.create(null);
+  const additionalActionsDicts = getInheritableProperty({
+    dict,
+    key: "AA",
+    stopWhenFound: false
+  });
+
+  if (additionalActionsDicts) {
+    for (let i = additionalActionsDicts.length - 1; i >= 0; i--) {
+      const additionalActions = additionalActionsDicts[i];
+
+      if (!(additionalActions instanceof _primitives.Dict)) {
+        continue;
+      }
+
+      for (const key of additionalActions.getKeys()) {
+        const action = eventType[key];
+
+        if (!action) {
+          continue;
+        }
+
+        const actionDict = additionalActions.getRaw(key);
+        const parents = new _primitives.RefSet();
+        const list = [];
+
+        _collectJS(actionDict, xref, list, parents);
+
+        if (list.length > 0) {
+          actions[action] = list;
+        }
+      }
+    }
+  }
+
+  if (dict.has("A")) {
+    const actionDict = dict.get("A");
+    const parents = new _primitives.RefSet();
+    const list = [];
+
+    _collectJS(actionDict, xref, list, parents);
+
+    if (list.length > 0) {
+      actions.Action = list;
+    }
+  }
+
+  return (0, _util.objectSize)(actions) > 0 ? actions : null;
+}
+
+const XMLEntities = {
+  0x3c: "&lt;",
+  0x3e: "&gt;",
+  0x26: "&amp;",
+  0x22: "&quot;",
+  0x27: "&apos;"
+};
+
+function encodeToXmlString(str) {
+  const buffer = [];
+  let start = 0;
+
+  for (let i = 0, ii = str.length; i < ii; i++) {
+    const char = str.codePointAt(i);
+
+    if (0x20 <= char && char <= 0x7e) {
+      const entity = XMLEntities[char];
+
+      if (entity) {
+        if (start < i) {
+          buffer.push(str.substring(start, i));
+        }
+
+        buffer.push(entity);
+        start = i + 1;
+      }
+    } else {
+      if (start < i) {
+        buffer.push(str.substring(start, i));
+      }
+
+      buffer.push(`&#x${char.toString(16).toUpperCase()};`);
+
+      if (char > 0xd7ff && (char < 0xe000 || char > 0xfffd)) {
+        i++;
+      }
+
+      start = i + 1;
+    }
+  }
+
+  if (buffer.length === 0) {
+    return str;
+  }
+
+  if (start < str.length) {
+    buffer.push(str.substring(start, str.length));
+  }
+
+  return buffer.join("");
+}
+
+function validateCSSFont(cssFontInfo) {
+  const DEFAULT_CSS_FONT_OBLIQUE = "14";
+  const DEFAULT_CSS_FONT_WEIGHT = "400";
+  const CSS_FONT_WEIGHT_VALUES = new Set(["100", "200", "300", "400", "500", "600", "700", "800", "900", "1000", "normal", "bold", "bolder", "lighter"]);
+  const {
+    fontFamily,
+    fontWeight,
+    italicAngle
+  } = cssFontInfo;
+
+  if (/^".*"$/.test(fontFamily)) {
+    if (/[^\\]"/.test(fontFamily.slice(1, fontFamily.length - 1))) {
+      (0, _util.warn)(`XFA - FontFamily contains some unescaped ": ${fontFamily}.`);
+      return false;
+    }
+  } else if (/^'.*'$/.test(fontFamily)) {
+    if (/[^\\]'/.test(fontFamily.slice(1, fontFamily.length - 1))) {
+      (0, _util.warn)(`XFA - FontFamily contains some unescaped ': ${fontFamily}.`);
+      return false;
+    }
+  } else {
+    for (const ident of fontFamily.split(/[ \t]+/)) {
+      if (/^([0-9]|(-([0-9]|-)))/.test(ident) || !/^[a-zA-Z0-9\-_\\]+$/.test(ident)) {
+        (0, _util.warn)(`XFA - FontFamily contains some invalid <custom-ident>: ${fontFamily}.`);
+        return false;
+      }
+    }
+  }
+
+  const weight = fontWeight ? fontWeight.toString() : "";
+  cssFontInfo.fontWeight = CSS_FONT_WEIGHT_VALUES.has(weight) ? weight : DEFAULT_CSS_FONT_WEIGHT;
+  const angle = parseFloat(italicAngle);
+  cssFontInfo.italicAngle = isNaN(angle) || angle < -90 || angle > 90 ? DEFAULT_CSS_FONT_OBLIQUE : italicAngle.toString();
+  return true;
+}
+
+/***/ }),
+/* 6 */
+/***/ ((__unused_webpack_module, exports, __w_pdfjs_require__) => {
+
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.clearPrimitiveCaches = clearPrimitiveCaches;
+exports.isCmd = isCmd;
+exports.isDict = isDict;
+exports.isEOF = isEOF;
+exports.isName = isName;
+exports.isRef = isRef;
+exports.isRefsEqual = isRefsEqual;
+exports.isStream = isStream;
+exports.RefSetCache = exports.RefSet = exports.Ref = exports.Name = exports.EOF = exports.Dict = exports.Cmd = void 0;
+
+var _util = __w_pdfjs_require__(1);
+
+var _base_stream = __w_pdfjs_require__(7);
+
+const EOF = {};
+exports.EOF = EOF;
+
+const Name = function NameClosure() {
+  let nameCache = Object.create(null);
+
+  class Name {
+    constructor(name) {
+      this.name = name;
+    }
+
+    static get(name) {
+      const nameValue = nameCache[name];
+      return nameValue ? nameValue : nameCache[name] = new Name(name);
+    }
+
+    static _clearCache() {
+      nameCache = Object.create(null);
+    }
+
+  }
+
+  return Name;
+}();
+
+exports.Name = Name;
+
+const Cmd = function CmdClosure() {
+  let cmdCache = Object.create(null);
+
+  class Cmd {
+    constructor(cmd) {
+      this.cmd = cmd;
+    }
+
+    static get(cmd) {
+      const cmdValue = cmdCache[cmd];
+      return cmdValue ? cmdValue : cmdCache[cmd] = new Cmd(cmd);
+    }
+
+    static _clearCache() {
+      cmdCache = Object.create(null);
+    }
+
+  }
+
+  return Cmd;
+}();
+
+exports.Cmd = Cmd;
+
+const nonSerializable = function nonSerializableClosure() {
+  return nonSerializable;
+};
+
+class Dict {
+  constructor(xref = null) {
+    this._map = Object.create(null);
+    this.xref = xref;
+    this.objId = null;
+    this.suppressEncryption = false;
+    this.__nonSerializable__ = nonSerializable;
+  }
+
+  assignXref(newXref) {
+    this.xref = newXref;
+  }
+
+  get size() {
+    return Object.keys(this._map).length;
+  }
+
+  get(key1, key2, key3) {
+    let value = this._map[key1];
+
+    if (value === undefined && key2 !== undefined) {
+      value = this._map[key2];
+
+      if (value === undefined && key3 !== undefined) {
+        value = this._map[key3];
+      }
+    }
+
+    if (value instanceof Ref && this.xref) {
+      return this.xref.fetch(value, this.suppressEncryption);
+    }
+
+    return value;
+  }
+
+  async getAsync(key1, key2, key3) {
+    let value = this._map[key1];
+
+    if (value === undefined && key2 !== undefined) {
+      value = this._map[key2];
+
+      if (value === undefined && key3 !== undefined) {
+        value = this._map[key3];
+      }
+    }
+
+    if (value instanceof Ref && this.xref) {
+      return this.xref.fetchAsync(value, this.suppressEncryption);
+    }
+
+    return value;
+  }
+
+  getArray(key1, key2, key3) {
+    let value = this._map[key1];
+
+    if (value === undefined && key2 !== undefined) {
+      value = this._map[key2];
+
+      if (value === undefined && key3 !== undefined) {
+        value = this._map[key3];
+      }
+    }
+
+    if (value instanceof Ref && this.xref) {
+      value = this.xref.fetch(value, this.suppressEncryption);
+    }
+
+    if (Array.isArray(value)) {
+      value = value.slice();
+
+      for (let i = 0, ii = value.length; i < ii; i++) {
+        if (value[i] instanceof Ref && this.xref) {
+          value[i] = this.xref.fetch(value[i], this.suppressEncryption);
+        }
+      }
+    }
+
+    return value;
+  }
+
+  getRaw(key) {
+    return this._map[key];
+  }
+
+  getKeys() {
+    return Object.keys(this._map);
+  }
+
+  getRawValues() {
+    return Object.values(this._map);
+  }
+
+  set(key, value) {
+    this._map[key] = value;
+  }
+
+  has(key) {
+    return this._map[key] !== undefined;
+  }
+
+  forEach(callback) {
+    for (const key in this._map) {
+      callback(key, this.get(key));
+    }
+  }
+
+  static get empty() {
+    const emptyDict = new Dict(null);
+
+    emptyDict.set = (key, value) => {
+      (0, _util.unreachable)("Should not call `set` on the empty dictionary.");
+    };
+
+    return (0, _util.shadow)(this, "empty", emptyDict);
+  }
+
+  static merge({
+    xref,
+    dictArray,
+    mergeSubDicts = false
+  }) {
+    const mergedDict = new Dict(xref);
+
+    if (!mergeSubDicts) {
+      for (const dict of dictArray) {
+        if (!(dict instanceof Dict)) {
+          continue;
+        }
+
+        for (const [key, value] of Object.entries(dict._map)) {
+          if (mergedDict._map[key] === undefined) {
+            mergedDict._map[key] = value;
+          }
+        }
+      }
+
+      return mergedDict.size > 0 ? mergedDict : Dict.empty;
+    }
+
+    const properties = new Map();
+
+    for (const dict of dictArray) {
+      if (!(dict instanceof Dict)) {
+        continue;
+      }
+
+      for (const [key, value] of Object.entries(dict._map)) {
+        let property = properties.get(key);
+
+        if (property === undefined) {
+          property = [];
+          properties.set(key, property);
+        }
+
+        property.push(value);
+      }
+    }
+
+    for (const [name, values] of properties) {
+      if (values.length === 1 || !(values[0] instanceof Dict)) {
+        mergedDict._map[name] = values[0];
+        continue;
+      }
+
+      const subDict = new Dict(xref);
+
+      for (const dict of values) {
+        if (!(dict instanceof Dict)) {
+          continue;
+        }
+
+        for (const [key, value] of Object.entries(dict._map)) {
+          if (subDict._map[key] === undefined) {
+            subDict._map[key] = value;
+          }
+        }
+      }
+
+      if (subDict.size > 0) {
+        mergedDict._map[name] = subDict;
+      }
+    }
+
+    properties.clear();
+    return mergedDict.size > 0 ? mergedDict : Dict.empty;
+  }
+
+}
+
+exports.Dict = Dict;
+
+const Ref = function RefClosure() {
+  let refCache = Object.create(null);
+
+  class Ref {
+    constructor(num, gen) {
+      this.num = num;
+      this.gen = gen;
+    }
+
+    toString() {
+      if (this.gen === 0) {
+        return `${this.num}R`;
+      }
+
+      return `${this.num}R${this.gen}`;
+    }
+
+    static get(num, gen) {
+      const key = gen === 0 ? `${num}R` : `${num}R${gen}`;
+      const refValue = refCache[key];
+      return refValue ? refValue : refCache[key] = new Ref(num, gen);
+    }
+
+    static _clearCache() {
+      refCache = Object.create(null);
+    }
+
+  }
+
+  return Ref;
+}();
+
+exports.Ref = Ref;
+
+class RefSet {
+  constructor(parent = null) {
+    this._set = new Set(parent && parent._set);
+  }
+
+  has(ref) {
+    return this._set.has(ref.toString());
+  }
+
+  put(ref) {
+    this._set.add(ref.toString());
+  }
+
+  remove(ref) {
+    this._set.delete(ref.toString());
+  }
+
+  forEach(callback) {
+    for (const ref of this._set.values()) {
+      callback(ref);
+    }
+  }
+
+  clear() {
+    this._set.clear();
+  }
+
+}
+
+exports.RefSet = RefSet;
+
+class RefSetCache {
+  constructor() {
+    this._map = new Map();
+  }
+
+  get size() {
+    return this._map.size;
+  }
+
+  get(ref) {
+    return this._map.get(ref.toString());
+  }
+
+  has(ref) {
+    return this._map.has(ref.toString());
+  }
+
+  put(ref, obj) {
+    this._map.set(ref.toString(), obj);
+  }
+
+  putAlias(ref, aliasRef) {
+    this._map.set(ref.toString(), this.get(aliasRef));
+  }
+
+  forEach(callback) {
+    for (const value of this._map.values()) {
+      callback(value);
+    }
+  }
+
+  clear() {
+    this._map.clear();
+  }
+
+}
+
+exports.RefSetCache = RefSetCache;
+
+function isEOF(v) {
+  return v === EOF;
+}
+
+function isName(v, name) {
+  return v instanceof Name && (name === undefined || v.name === name);
+}
+
+function isCmd(v, cmd) {
+  return v instanceof Cmd && (cmd === undefined || v.cmd === cmd);
+}
+
+function isDict(v, type) {
+  return v instanceof Dict && (type === undefined || isName(v.get("Type"), type));
+}
+
+function isRef(v) {
+  return v instanceof Ref;
+}
+
+function isRefsEqual(v1, v2) {
+  return v1.num === v2.num && v1.gen === v2.gen;
+}
+
+function isStream(v) {
+  return v instanceof _base_stream.BaseStream;
+}
+
+function clearPrimitiveCaches() {
+  Cmd._clearCache();
+
+  Name._clearCache();
+
+  Ref._clearCache();
+}
+
+/***/ }),
+/* 7 */
+/***/ ((__unused_webpack_module, exports, __w_pdfjs_require__) => {
+
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.BaseStream = void 0;
+
+var _util = __w_pdfjs_require__(1);
+
+class BaseStream {
+  constructor() {
+    if (this.constructor === BaseStream) {
+      (0, _util.unreachable)("Cannot initialize BaseStream.");
+    }
+  }
+
+  get length() {
+    (0, _util.unreachable)("Abstract getter `length` accessed");
+  }
+
+  get isEmpty() {
+    (0, _util.unreachable)("Abstract getter `isEmpty` accessed");
+  }
+
+  get isDataLoaded() {
+    return (0, _util.shadow)(this, "isDataLoaded", true);
+  }
+
+  getByte() {
+    (0, _util.unreachable)("Abstract method `getByte` called");
+  }
+
+  getBytes(length, forceClamped = false) {
+    (0, _util.unreachable)("Abstract method `getBytes` called");
+  }
+
+  peekByte() {
+    const peekedByte = this.getByte();
+
+    if (peekedByte !== -1) {
+      this.pos--;
+    }
+
+    return peekedByte;
+  }
+
+  peekBytes(length, forceClamped = false) {
+    const bytes = this.getBytes(length, forceClamped);
+    this.pos -= bytes.length;
+    return bytes;
+  }
+
+  getUint16() {
+    const b0 = this.getByte();
+    const b1 = this.getByte();
+
+    if (b0 === -1 || b1 === -1) {
+      return -1;
+    }
+
+    return (b0 << 8) + b1;
+  }
+
+  getInt32() {
+    const b0 = this.getByte();
+    const b1 = this.getByte();
+    const b2 = this.getByte();
+    const b3 = this.getByte();
+    return (b0 << 24) + (b1 << 16) + (b2 << 8) + b3;
+  }
+
+  getByteRange(begin, end) {
+    (0, _util.unreachable)("Abstract method `getByteRange` called");
+  }
+
+  getString(length) {
+    return (0, _util.bytesToString)(this.getBytes(length, false));
+  }
+
+  skip(n) {
+    this.pos += n || 1;
+  }
+
+  reset() {
+    (0, _util.unreachable)("Abstract method `reset` called");
+  }
+
+  moveStart() {
+    (0, _util.unreachable)("Abstract method `moveStart` called");
+  }
+
+  makeSubStream(start, length, dict = null) {
+    (0, _util.unreachable)("Abstract method `makeSubStream` called");
+  }
+
+  getBaseStreams() {
+    return null;
+  }
+
+}
+
+exports.BaseStream = BaseStream;
+
+/***/ }),
+/* 8 */
+/***/ ((__unused_webpack_module, exports) => {
+
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.ArithmeticDecoder = void 0;
+const QeTable = [{
+  qe: 0x5601,
+  nmps: 1,
+  nlps: 1,
+  switchFlag: 1
+}, {
+  qe: 0x3401,
+  nmps: 2,
+  nlps: 6,
+  switchFlag: 0
+}, {
+  qe: 0x1801,
+  nmps: 3,
+  nlps: 9,
+  switchFlag: 0
+}, {
+  qe: 0x0ac1,
+  nmps: 4,
+  nlps: 12,
+  switchFlag: 0
+}, {
+  qe: 0x0521,
+  nmps: 5,
+  nlps: 29,
+  switchFlag: 0
+}, {
+  qe: 0x0221,
+  nmps: 38,
+  nlps: 33,
+  switchFlag: 0
+}, {
+  qe: 0x5601,
+  nmps: 7,
+  nlps: 6,
+  switchFlag: 1
+}, {
+  qe: 0x5401,
+  nmps: 8,
+  nlps: 14,
+  switchFlag: 0
+}, {
+  qe: 0x4801,
+  nmps: 9,
+  nlps: 14,
+  switchFlag: 0
+}, {
+  qe: 0x3801,
+  nmps: 10,
+  nlps: 14,
+  switchFlag: 0
+}, {
+  qe: 0x3001,
+  nmps: 11,
+  nlps: 17,
+  switchFlag: 0
+}, {
+  qe: 0x2401,
+  nmps: 12,
+  nlps: 18,
+  switchFlag: 0
+}, {
+  qe: 0x1c01,
+  nmps: 13,
+  nlps: 20,
+  switchFlag: 0
+}, {
+  qe: 0x1601,
+  nmps: 29,
+  nlps: 21,
+  switchFlag: 0
+}, {
+  qe: 0x5601,
+  nmps: 15,
+  nlps: 14,
+  switchFlag: 1
+}, {
+  qe: 0x5401,
+  nmps: 16,
+  nlps: 14,
+  switchFlag: 0
+}, {
+  qe: 0x5101,
+  nmps: 17,
+  nlps: 15,
+  switchFlag: 0
+}, {
+  qe: 0x4801,
+  nmps: 18,
+  nlps: 16,
+  switchFlag: 0
+}, {
+  qe: 0x3801,
+  nmps: 19,
+  nlps: 17,
+  switchFlag: 0
+}, {
+  qe: 0x3401,
+  nmps: 20,
+  nlps: 18,
+  switchFlag: 0
+}, {
+  qe: 0x3001,
+  nmps: 21,
+  nlps: 19,
+  switchFlag: 0
+}, {
+  qe: 0x2801,
+  nmps: 22,
+  nlps: 19,
+  switchFlag: 0
+}, {
+  qe: 0x2401,
+  nmps: 23,
+  nlps: 20,
+  switchFlag: 0
+}, {
+  qe: 0x2201,
+  nmps: 24,
+  nlps: 21,
+  switchFlag: 0
+}, {
+  qe: 0x1c01,
+  nmps: 25,
+  nlps: 22,
+  switchFlag: 0
+}, {
+  qe: 0x1801,
+  nmps: 26,
+  nlps: 23,
+  switchFlag: 0
+}, {
+  qe: 0x1601,
+  nmps: 27,
+  nlps: 24,
+  switchFlag: 0
+}, {
+  qe: 0x1401,
+  nmps: 28,
+  nlps: 25,
+  switchFlag: 0
+}, {
+  qe: 0x1201,
+  nmps: 29,
+  nlps: 26,
+  switchFlag: 0
+}, {
+  qe: 0x1101,
+  nmps: 30,
+  nlps: 27,
+  switchFlag: 0
+}, {
+  qe: 0x0ac1,
+  nmps: 31,
+  nlps: 28,
+  switchFlag: 0
+}, {
+  qe: 0x09c1,
+  nmps: 32,
+  nlps: 29,
+  switchFlag: 0
+}, {
+  qe: 0x08a1,
+  nmps: 33,
+  nlps: 30,
+  switchFlag: 0
+}, {
+  qe: 0x0521,
+  nmps: 34,
+  nlps: 31,
+  switchFlag: 0
+}, {
+  qe: 0x0441,
+  nmps: 35,
+  nlps: 32,
+  switchFlag: 0
+}, {
+  qe: 0x02a1,
+  nmps: 36,
+  nlps: 33,
+  switchFlag: 0
+}, {
+  qe: 0x0221,
+  nmps: 37,
+  nlps: 34,
+  switchFlag: 0
+}, {
+  qe: 0x0141,
+  nmps: 38,
+  nlps: 35,
+  switchFlag: 0
+}, {
+  qe: 0x0111,
+  nmps: 39,
+  nlps: 36,
+  switchFlag: 0
+}, {
+  qe: 0x0085,
+  nmps: 40,
+  nlps: 37,
+  switchFlag: 0
+}, {
+  qe: 0x0049,
+  nmps: 41,
+  nlps: 38,
+  switchFlag: 0
+}, {
+  qe: 0x0025,
+  nmps: 42,
+  nlps: 39,
+  switchFlag: 0
+}, {
+  qe: 0x0015,
+  nmps: 43,
+  nlps: 40,
+  switchFlag: 0
+}, {
+  qe: 0x0009,
+  nmps: 44,
+  nlps: 41,
+  switchFlag: 0
+}, {
+  qe: 0x0005,
+  nmps: 45,
+  nlps: 42,
+  switchFlag: 0
+}, {
+  qe: 0x0001,
+  nmps: 45,
+  nlps: 43,
+  switchFlag: 0
+}, {
+  qe: 0x5601,
+  nmps: 46,
+  nlps: 46,
+  switchFlag: 0
+}];
+
+class ArithmeticDecoder {
+  constructor(data, start, end) {
+    this.data = data;
+    this.bp = start;
+    this.dataEnd = end;
+    this.chigh = data[start];
+    this.clow = 0;
+    this.byteIn();
+    this.chigh = this.chigh << 7 & 0xffff | this.clow >> 9 & 0x7f;
+    this.clow = this.clow << 7 & 0xffff;
+    this.ct -= 7;
+    this.a = 0x8000;
+  }
+
+  byteIn() {
+    const data = this.data;
+    let bp = this.bp;
+
+    if (data[bp] === 0xff) {
+      if (data[bp + 1] > 0x8f) {
+        this.clow += 0xff00;
+        this.ct = 8;
+      } else {
+        bp++;
+        this.clow += data[bp] << 9;
+        this.ct = 7;
+        this.bp = bp;
+      }
+    } else {
+      bp++;
+      this.clow += bp < this.dataEnd ? data[bp] << 8 : 0xff00;
+      this.ct = 8;
+      this.bp = bp;
+    }
+
+    if (this.clow > 0xffff) {
+      this.chigh += this.clow >> 16;
+      this.clow &= 0xffff;
+    }
+  }
+
+  readBit(contexts, pos) {
+    let cx_index = contexts[pos] >> 1,
+        cx_mps = contexts[pos] & 1;
+    const qeTableIcx = QeTable[cx_index];
+    const qeIcx = qeTableIcx.qe;
+    let d;
+    let a = this.a - qeIcx;
+
+    if (this.chigh < qeIcx) {
+      if (a < qeIcx) {
+        a = qeIcx;
+        d = cx_mps;
+        cx_index = qeTableIcx.nmps;
+      } else {
+        a = qeIcx;
+        d = 1 ^ cx_mps;
+
+        if (qeTableIcx.switchFlag === 1) {
+          cx_mps = d;
+        }
+
+        cx_index = qeTableIcx.nlps;
+      }
+    } else {
+      this.chigh -= qeIcx;
+
+      if ((a & 0x8000) !== 0) {
+        this.a = a;
+        return cx_mps;
+      }
+
+      if (a < qeIcx) {
+        d = 1 ^ cx_mps;
+
+        if (qeTableIcx.switchFlag === 1) {
+          cx_mps = d;
+        }
+
+        cx_index = qeTableIcx.nlps;
+      } else {
+        d = cx_mps;
+        cx_index = qeTableIcx.nmps;
+      }
+    }
+
+    do {
+      if (this.ct === 0) {
+        this.byteIn();
+      }
+
+      a <<= 1;
+      this.chigh = this.chigh << 1 & 0xffff | this.clow >> 15 & 1;
+      this.clow = this.clow << 1 & 0xffff;
+      this.ct--;
+    } while ((a & 0x8000) === 0);
+
+    this.a = a;
+    contexts[pos] = cx_index << 1 | cx_mps;
+    return d;
+  }
+
+}
+
+exports.ArithmeticDecoder = ArithmeticDecoder;
+
+/***/ }),
+/* 9 */
+/***/ ((__unused_webpack_module, exports, __w_pdfjs_require__) => {
+
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.CCITTFaxDecoder = void 0;
+
+var _util = __w_pdfjs_require__(1);
+
+const ccittEOL = -2;
+const ccittEOF = -1;
+const twoDimPass = 0;
+const twoDimHoriz = 1;
+const twoDimVert0 = 2;
+const twoDimVertR1 = 3;
+const twoDimVertL1 = 4;
+const twoDimVertR2 = 5;
+const twoDimVertL2 = 6;
+const twoDimVertR3 = 7;
+const twoDimVertL3 = 8;
+const twoDimTable = [[-1, -1], [-1, -1], [7, twoDimVertL3], [7, twoDimVertR3], [6, twoDimVertL2], [6, twoDimVertL2], [6, twoDimVertR2], [6, twoDimVertR2], [4, twoDimPass], [4, twoDimPass], [4, twoDimPass], [4, twoDimPass], [4, twoDimPass], [4, twoDimPass], [4, twoDimPass], [4, twoDimPass], [3, twoDimHoriz], [3, twoDimHoriz], [3, twoDimHoriz], [3, twoDimHoriz], [3, twoDimHoriz], [3, twoDimHoriz], [3, twoDimHoriz], [3, twoDimHoriz], [3, twoDimHoriz], [3, twoDimHoriz], [3, twoDimHoriz], [3, twoDimHoriz], [3, twoDimHoriz], [3, twoDimHoriz], [3, twoDimHoriz], [3, twoDimHoriz], [3, twoDimVertL1], [3, twoDimVertL1], [3, twoDimVertL1], [3, twoDimVertL1], [3, twoDimVertL1], [3, twoDimVertL1], [3, twoDimVertL1], [3, twoDimVertL1], [3, twoDimVertL1], [3, twoDimVertL1], [3, twoDimVertL1], [3, twoDimVertL1], [3, twoDimVertL1], [3, twoDimVertL1], [3, twoDimVertL1], [3, twoDimVertL1], [3, twoDimVertR1], [3, twoDimVertR1], [3, twoDimVertR1], [3, twoDimVertR1], [3, twoDimVertR1], [3, twoDimVertR1], [3, twoDimVertR1], [3, twoDimVertR1], [3, twoDimVertR1], [3, twoDimVertR1], [3, twoDimVertR1], [3, twoDimVertR1], [3, twoDimVertR1], [3, twoDimVertR1], [3, twoDimVertR1], [3, twoDimVertR1], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0], [1, twoDimVert0]];
+const whiteTable1 = [[-1, -1], [12, ccittEOL], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [11, 1792], [11, 1792], [12, 1984], [12, 2048], [12, 2112], [12, 2176], [12, 2240], [12, 2304], [11, 1856], [11, 1856], [11, 1920], [11, 1920], [12, 2368], [12, 2432], [12, 2496], [12, 2560]];
+const whiteTable2 = [[-1, -1], [-1, -1], [-1, -1], [-1, -1], [8, 29], [8, 29], [8, 30], [8, 30], [8, 45], [8, 45], [8, 46], [8, 46], [7, 22], [7, 22], [7, 22], [7, 22], [7, 23], [7, 23], [7, 23], [7, 23], [8, 47], [8, 47], [8, 48], [8, 48], [6, 13], [6, 13], [6, 13], [6, 13], [6, 13], [6, 13], [6, 13], [6, 13], [7, 20], [7, 20], [7, 20], [7, 20], [8, 33], [8, 33], [8, 34], [8, 34], [8, 35], [8, 35], [8, 36], [8, 36], [8, 37], [8, 37], [8, 38], [8, 38], [7, 19], [7, 19], [7, 19], [7, 19], [8, 31], [8, 31], [8, 32], [8, 32], [6, 1], [6, 1], [6, 1], [6, 1], [6, 1], [6, 1], [6, 1], [6, 1], [6, 12], [6, 12], [6, 12], [6, 12], [6, 12], [6, 12], [6, 12], [6, 12], [8, 53], [8, 53], [8, 54], [8, 54], [7, 26], [7, 26], [7, 26], [7, 26], [8, 39], [8, 39], [8, 40], [8, 40], [8, 41], [8, 41], [8, 42], [8, 42], [8, 43], [8, 43], [8, 44], [8, 44], [7, 21], [7, 21], [7, 21], [7, 21], [7, 28], [7, 28], [7, 28], [7, 28], [8, 61], [8, 61], [8, 62], [8, 62], [8, 63], [8, 63], [8, 0], [8, 0], [8, 320], [8, 320], [8, 384], [8, 384], [5, 10], [5, 10], [5, 10], [5, 10], [5, 10], [5, 10], [5, 10], [5, 10], [5, 10], [5, 10], [5, 10], [5, 10], [5, 10], [5, 10], [5, 10], [5, 10], [5, 11], [5, 11], [5, 11], [5, 11], [5, 11], [5, 11], [5, 11], [5, 11], [5, 11], [5, 11], [5, 11], [5, 11], [5, 11], [5, 11], [5, 11], [5, 11], [7, 27], [7, 27], [7, 27], [7, 27], [8, 59], [8, 59], [8, 60], [8, 60], [9, 1472], [9, 1536], [9, 1600], [9, 1728], [7, 18], [7, 18], [7, 18], [7, 18], [7, 24], [7, 24], [7, 24], [7, 24], [8, 49], [8, 49], [8, 50], [8, 50], [8, 51], [8, 51], [8, 52], [8, 52], [7, 25], [7, 25], [7, 25], [7, 25], [8, 55], [8, 55], [8, 56], [8, 56], [8, 57], [8, 57], [8, 58], [8, 58], [6, 192], [6, 192], [6, 192], [6, 192], [6, 192], [6, 192], [6, 192], [6, 192], [6, 1664], [6, 1664], [6, 1664], [6, 1664], [6, 1664], [6, 1664], [6, 1664], [6, 1664], [8, 448], [8, 448], [8, 512], [8, 512], [9, 704], [9, 768], [8, 640], [8, 640], [8, 576], [8, 576], [9, 832], [9, 896], [9, 960], [9, 1024], [9, 1088], [9, 1152], [9, 1216], [9, 1280], [9, 1344], [9, 1408], [7, 256], [7, 256], [7, 256], [7, 256], [4, 2], [4, 2], [4, 2], [4, 2], [4, 2], [4, 2], [4, 2], [4, 2], [4, 2], [4, 2], [4, 2], [4, 2], [4, 2], [4, 2], [4, 2], [4, 2], [4, 2], [4, 2], [4, 2], [4, 2], [4, 2], [4, 2], [4, 2], [4, 2], [4, 2], [4, 2], [4, 2], [4, 2], [4, 2], [4, 2], [4, 2], [4, 2], [4, 3], [4, 3], [4, 3], [4, 3], [4, 3], [4, 3], [4, 3], [4, 3], [4, 3], [4, 3], [4, 3], [4, 3], [4, 3], [4, 3], [4, 3], [4, 3], [4, 3], [4, 3], [4, 3], [4, 3], [4, 3], [4, 3], [4, 3], [4, 3], [4, 3], [4, 3], [4, 3], [4, 3], [4, 3], [4, 3], [4, 3], [4, 3], [5, 128], [5, 128], [5, 128], [5, 128], [5, 128], [5, 128], [5, 128], [5, 128], [5, 128], [5, 128], [5, 128], [5, 128], [5, 128], [5, 128], [5, 128], [5, 128], [5, 8], [5, 8], [5, 8], [5, 8], [5, 8], [5, 8], [5, 8], [5, 8], [5, 8], [5, 8], [5, 8], [5, 8], [5, 8], [5, 8], [5, 8], [5, 8], [5, 9], [5, 9], [5, 9], [5, 9], [5, 9], [5, 9], [5, 9], [5, 9], [5, 9], [5, 9], [5, 9], [5, 9], [5, 9], [5, 9], [5, 9], [5, 9], [6, 16], [6, 16], [6, 16], [6, 16], [6, 16], [6, 16], [6, 16], [6, 16], [6, 17], [6, 17], [6, 17], [6, 17], [6, 17], [6, 17], [6, 17], [6, 17], [4, 4], [4, 4], [4, 4], [4, 4], [4, 4], [4, 4], [4, 4], [4, 4], [4, 4], [4, 4], [4, 4], [4, 4], [4, 4], [4, 4], [4, 4], [4, 4], [4, 4], [4, 4], [4, 4], [4, 4], [4, 4], [4, 4], [4, 4], [4, 4], [4, 4], [4, 4], [4, 4], [4, 4], [4, 4], [4, 4], [4, 4], [4, 4], [4, 5], [4, 5], [4, 5], [4, 5], [4, 5], [4, 5], [4, 5], [4, 5], [4, 5], [4, 5], [4, 5], [4, 5], [4, 5], [4, 5], [4, 5], [4, 5], [4, 5], [4, 5], [4, 5], [4, 5], [4, 5], [4, 5], [4, 5], [4, 5], [4, 5], [4, 5], [4, 5], [4, 5], [4, 5], [4, 5], [4, 5], [4, 5], [6, 14], [6, 14], [6, 14], [6, 14], [6, 14], [6, 14], [6, 14], [6, 14], [6, 15], [6, 15], [6, 15], [6, 15], [6, 15], [6, 15], [6, 15], [6, 15], [5, 64], [5, 64], [5, 64], [5, 64], [5, 64], [5, 64], [5, 64], [5, 64], [5, 64], [5, 64], [5, 64], [5, 64], [5, 64], [5, 64], [5, 64], [5, 64], [4, 6], [4, 6], [4, 6], [4, 6], [4, 6], [4, 6], [4, 6], [4, 6], [4, 6], [4, 6], [4, 6], [4, 6], [4, 6], [4, 6], [4, 6], [4, 6], [4, 6], [4, 6], [4, 6], [4, 6], [4, 6], [4, 6], [4, 6], [4, 6], [4, 6], [4, 6], [4, 6], [4, 6], [4, 6], [4, 6], [4, 6], [4, 6], [4, 7], [4, 7], [4, 7], [4, 7], [4, 7], [4, 7], [4, 7], [4, 7], [4, 7], [4, 7], [4, 7], [4, 7], [4, 7], [4, 7], [4, 7], [4, 7], [4, 7], [4, 7], [4, 7], [4, 7], [4, 7], [4, 7], [4, 7], [4, 7], [4, 7], [4, 7], [4, 7], [4, 7], [4, 7], [4, 7], [4, 7], [4, 7]];
+const blackTable1 = [[-1, -1], [-1, -1], [12, ccittEOL], [12, ccittEOL], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [11, 1792], [11, 1792], [11, 1792], [11, 1792], [12, 1984], [12, 1984], [12, 2048], [12, 2048], [12, 2112], [12, 2112], [12, 2176], [12, 2176], [12, 2240], [12, 2240], [12, 2304], [12, 2304], [11, 1856], [11, 1856], [11, 1856], [11, 1856], [11, 1920], [11, 1920], [11, 1920], [11, 1920], [12, 2368], [12, 2368], [12, 2432], [12, 2432], [12, 2496], [12, 2496], [12, 2560], [12, 2560], [10, 18], [10, 18], [10, 18], [10, 18], [10, 18], [10, 18], [10, 18], [10, 18], [12, 52], [12, 52], [13, 640], [13, 704], [13, 768], [13, 832], [12, 55], [12, 55], [12, 56], [12, 56], [13, 1280], [13, 1344], [13, 1408], [13, 1472], [12, 59], [12, 59], [12, 60], [12, 60], [13, 1536], [13, 1600], [11, 24], [11, 24], [11, 24], [11, 24], [11, 25], [11, 25], [11, 25], [11, 25], [13, 1664], [13, 1728], [12, 320], [12, 320], [12, 384], [12, 384], [12, 448], [12, 448], [13, 512], [13, 576], [12, 53], [12, 53], [12, 54], [12, 54], [13, 896], [13, 960], [13, 1024], [13, 1088], [13, 1152], [13, 1216], [10, 64], [10, 64], [10, 64], [10, 64], [10, 64], [10, 64], [10, 64], [10, 64]];
+const blackTable2 = [[8, 13], [8, 13], [8, 13], [8, 13], [8, 13], [8, 13], [8, 13], [8, 13], [8, 13], [8, 13], [8, 13], [8, 13], [8, 13], [8, 13], [8, 13], [8, 13], [11, 23], [11, 23], [12, 50], [12, 51], [12, 44], [12, 45], [12, 46], [12, 47], [12, 57], [12, 58], [12, 61], [12, 256], [10, 16], [10, 16], [10, 16], [10, 16], [10, 17], [10, 17], [10, 17], [10, 17], [12, 48], [12, 49], [12, 62], [12, 63], [12, 30], [12, 31], [12, 32], [12, 33], [12, 40], [12, 41], [11, 22], [11, 22], [8, 14], [8, 14], [8, 14], [8, 14], [8, 14], [8, 14], [8, 14], [8, 14], [8, 14], [8, 14], [8, 14], [8, 14], [8, 14], [8, 14], [8, 14], [8, 14], [7, 10], [7, 10], [7, 10], [7, 10], [7, 10], [7, 10], [7, 10], [7, 10], [7, 10], [7, 10], [7, 10], [7, 10], [7, 10], [7, 10], [7, 10], [7, 10], [7, 10], [7, 10], [7, 10], [7, 10], [7, 10], [7, 10], [7, 10], [7, 10], [7, 10], [7, 10], [7, 10], [7, 10], [7, 10], [7, 10], [7, 10], [7, 10], [7, 11], [7, 11], [7, 11], [7, 11], [7, 11], [7, 11], [7, 11], [7, 11], [7, 11], [7, 11], [7, 11], [7, 11], [7, 11], [7, 11], [7, 11], [7, 11], [7, 11], [7, 11], [7, 11], [7, 11], [7, 11], [7, 11], [7, 11], [7, 11], [7, 11], [7, 11], [7, 11], [7, 11], [7, 11], [7, 11], [7, 11], [7, 11], [9, 15], [9, 15], [9, 15], [9, 15], [9, 15], [9, 15], [9, 15], [9, 15], [12, 128], [12, 192], [12, 26], [12, 27], [12, 28], [12, 29], [11, 19], [11, 19], [11, 20], [11, 20], [12, 34], [12, 35], [12, 36], [12, 37], [12, 38], [12, 39], [11, 21], [11, 21], [12, 42], [12, 43], [10, 0], [10, 0], [10, 0], [10, 0], [7, 12], [7, 12], [7, 12], [7, 12], [7, 12], [7, 12], [7, 12], [7, 12], [7, 12], [7, 12], [7, 12], [7, 12], [7, 12], [7, 12], [7, 12], [7, 12], [7, 12], [7, 12], [7, 12], [7, 12], [7, 12], [7, 12], [7, 12], [7, 12], [7, 12], [7, 12], [7, 12], [7, 12], [7, 12], [7, 12], [7, 12], [7, 12]];
+const blackTable3 = [[-1, -1], [-1, -1], [-1, -1], [-1, -1], [6, 9], [6, 8], [5, 7], [5, 7], [4, 6], [4, 6], [4, 6], [4, 6], [4, 5], [4, 5], [4, 5], [4, 5], [3, 1], [3, 1], [3, 1], [3, 1], [3, 1], [3, 1], [3, 1], [3, 1], [3, 4], [3, 4], [3, 4], [3, 4], [3, 4], [3, 4], [3, 4], [3, 4], [2, 3], [2, 3], [2, 3], [2, 3], [2, 3], [2, 3], [2, 3], [2, 3], [2, 3], [2, 3], [2, 3], [2, 3], [2, 3], [2, 3], [2, 3], [2, 3], [2, 2], [2, 2], [2, 2], [2, 2], [2, 2], [2, 2], [2, 2], [2, 2], [2, 2], [2, 2], [2, 2], [2, 2], [2, 2], [2, 2], [2, 2], [2, 2]];
+
+class CCITTFaxDecoder {
+  constructor(source, options = {}) {
+    if (!source || typeof source.next !== "function") {
+      throw new Error('CCITTFaxDecoder - invalid "source" parameter.');
+    }
+
+    this.source = source;
+    this.eof = false;
+    this.encoding = options.K || 0;
+    this.eoline = options.EndOfLine || false;
+    this.byteAlign = options.EncodedByteAlign || false;
+    this.columns = options.Columns || 1728;
+    this.rows = options.Rows || 0;
+    let eoblock = options.EndOfBlock;
+
+    if (eoblock === null || eoblock === undefined) {
+      eoblock = true;
+    }
+
+    this.eoblock = eoblock;
+    this.black = options.BlackIs1 || false;
+    this.codingLine = new Uint32Array(this.columns + 1);
+    this.refLine = new Uint32Array(this.columns + 2);
+    this.codingLine[0] = this.columns;
+    this.codingPos = 0;
+    this.row = 0;
+    this.nextLine2D = this.encoding < 0;
+    this.inputBits = 0;
+    this.inputBuf = 0;
+    this.outputBits = 0;
+    this.rowsDone = false;
+    let code1;
+
+    while ((code1 = this._lookBits(12)) === 0) {
+      this._eatBits(1);
+    }
+
+    if (code1 === 1) {
+      this._eatBits(12);
+    }
+
+    if (this.encoding > 0) {
+      this.nextLine2D = !this._lookBits(1);
+
+      this._eatBits(1);
+    }
+  }
+
+  readNextChar() {
+    if (this.eof) {
+      return -1;
+    }
+
+    const refLine = this.refLine;
+    const codingLine = this.codingLine;
+    const columns = this.columns;
+    let refPos, blackPixels, bits, i;
+
+    if (this.outputBits === 0) {
+      if (this.rowsDone) {
+        this.eof = true;
+      }
+
+      if (this.eof) {
+        return -1;
+      }
+
+      this.err = false;
+      let code1, code2, code3;
+
+      if (this.nextLine2D) {
+        for (i = 0; codingLine[i] < columns; ++i) {
+          refLine[i] = codingLine[i];
+        }
+
+        refLine[i++] = columns;
+        refLine[i] = columns;
+        codingLine[0] = 0;
+        this.codingPos = 0;
+        refPos = 0;
+        blackPixels = 0;
+
+        while (codingLine[this.codingPos] < columns) {
+          code1 = this._getTwoDimCode();
+
+          switch (code1) {
+            case twoDimPass:
+              this._addPixels(refLine[refPos + 1], blackPixels);
+
+              if (refLine[refPos + 1] < columns) {
+                refPos += 2;
+              }
+
+              break;
+
+            case twoDimHoriz:
+              code1 = code2 = 0;
+
+              if (blackPixels) {
+                do {
+                  code1 += code3 = this._getBlackCode();
+                } while (code3 >= 64);
+
+                do {
+                  code2 += code3 = this._getWhiteCode();
+                } while (code3 >= 64);
+              } else {
+                do {
+                  code1 += code3 = this._getWhiteCode();
+                } while (code3 >= 64);
+
+                do {
+                  code2 += code3 = this._getBlackCode();
+                } while (code3 >= 64);
+              }
+
+              this._addPixels(codingLine[this.codingPos] + code1, blackPixels);
+
+              if (codingLine[this.codingPos] < columns) {
+                this._addPixels(codingLine[this.codingPos] + code2, blackPixels ^ 1);
+              }
+
+              while (refLine[refPos] <= codingLine[this.codingPos] && refLine[refPos] < columns) {
+                refPos += 2;
+              }
+
+              break;
+
+            case twoDimVertR3:
+              this._addPixels(refLine[refPos] + 3, blackPixels);
+
+              blackPixels ^= 1;
+
+              if (codingLine[this.codingPos] < columns) {
+                ++refPos;
+
+                while (refLine[refPos] <= codingLine[this.codingPos] && refLine[refPos] < columns) {
+                  refPos += 2;
+                }
+              }
+
+              break;
+
+            case twoDimVertR2:
+              this._addPixels(refLine[refPos] + 2, blackPixels);
+
+              blackPixels ^= 1;
+
+              if (codingLine[this.codingPos] < columns) {
+                ++refPos;
+
+                while (refLine[refPos] <= codingLine[this.codingPos] && refLine[refPos] < columns) {
+                  refPos += 2;
+                }
+              }
+
+              break;
+
+            case twoDimVertR1:
+              this._addPixels(refLine[refPos] + 1, blackPixels);
+
+              blackPixels ^= 1;
+
+              if (codingLine[this.codingPos] < columns) {
+                ++refPos;
+
+                while (refLine[refPos] <= codingLine[this.codingPos] && refLine[refPos] < columns) {
+                  refPos += 2;
+                }
+              }
+
+              break;
+
+            case twoDimVert0:
+              this._addPixels(refLine[refPos], blackPixels);
+
+              blackPixels ^= 1;
+
+              if (codingLine[this.codingPos] < columns) {
+                ++refPos;
+
+                while (refLine[refPos] <= codingLine[this.codingPos] && refLine[refPos] < columns) {
+                  refPos += 2;
+                }
+              }
+
+              break;
+
+            case twoDimVertL3:
+              this._addPixelsNeg(refLine[refPos] - 3, blackPixels);
+
+              blackPixels ^= 1;
+
+              if (codingLine[this.codingPos] < columns) {
+                if (refPos > 0) {
+                  --refPos;
+                } else {
+                  ++refPos;
+                }
+
+                while (refLine[refPos] <= codingLine[this.codingPos] && refLine[refPos] < columns) {
+                  refPos += 2;
+                }
+              }
+
+              break;
+
+            case twoDimVertL2:
+              this._addPixelsNeg(refLine[refPos] - 2, blackPixels);
+
+              blackPixels ^= 1;
+
+              if (codingLine[this.codingPos] < columns) {
+                if (refPos > 0) {
+                  --refPos;
+                } else {
+                  ++refPos;
+                }
+
+                while (refLine[refPos] <= codingLine[this.codingPos] && refLine[refPos] < columns) {
+                  refPos += 2;
+                }
+              }
+
+              break;
+
+            case twoDimVertL1:
+              this._addPixelsNeg(refLine[refPos] - 1, blackPixels);
+
+              blackPixels ^= 1;
+
+              if (codingLine[this.codingPos] < columns) {
+                if (refPos > 0) {
+                  --refPos;
+                } else {
+                  ++refPos;
+                }
+
+                while (refLine[refPos] <= codingLine[this.codingPos] && refLine[refPos] < columns) {
+                  refPos += 2;
+                }
+              }
+
+              break;
+
+            case ccittEOF:
+              this._addPixels(columns, 0);
+
+              this.eof = true;
+              break;
+
+            default:
+              (0, _util.info)("bad 2d code");
+
+              this._addPixels(columns, 0);
+
+              this.err = true;
+          }
+        }
+      } else {
+        codingLine[0] = 0;
+        this.codingPos = 0;
+        blackPixels = 0;
+
+        while (codingLine[this.codingPos] < columns) {
+          code1 = 0;
+
+          if (blackPixels) {
+            do {
+              code1 += code3 = this._getBlackCode();
+            } while (code3 >= 64);
+          } else {
+            do {
+              code1 += code3 = this._getWhiteCode();
+            } while (code3 >= 64);
+          }
+
+          this._addPixels(codingLine[this.codingPos] + code1, blackPixels);
+
+          blackPixels ^= 1;
+        }
+      }
+
+      let gotEOL = false;
+
+      if (this.byteAlign) {
+        this.inputBits &= ~7;
+      }
+
+      if (!this.eoblock && this.row === this.rows - 1) {
+        this.rowsDone = true;
+      } else {
+        code1 = this._lookBits(12);
+
+        if (this.eoline) {
+          while (code1 !== ccittEOF && code1 !== 1) {
+            this._eatBits(1);
+
+            code1 = this._lookBits(12);
+          }
+        } else {
+          while (code1 === 0) {
+            this._eatBits(1);
+
+            code1 = this._lookBits(12);
+          }
+        }
+
+        if (code1 === 1) {
+          this._eatBits(12);
+
+          gotEOL = true;
+        } else if (code1 === ccittEOF) {
+          this.eof = true;
+        }
+      }
+
+      if (!this.eof && this.encoding > 0 && !this.rowsDone) {
+        this.nextLine2D = !this._lookBits(1);
+
+        this._eatBits(1);
+      }
+
+      if (this.eoblock && gotEOL && this.byteAlign) {
+        code1 = this._lookBits(12);
+
+        if (code1 === 1) {
+          this._eatBits(12);
+
+          if (this.encoding > 0) {
+            this._lookBits(1);
+
+            this._eatBits(1);
+          }
+
+          if (this.encoding >= 0) {
+            for (i = 0; i < 4; ++i) {
+              code1 = this._lookBits(12);
+
+              if (code1 !== 1) {
+                (0, _util.info)("bad rtc code: " + code1);
+              }
+
+              this._eatBits(12);
+
+              if (this.encoding > 0) {
+                this._lookBits(1);
+
+                this._eatBits(1);
+              }
+            }
+          }
+
+          this.eof = true;
+        }
+      } else if (this.err && this.eoline) {
+        while (true) {
+          code1 = this._lookBits(13);
+
+          if (code1 === ccittEOF) {
+            this.eof = true;
+            return -1;
+          }
+
+          if (code1 >> 1 === 1) {
+            break;
+          }
+
+          this._eatBits(1);
+        }
+
+        this._eatBits(12);
+
+        if (this.encoding > 0) {
+          this._eatBits(1);
+
+          this.nextLine2D = !(code1 & 1);
+        }
+      }
+
+      if (codingLine[0] > 0) {
+        this.outputBits = codingLine[this.codingPos = 0];
+      } else {
+        this.outputBits = codingLine[this.codingPos = 1];
+      }
+
+      this.row++;
+    }
+
+    let c;
+
+    if (this.outputBits >= 8) {
+      c = this.codingPos & 1 ? 0 : 0xff;
+      this.outputBits -= 8;
+
+      if (this.outputBits === 0 && codingLine[this.codingPos] < columns) {
+        this.codingPos++;
+        this.outputBits = codingLine[this.codingPos] - codingLine[this.codingPos - 1];
+      }
+    } else {
+      bits = 8;
+      c = 0;
+
+      do {
+        if (this.outputBits > bits) {
+          c <<= bits;
+
+          if (!(this.codingPos & 1)) {
+            c |= 0xff >> 8 - bits;
+          }
+
+          this.outputBits -= bits;
+          bits = 0;
+        } else {
+          c <<= this.outputBits;
+
+          if (!(this.codingPos & 1)) {
+            c |= 0xff >> 8 - this.outputBits;
+          }
+
+          bits -= this.outputBits;
+          this.outputBits = 0;
+
+          if (codingLine[this.codingPos] < columns) {
+            this.codingPos++;
+            this.outputBits = codingLine[this.codingPos] - codingLine[this.codingPos - 1];
+          } else if (bits > 0) {
+            c <<= bits;
+            bits = 0;
+          }
+        }
+      } while (bits);
+    }
+
+    if (this.black) {
+      c ^= 0xff;
+    }
+
+    return c;
+  }
+
+  _addPixels(a1, blackPixels) {
+    const codingLine = this.codingLine;
+    let codingPos = this.codingPos;
+
+    if (a1 > codingLine[codingPos]) {
+      if (a1 > this.columns) {
+        (0, _util.info)("row is wrong length");
+        this.err = true;
+        a1 = this.columns;
+      }
+
+      if (codingPos & 1 ^ blackPixels) {
+        ++codingPos;
+      }
+
+      codingLine[codingPos] = a1;
+    }
+
+    this.codingPos = codingPos;
+  }
+
+  _addPixelsNeg(a1, blackPixels) {
+    const codingLine = this.codingLine;
+    let codingPos = this.codingPos;
+
+    if (a1 > codingLine[codingPos]) {
+      if (a1 > this.columns) {
+        (0, _util.info)("row is wrong length");
+        this.err = true;
+        a1 = this.columns;
+      }
+
+      if (codingPos & 1 ^ blackPixels) {
+        ++codingPos;
+      }
+
+      codingLine[codingPos] = a1;
+    } else if (a1 < codingLine[codingPos]) {
+      if (a1 < 0) {
+        (0, _util.info)("invalid code");
+        this.err = true;
+        a1 = 0;
+      }
+
+      while (codingPos > 0 && a1 < codingLine[codingPos - 1]) {
+        --codingPos;
+      }
+
+      codingLine[codingPos] = a1;
+    }
+
+    this.codingPos = codingPos;
+  }
+
+  _findTableCode(start, end, table, limit) {
+    const limitValue = limit || 0;
+
+    for (let i = start; i <= end; ++i) {
+      let code = this._lookBits(i);
+
+      if (code === ccittEOF) {
+        return [true, 1, false];
+      }
+
+      if (i < end) {
+        code <<= end - i;
+      }
+
+      if (!limitValue || code >= limitValue) {
+        const p = table[code - limitValue];
+
+        if (p[0] === i) {
+          this._eatBits(i);
+
+          return [true, p[1], true];
+        }
+      }
+    }
+
+    return [false, 0, false];
+  }
+
+  _getTwoDimCode() {
+    let code = 0;
+    let p;
+
+    if (this.eoblock) {
+      code = this._lookBits(7);
+      p = twoDimTable[code];
+
+      if (p && p[0] > 0) {
+        this._eatBits(p[0]);
+
+        return p[1];
+      }
+    } else {
+      const result = this._findTableCode(1, 7, twoDimTable);
+
+      if (result[0] && result[2]) {
+        return result[1];
+      }
+    }
+
+    (0, _util.info)("Bad two dim code");
+    return ccittEOF;
+  }
+
+  _getWhiteCode() {
+    let code = 0;
+    let p;
+
+    if (this.eoblock) {
+      code = this._lookBits(12);
+
+      if (code === ccittEOF) {
+        return 1;
+      }
+
+      if (code >> 5 === 0) {
+        p = whiteTable1[code];
+      } else {
+        p = whiteTable2[code >> 3];
+      }
+
+      if (p[0] > 0) {
+        this._eatBits(p[0]);
+
+        return p[1];
+      }
+    } else {
+      let result = this._findTableCode(1, 9, whiteTable2);
+
+      if (result[0]) {
+        return result[1];
+      }
+
+      result = this._findTableCode(11, 12, whiteTable1);
+
+      if (result[0]) {
+        return result[1];
+      }
+    }
+
+    (0, _util.info)("bad white code");
+
+    this._eatBits(1);
+
+    return 1;
+  }
+
+  _getBlackCode() {
+    let code, p;
+
+    if (this.eoblock) {
+      code = this._lookBits(13);
+
+      if (code === ccittEOF) {
+        return 1;
+      }
+
+      if (code >> 7 === 0) {
+        p = blackTable1[code];
+      } else if (code >> 9 === 0 && code >> 7 !== 0) {
+        p = blackTable2[(code >> 1) - 64];
+      } else {
+        p = blackTable3[code >> 7];
+      }
+
+      if (p[0] > 0) {
+        this._eatBits(p[0]);
+
+        return p[1];
+      }
+    } else {
+      let result = this._findTableCode(2, 6, blackTable3);
+
+      if (result[0]) {
+        return result[1];
+      }
+
+      result = this._findTableCode(7, 12, blackTable2, 64);
+
+      if (result[0]) {
+        return result[1];
+      }
+
+      result = this._findTableCode(10, 13, blackTable1);
+
+      if (result[0]) {
+        return result[1];
+      }
+    }
+
+    (0, _util.info)("bad black code");
+
+    this._eatBits(1);
+
+    return 1;
+  }
+
+  _lookBits(n) {
+    let c;
+
+    while (this.inputBits < n) {
+      if ((c = this.source.next()) === -1) {
+        if (this.inputBits === 0) {
+          return ccittEOF;
+        }
+
+        return this.inputBuf << n - this.inputBits & 0xffff >> 16 - n;
+      }
+
+      this.inputBuf = this.inputBuf << 8 | c;
+      this.inputBits += 8;
+    }
+
+    return this.inputBuf >> this.inputBits - n & 0xffff >> 16 - n;
+  }
+
+  _eatBits(n) {
+    if ((this.inputBits -= n) < 0) {
+      this.inputBits = 0;
+    }
+  }
+
+}
+
+exports.CCITTFaxDecoder = CCITTFaxDecoder;
+
+/***/ }),
+/* 10 */
+/***/ ((__unused_webpack_module, exports, __w_pdfjs_require__) => {
+
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.JpegImage = void 0;
+
+var _util = __w_pdfjs_require__(1);
+
+var _core_utils = __w_pdfjs_require__(5);
+
+class JpegError extends _util.BaseException {
+  constructor(msg) {
+    super(`JPEG error: ${msg}`);
+  }
+
+}
+
+class DNLMarkerError extends _util.BaseException {
+  constructor(message, scanLines) {
+    super(message);
+    this.scanLines = scanLines;
+  }
+
+}
+
+class EOIMarkerError extends _util.BaseException {}
+
+const dctZigZag = new Uint8Array([0, 1, 8, 16, 9, 2, 3, 10, 17, 24, 32, 25, 18, 11, 4, 5, 12, 19, 26, 33, 40, 48, 41, 34, 27, 20, 13, 6, 7, 14, 21, 28, 35, 42, 49, 56, 57, 50, 43, 36, 29, 22, 15, 23, 30, 37, 44, 51, 58, 59, 52, 45, 38, 31, 39, 46, 53, 60, 61, 54, 47, 55, 62, 63]);
+const dctCos1 = 4017;
+const dctSin1 = 799;
+const dctCos3 = 3406;
+const dctSin3 = 2276;
+const dctCos6 = 1567;
+const dctSin6 = 3784;
+const dctSqrt2 = 5793;
+const dctSqrt1d2 = 2896;
+
+function buildHuffmanTable(codeLengths, values) {
+  let k = 0,
+      i,
+      j,
+      length = 16;
+
+  while (length > 0 && !codeLengths[length - 1]) {
+    length--;
+  }
+
+  const code = [{
+    children: [],
+    index: 0
+  }];
+  let p = code[0],
+      q;
+
+  for (i = 0; i < length; i++) {
+    for (j = 0; j < codeLengths[i]; j++) {
+      p = code.pop();
+      p.children[p.index] = values[k];
+
+      while (p.index > 0) {
+        p = code.pop();
+      }
+
+      p.index++;
+      code.push(p);
+
+      while (code.length <= i) {
+        code.push(q = {
+          children: [],
+          index: 0
+        });
+        p.children[p.index] = q.children;
+        p = q;
+      }
+
+      k++;
+    }
+
+    if (i + 1 < length) {
+      code.push(q = {
+        children: [],
+        index: 0
+      });
+      p.children[p.index] = q.children;
+      p = q;
+    }
+  }
+
+  return code[0].children;
+}
+
+function getBlockBufferOffset(component, row, col) {
+  return 64 * ((component.blocksPerLine + 1) * row + col);
+}
+
+function decodeScan(data, offset, frame, components, resetInterval, spectralStart, spectralEnd, successivePrev, successive, parseDNLMarker = false) {
+  const mcusPerLine = frame.mcusPerLine;
+  const progressive = frame.progressive;
+  const startOffset = offset;
+  let bitsData = 0,
+      bitsCount = 0;
+
+  function readBit() {
+    if (bitsCount > 0) {
+      bitsCount--;
+      return bitsData >> bitsCount & 1;
+    }
+
+    bitsData = data[offset++];
+
+    if (bitsData === 0xff) {
+      const nextByte = data[offset++];
+
+      if (nextByte) {
+        if (nextByte === 0xdc && parseDNLMarker) {
+          offset += 2;
+          const scanLines = (0, _core_utils.readUint16)(data, offset);
+          offset += 2;
+
+          if (scanLines > 0 && scanLines !== frame.scanLines) {
+            throw new DNLMarkerError("Found DNL marker (0xFFDC) while parsing scan data", scanLines);
+          }
+        } else if (nextByte === 0xd9) {
+          if (parseDNLMarker) {
+            const maybeScanLines = blockRow * (frame.precision === 8 ? 8 : 0);
+
+            if (maybeScanLines > 0 && Math.round(frame.scanLines / maybeScanLines) >= 10) {
+              throw new DNLMarkerError("Found EOI marker (0xFFD9) while parsing scan data, " + "possibly caused by incorrect `scanLines` parameter", maybeScanLines);
+            }
+          }
+
+          throw new EOIMarkerError("Found EOI marker (0xFFD9) while parsing scan data");
+        }
+
+        throw new JpegError(`unexpected marker ${(bitsData << 8 | nextByte).toString(16)}`);
+      }
+    }
+
+    bitsCount = 7;
+    return bitsData >>> 7;
+  }
+
+  function decodeHuffman(tree) {
+    let node = tree;
+
+    while (true) {
+      node = node[readBit()];
+
+      switch (typeof node) {
+        case "number":
+          return node;
+
+        case "object":
+          continue;
+      }
+
+      throw new JpegError("invalid huffman sequence");
+    }
+  }
+
+  function receive(length) {
+    let n = 0;
+
+    while (length > 0) {
+      n = n << 1 | readBit();
+      length--;
+    }
+
+    return n;
+  }
+
+  function receiveAndExtend(length) {
+    if (length === 1) {
+      return readBit() === 1 ? 1 : -1;
+    }
+
+    const n = receive(length);
+
+    if (n >= 1 << length - 1) {
+      return n;
+    }
+
+    return n + (-1 << length) + 1;
+  }
+
+  function decodeBaseline(component, blockOffset) {
+    const t = decodeHuffman(component.huffmanTableDC);
+    const diff = t === 0 ? 0 : receiveAndExtend(t);
+    component.blockData[blockOffset] = component.pred += diff;
+    let k = 1;
+
+    while (k < 64) {
+      const rs = decodeHuffman(component.huffmanTableAC);
+      const s = rs & 15,
+            r = rs >> 4;
+
+      if (s === 0) {
+        if (r < 15) {
+          break;
+        }
+
+        k += 16;
+        continue;
+      }
+
+      k += r;
+      const z = dctZigZag[k];
+      component.blockData[blockOffset + z] = receiveAndExtend(s);
+      k++;
+    }
+  }
+
+  function decodeDCFirst(component, blockOffset) {
+    const t = decodeHuffman(component.huffmanTableDC);
+    const diff = t === 0 ? 0 : receiveAndExtend(t) << successive;
+    component.blockData[blockOffset] = component.pred += diff;
+  }
+
+  function decodeDCSuccessive(component, blockOffset) {
+    component.blockData[blockOffset] |= readBit() << successive;
+  }
+
+  let eobrun = 0;
+
+  function decodeACFirst(component, blockOffset) {
+    if (eobrun > 0) {
+      eobrun--;
+      return;
+    }
+
+    let k = spectralStart;
+    const e = spectralEnd;
+
+    while (k <= e) {
+      const rs = decodeHuffman(component.huffmanTableAC);
+      const s = rs & 15,
+            r = rs >> 4;
+
+      if (s === 0) {
+        if (r < 15) {
+          eobrun = receive(r) + (1 << r) - 1;
+          break;
+        }
+
+        k += 16;
+        continue;
+      }
+
+      k += r;
+      const z = dctZigZag[k];
+      component.blockData[blockOffset + z] = receiveAndExtend(s) * (1 << successive);
+      k++;
+    }
+  }
+
+  let successiveACState = 0,
+      successiveACNextValue;
+
+  function decodeACSuccessive(component, blockOffset) {
+    let k = spectralStart;
+    const e = spectralEnd;
+    let r = 0;
+    let s;
+    let rs;
+
+    while (k <= e) {
+      const offsetZ = blockOffset + dctZigZag[k];
+      const sign = component.blockData[offsetZ] < 0 ? -1 : 1;
+
+      switch (successiveACState) {
+        case 0:
+          rs = decodeHuffman(component.huffmanTableAC);
+          s = rs & 15;
+          r = rs >> 4;
+
+          if (s === 0) {
+            if (r < 15) {
+              eobrun = receive(r) + (1 << r);
+              successiveACState = 4;
+            } else {
+              r = 16;
+              successiveACState = 1;
+            }
+          } else {
+            if (s !== 1) {
+              throw new JpegError("invalid ACn encoding");
+            }
+
+            successiveACNextValue = receiveAndExtend(s);
+            successiveACState = r ? 2 : 3;
+          }
+
+          continue;
+
+        case 1:
+        case 2:
+          if (component.blockData[offsetZ]) {
+            component.blockData[offsetZ] += sign * (readBit() << successive);
+          } else {
+            r--;
+
+            if (r === 0) {
+              successiveACState = successiveACState === 2 ? 3 : 0;
+            }
+          }
+
+          break;
+
+        case 3:
+          if (component.blockData[offsetZ]) {
+            component.blockData[offsetZ] += sign * (readBit() << successive);
+          } else {
+            component.blockData[offsetZ] = successiveACNextValue << successive;
+            successiveACState = 0;
+          }
+
+          break;
+
+        case 4:
+          if (component.blockData[offsetZ]) {
+            component.blockData[offsetZ] += sign * (readBit() << successive);
+          }
+
+          break;
+      }
+
+      k++;
+    }
+
+    if (successiveACState === 4) {
+      eobrun--;
+
+      if (eobrun === 0) {
+        successiveACState = 0;
+      }
+    }
+  }
+
+  let blockRow = 0;
+
+  function decodeMcu(component, decode, mcu, row, col) {
+    const mcuRow = mcu / mcusPerLine | 0;
+    const mcuCol = mcu % mcusPerLine;
+    blockRow = mcuRow * component.v + row;
+    const blockCol = mcuCol * component.h + col;
+    const blockOffset = getBlockBufferOffset(component, blockRow, blockCol);
+    decode(component, blockOffset);
+  }
+
+  function decodeBlock(component, decode, mcu) {
+    blockRow = mcu / component.blocksPerLine | 0;
+    const blockCol = mcu % component.blocksPerLine;
+    const blockOffset = getBlockBufferOffset(component, blockRow, blockCol);
+    decode(component, blockOffset);
+  }
+
+  const componentsLength = components.length;
+  let component, i, j, k, n;
+  let decodeFn;
+
+  if (progressive) {
+    if (spectralStart === 0) {
+      decodeFn = successivePrev === 0 ? decodeDCFirst : decodeDCSuccessive;
+    } else {
+      decodeFn = successivePrev === 0 ? decodeACFirst : decodeACSuccessive;
+    }
+  } else {
+    decodeFn = decodeBaseline;
+  }
+
+  let mcu = 0,
+      fileMarker;
+  let mcuExpected;
+
+  if (componentsLength === 1) {
+    mcuExpected = components[0].blocksPerLine * components[0].blocksPerColumn;
+  } else {
+    mcuExpected = mcusPerLine * frame.mcusPerColumn;
+  }
+
+  let h, v;
+
+  while (mcu <= mcuExpected) {
+    const mcuToRead = resetInterval ? Math.min(mcuExpected - mcu, resetInterval) : mcuExpected;
+
+    if (mcuToRead > 0) {
+      for (i = 0; i < componentsLength; i++) {
+        components[i].pred = 0;
+      }
+
+      eobrun = 0;
+
+      if (componentsLength === 1) {
+        component = components[0];
+
+        for (n = 0; n < mcuToRead; n++) {
+          decodeBlock(component, decodeFn, mcu);
+          mcu++;
+        }
+      } else {
+        for (n = 0; n < mcuToRead; n++) {
+          for (i = 0; i < componentsLength; i++) {
+            component = components[i];
+            h = component.h;
+            v = component.v;
+
+            for (j = 0; j < v; j++) {
+              for (k = 0; k < h; k++) {
+                decodeMcu(component, decodeFn, mcu, j, k);
+              }
+            }
+          }
+
+          mcu++;
+        }
+      }
+    }
+
+    bitsCount = 0;
+    fileMarker = findNextFileMarker(data, offset);
+
+    if (!fileMarker) {
+      break;
+    }
+
+    if (fileMarker.invalid) {
+      const partialMsg = mcuToRead > 0 ? "unexpected" : "excessive";
+      (0, _util.warn)(`decodeScan - ${partialMsg} MCU data, current marker is: ${fileMarker.invalid}`);
+      offset = fileMarker.offset;
+    }
+
+    if (fileMarker.marker >= 0xffd0 && fileMarker.marker <= 0xffd7) {
+      offset += 2;
+    } else {
+      break;
+    }
+  }
+
+  return offset - startOffset;
+}
+
+function quantizeAndInverse(component, blockBufferOffset, p) {
+  const qt = component.quantizationTable,
+        blockData = component.blockData;
+  let v0, v1, v2, v3, v4, v5, v6, v7;
+  let p0, p1, p2, p3, p4, p5, p6, p7;
+  let t;
+
+  if (!qt) {
+    throw new JpegError("missing required Quantization Table.");
+  }
+
+  for (let row = 0; row < 64; row += 8) {
+    p0 = blockData[blockBufferOffset + row];
+    p1 = blockData[blockBufferOffset + row + 1];
+    p2 = blockData[blockBufferOffset + row + 2];
+    p3 = blockData[blockBufferOffset + row + 3];
+    p4 = blockData[blockBufferOffset + row + 4];
+    p5 = blockData[blockBufferOffset + row + 5];
+    p6 = blockData[blockBufferOffset + row + 6];
+    p7 = blockData[blockBufferOffset + row + 7];
+    p0 *= qt[row];
+
+    if ((p1 | p2 | p3 | p4 | p5 | p6 | p7) === 0) {
+      t = dctSqrt2 * p0 + 512 >> 10;
+      p[row] = t;
+      p[row + 1] = t;
+      p[row + 2] = t;
+      p[row + 3] = t;
+      p[row + 4] = t;
+      p[row + 5] = t;
+      p[row + 6] = t;
+      p[row + 7] = t;
+      continue;
+    }
+
+    p1 *= qt[row + 1];
+    p2 *= qt[row + 2];
+    p3 *= qt[row + 3];
+    p4 *= qt[row + 4];
+    p5 *= qt[row + 5];
+    p6 *= qt[row + 6];
+    p7 *= qt[row + 7];
+    v0 = dctSqrt2 * p0 + 128 >> 8;
+    v1 = dctSqrt2 * p4 + 128 >> 8;
+    v2 = p2;
+    v3 = p6;
+    v4 = dctSqrt1d2 * (p1 - p7) + 128 >> 8;
+    v7 = dctSqrt1d2 * (p1 + p7) + 128 >> 8;
+    v5 = p3 << 4;
+    v6 = p5 << 4;
+    v0 = v0 + v1 + 1 >> 1;
+    v1 = v0 - v1;
+    t = v2 * dctSin6 + v3 * dctCos6 + 128 >> 8;
+    v2 = v2 * dctCos6 - v3 * dctSin6 + 128 >> 8;
+    v3 = t;
+    v4 = v4 + v6 + 1 >> 1;
+    v6 = v4 - v6;
+    v7 = v7 + v5 + 1 >> 1;
+    v5 = v7 - v5;
+    v0 = v0 + v3 + 1 >> 1;
+    v3 = v0 - v3;
+    v1 = v1 + v2 + 1 >> 1;
+    v2 = v1 - v2;
+    t = v4 * dctSin3 + v7 * dctCos3 + 2048 >> 12;
+    v4 = v4 * dctCos3 - v7 * dctSin3 + 2048 >> 12;
+    v7 = t;
+    t = v5 * dctSin1 + v6 * dctCos1 + 2048 >> 12;
+    v5 = v5 * dctCos1 - v6 * dctSin1 + 2048 >> 12;
+    v6 = t;
+    p[row] = v0 + v7;
+    p[row + 7] = v0 - v7;
+    p[row + 1] = v1 + v6;
+    p[row + 6] = v1 - v6;
+    p[row + 2] = v2 + v5;
+    p[row + 5] = v2 - v5;
+    p[row + 3] = v3 + v4;
+    p[row + 4] = v3 - v4;
+  }
+
+  for (let col = 0; col < 8; ++col) {
+    p0 = p[col];
+    p1 = p[col + 8];
+    p2 = p[col + 16];
+    p3 = p[col + 24];
+    p4 = p[col + 32];
+    p5 = p[col + 40];
+    p6 = p[col + 48];
+    p7 = p[col + 56];
+
+    if ((p1 | p2 | p3 | p4 | p5 | p6 | p7) === 0) {
+      t = dctSqrt2 * p0 + 8192 >> 14;
+
+      if (t < -2040) {
+        t = 0;
+      } else if (t >= 2024) {
+        t = 255;
+      } else {
+        t = t + 2056 >> 4;
+      }
+
+      blockData[blockBufferOffset + col] = t;
+      blockData[blockBufferOffset + col + 8] = t;
+      blockData[blockBufferOffset + col + 16] = t;
+      blockData[blockBufferOffset + col + 24] = t;
+      blockData[blockBufferOffset + col + 32] = t;
+      blockData[blockBufferOffset + col + 40] = t;
+      blockData[blockBufferOffset + col + 48] = t;
+      blockData[blockBufferOffset + col + 56] = t;
+      continue;
+    }
+
+    v0 = dctSqrt2 * p0 + 2048 >> 12;
+    v1 = dctSqrt2 * p4 + 2048 >> 12;
+    v2 = p2;
+    v3 = p6;
+    v4 = dctSqrt1d2 * (p1 - p7) + 2048 >> 12;
+    v7 = dctSqrt1d2 * (p1 + p7) + 2048 >> 12;
+    v5 = p3;
+    v6 = p5;
+    v0 = (v0 + v1 + 1 >> 1) + 4112;
+    v1 = v0 - v1;
+    t = v2 * dctSin6 + v3 * dctCos6 + 2048 >> 12;
+    v2 = v2 * dctCos6 - v3 * dctSin6 + 2048 >> 12;
+    v3 = t;
+    v4 = v4 + v6 + 1 >> 1;
+    v6 = v4 - v6;
+    v7 = v7 + v5 + 1 >> 1;
+    v5 = v7 - v5;
+    v0 = v0 + v3 + 1 >> 1;
+    v3 = v0 - v3;
+    v1 = v1 + v2 + 1 >> 1;
+    v2 = v1 - v2;
+    t = v4 * dctSin3 + v7 * dctCos3 + 2048 >> 12;
+    v4 = v4 * dctCos3 - v7 * dctSin3 + 2048 >> 12;
+    v7 = t;
+    t = v5 * dctSin1 + v6 * dctCos1 + 2048 >> 12;
+    v5 = v5 * dctCos1 - v6 * dctSin1 + 2048 >> 12;
+    v6 = t;
+    p0 = v0 + v7;
+    p7 = v0 - v7;
+    p1 = v1 + v6;
+    p6 = v1 - v6;
+    p2 = v2 + v5;
+    p5 = v2 - v5;
+    p3 = v3 + v4;
+    p4 = v3 - v4;
+
+    if (p0 < 16) {
+      p0 = 0;
+    } else if (p0 >= 4080) {
+      p0 = 255;
+    } else {
+      p0 >>= 4;
+    }
+
+    if (p1 < 16) {
+      p1 = 0;
+    } else if (p1 >= 4080) {
+      p1 = 255;
+    } else {
+      p1 >>= 4;
+    }
+
+    if (p2 < 16) {
+      p2 = 0;
+    } else if (p2 >= 4080) {
+      p2 = 255;
+    } else {
+      p2 >>= 4;
+    }
+
+    if (p3 < 16) {
+      p3 = 0;
+    } else if (p3 >= 4080) {
+      p3 = 255;
+    } else {
+      p3 >>= 4;
+    }
+
+    if (p4 < 16) {
+      p4 = 0;
+    } else if (p4 >= 4080) {
+      p4 = 255;
+    } else {
+      p4 >>= 4;
+    }
+
+    if (p5 < 16) {
+      p5 = 0;
+    } else if (p5 >= 4080) {
+      p5 = 255;
+    } else {
+      p5 >>= 4;
+    }
+
+    if (p6 < 16) {
+      p6 = 0;
+    } else if (p6 >= 4080) {
+      p6 = 255;
+    } else {
+      p6 >>= 4;
+    }
+
+    if (p7 < 16) {
+      p7 = 0;
+    } else if (p7 >= 4080) {
+      p7 = 255;
+    } else {
+      p7 >>= 4;
+    }
+
+    blockData[blockBufferOffset + col] = p0;
+    blockData[blockBufferOffset + col + 8] = p1;
+    blockData[blockBufferOffset + col + 16] = p2;
+    blockData[blockBufferOffset + col + 24] = p3;
+    blockData[blockBufferOffset + col + 32] = p4;
+    blockData[blockBufferOffset + col + 40] = p5;
+    blockData[blockBufferOffset + col + 48] = p6;
+    blockData[blockBufferOffset + col + 56] = p7;
+  }
+}
+
+function buildComponentData(frame, component) {
+  const blocksPerLine = component.blocksPerLine;
+  const blocksPerColumn = component.blocksPerColumn;
+  const computationBuffer = new Int16Array(64);
+
+  for (let blockRow = 0; blockRow < blocksPerColumn; blockRow++) {
+    for (let blockCol = 0; blockCol < blocksPerLine; blockCol++) {
+      const offset = getBlockBufferOffset(component, blockRow, blockCol);
+      quantizeAndInverse(component, offset, computationBuffer);
+    }
+  }
+
+  return component.blockData;
+}
+
+function findNextFileMarker(data, currentPos, startPos = currentPos) {
+  const maxPos = data.length - 1;
+  let newPos = startPos < currentPos ? startPos : currentPos;
+
+  if (currentPos >= maxPos) {
+    return null;
+  }
+
+  const currentMarker = (0, _core_utils.readUint16)(data, currentPos);
+
+  if (currentMarker >= 0xffc0 && currentMarker <= 0xfffe) {
+    return {
+      invalid: null,
+      marker: currentMarker,
+      offset: currentPos
+    };
+  }
+
+  let newMarker = (0, _core_utils.readUint16)(data, newPos);
+
+  while (!(newMarker >= 0xffc0 && newMarker <= 0xfffe)) {
+    if (++newPos >= maxPos) {
+      return null;
+    }
+
+    newMarker = (0, _core_utils.readUint16)(data, newPos);
+  }
+
+  return {
+    invalid: currentMarker.toString(16),
+    marker: newMarker,
+    offset: newPos
+  };
+}
+
+class JpegImage {
+  constructor({
+    decodeTransform = null,
+    colorTransform = -1
+  } = {}) {
+    this._decodeTransform = decodeTransform;
+    this._colorTransform = colorTransform;
+  }
+
+  parse(data, {
+    dnlScanLines = null
+  } = {}) {
+    function readDataBlock() {
+      const length = (0, _core_utils.readUint16)(data, offset);
+      offset += 2;
+      let endOffset = offset + length - 2;
+      const fileMarker = findNextFileMarker(data, endOffset, offset);
+
+      if (fileMarker && fileMarker.invalid) {
+        (0, _util.warn)("readDataBlock - incorrect length, current marker is: " + fileMarker.invalid);
+        endOffset = fileMarker.offset;
+      }
+
+      const array = data.subarray(offset, endOffset);
+      offset += array.length;
+      return array;
+    }
+
+    function prepareComponents(frame) {
+      const mcusPerLine = Math.ceil(frame.samplesPerLine / 8 / frame.maxH);
+      const mcusPerColumn = Math.ceil(frame.scanLines / 8 / frame.maxV);
+
+      for (let i = 0, ii = frame.components.length; i < ii; i++) {
+        const component = frame.components[i];
+        const blocksPerLine = Math.ceil(Math.ceil(frame.samplesPerLine / 8) * component.h / frame.maxH);
+        const blocksPerColumn = Math.ceil(Math.ceil(frame.scanLines / 8) * component.v / frame.maxV);
+        const blocksPerLineForMcu = mcusPerLine * component.h;
+        const blocksPerColumnForMcu = mcusPerColumn * component.v;
+        const blocksBufferSize = 64 * blocksPerColumnForMcu * (blocksPerLineForMcu + 1);
+        component.blockData = new Int16Array(blocksBufferSize);
+        component.blocksPerLine = blocksPerLine;
+        component.blocksPerColumn = blocksPerColumn;
+      }
+
+      frame.mcusPerLine = mcusPerLine;
+      frame.mcusPerColumn = mcusPerColumn;
+    }
+
+    let offset = 0;
+    let jfif = null;
+    let adobe = null;
+    let frame, resetInterval;
+    let numSOSMarkers = 0;
+    const quantizationTables = [];
+    const huffmanTablesAC = [],
+          huffmanTablesDC = [];
+    let fileMarker = (0, _core_utils.readUint16)(data, offset);
+    offset += 2;
+
+    if (fileMarker !== 0xffd8) {
+      throw new JpegError("SOI not found");
+    }
+
+    fileMarker = (0, _core_utils.readUint16)(data, offset);
+    offset += 2;
+
+    markerLoop: while (fileMarker !== 0xffd9) {
+      let i, j, l;
+
+      switch (fileMarker) {
+        case 0xffe0:
+        case 0xffe1:
+        case 0xffe2:
+        case 0xffe3:
+        case 0xffe4:
+        case 0xffe5:
+        case 0xffe6:
+        case 0xffe7:
+        case 0xffe8:
+        case 0xffe9:
+        case 0xffea:
+        case 0xffeb:
+        case 0xffec:
+        case 0xffed:
+        case 0xffee:
+        case 0xffef:
+        case 0xfffe:
+          const appData = readDataBlock();
+
+          if (fileMarker === 0xffe0) {
+            if (appData[0] === 0x4a && appData[1] === 0x46 && appData[2] === 0x49 && appData[3] === 0x46 && appData[4] === 0) {
+              jfif = {
+                version: {
+                  major: appData[5],
+                  minor: appData[6]
+                },
+                densityUnits: appData[7],
+                xDensity: appData[8] << 8 | appData[9],
+                yDensity: appData[10] << 8 | appData[11],
+                thumbWidth: appData[12],
+                thumbHeight: appData[13],
+                thumbData: appData.subarray(14, 14 + 3 * appData[12] * appData[13])
+              };
+            }
+          }
+
+          if (fileMarker === 0xffee) {
+            if (appData[0] === 0x41 && appData[1] === 0x64 && appData[2] === 0x6f && appData[3] === 0x62 && appData[4] === 0x65) {
+              adobe = {
+                version: appData[5] << 8 | appData[6],
+                flags0: appData[7] << 8 | appData[8],
+                flags1: appData[9] << 8 | appData[10],
+                transformCode: appData[11]
+              };
+            }
+          }
+
+          break;
+
+        case 0xffdb:
+          const quantizationTablesLength = (0, _core_utils.readUint16)(data, offset);
+          offset += 2;
+          const quantizationTablesEnd = quantizationTablesLength + offset - 2;
+          let z;
+
+          while (offset < quantizationTablesEnd) {
+            const quantizationTableSpec = data[offset++];
+            const tableData = new Uint16Array(64);
+
+            if (quantizationTableSpec >> 4 === 0) {
+              for (j = 0; j < 64; j++) {
+                z = dctZigZag[j];
+                tableData[z] = data[offset++];
+              }
+            } else if (quantizationTableSpec >> 4 === 1) {
+              for (j = 0; j < 64; j++) {
+                z = dctZigZag[j];
+                tableData[z] = (0, _core_utils.readUint16)(data, offset);
+                offset += 2;
+              }
+            } else {
+              throw new JpegError("DQT - invalid table spec");
+            }
+
+            quantizationTables[quantizationTableSpec & 15] = tableData;
+          }
+
+          break;
+
+        case 0xffc0:
+        case 0xffc1:
+        case 0xffc2:
+          if (frame) {
+            throw new JpegError("Only single frame JPEGs supported");
+          }
+
+          offset += 2;
+          frame = {};
+          frame.extended = fileMarker === 0xffc1;
+          frame.progressive = fileMarker === 0xffc2;
+          frame.precision = data[offset++];
+          const sofScanLines = (0, _core_utils.readUint16)(data, offset);
+          offset += 2;
+          frame.scanLines = dnlScanLines || sofScanLines;
+          frame.samplesPerLine = (0, _core_utils.readUint16)(data, offset);
+          offset += 2;
+          frame.components = [];
+          frame.componentIds = {};
+          const componentsCount = data[offset++];
+          let maxH = 0,
+              maxV = 0;
+
+          for (i = 0; i < componentsCount; i++) {
+            const componentId = data[offset];
+            const h = data[offset + 1] >> 4;
+            const v = data[offset + 1] & 15;
+
+            if (maxH < h) {
+              maxH = h;
+            }
+
+            if (maxV < v) {
+              maxV = v;
+            }
+
+            const qId = data[offset + 2];
+            l = frame.components.push({
+              h,
+              v,
+              quantizationId: qId,
+              quantizationTable: null
+            });
+            frame.componentIds[componentId] = l - 1;
+            offset += 3;
+          }
+
+          frame.maxH = maxH;
+          frame.maxV = maxV;
+          prepareComponents(frame);
+          break;
+
+        case 0xffc4:
+          const huffmanLength = (0, _core_utils.readUint16)(data, offset);
+          offset += 2;
+
+          for (i = 2; i < huffmanLength;) {
+            const huffmanTableSpec = data[offset++];
+            const codeLengths = new Uint8Array(16);
+            let codeLengthSum = 0;
+
+            for (j = 0; j < 16; j++, offset++) {
+              codeLengthSum += codeLengths[j] = data[offset];
+            }
+
+            const huffmanValues = new Uint8Array(codeLengthSum);
+
+            for (j = 0; j < codeLengthSum; j++, offset++) {
+              huffmanValues[j] = data[offset];
+            }
+
+            i += 17 + codeLengthSum;
+            (huffmanTableSpec >> 4 === 0 ? huffmanTablesDC : huffmanTablesAC)[huffmanTableSpec & 15] = buildHuffmanTable(codeLengths, huffmanValues);
+          }
+
+          break;
+
+        case 0xffdd:
+          offset += 2;
+          resetInterval = (0, _core_utils.readUint16)(data, offset);
+          offset += 2;
+          break;
+
+        case 0xffda:
+          const parseDNLMarker = ++numSOSMarkers === 1 && !dnlScanLines;
+          offset += 2;
+          const selectorsCount = data[offset++],
+                components = [];
+
+          for (i = 0; i < selectorsCount; i++) {
+            const index = data[offset++];
+            const componentIndex = frame.componentIds[index];
+            const component = frame.components[componentIndex];
+            component.index = index;
+            const tableSpec = data[offset++];
+            component.huffmanTableDC = huffmanTablesDC[tableSpec >> 4];
+            component.huffmanTableAC = huffmanTablesAC[tableSpec & 15];
+            components.push(component);
+          }
+
+          const spectralStart = data[offset++],
+                spectralEnd = data[offset++],
+                successiveApproximation = data[offset++];
+
+          try {
+            const processed = decodeScan(data, offset, frame, components, resetInterval, spectralStart, spectralEnd, successiveApproximation >> 4, successiveApproximation & 15, parseDNLMarker);
+            offset += processed;
+          } catch (ex) {
+            if (ex instanceof DNLMarkerError) {
+              (0, _util.warn)(`${ex.message} -- attempting to re-parse the JPEG image.`);
+              return this.parse(data, {
+                dnlScanLines: ex.scanLines
+              });
+            } else if (ex instanceof EOIMarkerError) {
+              (0, _util.warn)(`${ex.message} -- ignoring the rest of the image data.`);
+              break markerLoop;
+            }
+
+            throw ex;
+          }
+
+          break;
+
+        case 0xffdc:
+          offset += 4;
+          break;
+
+        case 0xffff:
+          if (data[offset] !== 0xff) {
+            offset--;
+          }
+
+          break;
+
+        default:
+          const nextFileMarker = findNextFileMarker(data, offset - 2, offset - 3);
+
+          if (nextFileMarker && nextFileMarker.invalid) {
+            (0, _util.warn)("JpegImage.parse - unexpected data, current marker is: " + nextFileMarker.invalid);
+            offset = nextFileMarker.offset;
+            break;
+          }
+
+          if (!nextFileMarker || offset >= data.length - 1) {
+            (0, _util.warn)("JpegImage.parse - reached the end of the image data " + "without finding an EOI marker (0xFFD9).");
+            break markerLoop;
+          }
+
+          throw new JpegError("JpegImage.parse - unknown marker: " + fileMarker.toString(16));
+      }
+
+      fileMarker = (0, _core_utils.readUint16)(data, offset);
+      offset += 2;
+    }
+
+    this.width = frame.samplesPerLine;
+    this.height = frame.scanLines;
+    this.jfif = jfif;
+    this.adobe = adobe;
+    this.components = [];
+
+    for (let i = 0, ii = frame.components.length; i < ii; i++) {
+      const component = frame.components[i];
+      const quantizationTable = quantizationTables[component.quantizationId];
+
+      if (quantizationTable) {
+        component.quantizationTable = quantizationTable;
+      }
+
+      this.components.push({
+        index: component.index,
+        output: buildComponentData(frame, component),
+        scaleX: component.h / frame.maxH,
+        scaleY: component.v / frame.maxV,
+        blocksPerLine: component.blocksPerLine,
+        blocksPerColumn: component.blocksPerColumn
+      });
+    }
+
+    this.numComponents = this.components.length;
+    return undefined;
+  }
+
+  _getLinearizedBlockData(width, height, isSourcePDF = false) {
+    const scaleX = this.width / width,
+          scaleY = this.height / height;
+    let component, componentScaleX, componentScaleY, blocksPerScanline;
+    let x, y, i, j, k;
+    let index;
+    let offset = 0;
+    let output;
+    const numComponents = this.components.length;
+    const dataLength = width * height * numComponents;
+    const data = new Uint8ClampedArray(dataLength);
+    const xScaleBlockOffset = new Uint32Array(width);
+    const mask3LSB = 0xfffffff8;
+    let lastComponentScaleX;
+
+    for (i = 0; i < numComponents; i++) {
+      component = this.components[i];
+      componentScaleX = component.scaleX * scaleX;
+      componentScaleY = component.scaleY * scaleY;
+      offset = i;
+      output = component.output;
+      blocksPerScanline = component.blocksPerLine + 1 << 3;
+
+      if (componentScaleX !== lastComponentScaleX) {
+        for (x = 0; x < width; x++) {
+          j = 0 | x * componentScaleX;
+          xScaleBlockOffset[x] = (j & mask3LSB) << 3 | j & 7;
+        }
+
+        lastComponentScaleX = componentScaleX;
+      }
+
+      for (y = 0; y < height; y++) {
+        j = 0 | y * componentScaleY;
+        index = blocksPerScanline * (j & mask3LSB) | (j & 7) << 3;
+
+        for (x = 0; x < width; x++) {
+          data[offset] = output[index + xScaleBlockOffset[x]];
+          offset += numComponents;
+        }
+      }
+    }
+
+    let transform = this._decodeTransform;
+
+    if (!isSourcePDF && numComponents === 4 && !transform) {
+      transform = new Int32Array([-256, 255, -256, 255, -256, 255, -256, 255]);
+    }
+
+    if (transform) {
+      for (i = 0; i < dataLength;) {
+        for (j = 0, k = 0; j < numComponents; j++, i++, k += 2) {
+          data[i] = (data[i] * transform[k] >> 8) + transform[k + 1];
+        }
+      }
+    }
+
+    return data;
+  }
+
+  get _isColorConversionNeeded() {
+    if (this.adobe) {
+      return !!this.adobe.transformCode;
+    }
+
+    if (this.numComponents === 3) {
+      if (this._colorTransform === 0) {
+        return false;
+      } else if (this.components[0].index === 0x52 && this.components[1].index === 0x47 && this.components[2].index === 0x42) {
+        return false;
+      }
+
+      return true;
+    }
+
+    if (this._colorTransform === 1) {
+      return true;
+    }
+
+    return false;
+  }
+
+  _convertYccToRgb(data) {
+    let Y, Cb, Cr;
+
+    for (let i = 0, length = data.length; i < length; i += 3) {
+      Y = data[i];
+      Cb = data[i + 1];
+      Cr = data[i + 2];
+      data[i] = Y - 179.456 + 1.402 * Cr;
+      data[i + 1] = Y + 135.459 - 0.344 * Cb - 0.714 * Cr;
+      data[i + 2] = Y - 226.816 + 1.772 * Cb;
+    }
+
+    return data;
+  }
+
+  _convertYcckToRgb(data) {
+    let Y, Cb, Cr, k;
+    let offset = 0;
+
+    for (let i = 0, length = data.length; i < length; i += 4) {
+      Y = data[i];
+      Cb = data[i + 1];
+      Cr = data[i + 2];
+      k = data[i + 3];
+      data[offset++] = -122.67195406894 + Cb * (-6.60635669420364e-5 * Cb + 0.000437130475926232 * Cr - 5.4080610064599e-5 * Y + 0.00048449797120281 * k - 0.154362151871126) + Cr * (-0.000957964378445773 * Cr + 0.000817076911346625 * Y - 0.00477271405408747 * k + 1.53380253221734) + Y * (0.000961250184130688 * Y - 0.00266257332283933 * k + 0.48357088451265) + k * (-0.000336197177618394 * k + 0.484791561490776);
+      data[offset++] = 107.268039397724 + Cb * (2.19927104525741e-5 * Cb - 0.000640992018297945 * Cr + 0.000659397001245577 * Y + 0.000426105652938837 * k - 0.176491792462875) + Cr * (-0.000778269941513683 * Cr + 0.00130872261408275 * Y + 0.000770482631801132 * k - 0.151051492775562) + Y * (0.00126935368114843 * Y - 0.00265090189010898 * k + 0.25802910206845) + k * (-0.000318913117588328 * k - 0.213742400323665);
+      data[offset++] = -20.810012546947 + Cb * (-0.000570115196973677 * Cb - 2.63409051004589e-5 * Cr + 0.0020741088115012 * Y - 0.00288260236853442 * k + 0.814272968359295) + Cr * (-1.53496057440975e-5 * Cr - 0.000132689043961446 * Y + 0.000560833691242812 * k - 0.195152027534049) + Y * (0.00174418132927582 * Y - 0.00255243321439347 * k + 0.116935020465145) + k * (-0.000343531996510555 * k + 0.24165260232407);
+    }
+
+    return data.subarray(0, offset);
+  }
+
+  _convertYcckToCmyk(data) {
+    let Y, Cb, Cr;
+
+    for (let i = 0, length = data.length; i < length; i += 4) {
+      Y = data[i];
+      Cb = data[i + 1];
+      Cr = data[i + 2];
+      data[i] = 434.456 - Y - 1.402 * Cr;
+      data[i + 1] = 119.541 - Y + 0.344 * Cb + 0.714 * Cr;
+      data[i + 2] = 481.816 - Y - 1.772 * Cb;
+    }
+
+    return data;
+  }
+
+  _convertCmykToRgb(data) {
+    let c, m, y, k;
+    let offset = 0;
+
+    for (let i = 0, length = data.length; i < length; i += 4) {
+      c = data[i];
+      m = data[i + 1];
+      y = data[i + 2];
+      k = data[i + 3];
+      data[offset++] = 255 + c * (-0.00006747147073602441 * c + 0.0008379262121013727 * m + 0.0002894718188643294 * y + 0.003264231057537806 * k - 1.1185611867203937) + m * (0.000026374107616089405 * m - 0.00008626949158638572 * y - 0.0002748769067499491 * k - 0.02155688794978967) + y * (-0.00003878099212869363 * y - 0.0003267808279485286 * k + 0.0686742238595345) - k * (0.0003361971776183937 * k + 0.7430659151342254);
+      data[offset++] = 255 + c * (0.00013596372813588848 * c + 0.000924537132573585 * m + 0.00010567359618683593 * y + 0.0004791864687436512 * k - 0.3109689587515875) + m * (-0.00023545346108370344 * m + 0.0002702845253534714 * y + 0.0020200308977307156 * k - 0.7488052167015494) + y * (0.00006834815998235662 * y + 0.00015168452363460973 * k - 0.09751927774728933) - k * (0.00031891311758832814 * k + 0.7364883807733168);
+      data[offset++] = 255 + c * (0.000013598650411385307 * c + 0.00012423956175490851 * m + 0.0004751985097583589 * y - 0.0000036729317476630422 * k - 0.05562186980264034) + m * (0.00016141380598724676 * m + 0.0009692239130725186 * y + 0.0007782692450036253 * k - 0.44015232367526463) + y * (5.068882914068769e-7 * y + 0.0017778369011375071 * k - 0.7591454649749609) - k * (0.0003435319965105553 * k + 0.7063770186160144);
+    }
+
+    return data.subarray(0, offset);
+  }
+
+  getData({
+    width,
+    height,
+    forceRGB = false,
+    isSourcePDF = false
+  }) {
+    if (this.numComponents > 4) {
+      throw new JpegError("Unsupported color mode");
+    }
+
+    const data = this._getLinearizedBlockData(width, height, isSourcePDF);
+
+    if (this.numComponents === 1 && forceRGB) {
+      const dataLength = data.length;
+      const rgbData = new Uint8ClampedArray(dataLength * 3);
+      let offset = 0;
+
+      for (let i = 0; i < dataLength; i++) {
+        const grayColor = data[i];
+        rgbData[offset++] = grayColor;
+        rgbData[offset++] = grayColor;
+        rgbData[offset++] = grayColor;
+      }
+
+      return rgbData;
+    } else if (this.numComponents === 3 && this._isColorConversionNeeded) {
+      return this._convertYccToRgb(data);
+    } else if (this.numComponents === 4) {
+      if (this._isColorConversionNeeded) {
+        if (forceRGB) {
+          return this._convertYcckToRgb(data);
+        }
+
+        return this._convertYcckToCmyk(data);
+      } else if (forceRGB) {
+        return this._convertCmykToRgb(data);
+      }
+    }
+
+    return data;
+  }
+
+}
+
+exports.JpegImage = JpegImage;
+
+/***/ }),
+/* 11 */
+/***/ ((__unused_webpack_module, exports, __w_pdfjs_require__) => {
+
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.JpxImage = void 0;
+
+var _util = __w_pdfjs_require__(1);
+
+var _core_utils = __w_pdfjs_require__(5);
+
+var _arithmetic_decoder = __w_pdfjs_require__(8);
+
+class JpxError extends _util.BaseException {
+  constructor(msg) {
+    super(`JPX error: ${msg}`);
+  }
+
+}
+
+const SubbandsGainLog2 = {
+  LL: 0,
+  LH: 1,
+  HL: 1,
+  HH: 2
+};
+
+class JpxImage {
+  constructor() {
+    this.failOnCorruptedImage = false;
+  }
+
+  parse(data) {
+    const head = (0, _core_utils.readUint16)(data, 0);
+
+    if (head === 0xff4f) {
+      this.parseCodestream(data, 0, data.length);
+      return;
+    }
+
+    const length = data.length;
+    let position = 0;
+
+    while (position < length) {
+      let headerSize = 8;
+      let lbox = (0, _core_utils.readUint32)(data, position);
+      const tbox = (0, _core_utils.readUint32)(data, position + 4);
+      position += headerSize;
+
+      if (lbox === 1) {
+        lbox = (0, _core_utils.readUint32)(data, position) * 4294967296 + (0, _core_utils.readUint32)(data, position + 4);
+        position += 8;
+        headerSize += 8;
+      }
+
+      if (lbox === 0) {
+        lbox = length - position + headerSize;
+      }
+
+      if (lbox < headerSize) {
+        throw new JpxError("Invalid box field size");
+      }
+
+      const dataLength = lbox - headerSize;
+      let jumpDataLength = true;
+
+      switch (tbox) {
+        case 0x6a703268:
+          jumpDataLength = false;
+          break;
+
+        case 0x636f6c72:
+          const method = data[position];
+
+          if (method === 1) {
+            const colorspace = (0, _core_utils.readUint32)(data, position + 3);
+
+            switch (colorspace) {
+              case 16:
+              case 17:
+              case 18:
+                break;
+
+              default:
+                (0, _util.warn)("Unknown colorspace " + colorspace);
+                break;
+            }
+          } else if (method === 2) {
+            (0, _util.info)("ICC profile not supported");
+          }
+
+          break;
+
+        case 0x6a703263:
+          this.parseCodestream(data, position, position + dataLength);
+          break;
+
+        case 0x6a502020:
+          if ((0, _core_utils.readUint32)(data, position) !== 0x0d0a870a) {
+            (0, _util.warn)("Invalid JP2 signature");
+          }
+
+          break;
+
+        case 0x6a501a1a:
+        case 0x66747970:
+        case 0x72726571:
+        case 0x72657320:
+        case 0x69686472:
+          break;
+
+        default:
+          const headerType = String.fromCharCode(tbox >> 24 & 0xff, tbox >> 16 & 0xff, tbox >> 8 & 0xff, tbox & 0xff);
+          (0, _util.warn)(`Unsupported header type ${tbox} (${headerType}).`);
+          break;
+      }
+
+      if (jumpDataLength) {
+        position += dataLength;
+      }
+    }
+  }
+
+  parseImageProperties(stream) {
+    let newByte = stream.getByte();
+
+    while (newByte >= 0) {
+      const oldByte = newByte;
+      newByte = stream.getByte();
+      const code = oldByte << 8 | newByte;
+
+      if (code === 0xff51) {
+        stream.skip(4);
+        const Xsiz = stream.getInt32() >>> 0;
+        const Ysiz = stream.getInt32() >>> 0;
+        const XOsiz = stream.getInt32() >>> 0;
+        const YOsiz = stream.getInt32() >>> 0;
+        stream.skip(16);
+        const Csiz = stream.getUint16();
+        this.width = Xsiz - XOsiz;
+        this.height = Ysiz - YOsiz;
+        this.componentsCount = Csiz;
+        this.bitsPerComponent = 8;
+        return;
+      }
+    }
+
+    throw new JpxError("No size marker found in JPX stream");
+  }
+
+  parseCodestream(data, start, end) {
+    const context = {};
+    let doNotRecover = false;
+
+    try {
+      let position = start;
+
+      while (position + 1 < end) {
+        const code = (0, _core_utils.readUint16)(data, position);
+        position += 2;
+        let length = 0,
+            j,
+            sqcd,
+            spqcds,
+            spqcdSize,
+            scalarExpounded,
+            tile;
+
+        switch (code) {
+          case 0xff4f:
+            context.mainHeader = true;
+            break;
+
+          case 0xffd9:
+            break;
+
+          case 0xff51:
+            length = (0, _core_utils.readUint16)(data, position);
+            const siz = {};
+            siz.Xsiz = (0, _core_utils.readUint32)(data, position + 4);
+            siz.Ysiz = (0, _core_utils.readUint32)(data, position + 8);
+            siz.XOsiz = (0, _core_utils.readUint32)(data, position + 12);
+            siz.YOsiz = (0, _core_utils.readUint32)(data, position + 16);
+            siz.XTsiz = (0, _core_utils.readUint32)(data, position + 20);
+            siz.YTsiz = (0, _core_utils.readUint32)(data, position + 24);
+            siz.XTOsiz = (0, _core_utils.readUint32)(data, position + 28);
+            siz.YTOsiz = (0, _core_utils.readUint32)(data, position + 32);
+            const componentsCount = (0, _core_utils.readUint16)(data, position + 36);
+            siz.Csiz = componentsCount;
+            const components = [];
+            j = position + 38;
+
+            for (let i = 0; i < componentsCount; i++) {
+              const component = {
+                precision: (data[j] & 0x7f) + 1,
+                isSigned: !!(data[j] & 0x80),
+                XRsiz: data[j + 1],
+                YRsiz: data[j + 2]
+              };
+              j += 3;
+              calculateComponentDimensions(component, siz);
+              components.push(component);
+            }
+
+            context.SIZ = siz;
+            context.components = components;
+            calculateTileGrids(context, components);
+            context.QCC = [];
+            context.COC = [];
+            break;
+
+          case 0xff5c:
+            length = (0, _core_utils.readUint16)(data, position);
+            const qcd = {};
+            j = position + 2;
+            sqcd = data[j++];
+
+            switch (sqcd & 0x1f) {
+              case 0:
+                spqcdSize = 8;
+                scalarExpounded = true;
+                break;
+
+              case 1:
+                spqcdSize = 16;
+                scalarExpounded = false;
+                break;
+
+              case 2:
+                spqcdSize = 16;
+                scalarExpounded = true;
+                break;
+
+              default:
+                throw new Error("Invalid SQcd value " + sqcd);
+            }
+
+            qcd.noQuantization = spqcdSize === 8;
+            qcd.scalarExpounded = scalarExpounded;
+            qcd.guardBits = sqcd >> 5;
+            spqcds = [];
+
+            while (j < length + position) {
+              const spqcd = {};
+
+              if (spqcdSize === 8) {
+                spqcd.epsilon = data[j++] >> 3;
+                spqcd.mu = 0;
+              } else {
+                spqcd.epsilon = data[j] >> 3;
+                spqcd.mu = (data[j] & 0x7) << 8 | data[j + 1];
+                j += 2;
+              }
+
+              spqcds.push(spqcd);
+            }
+
+            qcd.SPqcds = spqcds;
+
+            if (context.mainHeader) {
+              context.QCD = qcd;
+            } else {
+              context.currentTile.QCD = qcd;
+              context.currentTile.QCC = [];
+            }
+
+            break;
+
+          case 0xff5d:
+            length = (0, _core_utils.readUint16)(data, position);
+            const qcc = {};
+            j = position + 2;
+            let cqcc;
+
+            if (context.SIZ.Csiz < 257) {
+              cqcc = data[j++];
+            } else {
+              cqcc = (0, _core_utils.readUint16)(data, j);
+              j += 2;
+            }
+
+            sqcd = data[j++];
+
+            switch (sqcd & 0x1f) {
+              case 0:
+                spqcdSize = 8;
+                scalarExpounded = true;
+                break;
+
+              case 1:
+                spqcdSize = 16;
+                scalarExpounded = false;
+                break;
+
+              case 2:
+                spqcdSize = 16;
+                scalarExpounded = true;
+                break;
+
+              default:
+                throw new Error("Invalid SQcd value " + sqcd);
+            }
+
+            qcc.noQuantization = spqcdSize === 8;
+            qcc.scalarExpounded = scalarExpounded;
+            qcc.guardBits = sqcd >> 5;
+            spqcds = [];
+
+            while (j < length + position) {
+              const spqcd = {};
+
+              if (spqcdSize === 8) {
+                spqcd.epsilon = data[j++] >> 3;
+                spqcd.mu = 0;
+              } else {
+                spqcd.epsilon = data[j] >> 3;
+                spqcd.mu = (data[j] & 0x7) << 8 | data[j + 1];
+                j += 2;
+              }
+
+              spqcds.push(spqcd);
+            }
+
+            qcc.SPqcds = spqcds;
+
+            if (context.mainHeader) {
+              context.QCC[cqcc] = qcc;
+            } else {
+              context.currentTile.QCC[cqcc] = qcc;
+            }
+
+            break;
+
+          case 0xff52:
+            length = (0, _core_utils.readUint16)(data, position);
+            const cod = {};
+            j = position + 2;
+            const scod = data[j++];
+            cod.entropyCoderWithCustomPrecincts = !!(scod & 1);
+            cod.sopMarkerUsed = !!(scod & 2);
+            cod.ephMarkerUsed = !!(scod & 4);
+            cod.progressionOrder = data[j++];
+            cod.layersCount = (0, _core_utils.readUint16)(data, j);
+            j += 2;
+            cod.multipleComponentTransform = data[j++];
+            cod.decompositionLevelsCount = data[j++];
+            cod.xcb = (data[j++] & 0xf) + 2;
+            cod.ycb = (data[j++] & 0xf) + 2;
+            const blockStyle = data[j++];
+            cod.selectiveArithmeticCodingBypass = !!(blockStyle & 1);
+            cod.resetContextProbabilities = !!(blockStyle & 2);
+            cod.terminationOnEachCodingPass = !!(blockStyle & 4);
+            cod.verticallyStripe = !!(blockStyle & 8);
+            cod.predictableTermination = !!(blockStyle & 16);
+            cod.segmentationSymbolUsed = !!(blockStyle & 32);
+            cod.reversibleTransformation = data[j++];
+
+            if (cod.entropyCoderWithCustomPrecincts) {
+              const precinctsSizes = [];
+
+              while (j < length + position) {
+                const precinctsSize = data[j++];
+                precinctsSizes.push({
+                  PPx: precinctsSize & 0xf,
+                  PPy: precinctsSize >> 4
+                });
+              }
+
+              cod.precinctsSizes = precinctsSizes;
+            }
+
+            const unsupported = [];
+
+            if (cod.selectiveArithmeticCodingBypass) {
+              unsupported.push("selectiveArithmeticCodingBypass");
+            }
+
+            if (cod.resetContextProbabilities) {
+              unsupported.push("resetContextProbabilities");
+            }
+
+            if (cod.terminationOnEachCodingPass) {
+              unsupported.push("terminationOnEachCodingPass");
+            }
+
+            if (cod.verticallyStripe) {
+              unsupported.push("verticallyStripe");
+            }
+
+            if (cod.predictableTermination) {
+              unsupported.push("predictableTermination");
+            }
+
+            if (unsupported.length > 0) {
+              doNotRecover = true;
+              (0, _util.warn)(`JPX: Unsupported COD options (${unsupported.join(", ")}).`);
+            }
+
+            if (context.mainHeader) {
+              context.COD = cod;
+            } else {
+              context.currentTile.COD = cod;
+              context.currentTile.COC = [];
+            }
+
+            break;
+
+          case 0xff90:
+            length = (0, _core_utils.readUint16)(data, position);
+            tile = {};
+            tile.index = (0, _core_utils.readUint16)(data, position + 2);
+            tile.length = (0, _core_utils.readUint32)(data, position + 4);
+            tile.dataEnd = tile.length + position - 2;
+            tile.partIndex = data[position + 8];
+            tile.partsCount = data[position + 9];
+            context.mainHeader = false;
+
+            if (tile.partIndex === 0) {
+              tile.COD = context.COD;
+              tile.COC = context.COC.slice(0);
+              tile.QCD = context.QCD;
+              tile.QCC = context.QCC.slice(0);
+            }
+
+            context.currentTile = tile;
+            break;
+
+          case 0xff93:
+            tile = context.currentTile;
+
+            if (tile.partIndex === 0) {
+              initializeTile(context, tile.index);
+              buildPackets(context);
+            }
+
+            length = tile.dataEnd - position;
+            parseTilePackets(context, data, position, length);
+            break;
+
+          case 0xff53:
+            (0, _util.warn)("JPX: Codestream code 0xFF53 (COC) is not implemented.");
+
+          case 0xff55:
+          case 0xff57:
+          case 0xff58:
+          case 0xff64:
+            length = (0, _core_utils.readUint16)(data, position);
+            break;
+
+          default:
+            throw new Error("Unknown codestream code: " + code.toString(16));
+        }
+
+        position += length;
+      }
+    } catch (e) {
+      if (doNotRecover || this.failOnCorruptedImage) {
+        throw new JpxError(e.message);
+      } else {
+        (0, _util.warn)(`JPX: Trying to recover from: "${e.message}".`);
+      }
+    }
+
+    this.tiles = transformComponents(context);
+    this.width = context.SIZ.Xsiz - context.SIZ.XOsiz;
+    this.height = context.SIZ.Ysiz - context.SIZ.YOsiz;
+    this.componentsCount = context.SIZ.Csiz;
+  }
+
+}
+
+exports.JpxImage = JpxImage;
+
+function calculateComponentDimensions(component, siz) {
+  component.x0 = Math.ceil(siz.XOsiz / component.XRsiz);
+  component.x1 = Math.ceil(siz.Xsiz / component.XRsiz);
+  component.y0 = Math.ceil(siz.YOsiz / component.YRsiz);
+  component.y1 = Math.ceil(siz.Ysiz / component.YRsiz);
+  component.width = component.x1 - component.x0;
+  component.height = component.y1 - component.y0;
+}
+
+function calculateTileGrids(context, components) {
+  const siz = context.SIZ;
+  const tiles = [];
+  let tile;
+  const numXtiles = Math.ceil((siz.Xsiz - siz.XTOsiz) / siz.XTsiz);
+  const numYtiles = Math.ceil((siz.Ysiz - siz.YTOsiz) / siz.YTsiz);
+
+  for (let q = 0; q < numYtiles; q++) {
+    for (let p = 0; p < numXtiles; p++) {
+      tile = {};
+      tile.tx0 = Math.max(siz.XTOsiz + p * siz.XTsiz, siz.XOsiz);
+      tile.ty0 = Math.max(siz.YTOsiz + q * siz.YTsiz, siz.YOsiz);
+      tile.tx1 = Math.min(siz.XTOsiz + (p + 1) * siz.XTsiz, siz.Xsiz);
+      tile.ty1 = Math.min(siz.YTOsiz + (q + 1) * siz.YTsiz, siz.Ysiz);
+      tile.width = tile.tx1 - tile.tx0;
+      tile.height = tile.ty1 - tile.ty0;
+      tile.components = [];
+      tiles.push(tile);
+    }
+  }
+
+  context.tiles = tiles;
+  const componentsCount = siz.Csiz;
+
+  for (let i = 0, ii = componentsCount; i < ii; i++) {
+    const component = components[i];
+
+    for (let j = 0, jj = tiles.length; j < jj; j++) {
+      const tileComponent = {};
+      tile = tiles[j];
+      tileComponent.tcx0 = Math.ceil(tile.tx0 / component.XRsiz);
+      tileComponent.tcy0 = Math.ceil(tile.ty0 / component.YRsiz);
+      tileComponent.tcx1 = Math.ceil(tile.tx1 / component.XRsiz);
+      tileComponent.tcy1 = Math.ceil(tile.ty1 / component.YRsiz);
+      tileComponent.width = tileComponent.tcx1 - tileComponent.tcx0;
+      tileComponent.height = tileComponent.tcy1 - tileComponent.tcy0;
+      tile.components[i] = tileComponent;
+    }
+  }
+}
+
+function getBlocksDimensions(context, component, r) {
+  const codOrCoc = component.codingStyleParameters;
+  const result = {};
+
+  if (!codOrCoc.entropyCoderWithCustomPrecincts) {
+    result.PPx = 15;
+    result.PPy = 15;
+  } else {
+    result.PPx = codOrCoc.precinctsSizes[r].PPx;
+    result.PPy = codOrCoc.precinctsSizes[r].PPy;
+  }
+
+  result.xcb_ = r > 0 ? Math.min(codOrCoc.xcb, result.PPx - 1) : Math.min(codOrCoc.xcb, result.PPx);
+  result.ycb_ = r > 0 ? Math.min(codOrCoc.ycb, result.PPy - 1) : Math.min(codOrCoc.ycb, result.PPy);
+  return result;
+}
+
+function buildPrecincts(context, resolution, dimensions) {
+  const precinctWidth = 1 << dimensions.PPx;
+  const precinctHeight = 1 << dimensions.PPy;
+  const isZeroRes = resolution.resLevel === 0;
+  const precinctWidthInSubband = 1 << dimensions.PPx + (isZeroRes ? 0 : -1);
+  const precinctHeightInSubband = 1 << dimensions.PPy + (isZeroRes ? 0 : -1);
+  const numprecinctswide = resolution.trx1 > resolution.trx0 ? Math.ceil(resolution.trx1 / precinctWidth) - Math.floor(resolution.trx0 / precinctWidth) : 0;
+  const numprecinctshigh = resolution.try1 > resolution.try0 ? Math.ceil(resolution.try1 / precinctHeight) - Math.floor(resolution.try0 / precinctHeight) : 0;
+  const numprecincts = numprecinctswide * numprecinctshigh;
+  resolution.precinctParameters = {
+    precinctWidth,
+    precinctHeight,
+    numprecinctswide,
+    numprecinctshigh,
+    numprecincts,
+    precinctWidthInSubband,
+    precinctHeightInSubband
+  };
+}
+
+function buildCodeblocks(context, subband, dimensions) {
+  const xcb_ = dimensions.xcb_;
+  const ycb_ = dimensions.ycb_;
+  const codeblockWidth = 1 << xcb_;
+  const codeblockHeight = 1 << ycb_;
+  const cbx0 = subband.tbx0 >> xcb_;
+  const cby0 = subband.tby0 >> ycb_;
+  const cbx1 = subband.tbx1 + codeblockWidth - 1 >> xcb_;
+  const cby1 = subband.tby1 + codeblockHeight - 1 >> ycb_;
+  const precinctParameters = subband.resolution.precinctParameters;
+  const codeblocks = [];
+  const precincts = [];
+  let i, j, codeblock, precinctNumber;
+
+  for (j = cby0; j < cby1; j++) {
+    for (i = cbx0; i < cbx1; i++) {
+      codeblock = {
+        cbx: i,
+        cby: j,
+        tbx0: codeblockWidth * i,
+        tby0: codeblockHeight * j,
+        tbx1: codeblockWidth * (i + 1),
+        tby1: codeblockHeight * (j + 1)
+      };
+      codeblock.tbx0_ = Math.max(subband.tbx0, codeblock.tbx0);
+      codeblock.tby0_ = Math.max(subband.tby0, codeblock.tby0);
+      codeblock.tbx1_ = Math.min(subband.tbx1, codeblock.tbx1);
+      codeblock.tby1_ = Math.min(subband.tby1, codeblock.tby1);
+      const pi = Math.floor((codeblock.tbx0_ - subband.tbx0) / precinctParameters.precinctWidthInSubband);
+      const pj = Math.floor((codeblock.tby0_ - subband.tby0) / precinctParameters.precinctHeightInSubband);
+      precinctNumber = pi + pj * precinctParameters.numprecinctswide;
+      codeblock.precinctNumber = precinctNumber;
+      codeblock.subbandType = subband.type;
+      codeblock.Lblock = 3;
+
+      if (codeblock.tbx1_ <= codeblock.tbx0_ || codeblock.tby1_ <= codeblock.tby0_) {
+        continue;
+      }
+
+      codeblocks.push(codeblock);
+      let precinct = precincts[precinctNumber];
+
+      if (precinct !== undefined) {
+        if (i < precinct.cbxMin) {
+          precinct.cbxMin = i;
+        } else if (i > precinct.cbxMax) {
+          precinct.cbxMax = i;
+        }
+
+        if (j < precinct.cbyMin) {
+          precinct.cbxMin = j;
+        } else if (j > precinct.cbyMax) {
+          precinct.cbyMax = j;
+        }
+      } else {
+        precincts[precinctNumber] = precinct = {
+          cbxMin: i,
+          cbyMin: j,
+          cbxMax: i,
+          cbyMax: j
+        };
+      }
+
+      codeblock.precinct = precinct;
+    }
+  }
+
+  subband.codeblockParameters = {
+    codeblockWidth: xcb_,
+    codeblockHeight: ycb_,
+    numcodeblockwide: cbx1 - cbx0 + 1,
+    numcodeblockhigh: cby1 - cby0 + 1
+  };
+  subband.codeblocks = codeblocks;
+  subband.precincts = precincts;
+}
+
+function createPacket(resolution, precinctNumber, layerNumber) {
+  const precinctCodeblocks = [];
+  const subbands = resolution.subbands;
+
+  for (let i = 0, ii = subbands.length; i < ii; i++) {
+    const subband = subbands[i];
+    const codeblocks = subband.codeblocks;
+
+    for (let j = 0, jj = codeblocks.length; j < jj; j++) {
+      const codeblock = codeblocks[j];
+
+      if (codeblock.precinctNumber !== precinctNumber) {
+        continue;
+      }
+
+      precinctCodeblocks.push(codeblock);
+    }
+  }
+
+  return {
+    layerNumber,
+    codeblocks: precinctCodeblocks
+  };
+}
+
+function LayerResolutionComponentPositionIterator(context) {
+  const siz = context.SIZ;
+  const tileIndex = context.currentTile.index;
+  const tile = context.tiles[tileIndex];
+  const layersCount = tile.codingStyleDefaultParameters.layersCount;
+  const componentsCount = siz.Csiz;
+  let maxDecompositionLevelsCount = 0;
+
+  for (let q = 0; q < componentsCount; q++) {
+    maxDecompositionLevelsCount = Math.max(maxDecompositionLevelsCount, tile.components[q].codingStyleParameters.decompositionLevelsCount);
+  }
+
+  let l = 0,
+      r = 0,
+      i = 0,
+      k = 0;
+
+  this.nextPacket = function JpxImage_nextPacket() {
+    for (; l < layersCount; l++) {
+      for (; r <= maxDecompositionLevelsCount; r++) {
+        for (; i < componentsCount; i++) {
+          const component = tile.components[i];
+
+          if (r > component.codingStyleParameters.decompositionLevelsCount) {
+            continue;
+          }
+
+          const resolution = component.resolutions[r];
+          const numprecincts = resolution.precinctParameters.numprecincts;
+
+          for (; k < numprecincts;) {
+            const packet = createPacket(resolution, k, l);
+            k++;
+            return packet;
+          }
+
+          k = 0;
+        }
+
+        i = 0;
+      }
+
+      r = 0;
+    }
+
+    throw new JpxError("Out of packets");
+  };
+}
+
+function ResolutionLayerComponentPositionIterator(context) {
+  const siz = context.SIZ;
+  const tileIndex = context.currentTile.index;
+  const tile = context.tiles[tileIndex];
+  const layersCount = tile.codingStyleDefaultParameters.layersCount;
+  const componentsCount = siz.Csiz;
+  let maxDecompositionLevelsCount = 0;
+
+  for (let q = 0; q < componentsCount; q++) {
+    maxDecompositionLevelsCount = Math.max(maxDecompositionLevelsCount, tile.components[q].codingStyleParameters.decompositionLevelsCount);
+  }
+
+  let r = 0,
+      l = 0,
+      i = 0,
+      k = 0;
+
+  this.nextPacket = function JpxImage_nextPacket() {
+    for (; r <= maxDecompositionLevelsCount; r++) {
+      for (; l < layersCount; l++) {
+        for (; i < componentsCount; i++) {
+          const component = tile.components[i];
+
+          if (r > component.codingStyleParameters.decompositionLevelsCount) {
+            continue;
+          }
+
+          const resolution = component.resolutions[r];
+          const numprecincts = resolution.precinctParameters.numprecincts;
+
+          for (; k < numprecincts;) {
+            const packet = createPacket(resolution, k, l);
+            k++;
+            return packet;
+          }
+
+          k = 0;
+        }
+
+        i = 0;
+      }
+
+      l = 0;
+    }
+
+    throw new JpxError("Out of packets");
+  };
+}
+
+function ResolutionPositionComponentLayerIterator(context) {
+  const siz = context.SIZ;
+  const tileIndex = context.currentTile.index;
+  const tile = context.tiles[tileIndex];
+  const layersCount = tile.codingStyleDefaultParameters.layersCount;
+  const componentsCount = siz.Csiz;
+  let l, r, c, p;
+  let maxDecompositionLevelsCount = 0;
+
+  for (c = 0; c < componentsCount; c++) {
+    const component = tile.components[c];
+    maxDecompositionLevelsCount = Math.max(maxDecompositionLevelsCount, component.codingStyleParameters.decompositionLevelsCount);
+  }
+
+  const maxNumPrecinctsInLevel = new Int32Array(maxDecompositionLevelsCount + 1);
+
+  for (r = 0; r <= maxDecompositionLevelsCount; ++r) {
+    let maxNumPrecincts = 0;
+
+    for (c = 0; c < componentsCount; ++c) {
+      const resolutions = tile.components[c].resolutions;
+
+      if (r < resolutions.length) {
+        maxNumPrecincts = Math.max(maxNumPrecincts, resolutions[r].precinctParameters.numprecincts);
+      }
+    }
+
+    maxNumPrecinctsInLevel[r] = maxNumPrecincts;
+  }
+
+  l = 0;
+  r = 0;
+  c = 0;
+  p = 0;
+
+  this.nextPacket = function JpxImage_nextPacket() {
+    for (; r <= maxDecompositionLevelsCount; r++) {
+      for (; p < maxNumPrecinctsInLevel[r]; p++) {
+        for (; c < componentsCount; c++) {
+          const component = tile.components[c];
+
+          if (r > component.codingStyleParameters.decompositionLevelsCount) {
+            continue;
+          }
+
+          const resolution = component.resolutions[r];
+          const numprecincts = resolution.precinctParameters.numprecincts;
+
+          if (p >= numprecincts) {
+            continue;
+          }
+
+          for (; l < layersCount;) {
+            const packet = createPacket(resolution, p, l);
+            l++;
+            return packet;
+          }
+
+          l = 0;
+        }
+
+        c = 0;
+      }
+
+      p = 0;
+    }
+
+    throw new JpxError("Out of packets");
+  };
+}
+
+function PositionComponentResolutionLayerIterator(context) {
+  const siz = context.SIZ;
+  const tileIndex = context.currentTile.index;
+  const tile = context.tiles[tileIndex];
+  const layersCount = tile.codingStyleDefaultParameters.layersCount;
+  const componentsCount = siz.Csiz;
+  const precinctsSizes = getPrecinctSizesInImageScale(tile);
+  const precinctsIterationSizes = precinctsSizes;
+  let l = 0,
+      r = 0,
+      c = 0,
+      px = 0,
+      py = 0;
+
+  this.nextPacket = function JpxImage_nextPacket() {
+    for (; py < precinctsIterationSizes.maxNumHigh; py++) {
+      for (; px < precinctsIterationSizes.maxNumWide; px++) {
+        for (; c < componentsCount; c++) {
+          const component = tile.components[c];
+          const decompositionLevelsCount = component.codingStyleParameters.decompositionLevelsCount;
+
+          for (; r <= decompositionLevelsCount; r++) {
+            const resolution = component.resolutions[r];
+            const sizeInImageScale = precinctsSizes.components[c].resolutions[r];
+            const k = getPrecinctIndexIfExist(px, py, sizeInImageScale, precinctsIterationSizes, resolution);
+
+            if (k === null) {
+              continue;
+            }
+
+            for (; l < layersCount;) {
+              const packet = createPacket(resolution, k, l);
+              l++;
+              return packet;
+            }
+
+            l = 0;
+          }
+
+          r = 0;
+        }
+
+        c = 0;
+      }
+
+      px = 0;
+    }
+
+    throw new JpxError("Out of packets");
+  };
+}
+
+function ComponentPositionResolutionLayerIterator(context) {
+  const siz = context.SIZ;
+  const tileIndex = context.currentTile.index;
+  const tile = context.tiles[tileIndex];
+  const layersCount = tile.codingStyleDefaultParameters.layersCount;
+  const componentsCount = siz.Csiz;
+  const precinctsSizes = getPrecinctSizesInImageScale(tile);
+  let l = 0,
+      r = 0,
+      c = 0,
+      px = 0,
+      py = 0;
+
+  this.nextPacket = function JpxImage_nextPacket() {
+    for (; c < componentsCount; ++c) {
+      const component = tile.components[c];
+      const precinctsIterationSizes = precinctsSizes.components[c];
+      const decompositionLevelsCount = component.codingStyleParameters.decompositionLevelsCount;
+
+      for (; py < precinctsIterationSizes.maxNumHigh; py++) {
+        for (; px < precinctsIterationSizes.maxNumWide; px++) {
+          for (; r <= decompositionLevelsCount; r++) {
+            const resolution = component.resolutions[r];
+            const sizeInImageScale = precinctsIterationSizes.resolutions[r];
+            const k = getPrecinctIndexIfExist(px, py, sizeInImageScale, precinctsIterationSizes, resolution);
+
+            if (k === null) {
+              continue;
+            }
+
+            for (; l < layersCount;) {
+              const packet = createPacket(resolution, k, l);
+              l++;
+              return packet;
+            }
+
+            l = 0;
+          }
+
+          r = 0;
+        }
+
+        px = 0;
+      }
+
+      py = 0;
+    }
+
+    throw new JpxError("Out of packets");
+  };
+}
+
+function getPrecinctIndexIfExist(pxIndex, pyIndex, sizeInImageScale, precinctIterationSizes, resolution) {
+  const posX = pxIndex * precinctIterationSizes.minWidth;
+  const posY = pyIndex * precinctIterationSizes.minHeight;
+
+  if (posX % sizeInImageScale.width !== 0 || posY % sizeInImageScale.height !== 0) {
+    return null;
+  }
+
+  const startPrecinctRowIndex = posY / sizeInImageScale.width * resolution.precinctParameters.numprecinctswide;
+  return posX / sizeInImageScale.height + startPrecinctRowIndex;
+}
+
+function getPrecinctSizesInImageScale(tile) {
+  const componentsCount = tile.components.length;
+  let minWidth = Number.MAX_VALUE;
+  let minHeight = Number.MAX_VALUE;
+  let maxNumWide = 0;
+  let maxNumHigh = 0;
+  const sizePerComponent = new Array(componentsCount);
+
+  for (let c = 0; c < componentsCount; c++) {
+    const component = tile.components[c];
+    const decompositionLevelsCount = component.codingStyleParameters.decompositionLevelsCount;
+    const sizePerResolution = new Array(decompositionLevelsCount + 1);
+    let minWidthCurrentComponent = Number.MAX_VALUE;
+    let minHeightCurrentComponent = Number.MAX_VALUE;
+    let maxNumWideCurrentComponent = 0;
+    let maxNumHighCurrentComponent = 0;
+    let scale = 1;
+
+    for (let r = decompositionLevelsCount; r >= 0; --r) {
+      const resolution = component.resolutions[r];
+      const widthCurrentResolution = scale * resolution.precinctParameters.precinctWidth;
+      const heightCurrentResolution = scale * resolution.precinctParameters.precinctHeight;
+      minWidthCurrentComponent = Math.min(minWidthCurrentComponent, widthCurrentResolution);
+      minHeightCurrentComponent = Math.min(minHeightCurrentComponent, heightCurrentResolution);
+      maxNumWideCurrentComponent = Math.max(maxNumWideCurrentComponent, resolution.precinctParameters.numprecinctswide);
+      maxNumHighCurrentComponent = Math.max(maxNumHighCurrentComponent, resolution.precinctParameters.numprecinctshigh);
+      sizePerResolution[r] = {
+        width: widthCurrentResolution,
+        height: heightCurrentResolution
+      };
+      scale <<= 1;
+    }
+
+    minWidth = Math.min(minWidth, minWidthCurrentComponent);
+    minHeight = Math.min(minHeight, minHeightCurrentComponent);
+    maxNumWide = Math.max(maxNumWide, maxNumWideCurrentComponent);
+    maxNumHigh = Math.max(maxNumHigh, maxNumHighCurrentComponent);
+    sizePerComponent[c] = {
+      resolutions: sizePerResolution,
+      minWidth: minWidthCurrentComponent,
+      minHeight: minHeightCurrentComponent,
+      maxNumWide: maxNumWideCurrentComponent,
+      maxNumHigh: maxNumHighCurrentComponent
+    };
+  }
+
+  return {
+    components: sizePerComponent,
+    minWidth,
+    minHeight,
+    maxNumWide,
+    maxNumHigh
+  };
+}
+
+function buildPackets(context) {
+  const siz = context.SIZ;
+  const tileIndex = context.currentTile.index;
+  const tile = context.tiles[tileIndex];
+  const componentsCount = siz.Csiz;
+
+  for (let c = 0; c < componentsCount; c++) {
+    const component = tile.components[c];
+    const decompositionLevelsCount = component.codingStyleParameters.decompositionLevelsCount;
+    const resolutions = [];
+    const subbands = [];
+
+    for (let r = 0; r <= decompositionLevelsCount; r++) {
+      const blocksDimensions = getBlocksDimensions(context, component, r);
+      const resolution = {};
+      const scale = 1 << decompositionLevelsCount - r;
+      resolution.trx0 = Math.ceil(component.tcx0 / scale);
+      resolution.try0 = Math.ceil(component.tcy0 / scale);
+      resolution.trx1 = Math.ceil(component.tcx1 / scale);
+      resolution.try1 = Math.ceil(component.tcy1 / scale);
+      resolution.resLevel = r;
+      buildPrecincts(context, resolution, blocksDimensions);
+      resolutions.push(resolution);
+      let subband;
+
+      if (r === 0) {
+        subband = {};
+        subband.type = "LL";
+        subband.tbx0 = Math.ceil(component.tcx0 / scale);
+        subband.tby0 = Math.ceil(component.tcy0 / scale);
+        subband.tbx1 = Math.ceil(component.tcx1 / scale);
+        subband.tby1 = Math.ceil(component.tcy1 / scale);
+        subband.resolution = resolution;
+        buildCodeblocks(context, subband, blocksDimensions);
+        subbands.push(subband);
+        resolution.subbands = [subband];
+      } else {
+        const bscale = 1 << decompositionLevelsCount - r + 1;
+        const resolutionSubbands = [];
+        subband = {};
+        subband.type = "HL";
+        subband.tbx0 = Math.ceil(component.tcx0 / bscale - 0.5);
+        subband.tby0 = Math.ceil(component.tcy0 / bscale);
+        subband.tbx1 = Math.ceil(component.tcx1 / bscale - 0.5);
+        subband.tby1 = Math.ceil(component.tcy1 / bscale);
+        subband.resolution = resolution;
+        buildCodeblocks(context, subband, blocksDimensions);
+        subbands.push(subband);
+        resolutionSubbands.push(subband);
+        subband = {};
+        subband.type = "LH";
+        subband.tbx0 = Math.ceil(component.tcx0 / bscale);
+        subband.tby0 = Math.ceil(component.tcy0 / bscale - 0.5);
+        subband.tbx1 = Math.ceil(component.tcx1 / bscale);
+        subband.tby1 = Math.ceil(component.tcy1 / bscale - 0.5);
+        subband.resolution = resolution;
+        buildCodeblocks(context, subband, blocksDimensions);
+        subbands.push(subband);
+        resolutionSubbands.push(subband);
+        subband = {};
+        subband.type = "HH";
+        subband.tbx0 = Math.ceil(component.tcx0 / bscale - 0.5);
+        subband.tby0 = Math.ceil(component.tcy0 / bscale - 0.5);
+        subband.tbx1 = Math.ceil(component.tcx1 / bscale - 0.5);
+        subband.tby1 = Math.ceil(component.tcy1 / bscale - 0.5);
+        subband.resolution = resolution;
+        buildCodeblocks(context, subband, blocksDimensions);
+        subbands.push(subband);
+        resolutionSubbands.push(subband);
+        resolution.subbands = resolutionSubbands;
+      }
+    }
+
+    component.resolutions = resolutions;
+    component.subbands = subbands;
+  }
+
+  const progressionOrder = tile.codingStyleDefaultParameters.progressionOrder;
+
+  switch (progressionOrder) {
+    case 0:
+      tile.packetsIterator = new LayerResolutionComponentPositionIterator(context);
+      break;
+
+    case 1:
+      tile.packetsIterator = new ResolutionLayerComponentPositionIterator(context);
+      break;
+
+    case 2:
+      tile.packetsIterator = new ResolutionPositionComponentLayerIterator(context);
+      break;
+
+    case 3:
+      tile.packetsIterator = new PositionComponentResolutionLayerIterator(context);
+      break;
+
+    case 4:
+      tile.packetsIterator = new ComponentPositionResolutionLayerIterator(context);
+      break;
+
+    default:
+      throw new JpxError(`Unsupported progression order ${progressionOrder}`);
+  }
+}
+
+function parseTilePackets(context, data, offset, dataLength) {
+  let position = 0;
+  let buffer,
+      bufferSize = 0,
+      skipNextBit = false;
+
+  function readBits(count) {
+    while (bufferSize < count) {
+      const b = data[offset + position];
+      position++;
+
+      if (skipNextBit) {
+        buffer = buffer << 7 | b;
+        bufferSize += 7;
+        skipNextBit = false;
+      } else {
+        buffer = buffer << 8 | b;
+        bufferSize += 8;
+      }
+
+      if (b === 0xff) {
+        skipNextBit = true;
+      }
+    }
+
+    bufferSize -= count;
+    return buffer >>> bufferSize & (1 << count) - 1;
+  }
+
+  function skipMarkerIfEqual(value) {
+    if (data[offset + position - 1] === 0xff && data[offset + position] === value) {
+      skipBytes(1);
+      return true;
+    } else if (data[offset + position] === 0xff && data[offset + position + 1] === value) {
+      skipBytes(2);
+      return true;
+    }
+
+    return false;
+  }
+
+  function skipBytes(count) {
+    position += count;
+  }
+
+  function alignToByte() {
+    bufferSize = 0;
+
+    if (skipNextBit) {
+      position++;
+      skipNextBit = false;
+    }
+  }
+
+  function readCodingpasses() {
+    if (readBits(1) === 0) {
+      return 1;
+    }
+
+    if (readBits(1) === 0) {
+      return 2;
+    }
+
+    let value = readBits(2);
+
+    if (value < 3) {
+      return value + 3;
+    }
+
+    value = readBits(5);
+
+    if (value < 31) {
+      return value + 6;
+    }
+
+    value = readBits(7);
+    return value + 37;
+  }
+
+  const tileIndex = context.currentTile.index;
+  const tile = context.tiles[tileIndex];
+  const sopMarkerUsed = context.COD.sopMarkerUsed;
+  const ephMarkerUsed = context.COD.ephMarkerUsed;
+  const packetsIterator = tile.packetsIterator;
+
+  while (position < dataLength) {
+    alignToByte();
+
+    if (sopMarkerUsed && skipMarkerIfEqual(0x91)) {
+      skipBytes(4);
+    }
+
+    const packet = packetsIterator.nextPacket();
+
+    if (!readBits(1)) {
+      continue;
+    }
+
+    const layerNumber = packet.layerNumber,
+          queue = [];
+    let codeblock;
+
+    for (let i = 0, ii = packet.codeblocks.length; i < ii; i++) {
+      codeblock = packet.codeblocks[i];
+      let precinct = codeblock.precinct;
+      const codeblockColumn = codeblock.cbx - precinct.cbxMin;
+      const codeblockRow = codeblock.cby - precinct.cbyMin;
+      let codeblockIncluded = false;
+      let firstTimeInclusion = false;
+      let valueReady, zeroBitPlanesTree;
+
+      if (codeblock.included !== undefined) {
+        codeblockIncluded = !!readBits(1);
+      } else {
+        precinct = codeblock.precinct;
+        let inclusionTree;
+
+        if (precinct.inclusionTree !== undefined) {
+          inclusionTree = precinct.inclusionTree;
+        } else {
+          const width = precinct.cbxMax - precinct.cbxMin + 1;
+          const height = precinct.cbyMax - precinct.cbyMin + 1;
+          inclusionTree = new InclusionTree(width, height, layerNumber);
+          zeroBitPlanesTree = new TagTree(width, height);
+          precinct.inclusionTree = inclusionTree;
+          precinct.zeroBitPlanesTree = zeroBitPlanesTree;
+        }
+
+        if (inclusionTree.reset(codeblockColumn, codeblockRow, layerNumber)) {
+          while (true) {
+            if (readBits(1)) {
+              valueReady = !inclusionTree.nextLevel();
+
+              if (valueReady) {
+                codeblock.included = true;
+                codeblockIncluded = firstTimeInclusion = true;
+                break;
+              }
+            } else {
+              inclusionTree.incrementValue(layerNumber);
+              break;
+            }
+          }
+        }
+      }
+
+      if (!codeblockIncluded) {
+        continue;
+      }
+
+      if (firstTimeInclusion) {
+        zeroBitPlanesTree = precinct.zeroBitPlanesTree;
+        zeroBitPlanesTree.reset(codeblockColumn, codeblockRow);
+
+        while (true) {
+          if (readBits(1)) {
+            valueReady = !zeroBitPlanesTree.nextLevel();
+
+            if (valueReady) {
+              break;
+            }
+          } else {
+            zeroBitPlanesTree.incrementValue();
+          }
+        }
+
+        codeblock.zeroBitPlanes = zeroBitPlanesTree.value;
+      }
+
+      const codingpasses = readCodingpasses();
+
+      while (readBits(1)) {
+        codeblock.Lblock++;
+      }
+
+      const codingpassesLog2 = (0, _core_utils.log2)(codingpasses);
+      const bits = (codingpasses < 1 << codingpassesLog2 ? codingpassesLog2 - 1 : codingpassesLog2) + codeblock.Lblock;
+      const codedDataLength = readBits(bits);
+      queue.push({
+        codeblock,
+        codingpasses,
+        dataLength: codedDataLength
+      });
+    }
+
+    alignToByte();
+
+    if (ephMarkerUsed) {
+      skipMarkerIfEqual(0x92);
+    }
+
+    while (queue.length > 0) {
+      const packetItem = queue.shift();
+      codeblock = packetItem.codeblock;
+
+      if (codeblock.data === undefined) {
+        codeblock.data = [];
+      }
+
+      codeblock.data.push({
+        data,
+        start: offset + position,
+        end: offset + position + packetItem.dataLength,
+        codingpasses: packetItem.codingpasses
+      });
+      position += packetItem.dataLength;
+    }
+  }
+
+  return position;
+}
+
+function copyCoefficients(coefficients, levelWidth, levelHeight, subband, delta, mb, reversible, segmentationSymbolUsed) {
+  const x0 = subband.tbx0;
+  const y0 = subband.tby0;
+  const width = subband.tbx1 - subband.tbx0;
+  const codeblocks = subband.codeblocks;
+  const right = subband.type.charAt(0) === "H" ? 1 : 0;
+  const bottom = subband.type.charAt(1) === "H" ? levelWidth : 0;
+
+  for (let i = 0, ii = codeblocks.length; i < ii; ++i) {
+    const codeblock = codeblocks[i];
+    const blockWidth = codeblock.tbx1_ - codeblock.tbx0_;
+    const blockHeight = codeblock.tby1_ - codeblock.tby0_;
+
+    if (blockWidth === 0 || blockHeight === 0) {
+      continue;
+    }
+
+    if (codeblock.data === undefined) {
+      continue;
+    }
+
+    const bitModel = new BitModel(blockWidth, blockHeight, codeblock.subbandType, codeblock.zeroBitPlanes, mb);
+    let currentCodingpassType = 2;
+    const data = codeblock.data;
+    let totalLength = 0,
+        codingpasses = 0;
+    let j, jj, dataItem;
+
+    for (j = 0, jj = data.length; j < jj; j++) {
+      dataItem = data[j];
+      totalLength += dataItem.end - dataItem.start;
+      codingpasses += dataItem.codingpasses;
+    }
+
+    const encodedData = new Uint8Array(totalLength);
+    let position = 0;
+
+    for (j = 0, jj = data.length; j < jj; j++) {
+      dataItem = data[j];
+      const chunk = dataItem.data.subarray(dataItem.start, dataItem.end);
+      encodedData.set(chunk, position);
+      position += chunk.length;
+    }
+
+    const decoder = new _arithmetic_decoder.ArithmeticDecoder(encodedData, 0, totalLength);
+    bitModel.setDecoder(decoder);
+
+    for (j = 0; j < codingpasses; j++) {
+      switch (currentCodingpassType) {
+        case 0:
+          bitModel.runSignificancePropagationPass();
+          break;
+
+        case 1:
+          bitModel.runMagnitudeRefinementPass();
+          break;
+
+        case 2:
+          bitModel.runCleanupPass();
+
+          if (segmentationSymbolUsed) {
+            bitModel.checkSegmentationSymbol();
+          }
+
+          break;
+      }
+
+      currentCodingpassType = (currentCodingpassType + 1) % 3;
+    }
+
+    let offset = codeblock.tbx0_ - x0 + (codeblock.tby0_ - y0) * width;
+    const sign = bitModel.coefficentsSign;
+    const magnitude = bitModel.coefficentsMagnitude;
+    const bitsDecoded = bitModel.bitsDecoded;
+    const magnitudeCorrection = reversible ? 0 : 0.5;
+    let k, n, nb;
+    position = 0;
+    const interleave = subband.type !== "LL";
+
+    for (j = 0; j < blockHeight; j++) {
+      const row = offset / width | 0;
+      const levelOffset = 2 * row * (levelWidth - width) + right + bottom;
+
+      for (k = 0; k < blockWidth; k++) {
+        n = magnitude[position];
+
+        if (n !== 0) {
+          n = (n + magnitudeCorrection) * delta;
+
+          if (sign[position] !== 0) {
+            n = -n;
+          }
+
+          nb = bitsDecoded[position];
+          const pos = interleave ? levelOffset + (offset << 1) : offset;
+
+          if (reversible && nb >= mb) {
+            coefficients[pos] = n;
+          } else {
+            coefficients[pos] = n * (1 << mb - nb);
+          }
+        }
+
+        offset++;
+        position++;
+      }
+
+      offset += width - blockWidth;
+    }
+  }
+}
+
+function transformTile(context, tile, c) {
+  const component = tile.components[c];
+  const codingStyleParameters = component.codingStyleParameters;
+  const quantizationParameters = component.quantizationParameters;
+  const decompositionLevelsCount = codingStyleParameters.decompositionLevelsCount;
+  const spqcds = quantizationParameters.SPqcds;
+  const scalarExpounded = quantizationParameters.scalarExpounded;
+  const guardBits = quantizationParameters.guardBits;
+  const segmentationSymbolUsed = codingStyleParameters.segmentationSymbolUsed;
+  const precision = context.components[c].precision;
+  const reversible = codingStyleParameters.reversibleTransformation;
+  const transform = reversible ? new ReversibleTransform() : new IrreversibleTransform();
+  const subbandCoefficients = [];
+  let b = 0;
+
+  for (let i = 0; i <= decompositionLevelsCount; i++) {
+    const resolution = component.resolutions[i];
+    const width = resolution.trx1 - resolution.trx0;
+    const height = resolution.try1 - resolution.try0;
+    const coefficients = new Float32Array(width * height);
+
+    for (let j = 0, jj = resolution.subbands.length; j < jj; j++) {
+      let mu, epsilon;
+
+      if (!scalarExpounded) {
+        mu = spqcds[0].mu;
+        epsilon = spqcds[0].epsilon + (i > 0 ? 1 - i : 0);
+      } else {
+        mu = spqcds[b].mu;
+        epsilon = spqcds[b].epsilon;
+        b++;
+      }
+
+      const subband = resolution.subbands[j];
+      const gainLog2 = SubbandsGainLog2[subband.type];
+      const delta = reversible ? 1 : 2 ** (precision + gainLog2 - epsilon) * (1 + mu / 2048);
+      const mb = guardBits + epsilon - 1;
+      copyCoefficients(coefficients, width, height, subband, delta, mb, reversible, segmentationSymbolUsed);
+    }
+
+    subbandCoefficients.push({
+      width,
+      height,
+      items: coefficients
+    });
+  }
+
+  const result = transform.calculate(subbandCoefficients, component.tcx0, component.tcy0);
+  return {
+    left: component.tcx0,
+    top: component.tcy0,
+    width: result.width,
+    height: result.height,
+    items: result.items
+  };
+}
+
+function transformComponents(context) {
+  const siz = context.SIZ;
+  const components = context.components;
+  const componentsCount = siz.Csiz;
+  const resultImages = [];
+
+  for (let i = 0, ii = context.tiles.length; i < ii; i++) {
+    const tile = context.tiles[i];
+    const transformedTiles = [];
+
+    for (let c = 0; c < componentsCount; c++) {
+      transformedTiles[c] = transformTile(context, tile, c);
+    }
+
+    const tile0 = transformedTiles[0];
+    const out = new Uint8ClampedArray(tile0.items.length * componentsCount);
+    const result = {
+      left: tile0.left,
+      top: tile0.top,
+      width: tile0.width,
+      height: tile0.height,
+      items: out
+    };
+    let shift, offset;
+    let pos = 0,
+        j,
+        jj,
+        y0,
+        y1,
+        y2;
+
+    if (tile.codingStyleDefaultParameters.multipleComponentTransform) {
+      const fourComponents = componentsCount === 4;
+      const y0items = transformedTiles[0].items;
+      const y1items = transformedTiles[1].items;
+      const y2items = transformedTiles[2].items;
+      const y3items = fourComponents ? transformedTiles[3].items : null;
+      shift = components[0].precision - 8;
+      offset = (128 << shift) + 0.5;
+      const component0 = tile.components[0];
+      const alpha01 = componentsCount - 3;
+      jj = y0items.length;
+
+      if (!component0.codingStyleParameters.reversibleTransformation) {
+        for (j = 0; j < jj; j++, pos += alpha01) {
+          y0 = y0items[j] + offset;
+          y1 = y1items[j];
+          y2 = y2items[j];
+          out[pos++] = y0 + 1.402 * y2 >> shift;
+          out[pos++] = y0 - 0.34413 * y1 - 0.71414 * y2 >> shift;
+          out[pos++] = y0 + 1.772 * y1 >> shift;
+        }
+      } else {
+        for (j = 0; j < jj; j++, pos += alpha01) {
+          y0 = y0items[j] + offset;
+          y1 = y1items[j];
+          y2 = y2items[j];
+          const g = y0 - (y2 + y1 >> 2);
+          out[pos++] = g + y2 >> shift;
+          out[pos++] = g >> shift;
+          out[pos++] = g + y1 >> shift;
+        }
+      }
+
+      if (fourComponents) {
+        for (j = 0, pos = 3; j < jj; j++, pos += 4) {
+          out[pos] = y3items[j] + offset >> shift;
+        }
+      }
+    } else {
+      for (let c = 0; c < componentsCount; c++) {
+        const items = transformedTiles[c].items;
+        shift = components[c].precision - 8;
+        offset = (128 << shift) + 0.5;
+
+        for (pos = c, j = 0, jj = items.length; j < jj; j++) {
+          out[pos] = items[j] + offset >> shift;
+          pos += componentsCount;
+        }
+      }
+    }
+
+    resultImages.push(result);
+  }
+
+  return resultImages;
+}
+
+function initializeTile(context, tileIndex) {
+  const siz = context.SIZ;
+  const componentsCount = siz.Csiz;
+  const tile = context.tiles[tileIndex];
+
+  for (let c = 0; c < componentsCount; c++) {
+    const component = tile.components[c];
+    const qcdOrQcc = context.currentTile.QCC[c] !== undefined ? context.currentTile.QCC[c] : context.currentTile.QCD;
+    component.quantizationParameters = qcdOrQcc;
+    const codOrCoc = context.currentTile.COC[c] !== undefined ? context.currentTile.COC[c] : context.currentTile.COD;
+    component.codingStyleParameters = codOrCoc;
+  }
+
+  tile.codingStyleDefaultParameters = context.currentTile.COD;
+}
+
+class TagTree {
+  constructor(width, height) {
+    const levelsLength = (0, _core_utils.log2)(Math.max(width, height)) + 1;
+    this.levels = [];
+
+    for (let i = 0; i < levelsLength; i++) {
+      const level = {
+        width,
+        height,
+        items: []
+      };
+      this.levels.push(level);
+      width = Math.ceil(width / 2);
+      height = Math.ceil(height / 2);
+    }
+  }
+
+  reset(i, j) {
+    let currentLevel = 0,
+        value = 0,
+        level;
+
+    while (currentLevel < this.levels.length) {
+      level = this.levels[currentLevel];
+      const index = i + j * level.width;
+
+      if (level.items[index] !== undefined) {
+        value = level.items[index];
+        break;
+      }
+
+      level.index = index;
+      i >>= 1;
+      j >>= 1;
+      currentLevel++;
+    }
+
+    currentLevel--;
+    level = this.levels[currentLevel];
+    level.items[level.index] = value;
+    this.currentLevel = currentLevel;
+    delete this.value;
+  }
+
+  incrementValue() {
+    const level = this.levels[this.currentLevel];
+    level.items[level.index]++;
+  }
+
+  nextLevel() {
+    let currentLevel = this.currentLevel;
+    let level = this.levels[currentLevel];
+    const value = level.items[level.index];
+    currentLevel--;
+
+    if (currentLevel < 0) {
+      this.value = value;
+      return false;
+    }
+
+    this.currentLevel = currentLevel;
+    level = this.levels[currentLevel];
+    level.items[level.index] = value;
+    return true;
+  }
+
+}
+
+class InclusionTree {
+  constructor(width, height, defaultValue) {
+    const levelsLength = (0, _core_utils.log2)(Math.max(width, height)) + 1;
+    this.levels = [];
+
+    for (let i = 0; i < levelsLength; i++) {
+      const items = new Uint8Array(width * height);
+
+      for (let j = 0, jj = items.length; j < jj; j++) {
+        items[j] = defaultValue;
+      }
+
+      const level = {
+        width,
+        height,
+        items
+      };
+      this.levels.push(level);
+      width = Math.ceil(width / 2);
+      height = Math.ceil(height / 2);
+    }
+  }
+
+  reset(i, j, stopValue) {
+    let currentLevel = 0;
+
+    while (currentLevel < this.levels.length) {
+      const level = this.levels[currentLevel];
+      const index = i + j * level.width;
+      level.index = index;
+      const value = level.items[index];
+
+      if (value === 0xff) {
+        break;
+      }
+
+      if (value > stopValue) {
+        this.currentLevel = currentLevel;
+        this.propagateValues();
+        return false;
+      }
+
+      i >>= 1;
+      j >>= 1;
+      currentLevel++;
+    }
+
+    this.currentLevel = currentLevel - 1;
+    return true;
+  }
+
+  incrementValue(stopValue) {
+    const level = this.levels[this.currentLevel];
+    level.items[level.index] = stopValue + 1;
+    this.propagateValues();
+  }
+
+  propagateValues() {
+    let levelIndex = this.currentLevel;
+    let level = this.levels[levelIndex];
+    const currentValue = level.items[level.index];
+
+    while (--levelIndex >= 0) {
+      level = this.levels[levelIndex];
+      level.items[level.index] = currentValue;
+    }
+  }
+
+  nextLevel() {
+    let currentLevel = this.currentLevel;
+    let level = this.levels[currentLevel];
+    const value = level.items[level.index];
+    level.items[level.index] = 0xff;
+    currentLevel--;
+
+    if (currentLevel < 0) {
+      return false;
+    }
+
+    this.currentLevel = currentLevel;
+    level = this.levels[currentLevel];
+    level.items[level.index] = value;
+    return true;
+  }
+
+}
+
+const BitModel = function BitModelClosure() {
+  const UNIFORM_CONTEXT = 17;
+  const RUNLENGTH_CONTEXT = 18;
+  const LLAndLHContextsLabel = new Uint8Array([0, 5, 8, 0, 3, 7, 8, 0, 4, 7, 8, 0, 0, 0, 0, 0, 1, 6, 8, 0, 3, 7, 8, 0, 4, 7, 8, 0, 0, 0, 0, 0, 2, 6, 8, 0, 3, 7, 8, 0, 4, 7, 8, 0, 0, 0, 0, 0, 2, 6, 8, 0, 3, 7, 8, 0, 4, 7, 8, 0, 0, 0, 0, 0, 2, 6, 8, 0, 3, 7, 8, 0, 4, 7, 8]);
+  const HLContextLabel = new Uint8Array([0, 3, 4, 0, 5, 7, 7, 0, 8, 8, 8, 0, 0, 0, 0, 0, 1, 3, 4, 0, 6, 7, 7, 0, 8, 8, 8, 0, 0, 0, 0, 0, 2, 3, 4, 0, 6, 7, 7, 0, 8, 8, 8, 0, 0, 0, 0, 0, 2, 3, 4, 0, 6, 7, 7, 0, 8, 8, 8, 0, 0, 0, 0, 0, 2, 3, 4, 0, 6, 7, 7, 0, 8, 8, 8]);
+  const HHContextLabel = new Uint8Array([0, 1, 2, 0, 1, 2, 2, 0, 2, 2, 2, 0, 0, 0, 0, 0, 3, 4, 5, 0, 4, 5, 5, 0, 5, 5, 5, 0, 0, 0, 0, 0, 6, 7, 7, 0, 7, 7, 7, 0, 7, 7, 7, 0, 0, 0, 0, 0, 8, 8, 8, 0, 8, 8, 8, 0, 8, 8, 8, 0, 0, 0, 0, 0, 8, 8, 8, 0, 8, 8, 8, 0, 8, 8, 8]);
+
+  class BitModel {
+    constructor(width, height, subband, zeroBitPlanes, mb) {
+      this.width = width;
+      this.height = height;
+      let contextLabelTable;
+
+      if (subband === "HH") {
+        contextLabelTable = HHContextLabel;
+      } else if (subband === "HL") {
+        contextLabelTable = HLContextLabel;
+      } else {
+        contextLabelTable = LLAndLHContextsLabel;
+      }
+
+      this.contextLabelTable = contextLabelTable;
+      const coefficientCount = width * height;
+      this.neighborsSignificance = new Uint8Array(coefficientCount);
+      this.coefficentsSign = new Uint8Array(coefficientCount);
+      let coefficentsMagnitude;
+
+      if (mb > 14) {
+        coefficentsMagnitude = new Uint32Array(coefficientCount);
+      } else if (mb > 6) {
+        coefficentsMagnitude = new Uint16Array(coefficientCount);
+      } else {
+        coefficentsMagnitude = new Uint8Array(coefficientCount);
+      }
+
+      this.coefficentsMagnitude = coefficentsMagnitude;
+      this.processingFlags = new Uint8Array(coefficientCount);
+      const bitsDecoded = new Uint8Array(coefficientCount);
+
+      if (zeroBitPlanes !== 0) {
+        for (let i = 0; i < coefficientCount; i++) {
+          bitsDecoded[i] = zeroBitPlanes;
+        }
+      }
+
+      this.bitsDecoded = bitsDecoded;
+      this.reset();
+    }
+
+    setDecoder(decoder) {
+      this.decoder = decoder;
+    }
+
+    reset() {
+      this.contexts = new Int8Array(19);
+      this.contexts[0] = 4 << 1 | 0;
+      this.contexts[UNIFORM_CONTEXT] = 46 << 1 | 0;
+      this.contexts[RUNLENGTH_CONTEXT] = 3 << 1 | 0;
+    }
+
+    setNeighborsSignificance(row, column, index) {
+      const neighborsSignificance = this.neighborsSignificance;
+      const width = this.width,
+            height = this.height;
+      const left = column > 0;
+      const right = column + 1 < width;
+      let i;
+
+      if (row > 0) {
+        i = index - width;
+
+        if (left) {
+          neighborsSignificance[i - 1] += 0x10;
+        }
+
+        if (right) {
+          neighborsSignificance[i + 1] += 0x10;
+        }
+
+        neighborsSignificance[i] += 0x04;
+      }
+
+      if (row + 1 < height) {
+        i = index + width;
+
+        if (left) {
+          neighborsSignificance[i - 1] += 0x10;
+        }
+
+        if (right) {
+          neighborsSignificance[i + 1] += 0x10;
+        }
+
+        neighborsSignificance[i] += 0x04;
+      }
+
+      if (left) {
+        neighborsSignificance[index - 1] += 0x01;
+      }
+
+      if (right) {
+        neighborsSignificance[index + 1] += 0x01;
+      }
+
+      neighborsSignificance[index] |= 0x80;
+    }
+
+    runSignificancePropagationPass() {
+      const decoder = this.decoder;
+      const width = this.width,
+            height = this.height;
+      const coefficentsMagnitude = this.coefficentsMagnitude;
+      const coefficentsSign = this.coefficentsSign;
+      const neighborsSignificance = this.neighborsSignificance;
+      const processingFlags = this.processingFlags;
+      const contexts = this.contexts;
+      const labels = this.contextLabelTable;
+      const bitsDecoded = this.bitsDecoded;
+      const processedInverseMask = ~1;
+      const processedMask = 1;
+      const firstMagnitudeBitMask = 2;
+
+      for (let i0 = 0; i0 < height; i0 += 4) {
+        for (let j = 0; j < width; j++) {
+          let index = i0 * width + j;
+
+          for (let i1 = 0; i1 < 4; i1++, index += width) {
+            const i = i0 + i1;
+
+            if (i >= height) {
+              break;
+            }
+
+            processingFlags[index] &= processedInverseMask;
+
+            if (coefficentsMagnitude[index] || !neighborsSignificance[index]) {
+              continue;
+            }
+
+            const contextLabel = labels[neighborsSignificance[index]];
+            const decision = decoder.readBit(contexts, contextLabel);
+
+            if (decision) {
+              const sign = this.decodeSignBit(i, j, index);
+              coefficentsSign[index] = sign;
+              coefficentsMagnitude[index] = 1;
+              this.setNeighborsSignificance(i, j, index);
+              processingFlags[index] |= firstMagnitudeBitMask;
+            }
+
+            bitsDecoded[index]++;
+            processingFlags[index] |= processedMask;
+          }
+        }
+      }
+    }
+
+    decodeSignBit(row, column, index) {
+      const width = this.width,
+            height = this.height;
+      const coefficentsMagnitude = this.coefficentsMagnitude;
+      const coefficentsSign = this.coefficentsSign;
+      let contribution, sign0, sign1, significance1;
+      let contextLabel, decoded;
+      significance1 = column > 0 && coefficentsMagnitude[index - 1] !== 0;
+
+      if (column + 1 < width && coefficentsMagnitude[index + 1] !== 0) {
+        sign1 = coefficentsSign[index + 1];
+
+        if (significance1) {
+          sign0 = coefficentsSign[index - 1];
+          contribution = 1 - sign1 - sign0;
+        } else {
+          contribution = 1 - sign1 - sign1;
+        }
+      } else if (significance1) {
+        sign0 = coefficentsSign[index - 1];
+        contribution = 1 - sign0 - sign0;
+      } else {
+        contribution = 0;
+      }
+
+      const horizontalContribution = 3 * contribution;
+      significance1 = row > 0 && coefficentsMagnitude[index - width] !== 0;
+
+      if (row + 1 < height && coefficentsMagnitude[index + width] !== 0) {
+        sign1 = coefficentsSign[index + width];
+
+        if (significance1) {
+          sign0 = coefficentsSign[index - width];
+          contribution = 1 - sign1 - sign0 + horizontalContribution;
+        } else {
+          contribution = 1 - sign1 - sign1 + horizontalContribution;
+        }
+      } else if (significance1) {
+        sign0 = coefficentsSign[index - width];
+        contribution = 1 - sign0 - sign0 + horizontalContribution;
+      } else {
+        contribution = horizontalContribution;
+      }
+
+      if (contribution >= 0) {
+        contextLabel = 9 + contribution;
+        decoded = this.decoder.readBit(this.contexts, contextLabel);
+      } else {
+        contextLabel = 9 - contribution;
+        decoded = this.decoder.readBit(this.contexts, contextLabel) ^ 1;
+      }
+
+      return decoded;
+    }
+
+    runMagnitudeRefinementPass() {
+      const decoder = this.decoder;
+      const width = this.width,
+            height = this.height;
+      const coefficentsMagnitude = this.coefficentsMagnitude;
+      const neighborsSignificance = this.neighborsSignificance;
+      const contexts = this.contexts;
+      const bitsDecoded = this.bitsDecoded;
+      const processingFlags = this.processingFlags;
+      const processedMask = 1;
+      const firstMagnitudeBitMask = 2;
+      const length = width * height;
+      const width4 = width * 4;
+
+      for (let index0 = 0, indexNext; index0 < length; index0 = indexNext) {
+        indexNext = Math.min(length, index0 + width4);
+
+        for (let j = 0; j < width; j++) {
+          for (let index = index0 + j; index < indexNext; index += width) {
+            if (!coefficentsMagnitude[index] || (processingFlags[index] & processedMask) !== 0) {
+              continue;
+            }
+
+            let contextLabel = 16;
+
+            if ((processingFlags[index] & firstMagnitudeBitMask) !== 0) {
+              processingFlags[index] ^= firstMagnitudeBitMask;
+              const significance = neighborsSignificance[index] & 127;
+              contextLabel = significance === 0 ? 15 : 14;
+            }
+
+            const bit = decoder.readBit(contexts, contextLabel);
+            coefficentsMagnitude[index] = coefficentsMagnitude[index] << 1 | bit;
+            bitsDecoded[index]++;
+            processingFlags[index] |= processedMask;
+          }
+        }
+      }
+    }
+
+    runCleanupPass() {
+      const decoder = this.decoder;
+      const width = this.width,
+            height = this.height;
+      const neighborsSignificance = this.neighborsSignificance;
+      const coefficentsMagnitude = this.coefficentsMagnitude;
+      const coefficentsSign = this.coefficentsSign;
+      const contexts = this.contexts;
+      const labels = this.contextLabelTable;
+      const bitsDecoded = this.bitsDecoded;
+      const processingFlags = this.processingFlags;
+      const processedMask = 1;
+      const firstMagnitudeBitMask = 2;
+      const oneRowDown = width;
+      const twoRowsDown = width * 2;
+      const threeRowsDown = width * 3;
+      let iNext;
+
+      for (let i0 = 0; i0 < height; i0 = iNext) {
+        iNext = Math.min(i0 + 4, height);
+        const indexBase = i0 * width;
+        const checkAllEmpty = i0 + 3 < height;
+
+        for (let j = 0; j < width; j++) {
+          const index0 = indexBase + j;
+          const allEmpty = checkAllEmpty && processingFlags[index0] === 0 && processingFlags[index0 + oneRowDown] === 0 && processingFlags[index0 + twoRowsDown] === 0 && processingFlags[index0 + threeRowsDown] === 0 && neighborsSignificance[index0] === 0 && neighborsSignificance[index0 + oneRowDown] === 0 && neighborsSignificance[index0 + twoRowsDown] === 0 && neighborsSignificance[index0 + threeRowsDown] === 0;
+          let i1 = 0,
+              index = index0;
+          let i = i0,
+              sign;
+
+          if (allEmpty) {
+            const hasSignificantCoefficent = decoder.readBit(contexts, RUNLENGTH_CONTEXT);
+
+            if (!hasSignificantCoefficent) {
+              bitsDecoded[index0]++;
+              bitsDecoded[index0 + oneRowDown]++;
+              bitsDecoded[index0 + twoRowsDown]++;
+              bitsDecoded[index0 + threeRowsDown]++;
+              continue;
+            }
+
+            i1 = decoder.readBit(contexts, UNIFORM_CONTEXT) << 1 | decoder.readBit(contexts, UNIFORM_CONTEXT);
+
+            if (i1 !== 0) {
+              i = i0 + i1;
+              index += i1 * width;
+            }
+
+            sign = this.decodeSignBit(i, j, index);
+            coefficentsSign[index] = sign;
+            coefficentsMagnitude[index] = 1;
+            this.setNeighborsSignificance(i, j, index);
+            processingFlags[index] |= firstMagnitudeBitMask;
+            index = index0;
+
+            for (let i2 = i0; i2 <= i; i2++, index += width) {
+              bitsDecoded[index]++;
+            }
+
+            i1++;
+          }
+
+          for (i = i0 + i1; i < iNext; i++, index += width) {
+            if (coefficentsMagnitude[index] || (processingFlags[index] & processedMask) !== 0) {
+              continue;
+            }
+
+            const contextLabel = labels[neighborsSignificance[index]];
+            const decision = decoder.readBit(contexts, contextLabel);
+
+            if (decision === 1) {
+              sign = this.decodeSignBit(i, j, index);
+              coefficentsSign[index] = sign;
+              coefficentsMagnitude[index] = 1;
+              this.setNeighborsSignificance(i, j, index);
+              processingFlags[index] |= firstMagnitudeBitMask;
+            }
+
+            bitsDecoded[index]++;
+          }
+        }
+      }
+    }
+
+    checkSegmentationSymbol() {
+      const decoder = this.decoder;
+      const contexts = this.contexts;
+      const symbol = decoder.readBit(contexts, UNIFORM_CONTEXT) << 3 | decoder.readBit(contexts, UNIFORM_CONTEXT) << 2 | decoder.readBit(contexts, UNIFORM_CONTEXT) << 1 | decoder.readBit(contexts, UNIFORM_CONTEXT);
+
+      if (symbol !== 0xa) {
+        throw new JpxError("Invalid segmentation symbol");
+      }
+    }
+
+  }
+
+  return BitModel;
+}();
+
+class Transform {
+  constructor() {
+    if (this.constructor === Transform) {
+      (0, _util.unreachable)("Cannot initialize Transform.");
+    }
+  }
+
+  calculate(subbands, u0, v0) {
+    let ll = subbands[0];
+
+    for (let i = 1, ii = subbands.length; i < ii; i++) {
+      ll = this.iterate(ll, subbands[i], u0, v0);
+    }
+
+    return ll;
+  }
+
+  extend(buffer, offset, size) {
+    let i1 = offset - 1,
+        j1 = offset + 1;
+    let i2 = offset + size - 2,
+        j2 = offset + size;
+    buffer[i1--] = buffer[j1++];
+    buffer[j2++] = buffer[i2--];
+    buffer[i1--] = buffer[j1++];
+    buffer[j2++] = buffer[i2--];
+    buffer[i1--] = buffer[j1++];
+    buffer[j2++] = buffer[i2--];
+    buffer[i1] = buffer[j1];
+    buffer[j2] = buffer[i2];
+  }
+
+  filter(x, offset, length) {
+    (0, _util.unreachable)("Abstract method `filter` called");
+  }
+
+  iterate(ll, hl_lh_hh, u0, v0) {
+    const llWidth = ll.width,
+          llHeight = ll.height;
+    let llItems = ll.items;
+    const width = hl_lh_hh.width;
+    const height = hl_lh_hh.height;
+    const items = hl_lh_hh.items;
+    let i, j, k, l, u, v;
+
+    for (k = 0, i = 0; i < llHeight; i++) {
+      l = i * 2 * width;
+
+      for (j = 0; j < llWidth; j++, k++, l += 2) {
+        items[l] = llItems[k];
+      }
+    }
+
+    llItems = ll.items = null;
+    const bufferPadding = 4;
+    const rowBuffer = new Float32Array(width + 2 * bufferPadding);
+
+    if (width === 1) {
+      if ((u0 & 1) !== 0) {
+        for (v = 0, k = 0; v < height; v++, k += width) {
+          items[k] *= 0.5;
+        }
+      }
+    } else {
+      for (v = 0, k = 0; v < height; v++, k += width) {
+        rowBuffer.set(items.subarray(k, k + width), bufferPadding);
+        this.extend(rowBuffer, bufferPadding, width);
+        this.filter(rowBuffer, bufferPadding, width);
+        items.set(rowBuffer.subarray(bufferPadding, bufferPadding + width), k);
+      }
+    }
+
+    let numBuffers = 16;
+    const colBuffers = [];
+
+    for (i = 0; i < numBuffers; i++) {
+      colBuffers.push(new Float32Array(height + 2 * bufferPadding));
+    }
+
+    let b,
+        currentBuffer = 0;
+    ll = bufferPadding + height;
+
+    if (height === 1) {
+      if ((v0 & 1) !== 0) {
+        for (u = 0; u < width; u++) {
+          items[u] *= 0.5;
+        }
+      }
+    } else {
+      for (u = 0; u < width; u++) {
+        if (currentBuffer === 0) {
+          numBuffers = Math.min(width - u, numBuffers);
+
+          for (k = u, l = bufferPadding; l < ll; k += width, l++) {
+            for (b = 0; b < numBuffers; b++) {
+              colBuffers[b][l] = items[k + b];
+            }
+          }
+
+          currentBuffer = numBuffers;
+        }
+
+        currentBuffer--;
+        const buffer = colBuffers[currentBuffer];
+        this.extend(buffer, bufferPadding, height);
+        this.filter(buffer, bufferPadding, height);
+
+        if (currentBuffer === 0) {
+          k = u - numBuffers + 1;
+
+          for (l = bufferPadding; l < ll; k += width, l++) {
+            for (b = 0; b < numBuffers; b++) {
+              items[k + b] = colBuffers[b][l];
+            }
+          }
+        }
+      }
+    }
+
+    return {
+      width,
+      height,
+      items
+    };
+  }
+
+}
+
+class IrreversibleTransform extends Transform {
+  filter(x, offset, length) {
+    const len = length >> 1;
+    offset = offset | 0;
+    let j, n, current, next;
+    const alpha = -1.586134342059924;
+    const beta = -0.052980118572961;
+    const gamma = 0.882911075530934;
+    const delta = 0.443506852043971;
+    const K = 1.230174104914001;
+    const K_ = 1 / K;
+    j = offset - 3;
+
+    for (n = len + 4; n--; j += 2) {
+      x[j] *= K_;
+    }
+
+    j = offset - 2;
+    current = delta * x[j - 1];
+
+    for (n = len + 3; n--; j += 2) {
+      next = delta * x[j + 1];
+      x[j] = K * x[j] - current - next;
+
+      if (n--) {
+        j += 2;
+        current = delta * x[j + 1];
+        x[j] = K * x[j] - current - next;
+      } else {
+        break;
+      }
+    }
+
+    j = offset - 1;
+    current = gamma * x[j - 1];
+
+    for (n = len + 2; n--; j += 2) {
+      next = gamma * x[j + 1];
+      x[j] -= current + next;
+
+      if (n--) {
+        j += 2;
+        current = gamma * x[j + 1];
+        x[j] -= current + next;
+      } else {
+        break;
+      }
+    }
+
+    j = offset;
+    current = beta * x[j - 1];
+
+    for (n = len + 1; n--; j += 2) {
+      next = beta * x[j + 1];
+      x[j] -= current + next;
+
+      if (n--) {
+        j += 2;
+        current = beta * x[j + 1];
+        x[j] -= current + next;
+      } else {
+        break;
+      }
+    }
+
+    if (len !== 0) {
+      j = offset + 1;
+      current = alpha * x[j - 1];
+
+      for (n = len; n--; j += 2) {
+        next = alpha * x[j + 1];
+        x[j] -= current + next;
+
+        if (n--) {
+          j += 2;
+          current = alpha * x[j + 1];
+          x[j] -= current + next;
+        } else {
+          break;
+        }
+      }
+    }
+  }
+
+}
+
+class ReversibleTransform extends Transform {
+  filter(x, offset, length) {
+    const len = length >> 1;
+    offset = offset | 0;
+    let j, n;
+
+    for (j = offset, n = len + 1; n--; j += 2) {
+      x[j] -= x[j - 1] + x[j + 1] + 2 >> 2;
+    }
+
+    for (j = offset + 1, n = len; n--; j += 2) {
+      x[j] += x[j - 1] + x[j + 1] >> 1;
+    }
+  }
+
+}
+
+/***/ })
+/******/ 	]);
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	var __webpack_module_cache__ = {};
+/******/ 	
+/******/ 	// The require function
+/******/ 	function __w_pdfjs_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = __webpack_module_cache__[moduleId] = {
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
+/******/ 			exports: {}
+/******/ 		};
+/******/ 	
+/******/ 		// Execute the module function
+/******/ 		__webpack_modules__[moduleId](module, module.exports, __w_pdfjs_require__);
+/******/ 	
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/ 	
+/************************************************************************/
+var __webpack_exports__ = {};
+// This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
+(() => {
+var exports = __webpack_exports__;
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+Object.defineProperty(exports, "getVerbosityLevel", ({
+  enumerable: true,
+  get: function () {
+    return _util.getVerbosityLevel;
+  }
+}));
+Object.defineProperty(exports, "setVerbosityLevel", ({
+  enumerable: true,
+  get: function () {
+    return _util.setVerbosityLevel;
+  }
+}));
+Object.defineProperty(exports, "Jbig2Image", ({
+  enumerable: true,
+  get: function () {
+    return _jbig.Jbig2Image;
+  }
+}));
+Object.defineProperty(exports, "JpegImage", ({
+  enumerable: true,
+  get: function () {
+    return _jpg.JpegImage;
+  }
+}));
+Object.defineProperty(exports, "JpxImage", ({
+  enumerable: true,
+  get: function () {
+    return _jpx.JpxImage;
+  }
+}));
+
+var _util = __w_pdfjs_require__(1);
+
+var _jbig = __w_pdfjs_require__(4);
+
+var _jpg = __w_pdfjs_require__(10);
+
+var _jpx = __w_pdfjs_require__(11);
+
+const pdfjsVersion = '2.9.359';
+const pdfjsBuild = 'e667c8cbc';
+})();
+
+/******/ 	return __webpack_exports__;
+/******/ })()
+;
+});
+//# sourceMappingURL=pdf.image_decoders.js.map

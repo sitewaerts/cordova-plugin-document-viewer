@@ -6,6 +6,8 @@
         enabled: true
     };
 
+    var PDFJS;
+
     var _closeRequested = false;
     var _closeables = [];
 
@@ -1838,6 +1840,9 @@
          */
         function ($rootScope, $q, log)
         {
+
+            PDFJS = window['pdfjs-dist/build/pdf'];
+
             var EVENTS = {
                 LOADING_PDF: 'pdf.loading',
                 SHOW_PDF: 'pdf.loaded',
