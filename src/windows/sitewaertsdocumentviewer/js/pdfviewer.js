@@ -211,6 +211,10 @@
         });
     };
 
+    /**
+     *
+     * @type {angular.IModule}
+     */
     var module = angular.module('viewer', ['winjs'], null);
 
     module.run(function ($rootScope)
@@ -1970,8 +1974,7 @@
                             if (_closeRequested)
                                 return;
 
-                            log.info("cannot load outline for pdf", fileUri,
-                                error);
+                            log.warn("cannot load outline for pdf", fileUri, error);
                             service.doc.outline = null;
                             resolve();
                         }
