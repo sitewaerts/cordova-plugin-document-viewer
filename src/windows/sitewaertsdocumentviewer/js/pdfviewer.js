@@ -1967,8 +1967,8 @@
                 {
                     // TODO: Password protected file? user should provide a password to open the file
 
-                    PDFJS.disableWorker = true;
-                    PDFJS.workerSrc = 'js/pdfjs-dist/pdf.worker.js';
+                    PDFJS.GlobalWorkerOptions.disableWorker = true;
+                    PDFJS.GlobalWorkerOptions.workerSrc = 'js/pdfjs-dist/pdf.worker.js';
 
                     return $q(function (resolve, reject)
                     {
@@ -2077,7 +2077,11 @@
                             resolve();
                         }
 
-                        PDFJS.getDocument(fileUri).then(
+                        var pdfLoadingTask = PDFJS.getDocument(fileUri);
+                        _addCloseable(function(){
+                            return pdfLoadingTask.destroy();
+                        });
+                        pdfLoadingTask.promise.then(
                             /**
                              *
                              * @param {PDFDocumentProxy} pdf
@@ -2088,8 +2092,7 @@
                                 {
                                     _addCloseable(function ()
                                     {
-                                        pdf.cleanup();
-                                        pdf.destroy();
+                                        return WinJS.Promise.join([pdf.cleanup(), pdf.destroy()]);
                                     })
                                 }
 
