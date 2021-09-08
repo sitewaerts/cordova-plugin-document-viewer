@@ -7,6 +7,11 @@
   "bugs": {
     "url": "https://github.com/sitewaerts/cordova-plugin-document-viewer/issues"
   },
+  "scripts": {
+    "updateDependencies": "update_dependencies.bat && npm run build",
+    "build": "bash build.sh",
+    "prepare": "npm run build"
+  },
   "cordova": {
     "id": "cordova-plugin-document-viewer",
     "platforms": [

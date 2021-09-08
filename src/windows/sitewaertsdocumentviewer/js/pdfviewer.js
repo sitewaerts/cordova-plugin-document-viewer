@@ -1968,7 +1968,7 @@
                     // TODO: Password protected file? user should provide a password to open the file
 
                     PDFJS.GlobalWorkerOptions.disableWorker = true;
-                    PDFJS.GlobalWorkerOptions.workerSrc = 'js/pdfjs-dist/pdf.worker.js';
+                    PDFJS.GlobalWorkerOptions.workerSrc = 'js/worker.js';
 
                     return $q(function (resolve, reject)
                     {
