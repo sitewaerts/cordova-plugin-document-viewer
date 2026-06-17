@@ -58,7 +58,7 @@
 
 	NSURL *_fileURL;
 
-	CGPDFDocumentRef *_pdfDocumentRef;
+	CGPDFDocumentRef _pdfDocumentRef;
 }
 
 #pragma mark - Properties
@@ -277,7 +277,7 @@
 
 - (CGPDFDocumentRef)pdfDocumentRef
 {
-	if (_pdfDocumentRef == nil){
+	if (_pdfDocumentRef == NULL){
         CFURLRef docURLRef = (__bridge CFURLRef)[self fileURL]; // CFURLRef from NSURL
         _pdfDocumentRef = CGPDFDocumentCreateUsingUrl(docURLRef, _password);
 	}

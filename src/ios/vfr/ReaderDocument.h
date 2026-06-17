@@ -24,6 +24,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <CoreGraphics/CoreGraphics.h>
 
 @interface ReaderDocument : NSObject <NSObject, NSCoding>
 
@@ -38,7 +39,7 @@
 @property (nonatomic, strong, readonly) NSString *fileName;
 @property (nonatomic, strong, readonly) NSURL *fileURL;
 
-@property (nonatomic, readonly) CGPDFDocumentRef *pdfDocumentRef;
+@property (nonatomic, readonly) CGPDFDocumentRef pdfDocumentRef;
 
 @property (nonatomic, readonly) BOOL canEmail;
 @property (nonatomic, readonly) BOOL canExport;

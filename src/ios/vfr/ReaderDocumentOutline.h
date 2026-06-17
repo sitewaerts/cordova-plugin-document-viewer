@@ -24,6 +24,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <CoreGraphics/CoreGraphics.h>
 
 @interface ReaderDocumentOutline : NSObject <NSObject>
 

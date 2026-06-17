@@ -8,6 +8,7 @@
 //
 
 #import "ReaderContentView.h"
+#import <CoreGraphics/CoreGraphics.h>
 
 typedef enum
 {
